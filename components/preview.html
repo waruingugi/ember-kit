@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en" data-motion="lively">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Components Preview</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Space+Grotesk:wght@400;500;600&family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500;600&family=Antonio:wght@300..700&display=swap">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<style>
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 clamp(16px, 4.5vw, 64px) 40px; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 16px; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="sec">
+    <span class="ghost" aria-hidden="true">01</span>
+    <p class="eyebrow"><b>01</b> Components</p>
+    <h2>Every page, <em>the same small parts.</em></h2>
+    <p class="lead">This page shows each shared part once, in our tokens and fonts. Copy from here, not from memory.</p>
+  </section>
+
+  <p class="sub">Labels, pills, badges and chips</p>
+  <div class="row">
+    <span class="label">A label</span>
+    <span class="prop">Our proposal</span>
+    <span class="badge dec">Decision</span>
+    <span class="badge sign">Sign-off</span>
+    <span class="status"><i></i>Draft 0.1 · for review</span>
+    <span class="kbd">[</span>
+  </div>
+  <div class="row">
+    <span class="chip sys-frontend"><i></i>Frontend</span>
+    <span class="chip sys-backend"><i></i>Backend</span>
+    <span class="chip sys-database"><i></i>Database</span>
+    <span class="chip sys-security"><i></i>Security</span>
+    <span class="chip sys-bus"><i></i>Message bus</span>
+    <span class="chip sys-external"><i></i>External</span>
+  </div>
+
+  <p class="sub">Cards, a bento grid and a stat card</p>
+  <div class="bento">
+    <article class="card stat lift c7">
+      <p class="label">Beats an hour <span class="pill">Typical</span></p>
+      <p class="num"><span>28,800</span><small>bph</small></p>
+      <svg class="spark done" id="spark" aria-hidden="true"><path class="tr"/><path class="ln" pathLength="1" style="--d:0"/><path class="gl" pathLength="1"/></svg>
+      <p>A common watch beats 8 times a second.</p>
+    </article>
+    <article class="card lift c5">
+      <span class="chip sys-backend"><i></i>Backend</span>
+      <h3 style="margin-top:14px">A card that lifts.</h3>
+      <p>Hover it. It rises 3 px and its shadow grows.</p>
+    </article>
+  </div>
+
+  <div class="callout">
+    <span class="label">The rule</span>
+    <p>Every vehicle position goes into one log first.</p>
+    <p>The log is the only truth. Every other store is a reader of it.</p>
+  </div>
+  <div class="donebox"><span class="label">Done looks like</span><p>Every module folder matches the shape in row 2.</p></div>
+  <p class="src">Source: plan §3, §3.1</p>
+
+  <p class="sub">A frame, the dot canvas and a tool note</p>
+  <figure class="frame" style="margin:0">
+    <div class="fbar"><span class="dots"><i></i><i></i><i></i></span><span class="t">order states</span><span>11 states</span></div>
+    <div class="canvas-dots" style="height:160px"></div>
+  </figure>
+  <p class="tool"><span class="label">Diagram Design</span>A state machine shows every state and every allowed move.</p>
+
+  <p class="sub">A table</p>
+  <div class="tw"><table>
+    <thead><tr><th>Drawer</th><th>Key names</th><th>If it is down</th></tr></thead>
+    <tbody><tr><td><b>Cache</b></td><td><code>cache:&lt;thing&gt;:&lt;id&gt;</code> <span class="prop">Our proposal</span></td><td>Every read goes to Postgres. Slower, still correct.</td></tr>
+    <tr><td><b>Queues</b></td><td><code>celery</code></td><td>Events wait safely in the outbox.</td></tr></tbody>
+  </table></div>
+
+  <p class="sub">Buttons and toggles</p>
+  <div class="row">
+    <button class="btn" type="button" id="toastBtn">Show a toast</button>
+    <span class="seg" role="group" aria-label="Motion"><button type="button" aria-pressed="true">Lively</button><button type="button" aria-pressed="false">Calm</button><button type="button" aria-pressed="false">Off</button></span>
+    <button class="fbtn" type="button" aria-pressed="false">Filter</button>
+  </div>
+
+  <section class="end">
+    <h2>That is every part. <em>Copy, do not reinvent.</em></h2>
+    <ol><li><b>01</b><span>Paste tokens.css at the top of the page.</span></li><li><b>02</b><span>Paste the parts the page uses from components.css.</span></li></ol>
+  </section>
+</main>
+<div class="toast" id="toast" role="status"></div>
+<script>
+  (function () {
+    var s = document.getElementById('spark'), w = s.clientWidth || 600, h = 64, d = '';
+    s.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+    for (var i = 0; i <= 80; i++) d += (i ? ' L' : 'M') + (i / 80 * w).toFixed(1) + ' ' + (h / 2 - Math.sin(i / 80 * Math.PI * 7.5) * (h / 2 - 6) * Math.exp(-i / 80 * 0.6)).toFixed(1);
+    s.querySelector('.tr').setAttribute('d', 'M0 ' + h / 2 + ' L' + w + ' ' + h / 2);
+    s.querySelector('.ln').setAttribute('d', d); s.querySelector('.gl').setAttribute('d', d);
+    var t = document.getElementById('toast');
+    document.getElementById('toastBtn').addEventListener('click', function () { t.textContent = 'Done'; t.classList.add('on'); setTimeout(function () { t.classList.remove('on'); }, 1800); });
+  })();
+</script>
+</body>
+</html>

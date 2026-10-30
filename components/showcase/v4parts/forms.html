@@ -1,0 +1,819 @@
+<!--PART n09 | Combobox | A long list, <em>found by typing.</em> | Type a city or press the down arrow. Press Enter to pick.-->
+<style>
+.kit #n09 .fld { position: relative; width: 100%; max-width: 360px; }
+.kit #n09 .label { display: block; margin-bottom: 8px; color: var(--muted); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+.kit #n09 .inwrap > .in { padding-right: 42px; }
+.kit #n09 .chv svg { transition: transform .2s var(--ease-out); }
+.kit #n09 .open .chv svg { transform: rotate(180deg); }
+.kit #n09 .cbpop { top: calc(100% + 6px); left: 0; right: 0; transform-origin: 50% 0; overflow: hidden; }
+.kit #n09 .cbpop[hidden] { display: none; }
+.kit #n09 .sc { position: relative; max-height: 248px; overflow-y: auto; padding: 4px; overscroll-behavior: contain; }
+.kit #n09 .hl { position: absolute; left: 4px; right: 4px; top: 4px; height: 36px; border-radius: 8px; background: rgb(var(--ink-rgb) / .07); pointer-events: none; opacity: 0; will-change: transform; }
+.kit #n09 ul { list-style: none; margin: 0; padding: 0; position: relative; }
+.kit #n09 li { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 10px; height: 36px; box-sizing: border-box; padding: 0 10px; border-radius: 8px; color: var(--ink-soft); font-size: 14.5px; cursor: pointer; }
+.kit #n09 li.act { color: var(--ink); }
+.kit #n09 li b { font-weight: 700; color: var(--ink); }
+.kit #n09 li .i { color: var(--ink); }
+.kit #n09 .emp { margin: 0; padding: 12px 10px; color: var(--muted); font-size: 14px; }
+.kit #n09 .emp[hidden] { display: none; }
+</style>
+<section class="cs" id="n09">
+  <div class="frame"><div class="fbody">
+    <div class="stage" style="flex-direction:column;align-items:stretch">
+      <div class="fld" id="n09-fld" style="align-self:center">
+        <label class="label" for="n09-in">Time zone</label>
+        <div class="inwrap">
+          <svg class="i" aria-hidden="true"><use href="#i-globe"/></svg>
+          <input class="in" id="n09-in" type="text" role="combobox" aria-expanded="false" aria-controls="n09-list" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Search a city">
+          <button class="ib chv" type="button" tabindex="-1" aria-label="Show all time zones"><svg class="i" aria-hidden="true"><use href="#i-cd"/></svg></button>
+        </div>
+        <div class="pop cbpop" id="n09-pop" hidden>
+          <div class="sc" id="n09-sc">
+            <div class="hl" id="n09-hl" aria-hidden="true"></div>
+            <ul id="n09-list" role="listbox" aria-label="Time zones"></ul>
+            <p class="emp" id="n09-emp" hidden>No zone matches</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="note" id="n09-note" aria-live="polite">No zone picked yet.</p>
+  </div></div>
+</section>
+<script>
+(function () {
+  "use strict";
+  var box = document.getElementById("n09"); if (!box) return;
+  var EASE = "cubic-bezier(.22,1,.36,1)";
+  var spd = function () { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; };
+  var $ = function (id) { return document.getElementById(id); };
+  var inp = $("n09-in"), pop = $("n09-pop"), sc = $("n09-sc"), ul = $("n09-list"), hl = $("n09-hl"), emp = $("n09-emp"), fld = $("n09-fld"), note = $("n09-note");
+  var Z = [["Nairobi","+3"],["Lagos","+1"],["London","+0"],["Accra","+0"],["Cairo","+2"],["Johannesburg","+2"],["Addis Ababa","+3"],["Dar es Salaam","+3"],["Kampala","+3"],["Kigali","+2"],["Casablanca","+1"],["Dakar","+0"],["Lisbon","+0"],["Paris","+1"],["Berlin","+1"],["Athens","+2"],["Istanbul","+3"],["Dubai","+4"],["Karachi","+5"],["Delhi","+5:30"],["Dhaka","+6"],["Bangkok","+7"],["Singapore","+8"],["Tokyo","+9"],["Sydney","+11"],["Auckland","+13"],["Honolulu","-10"],["Los Angeles","-7"],["Mexico City","-6"],["New York","-4"],["Sao Paulo","-3"]
+  ].map(function (z) { return { n: z[0], l: z[0] + " · GMT" + z[1] }; });
+  var cur = Z, act = -1, sel = null, dirty = false, isOpen = false, anim = null;
+
+  function glide(el, fn) {
+    var s = spd(), h0 = el.offsetHeight; fn(); if (!s) return;
+    var h1 = el.offsetHeight; if (h0 === h1) return;
+    el.style.overflow = "hidden";
+    var a = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: 220 * s, easing: EASE });
+    a.onfinish = a.oncancel = function () { el.style.overflow = ""; };
+  }
+  function render() {
+    var q = dirty ? inp.value.trim().toLowerCase() : "";
+    cur = Z.filter(function (z) { return !q || z.l.toLowerCase().indexOf(q) > -1; });
+    ul.innerHTML = "";
+    cur.forEach(function (z, i) {
+      var li = document.createElement("li"); li.id = "n09-o" + Z.indexOf(z); li.setAttribute("role", "option");
+      li.setAttribute("aria-selected", z === sel ? "true" : "false");
+      var span = document.createElement("span"), at = q ? z.l.toLowerCase().indexOf(q) : -1;
+      if (at > -1) {
+        span.appendChild(document.createTextNode(z.l.slice(0, at)));
+        var b = document.createElement("b"); b.textContent = z.l.slice(at, at + q.length); span.appendChild(b);
+        span.appendChild(document.createTextNode(z.l.slice(at + q.length)));
+      } else span.textContent = z.l;
+      li.appendChild(span);
+      if (z === sel) { li.insertAdjacentHTML("beforeend", '<svg class="i" aria-hidden="true"><use href="#i-check"/></svg>'); }
+      ul.appendChild(li);
+    });
+    emp.hidden = cur.length > 0;
+  }
+  function place(animate) {
+    var li = ul.children[act];
+    if (!li) { hl.style.opacity = 0; inp.removeAttribute("aria-activedescendant"); return; }
+    var s = spd();
+    hl.style.transition = animate && s ? "transform " + (.22 * s) + "s " + EASE + ", opacity .15s" : "none";
+    hl.style.opacity = 1; hl.style.transform = "translateY(" + li.offsetTop + "px)";
+    Array.prototype.forEach.call(ul.children, function (n, i) { n.classList.toggle("act", i === act); });
+    inp.setAttribute("aria-activedescendant", li.id);
+    var t = li.offsetTop, h = li.offsetHeight;
+    if (t < sc.scrollTop + 4) sc.scrollTop = t - 4; else if (t + h > sc.scrollTop + sc.clientHeight - 4) sc.scrollTop = t + h - sc.clientHeight + 4;
+  }
+  function open() {
+    if (isOpen) return; isOpen = true;
+    pop.hidden = false; fld.classList.add("open"); inp.setAttribute("aria-expanded", "true");
+    render(); act = sel && cur.indexOf(sel) > -1 && !dirty ? cur.indexOf(sel) : (cur.length ? 0 : -1); place(false);
+    var s = spd(); if (anim) anim.cancel();
+    if (s) anim = pop.animate([{ opacity: 0, transform: "scale(.96)" }, { opacity: 1, transform: "none" }], { duration: 200 * s, easing: EASE });
+  }
+  function close() {
+    if (!isOpen) return; isOpen = false;
+    fld.classList.remove("open"); inp.setAttribute("aria-expanded", "false"); inp.removeAttribute("aria-activedescendant");
+    dirty = false; inp.value = sel ? sel.l : "";
+    var s = spd(); if (anim) anim.cancel();
+    if (s) { anim = pop.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "scale(.96)" }], { duration: 140 * s, easing: EASE }); anim.onfinish = function () { if (!isOpen) pop.hidden = true; }; }
+    else pop.hidden = true;
+  }
+  function pick(i) {
+    var z = cur[i]; if (!z) return; sel = z; note.textContent = "Time zone set to " + z.l + "."; dirty = false; inp.value = z.l; close();
+  }
+  inp.addEventListener("focus", function () { open(); inp.select(); });
+  inp.addEventListener("click", function () { open(); });
+  inp.addEventListener("blur", close);
+  inp.addEventListener("input", function () {
+    dirty = true;
+    if (!isOpen) { open(); return; }
+    glide(sc, function () { render(); act = cur.length ? 0 : -1; }); place(false);
+  });
+  inp.addEventListener("keydown", function (e) {
+    var k = e.key;
+    if (k === "ArrowDown" || k === "ArrowUp") {
+      e.preventDefault(); if (!isOpen) { open(); return; }
+      if (!cur.length) return; act = (act + (k === "ArrowDown" ? 1 : -1) + cur.length) % cur.length; place(true);
+    } else if (k === "Home" || k === "End") {
+      if (isOpen && cur.length && e.ctrlKey) { e.preventDefault(); act = k === "Home" ? 0 : cur.length - 1; place(true); }
+    } else if (k === "Enter") { if (isOpen) { e.preventDefault(); pick(act); } }
+    else if (k === "Escape") { if (isOpen) { e.preventDefault(); close(); } }
+  });
+  pop.addEventListener("mousedown", function (e) { e.preventDefault(); });
+  ul.addEventListener("mousemove", function (e) {
+    var li = e.target.closest("li"); if (!li) return;
+    var i = Array.prototype.indexOf.call(ul.children, li); if (i !== act) { act = i; place(true); }
+  });
+  ul.addEventListener("click", function (e) { var li = e.target.closest("li"); if (li) pick(Array.prototype.indexOf.call(ul.children, li)); });
+  var chv = box.querySelector(".chv");
+  chv.addEventListener("mousedown", function (e) { e.preventDefault(); });
+  chv.addEventListener("click", function () { if (isOpen) close(); else { inp.focus(); open(); } });
+})();
+</script>
+<!--/PART-->
+
+<!--PART n10 | OTP Input | A six-digit code, <em>checked as you finish.</em> | Type 482913 for the right code, or any other digits to see it fail. You can also paste.-->
+<style>
+.kit #n10 .wrap { width: 100%; max-width: 380px; margin: 0 auto; }
+.kit #n10 .q { margin: 0 0 18px; font-size: 15px; line-height: 1.5; color: var(--ink-soft); }
+.kit #n10 .q b { color: var(--ink); font-weight: 600; white-space: nowrap; }
+.kit #n10 .boxes { display: flex; gap: 8px; }
+.kit #n10 .boxes input { flex: 1 1 0; min-width: 0; width: 100%; height: 52px; box-sizing: border-box; padding: 0; text-align: center; border: 1px solid var(--line-hi); border-radius: 10px; background: var(--paper-raised);
+  font: 400 26px/1 var(--font-num); font-variant-numeric: tabular-nums; color: var(--ink); caret-color: var(--accent); transition: border-color .15s var(--ease-out), box-shadow .15s var(--ease-out); }
+.kit #n10 .boxes input:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgb(var(--ink-rgb) / .08); }
+.kit #n10 .boxes.bad input { border-color: var(--accent); }
+.kit #n10 .boxes.ok input { border-color: var(--ink); background: var(--paper-sunk); }
+.kit #n10 .msg { display: flex; align-items: center; gap: 8px; min-height: 28px; margin-top: 14px; font-size: 13.5px; color: var(--muted); }
+.kit #n10 .msg.err { color: var(--accent-text); }
+.kit #n10 .msg .vf { display: inline-flex; align-items: center; gap: 9px; color: var(--ink); font-weight: 500; font-size: 14.5px; }
+.kit #n10 .vf svg { width: 24px; height: 24px; flex: none; }
+.kit #n10 .vf circle { fill: var(--accent); transform-origin: 12px 12px; }
+.kit #n10 .vf path { fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.kit #n10 .rs { margin-top: 6px; font-size: 13.5px; color: var(--muted); min-height: 24px; display: flex; align-items: center; }
+.kit #n10 .rs .num { font: 400 15px/1 var(--font-num); font-variant-numeric: tabular-nums; color: var(--ink-soft); }
+.kit #n10 .rs[hidden] { display: none; }
+</style>
+<section class="cs" id="n10">
+  <div class="frame"><div class="fbody">
+    <div class="stage"><div class="wrap">
+      <p class="q">Enter the 6-digit code we sent to <b>+254 7&bull;&bull; &bull;&bull;&bull; 412</b></p>
+      <div class="boxes" id="n10-boxes" role="group" aria-label="6-digit code">
+        <input type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1 of 6">
+        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 2 of 6">
+        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 3 of 6">
+        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 4 of 6">
+        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 5 of 6">
+        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 6 of 6">
+      </div>
+      <div class="msg" id="n10-msg" aria-live="polite"></div>
+      <div class="rs" id="n10-rs"></div>
+    </div></div>
+    <p class="note">The right code for this demo is 482913.</p>
+  </div></div>
+</section>
+<script>
+(function () {
+  "use strict";
+  var box = document.getElementById("n10"); if (!box) return;
+  var EASE = "cubic-bezier(.22,1,.36,1)";
+  var spd = function () { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; };
+  var wrap = document.getElementById("n10-boxes"), msg = document.getElementById("n10-msg"), rs = document.getElementById("n10-rs");
+  var ins = Array.prototype.slice.call(wrap.querySelectorAll("input")), locked = false, timer = null, secs = 30;
+  function spring(el) { var s = spd(); if (s) el.animate([{ transform: "scale(.8)", opacity: .3 }, { transform: "none", opacity: 1 }], { duration: 200 * s, easing: EASE }); }
+  function setMsg(t, err) {
+    msg.className = "msg" + (err ? " err" : "");
+    msg.innerHTML = err ? '<svg class="i" aria-hidden="true"><use href="#i-alert"/></svg>' : "";
+    msg.appendChild(document.createTextNode(t));
+  }
+  function code() { return ins.map(function (i) { return i.value; }).join(""); }
+  function clearBad() { wrap.classList.remove("bad"); if (msg.classList.contains("err")) { msg.className = "msg"; msg.textContent = ""; } }
+  function check() {
+    var c = code(); if (c.length < 6 || locked) return;
+    locked = true; ins.forEach(function (i) { i.readOnly = true; }); setMsg("Checking the code", false);
+    setTimeout(function () {
+      var s = spd();
+      if (c === "482913") {
+        wrap.classList.add("ok"); clearInterval(timer); rs.hidden = true; msg.className = "msg";
+        msg.innerHTML = '<span class="vf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12"/><path pathLength="1" d="M20 6 9 17l-5-5" transform="translate(0 0) scale(.62) translate(7.4 7.4)"/></svg>Verified</span>';
+        if (s) {
+          ins.forEach(function (el, n) { el.animate([{ transform: "none" }, { transform: "scale(.94)" }, { transform: "none" }], { duration: 350 * s, delay: n * 30 * s, easing: EASE }); });
+          var vf = msg.querySelector("circle"), p = msg.querySelector("path");
+          vf.animate([{ transform: "scale(.5)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 300 * s, easing: EASE });
+          p.style.strokeDasharray = 1; p.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 300 * s, delay: 140 * s, easing: EASE, fill: "backwards" });
+        }
+      } else {
+        wrap.classList.add("bad"); setMsg("That code is not right. Try again.", true);
+        if (s) wrap.animate([{ transform: "translateX(0)" }, { transform: "translateX(-9px)" }, { transform: "translateX(8px)" }, { transform: "translateX(-5px)" }, { transform: "translateX(3px)" }, { transform: "translateX(0)" }], { duration: 350 * s, easing: EASE });
+        ins.forEach(function (el) { el.value = ""; el.readOnly = false; }); locked = false; ins[0].focus();
+      }
+    }, spd() ? 450 : 0);
+  }
+  function fillFrom(start, digits) {
+    var n = 0; for (var i = start; i < 6 && n < digits.length; i++, n++) { ins[i].value = digits[n]; spring(ins[i]); }
+    var next = Math.min(start + digits.length, 5); ins[next].focus(); check();
+  }
+  ins.forEach(function (el, i) {
+    el.addEventListener("focus", function () { el.select(); });
+    el.addEventListener("input", function () {
+      if (locked) return; clearBad();
+      var d = el.value.replace(/\D/g, ""); el.value = "";
+      if (!d) return; if (d.length > 1) { fillFrom(i, d.slice(0, 6 - i)); return; }
+      fillFrom(i, d);
+    });
+    el.addEventListener("keydown", function (e) {
+      if (locked) return;
+      if (e.key === "Backspace") { if (!el.value && i > 0) { e.preventDefault(); ins[i - 1].value = ""; ins[i - 1].focus(); clearBad(); } else clearBad(); }
+      else if (e.key === "ArrowLeft" && i > 0) { e.preventDefault(); ins[i - 1].focus(); }
+      else if (e.key === "ArrowRight" && i < 5) { e.preventDefault(); ins[i + 1].focus(); }
+    });
+    el.addEventListener("paste", function (e) {
+      e.preventDefault(); if (locked) return;
+      var d = ((e.clipboardData || window.clipboardData).getData("text") || "").replace(/\D/g, "").slice(0, 6); if (!d) return;
+      clearBad(); ins.forEach(function (x) { x.value = ""; }); fillFrom(0, d);
+    });
+  });
+  function mmss() { return "0:" + (secs < 10 ? "0" : "") + secs; }
+  function startCount() {
+    clearInterval(timer); secs = 30;
+    rs.innerHTML = 'Send a new code in <span class="num">&nbsp;' + mmss() + "</span>";
+    timer = setInterval(function () {
+      secs--;
+      if (secs > 0) { rs.querySelector(".num").innerHTML = "&nbsp;" + mmss(); return; }
+      clearInterval(timer); rs.innerHTML = '<button type="button" class="lk">Send a new code</button>';
+      rs.querySelector("button").addEventListener("click", function () {
+        ins.forEach(function (x) { x.value = ""; }); clearBad(); setMsg("A new code is on its way.", false); startCount(); ins[0].focus();
+      });
+    }, 1000);
+  }
+  startCount();
+})();
+</script>
+<!--/PART-->
+
+<!--PART n11 | Sign Up | A sign-up form that <em>grades your password.</em> | Type a password and watch the bar fill. Press the button with a mistake, then fix it.-->
+<style>
+.kit #n11 .card { width: 100%; max-width: 400px; margin: 0 auto; }
+.kit #n11 h3 { margin: 0 0 4px; font: 400 24px/1.2 var(--font-display); }
+.kit #n11 .sub { margin: 0 0 20px; color: var(--muted); font-size: 14px; }
+.kit #n11 .f { margin-bottom: 14px; }
+.kit #n11 .f > label { display: block; margin-bottom: 6px; font-size: 13.5px; font-weight: 500; color: var(--ink); }
+.kit #n11 .er { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .3s var(--ease-out), opacity .3s var(--ease-out); }
+.kit #n11 .er.on { grid-template-rows: 1fr; opacity: 1; }
+.kit #n11 .er > div { overflow: hidden; min-height: 0; }
+.kit #n11 .em { display: flex; align-items: center; gap: 6px; margin: 0; padding-top: 6px; font-size: 13px; color: var(--accent-text); }
+.kit #n11 .em.good { color: var(--ink); }
+.kit #n11 .segs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: 10px; }
+.kit #n11 .seg { height: 4px; overflow: hidden; border-radius: 2px; background: var(--line-hi); }
+.kit #n11 .seg i { display: block; height: 100%; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .35s var(--ease-out); }
+.kit #n11 .seg i.on { transform: scaleX(1); }
+.kit #n11 .sw { margin: 8px 0 0; font: 500 11px/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.kit #n11 .rules { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; margin: 12px 0 0; padding: 0; list-style: none; }
+.kit #n11 .rules li { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); transition: color .2s var(--ease-out); }
+.kit #n11 .rules li.ok { color: var(--ink); }
+.kit #n11 .rules svg { width: 16px; height: 16px; flex: none; overflow: visible; }
+.kit #n11 .rules circle { fill: none; stroke: var(--line-hi); stroke-width: 1.5; transition: stroke .2s var(--ease-out); }
+.kit #n11 .rules li.ok circle { stroke: var(--accent); }
+.kit #n11 .rules path { fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset .25s var(--ease-out); }
+.kit #n11 .rules li.ok path { stroke-dashoffset: 0; }
+.kit #n11 .go { width: 100%; margin-top: 8px; min-height: 42px; }
+.kit #n11 .go .lab { display: inline-flex; align-items: center; gap: 8px; }
+.kit #n11 .go svg.sp { width: 16px; height: 16px; flex: none; fill: none; stroke: #fff; stroke-width: 2.2; stroke-linecap: round; animation: n11-spin .7s linear infinite; }
+.kit #n11 .go svg.tk { width: 16px; height: 16px; flex: none; fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+@keyframes n11-spin { to { transform: rotate(360deg); } }
+html[data-motion="off"] .kit #n11 .er, html[data-motion="off"] .kit #n11 .seg i, html[data-motion="off"] .kit #n11 .rules path { transition: none; }
+html[data-motion="off"] .kit #n11 .go svg.sp { animation: none; }
+@media (max-width: 420px) { .kit #n11 .rules { grid-template-columns: 1fr; } }
+</style>
+<section class="cs" id="n11">
+  <div class="frame"><div class="fbody">
+    <form class="card" id="n11-form" novalidate>
+      <h3>Make your account</h3>
+      <p class="sub">It takes about a minute.</p>
+      <div class="f"><label for="n11-name">Full name</label><input class="in" id="n11-name" autocomplete="name" placeholder="Grace Wanjiru" aria-describedby="n11-e-name"><div class="er" id="n11-e-name" aria-live="polite"><div></div></div></div>
+      <div class="f"><label for="n11-mail">Email</label><input class="in" id="n11-mail" type="email" autocomplete="email" placeholder="grace@example.com" aria-describedby="n11-e-mail"><div class="er" id="n11-e-mail" aria-live="polite"><div></div></div></div>
+      <div class="f"><label for="n11-pw">Password</label>
+        <div class="inwrap"><input class="in" id="n11-pw" type="password" autocomplete="new-password" style="padding-right:42px" aria-describedby="n11-e-pw n11-rules"><button class="ib" type="button" id="n11-eye" aria-label="Show password" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-eye"/></svg></button></div>
+        <div class="segs" aria-hidden="true"><div class="seg"><i></i></div><div class="seg"><i></i></div><div class="seg"><i></i></div><div class="seg"><i></i></div></div>
+        <p class="sw" id="n11-sw" aria-live="polite">Type a password</p>
+        <ul class="rules" id="n11-rules">
+          <li data-r="len"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.2"/><path pathLength="1" d="M4.6 8.2 7 10.5l4.4-4.6"/></svg>8+ characters</li>
+          <li data-r="num"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.2"/><path pathLength="1" d="M4.6 8.2 7 10.5l4.4-4.6"/></svg>A number</li>
+          <li data-r="up"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.2"/><path pathLength="1" d="M4.6 8.2 7 10.5l4.4-4.6"/></svg>An upper-case letter</li>
+          <li data-r="sym"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.2"/><path pathLength="1" d="M4.6 8.2 7 10.5l4.4-4.6"/></svg>A symbol</li>
+        </ul>
+        <div class="er" id="n11-e-pw" aria-live="polite"><div></div></div>
+      </div>
+      <div class="f"><label for="n11-pw2">Confirm password</label><input class="in" id="n11-pw2" type="password" autocomplete="new-password" aria-describedby="n11-e-pw2"><div class="er" id="n11-e-pw2" aria-live="polite"><div></div></div></div>
+      <button class="b pri go" type="submit" id="n11-go"><span class="lab">Create account</span></button>
+    </form>
+    <p class="note" id="n11-note" aria-live="polite">Demo only: nothing is sent anywhere.</p>
+  </div></div>
+</section>
+<script>
+(function () {
+  "use strict";
+  var box = document.getElementById("n11"); if (!box) return;
+  var EASE = "cubic-bezier(.22,1,.36,1)";
+  var spd = function () { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; };
+  var $ = function (id) { return document.getElementById(id); };
+  var name = $("n11-name"), mail = $("n11-mail"), pw = $("n11-pw"), pw2 = $("n11-pw2"), eye = $("n11-eye"), go = $("n11-go"), note = $("n11-note");
+  var segs = Array.prototype.slice.call(box.querySelectorAll(".seg i")), rules = box.querySelectorAll(".rules li"), sw = $("n11-sw");
+  var touched = {}, busy = false;
+  function show(field, errId, text, kind) {
+    var er = $(errId), inner = er.firstElementChild;
+    if (!text) { er.classList.remove("on"); field.removeAttribute("aria-invalid"); return; }
+    var good = kind === "good";
+    inner.innerHTML = '<p class="em' + (good ? " good" : "") + '"><svg class="i s" aria-hidden="true"><use href="#i-' + (good ? "check" : "alert") + '"/></svg><span></span></p>';
+    inner.querySelector("span").textContent = text;
+    er.classList.add("on");
+    if (good) field.removeAttribute("aria-invalid"); else field.setAttribute("aria-invalid", "true");
+  }
+  function score(v) { return { len: v.length >= 8, num: /\d/.test(v), up: /[A-Z]/.test(v), sym: /[^A-Za-z0-9]/.test(v) }; }
+  function vName() { var e = name.value.trim() ? "" : "Enter your name."; show(name, "n11-e-name", e); return !e; }
+  function vMail() { var v = mail.value.trim(), e = !v ? "Enter your email." : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? "" : "Use an email like name@example.com."; show(mail, "n11-e-mail", e); return !e; }
+  function vPw() {
+    var r = score(pw.value), n = Object.keys(r).filter(function (k) { return r[k]; }).length;
+    var e = !pw.value ? "Enter a password." : !r.len ? "Use at least 8 characters." : n < 4 ? "Add the missing items in the list." : "";
+    show(pw, "n11-e-pw", e); return !e;
+  }
+  function vPw2() {
+    if (!pw2.value) { show(pw2, "n11-e-pw2", touched.pw2 ? "Type your password again." : ""); return !touched.pw2 ? false : false; }
+    var ok = pw2.value === pw.value; show(pw2, "n11-e-pw2", ok ? "Passwords match." : "Passwords do not match.", ok ? "good" : "bad"); return ok;
+  }
+  function strength() {
+    var r = score(pw.value), n = 0;
+    rules.forEach(function (li) { var m = r[li.dataset.r]; li.classList.toggle("ok", m); if (m) n++; });
+    segs.forEach(function (s, i) { s.style.transitionDelay = i < n && spd() ? i * 50 + "ms" : "0ms"; s.classList.toggle("on", i < n); });
+    sw.textContent = !pw.value ? "Type a password" : ["Too short", "Weak", "Fair", "Good", "Strong"][n];
+  }
+  var V = [[name, vName, "name"], [mail, vMail, "mail"], [pw, vPw, "pw"], [pw2, vPw2, "pw2"]];
+  V.forEach(function (v) {
+    v[0].addEventListener("blur", function () { if (v[0].value || touched[v[2]]) { touched[v[2]] = true; v[1](); } });
+    v[0].addEventListener("input", function () {
+      if (v[0] === pw) { strength(); if (touched.pw) vPw(); if (pw2.value) vPw2(); }
+      else if (touched[v[2]] || v[0] === pw2) { if (v[0] === pw2) touched.pw2 = true; v[1](); }
+    });
+  });
+  eye.addEventListener("click", function () {
+    var on = pw.type === "password"; pw.type = on ? "text" : "password"; pw2.type = pw.type;
+    eye.setAttribute("aria-pressed", on); eye.setAttribute("aria-label", on ? "Hide password" : "Show password");
+    eye.querySelector("use").setAttribute("href", on ? "#i-eyeoff" : "#i-eye");
+  });
+  function label(html) {
+    var lab = go.querySelector(".lab"), s = spd(); lab.innerHTML = html;
+    if (s) lab.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200 * s, easing: EASE });
+  }
+  $("n11-form").addEventListener("submit", function (e) {
+    e.preventDefault(); if (busy) return;
+    touched = { name: 1, mail: 1, pw: 1, pw2: 1 };
+    var res = V.map(function (v) { return v[1](); });
+    var bad = res.indexOf(false); if (bad > -1) { V[bad][0].focus(); return; }
+    busy = true; go.disabled = true; go.style.opacity = 1;
+    label('<svg class="sp" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>Making account');
+    setTimeout(function () {
+      label('<svg class="tk" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M20 6 9 17l-5-5"/></svg>Account made');
+      var p = go.querySelector(".tk path"), s = spd(); p.style.strokeDasharray = 1;
+      if (s) p.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 300 * s, easing: EASE });
+      note.textContent = "Account made for " + name.value.trim() + ". Demo only: nothing was sent.";
+    }, spd() ? 1300 : 0);
+  });
+})();
+</script>
+<!--/PART-->
+
+<!--PART n12 | Command Menu | Every action, <em>one search away.</em> | Press the button, or press Ctrl or Cmd + K. Type a few letters, use the arrows, press Enter.-->
+<style>
+.kit #n12 .stage { flex-direction: column; align-items: stretch; gap: 12px; }
+.kit #n12 .top { display: flex; justify-content: center; }
+.kit #n12 kbd { font: 500 11px/1 var(--font-mono); letter-spacing: .04em; padding: 3px 6px; border: 1px solid var(--line-hi); border-radius: 5px; color: var(--muted); background: var(--paper); }
+.kit #n12 .cm { width: 100%; max-width: 460px; margin: 0 auto; box-sizing: border-box; border: 1px solid var(--line); border-radius: 12px; background: var(--paper-raised); box-shadow: var(--shadow-lg); overflow: hidden; }
+.kit #n12 .cm[hidden] { display: none; }
+.kit #n12 .srch { position: relative; border-bottom: 1px solid var(--line); }
+.kit #n12 .srch .i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+.kit #n12 .srch input { width: 100%; height: 48px; box-sizing: border-box; padding: 0 14px 0 40px; border: 0; background: transparent; font: 400 15px/1 var(--font-body); color: var(--ink); }
+.kit #n12 .srch input:focus { outline: none; }
+.kit #n12 .srch input::placeholder { color: var(--muted); }
+.kit #n12 .sc { position: relative; max-height: 300px; overflow-y: auto; padding: 4px; overscroll-behavior: contain; }
+.kit #n12 .hl { position: absolute; left: 4px; right: 4px; top: 0; height: 38px; border-radius: 8px; background: rgb(var(--ink-rgb) / .07); pointer-events: none; opacity: 0; will-change: transform; }
+.kit #n12 .grp { position: relative; }
+.kit #n12 .gh { margin: 0; padding: 10px 10px 4px; font: 500 10.5px/1 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.kit #n12 ul { list-style: none; margin: 0; padding: 0; }
+.kit #n12 li { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 10px; height: 38px; box-sizing: border-box; padding: 0 10px; border-radius: 8px; font-size: 14.5px; color: var(--ink-soft); cursor: pointer; }
+.kit #n12 li.act { color: var(--ink); }
+.kit #n12 li b { font-weight: 700; color: var(--ink); }
+.kit #n12 .emp { margin: 0; padding: 14px 10px; font-size: 14px; color: var(--muted); }
+.kit #n12 .foot { display: flex; flex-wrap: wrap; gap: 4px 16px; padding: 10px 14px; border-top: 1px solid var(--line); font: 500 11px/1.2 var(--font-mono); letter-spacing: .04em; color: var(--muted); }
+</style>
+<section class="cs" id="n12">
+  <div class="frame"><div class="fbody">
+    <div class="stage">
+      <div class="top"><button class="b" type="button" id="n12-btn" aria-expanded="false" aria-controls="n12-panel"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg>Search commands <kbd>&#8984;K</kbd></button></div>
+      <div class="cm" id="n12-panel" hidden role="dialog" aria-label="Command menu">
+        <div class="srch"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
+          <input id="n12-in" type="text" role="combobox" aria-expanded="true" aria-controls="n12-list" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Type a command or a note" aria-label="Search commands"></div>
+        <div class="sc" id="n12-sc"><div class="hl" id="n12-hl" aria-hidden="true"></div><div id="n12-list" role="listbox" aria-label="Commands"></div></div>
+        <div class="foot" aria-hidden="true"><span>&uarr;&darr; to move</span><span>&crarr; to pick</span><span>esc to close</span></div>
+      </div>
+    </div>
+    <p class="note" id="n12-note" aria-live="polite">Nothing run yet.</p>
+  </div></div>
+</section>
+<script>
+(function () {
+  "use strict";
+  var box = document.getElementById("n12"); if (!box) return;
+  var EASE = "cubic-bezier(.22,1,.36,1)";
+  var spd = function () { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; };
+  var $ = function (id) { return document.getElementById(id); };
+  var btn = $("n12-btn"), panel = $("n12-panel"), inp = $("n12-in"), sc = $("n12-sc"), list = $("n12-list"), hl = $("n12-hl"), note = $("n12-note");
+  var G = [
+    ["Suggestions", [["New note", "Note"], ["Search notes", "Search"], ["Open settings", "Settings"]]],
+    ["Notes", [["Shopping list", "Note"], ["Trip to Kisumu", "Note"], ["Book club ideas", "Note"]]],
+    ["Actions", [["Export as PDF", "Export"], ["Share with team", "Share"], ["Dark mode", "Theme"]]]
+  ];
+  var rows = [], act = 0, isOpen = false, uid = 0;
+  // shortcut: simple in-order letter match, fine for 9 items; use a scored matcher for big lists
+  function fuzzy(q, s) {
+    if (!q) return []; var idx = [], j = 0; s = s.toLowerCase();
+    for (var i = 0; i < s.length && j < q.length; i++) if (s[i] === q[j]) { idx.push(i); j++; }
+    return j === q.length ? idx : null;
+  }
+  function glide(el, fn) {
+    var s = spd(), h0 = el.offsetHeight; fn(); if (!s) return;
+    var h1 = el.offsetHeight; if (h0 === h1) return;
+    el.style.overflow = "hidden";
+    var a = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: 220 * s, easing: EASE });
+    a.onfinish = a.oncancel = function () { el.style.overflow = ""; };
+  }
+  function render() {
+    var q = inp.value.trim().toLowerCase().replace(/\s+/g, ""); list.innerHTML = ""; rows = [];
+    G.forEach(function (g) {
+      var hit = [];
+      g[1].forEach(function (it) { var m = fuzzy(q, it[0].replace(/\s+/g, "")); if (m) hit.push({ it: it, m: m, w: q ? m[m.length - 1] - m[0] : 0 }); });
+      if (!hit.length) return;
+      if (q) hit.sort(function (a, b) { return a.w - b.w; });
+      var grp = document.createElement("div"); grp.className = "grp"; grp.setAttribute("role", "group");
+      var h = document.createElement("p"); h.className = "gh"; h.textContent = g[0]; h.id = "n12-g" + (++uid); grp.setAttribute("aria-labelledby", h.id); grp.appendChild(h);
+      var ul = document.createElement("ul"); ul.setAttribute("role", "presentation");
+      hit.forEach(function (x) {
+        var li = document.createElement("li"); li.setAttribute("role", "option"); li.id = "n12-o" + rows.length; li.setAttribute("aria-selected", "false");
+        var sp = document.createElement("span"), txt = x.it[0], map = {}, spaces = 0;
+        // map letters of the no-space query back onto the real text
+        if (q) { var k = 0; for (var c = 0; c < txt.length; c++) { if (txt[c] === " ") { spaces++; continue; } if (x.m.indexOf(c - spaces) > -1) map[c] = 1; k++; } }
+        for (var c2 = 0; c2 < txt.length; c2++) {
+          if (map[c2]) { var b = document.createElement("b"); b.textContent = txt[c2]; sp.appendChild(b); } else sp.appendChild(document.createTextNode(txt[c2]));
+        }
+        li.appendChild(sp); var t = document.createElement("span"); t.className = "tag"; t.textContent = x.it[1]; li.appendChild(t);
+        ul.appendChild(li); rows.push({ el: li, name: x.it[0] });
+      });
+      grp.appendChild(ul); list.appendChild(grp);
+    });
+    if (!rows.length) list.innerHTML = '<p class="emp">No command matches</p>';
+  }
+  function place(animate) {
+    var r = rows[act];
+    if (!r) { hl.style.opacity = 0; inp.removeAttribute("aria-activedescendant"); return; }
+    var s = spd(), li = r.el;
+    hl.style.transition = animate && s ? "transform " + (.22 * s) + "s " + EASE + ", opacity .15s" : "none";
+    hl.style.opacity = 1; hl.style.transform = "translateY(" + (li.offsetTop + li.offsetParent.offsetTop) + "px)";
+    rows.forEach(function (x, i) { x.el.classList.toggle("act", i === act); x.el.setAttribute("aria-selected", i === act); });
+    inp.setAttribute("aria-activedescendant", li.id);
+    var t = li.offsetTop + li.offsetParent.offsetTop, h = li.offsetHeight;
+    if (t < sc.scrollTop + 4) sc.scrollTop = t - 30; else if (t + h > sc.scrollTop + sc.clientHeight - 4) sc.scrollTop = t + h - sc.clientHeight + 4;
+  }
+  function open() {
+    if (isOpen) { inp.focus(); return; } isOpen = true;
+    panel.hidden = false; btn.setAttribute("aria-expanded", "true"); inp.value = ""; render(); act = 0; place(false); inp.focus();
+    var s = spd(); if (s) panel.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 100, easing: "linear" });
+  }
+  function close(refocus) {
+    if (!isOpen) return; isOpen = false; panel.hidden = true; btn.setAttribute("aria-expanded", "false"); if (refocus) btn.focus();
+  }
+  function run(i) { var r = rows[i]; if (!r) return; note.textContent = "Ran: " + r.name; close(true); }
+  btn.addEventListener("click", function () { if (isOpen) close(true); else open(); });
+  inp.addEventListener("input", function () { glide(sc, function () { render(); act = 0; }); place(false); });
+  inp.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); if (rows.length) { act = (act + (e.key === "ArrowDown" ? 1 : -1) + rows.length) % rows.length; place(true); } }
+    else if (e.key === "Enter") { e.preventDefault(); run(act); }
+    else if (e.key === "Escape") { e.preventDefault(); close(true); }
+  });
+  list.addEventListener("mousemove", function (e) { var li = e.target.closest("li"); if (!li) return; var i = rows.map(function (r) { return r.el; }).indexOf(li); if (i > -1 && i !== act) { act = i; place(true); } });
+  list.addEventListener("mousedown", function (e) { e.preventDefault(); });
+  list.addEventListener("click", function (e) { var li = e.target.closest("li"); if (!li) return; run(rows.map(function (r) { return r.el; }).indexOf(li)); });
+  document.addEventListener("pointerdown", function (e) { if (isOpen && !panel.contains(e.target) && !btn.contains(e.target)) close(false); });
+  document.addEventListener("keydown", function (e) {
+    if (!(e.key === "k" || e.key === "K") || !(e.ctrlKey || e.metaKey)) return;
+    var t = e.target, tag = t && t.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (t && t.isContentEditable)) return;
+    e.preventDefault(); open();
+  });
+})();
+</script>
+<!--/PART-->
+
+
+<!--PART n14 | Switch + DrawCheckbox | Settings that <em>respond to a touch.</em> | Press and hold a switch to see the knob stretch. Tick a box and watch it draw.-->
+<style>
+.kit #n14 .card { width: 100%; max-width: 420px; margin: 0 auto; }
+.kit #n14 h3 { margin: 0 0 6px; font: 400 22px/1.2 var(--font-display); }
+.kit #n14 .row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 13px 0; border-top: 1px solid var(--line); font-size: 14.5px; color: var(--ink); }
+.kit #n14 .row:first-of-type { border-top: 0; }
+.kit #n14 .row > span { cursor: pointer; min-width: 0; }
+.kit #n14 .sw { position: relative; flex: none; width: 46px; height: 28px; box-sizing: border-box; padding: 0; border: 0; border-radius: 99px; background: var(--line-hi); cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background-color .25s var(--ease-out); }
+.kit #n14 .sw[aria-checked="true"] { background: var(--ink); }
+.kit #n14 .th { position: absolute; left: 3px; top: 3px; width: 22px; height: 22px; transition: transform .25s var(--ease-out); }
+.kit #n14 .sw[aria-checked="true"] .th { transform: translateX(18px); }
+.kit #n14 .th i { display: block; width: 100%; height: 100%; border-radius: 11px; background: var(--paper-raised); box-shadow: 0 1px 3px rgb(var(--ink-rgb) / .3); transform-origin: left center; transition: transform .2s var(--ease-out); }
+.kit #n14 .sw[aria-checked="true"] .th i { transform-origin: right center; }
+.kit #n14 .sw:active .th i { transform: scaleX(1.3); }
+.kit #n14 .sub { margin: 20px 0 6px; font: 500 11px/1 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.kit #n14 .cks { display: flex; flex-wrap: wrap; gap: 8px 22px; padding-top: 6px; }
+.kit #n14 .ck { position: relative; display: inline-flex; align-items: center; gap: 10px; min-height: 36px; font-size: 14.5px; cursor: pointer; }
+.kit #n14 .ck input { position: absolute; opacity: 0; width: 20px; height: 20px; margin: 0; cursor: pointer; }
+.kit #n14 .bx { position: relative; width: 20px; height: 20px; box-sizing: border-box; flex: none; border: 1.5px solid var(--line-hi); border-radius: 6px; background: var(--paper-raised); transition: background-color .2s var(--ease-out), border-color .2s var(--ease-out); }
+.kit #n14 .ck:hover .bx { border-color: var(--muted); }
+.kit #n14 .ck input:checked + .bx { background: var(--ink); border-color: var(--ink); }
+.kit #n14 .ck input:focus-visible + .bx { outline: 2px solid var(--accent); outline-offset: 2px; }
+.kit #n14 .bx svg { position: absolute; inset: 1px; width: 14px; height: 14px; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset .2s var(--ease-out); }
+.kit #n14 .ck input:checked + .bx svg { stroke-dashoffset: 0; transition: stroke-dashoffset .25s var(--ease-out) .04s; }
+.kit #n14 .bx.go { animation: n14-settle .32s var(--ease-out); }
+@keyframes n14-settle { 0% { transform: scale(1); } 35% { transform: scale(.88); } 70% { transform: scale(1.06); } 100% { transform: scale(1); } }
+html[data-motion="off"] .kit #n14 .th, html[data-motion="off"] .kit #n14 .th i, html[data-motion="off"] .kit #n14 .bx svg, html[data-motion="off"] .kit #n14 .sw { transition: none; }
+html[data-motion="off"] .kit #n14 .bx.go { animation: none; }
+</style>
+<section class="cs" id="n14">
+  <div class="frame"><div class="fbody">
+    <div class="stage"><div class="card">
+      <h3>Notifications</h3>
+      <div class="row"><span id="n14-l1">Email me a weekly summary</span><button class="sw" type="button" role="switch" aria-checked="true" aria-labelledby="n14-l1"><span class="th"><i></i></span></button></div>
+      <div class="row"><span id="n14-l2">Push alerts for new orders</span><button class="sw" type="button" role="switch" aria-checked="true" aria-labelledby="n14-l2"><span class="th"><i></i></span></button></div>
+      <div class="row"><span id="n14-l3">Sounds</span><button class="sw" type="button" role="switch" aria-checked="false" aria-labelledby="n14-l3"><span class="th"><i></i></span></button></div>
+      <div class="row"><span id="n14-l4">Marketing news</span><button class="sw" type="button" role="switch" aria-checked="false" aria-labelledby="n14-l4"><span class="th"><i></i></span></button></div>
+      <p class="sub" id="n14-sub">Send me alerts for:</p>
+      <div class="cks" role="group" aria-labelledby="n14-sub">
+        <label class="ck"><input type="checkbox" checked><span class="bx"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M20 6 9 17l-5-5"/></svg></span>Orders</label>
+        <label class="ck"><input type="checkbox"><span class="bx"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M20 6 9 17l-5-5"/></svg></span>Refunds</label>
+        <label class="ck"><input type="checkbox"><span class="bx"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M20 6 9 17l-5-5"/></svg></span>Low stock</label>
+      </div>
+    </div></div>
+    <p class="note" id="n14-note" aria-live="polite">Changes save as you make them.</p>
+  </div></div>
+</section>
+<script>
+(function () {
+  "use strict";
+  var box = document.getElementById("n14"); if (!box) return;
+  var note = document.getElementById("n14-note");
+  Array.prototype.forEach.call(box.querySelectorAll(".sw"), function (sw) {
+    var lab = document.getElementById(sw.getAttribute("aria-labelledby"));
+    function flip() { var on = sw.getAttribute("aria-checked") !== "true"; sw.setAttribute("aria-checked", on); note.textContent = lab.textContent + ": " + (on ? "on" : "off") + "."; }
+    sw.addEventListener("click", flip);
+    lab.addEventListener("click", function () { flip(); sw.focus(); });
+  });
+  Array.prototype.forEach.call(box.querySelectorAll(".ck input"), function (c) {
+    c.addEventListener("change", function () {
+      var bx = c.nextElementSibling; bx.classList.remove("go"); void bx.offsetWidth;
+      if (c.checked) { bx.classList.add("go"); bx.addEventListener("animationend", function () { bx.classList.remove("go"); }, { once: true }); }
+      note.textContent = c.parentNode.textContent.trim() + " alerts: " + (c.checked ? "on" : "off") + ".";
+    });
+  });
+})();
+</script>
+<!--/PART-->
+
+<!--PART n15 | Split Button | One button, <em>a choice beside it.</em> | Open the arrow and pick how to merge. Then press the main button.-->
+<style>
+.kit #n15 .stage { flex-direction: column; gap: 14px; }
+.kit #n15 .wrap { position: relative; width: max-content; max-width: 100%; }
+.kit #n15 .spl { display: inline-flex; }
+.kit #n15 .main { min-width: 196px; border-radius: 10px 0 0 10px; }
+.kit #n15 .chev { width: 42px; padding: 0; border-radius: 0 10px 10px 0; border-left-color: rgb(255 255 255 / .28); }
+html[data-theme="dark"] .kit #n15 .chev { border-left-color: rgb(0 0 0 / .25); }
+.kit #n15 .chev svg { transition: transform .2s var(--ease-out); }
+.kit #n15 .chev[aria-expanded="true"] svg { transform: rotate(180deg); }
+.kit #n15 .main .lab { display: inline-flex; align-items: center; gap: 8px; }
+.kit #n15 .main svg.sp { width: 15px; height: 15px; fill: none; stroke: #fff; stroke-width: 2.2; stroke-linecap: round; animation: n15-spin .7s linear infinite; }
+.kit #n15 .main svg.tk { width: 16px; height: 16px; fill: none; stroke: var(--accent); stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
+@keyframes n15-spin { to { transform: rotate(360deg); } }
+.kit #n15 .menu { top: calc(100% + 6px); left: 0; width: 290px; max-width: calc(100vw - 64px); padding: 4px; overflow: hidden; }
+.kit #n15 .menu[hidden] { display: none; }
+.kit #n15 .mi { position: relative; }
+.kit #n15 .hl { position: absolute; left: 0; right: 0; top: 0; border-radius: 8px; background: rgb(var(--ink-rgb) / .07); pointer-events: none; opacity: 0; will-change: transform; }
+.kit #n15 .it { position: relative; z-index: 1; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; width: 100%; box-sizing: border-box; padding: 9px 10px; border: 0; border-radius: 8px; background: transparent; text-align: left; font: inherit; cursor: pointer; color: var(--ink); }
+.kit #n15 .it:focus { outline: none; }
+.kit #n15 .it:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.kit #n15 .it strong { display: block; font-weight: 500; font-size: 14px; }
+.kit #n15 .it small { display: block; margin-top: 3px; font-size: 12.5px; line-height: 1.4; color: var(--muted); }
+.kit #n15 .it .i { margin-top: 2px; opacity: 0; }
+.kit #n15 .it[aria-checked="true"] .i { opacity: 1; }
+html[data-motion="off"] .kit #n15 .main svg.sp { animation: none; }
+html[data-motion="off"] .kit #n15 .chev svg { transition: none; }
+</style>
+<section class="cs" id="n15">
+  <div class="frame"><div class="fbody">
+    <div class="stage">
+      <div class="wrap" id="n15-wrap">
+        <div class="spl">
+          <button class="b pri main" type="button" id="n15-main"><span class="lab">Merge pull request</span></button>
+          <button class="b pri chev" type="button" id="n15-chev" aria-haspopup="menu" aria-expanded="false" aria-controls="n15-menu" aria-label="Choose how to merge"><svg class="i" aria-hidden="true"><use href="#i-cd"/></svg></button>
+        </div>
+        <div class="pop menu" id="n15-menu" role="menu" aria-label="Merge method" hidden>
+          <div class="mi" id="n15-mi">
+            <div class="hl" id="n15-hl" aria-hidden="true"></div>
+            <button class="it" type="button" role="menuitemradio" aria-checked="true" data-lab="Merge pull request"><span><strong>Create a merge commit</strong><small>Keeps every commit and adds one merge commit.</small></span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></button>
+            <button class="it" type="button" role="menuitemradio" aria-checked="false" data-lab="Squash and merge"><span><strong>Squash and merge</strong><small>Combines all commits into one on the main branch.</small></span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></button>
+            <button class="it" type="button" role="menuitemradio" aria-checked="false" data-lab="Rebase and merge"><span><strong>Rebase and merge</strong><small>Replays each commit on top of the main branch.</small></span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <p class="note" id="n15-note" aria-live="polite" style="margin:0">Method: create a merge commit. Pull request #482 is ready.</p>
+    </div>
+
+  </div></div>
+</section>
+<script>
+(function () {
+  "use strict";
+  var box = document.getElementById("n15"); if (!box) return;
+  var EASE = "cubic-bezier(.22,1,.36,1)";
+  var spd = function () { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; };
+  var $ = function (id) { return document.getElementById(id); };
+  var wrap = $("n15-wrap"), main = $("n15-main"), chev = $("n15-chev"), menu = $("n15-menu"), hl = $("n15-hl"), note = $("n15-note");
+  var items = Array.prototype.slice.call(menu.querySelectorAll(".it")), isOpen = false, busy = false, anim = null, label = "Merge pull request", cur = 0;
+  function swap(html) { var lab = main.querySelector(".lab"), s = spd(); lab.innerHTML = html; if (s) lab.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 180 * s, easing: EASE }); }
+  function mark(i, animate) {
+    cur = i; var it = items[i], s = spd();
+    hl.style.height = it.offsetHeight + "px";
+    hl.style.transition = animate && s ? "transform " + (.2 * s) + "s " + EASE + ", opacity .15s" : "none";
+    hl.style.opacity = 1; hl.style.transform = "translateY(" + it.offsetTop + "px)";
+  }
+  function open() {
+    if (isOpen || busy) return; isOpen = true; menu.hidden = false; chev.setAttribute("aria-expanded", "true");
+    menu.style.transformOrigin = (chev.offsetLeft + chev.offsetWidth / 2) + "px 0";
+    var sel = items.findIndex(function (b) { return b.getAttribute("aria-checked") === "true"; });
+    mark(sel, false); items[sel].focus();
+    var s = spd(); if (anim) anim.cancel();
+    if (s) anim = menu.animate([{ opacity: 0, transform: "scale(.96)" }, { opacity: 1, transform: "none" }], { duration: 200 * s, easing: EASE });
+  }
+  function close(refocus) {
+    if (!isOpen) return; isOpen = false; chev.setAttribute("aria-expanded", "false"); hl.style.opacity = 0;
+    var s = spd(); if (anim) anim.cancel();
+    if (s) { anim = menu.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "scale(.96)" }], { duration: 140 * s, easing: EASE }); anim.onfinish = function () { if (!isOpen) menu.hidden = true; }; }
+    else menu.hidden = true;
+    if (refocus) chev.focus();
+  }
+  function pick(i) {
+    items.forEach(function (b, n) { b.setAttribute("aria-checked", n === i); });
+    label = items[i].dataset.lab; swap(label);
+    note.textContent = "Method: " + items[i].querySelector("strong").textContent.toLowerCase() + ". Pull request #482 is ready.";
+    close(true);
+  }
+  chev.addEventListener("click", function () { if (isOpen) close(false); else open(); });
+  items.forEach(function (b, i) {
+    b.addEventListener("click", function () { pick(i); });
+    b.addEventListener("mouseenter", function () { if (isOpen) { mark(i, true); } });
+    b.addEventListener("focus", function () { if (isOpen) mark(i, true); });
+    b.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown") { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); items[(i + items.length - 1) % items.length].focus(); }
+      else if (e.key === "Home") { e.preventDefault(); items[0].focus(); }
+      else if (e.key === "End") { e.preventDefault(); items[items.length - 1].focus(); }
+      else if (e.key === "Tab") close(false);
+    });
+  });
+  chev.addEventListener("keydown", function (e) { if (e.key === "ArrowDown" && !isOpen) { e.preventDefault(); open(); } });
+  menu.addEventListener("keydown", function (e) { if (e.key === "Escape") { e.preventDefault(); close(true); } });
+  document.addEventListener("pointerdown", function (e) { if (isOpen && !wrap.contains(e.target)) close(false); });
+  main.addEventListener("click", function () {
+    if (busy) return; close(false); busy = true; main.disabled = true; chev.disabled = true; main.style.opacity = 1; chev.style.opacity = 1;
+    swap('<svg class="sp" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>Merging');
+    var s = spd();
+    setTimeout(function () {
+      swap('<svg class="tk" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M20 6 9 17l-5-5"/></svg>Merged');
+      var p = main.querySelector(".tk path"); p.style.strokeDasharray = 1;
+      if (s) p.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 300 * s, easing: EASE });
+      note.textContent = "Pull request #482 is merged.";
+      setTimeout(function () { swap(label); main.disabled = false; chev.disabled = false; busy = false; note.textContent = "Method: " + items[cur >= 0 ? items.findIndex(function (b) { return b.getAttribute("aria-checked") === "true"; }) : 0].querySelector("strong").textContent.toLowerCase() + ". Pull request #482 is ready."; }, s ? 2400 : 600);
+    }, s ? 1000 : 0);
+  });
+})();
+</script>
+<!--/PART-->
+
+<!--PART n16 | AI Response | An answer that <em>writes itself in.</em> | Watch the answer stream in. Stop it, copy it, or ask for it again.-->
+<style>
+.kit #n16 .chat { width: 100%; max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+.kit #n16 .me { align-self: flex-end; max-width: 85%; padding: 10px 14px; border-radius: 12px 12px 4px 12px; background: var(--paper-sunk); border: 1px solid var(--line); font-size: 14.5px; line-height: 1.45; }
+.kit #n16 .ai { display: flex; gap: 12px; align-items: flex-start; }
+.kit #n16 .av { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid var(--line-hi); border-radius: 50%; color: var(--ink); background: var(--paper-raised); }
+.kit #n16 .body { flex: 1; min-width: 0; }
+.kit #n16 .out { font-size: 15px; line-height: 1.6; color: var(--ink-soft); min-height: 26px; }
+.kit #n16 .out p { margin: 0 0 10px; }
+.kit #n16 .out ol { margin: 0 0 10px; padding-left: 22px; }
+.kit #n16 .out li { margin-bottom: 4px; padding-left: 2px; }
+.kit #n16 .out li::marker { color: var(--muted); }
+.kit #n16 .out code { padding: 2px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--paper-sunk); font: 500 13.5px/1 var(--font-mono); color: var(--ink); white-space: nowrap; }
+.kit #n16 .w { animation: n16-in .3s var(--ease-out) both; }
+@keyframes n16-in { from { opacity: 0; } }
+.kit #n16 .caret { display: inline-block; width: 2px; height: 1.05em; margin-left: 2px; vertical-align: -.15em; background: var(--ink); animation: n16-blink 1s steps(1) infinite; }
+@keyframes n16-blink { 50% { opacity: 0; } }
+.kit #n16 .src { display: inline-flex; vertical-align: baseline; margin-left: 4px; }
+.kit #n16 .ctl { display: grid; margin-top: 8px; }
+.kit #n16 .ctl > div { grid-area: 1 / 1; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; transition: opacity .25s var(--ease-out); }
+.kit #n16 .acts.off, .kit #n16 .stopw.off { opacity: 0; pointer-events: none; }
+.kit #n16 .acts .b .i { color: var(--muted); }
+.kit #n16 .acts .b[aria-pressed="true"] .i { color: #fff; }
+html[data-motion="off"] .kit #n16 .w, html[data-motion="off"] .kit #n16 .caret, html[data-motion="off"] .kit #n16 .ctl > div { animation: none; transition: none; }
+</style>
+<section class="cs" id="n16">
+  <div class="frame"><div class="fbody">
+    <div class="chat">
+      <div class="me">How do I split a bill between four friends?</div>
+      <div class="ai">
+        <div class="av" aria-hidden="true"><svg class="i s"><use href="#i-zap"/></svg></div>
+        <div class="body">
+          <div class="out" id="n16-out" aria-busy="false"></div>
+          <div class="ctl">
+            <div class="stopw off" id="n16-stopw"><button class="b sm" type="button" id="n16-stop"><svg class="i s" aria-hidden="true"><use href="#i-x"/></svg>Stop</button></div>
+            <div class="acts off" id="n16-acts">
+              <button class="b sm q" type="button" id="n16-copy"><svg class="i s" aria-hidden="true"><use href="#i-copy"/></svg><span>Copy</span></button>
+              <button class="b sm q" type="button" id="n16-good" aria-pressed="false"><svg class="i s" aria-hidden="true"><use href="#i-check"/></svg>Good</button>
+              <button class="b sm q" type="button" id="n16-bad" aria-pressed="false"><svg class="i s" aria-hidden="true"><use href="#i-x"/></svg>Not good</button>
+              <button class="b sm q" type="button" id="n16-regen"><svg class="i s" aria-hidden="true"><use href="#i-refresh"/></svg>Regenerate</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="note" id="n16-note" aria-live="polite"></p>
+  </div></div>
+</section>
+<script>
+(function () {
+  "use strict";
+  var box = document.getElementById("n16"); if (!box) return;
+  var spd = function () { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; };
+  var $ = function (id) { return document.getElementById(id); };
+  var out = $("n16-out"), stopw = $("n16-stopw"), acts = $("n16-acts"), copyB = $("n16-copy"), good = $("n16-good"), bad = $("n16-bad"), note = $("n16-note");
+  var BL = [
+    { t: "p", items: ["Add up the whole bill, then divide it by four. Here is the quick way:".split(" ")] },
+    { t: "ol", items: [
+      "Add every cost: food, drinks and the ride home.".split(" "),
+      ["Divide the total by 4. A KSh 13,000 bill becomes", { k: "code", t: "KSh 3,250 each" }, "."].reduce(function (a, x) { return a.concat(typeof x === "string" && x !== "." ? x.split(" ") : [x]); }, []),
+      "Send the money by PocketPay before you leave the table.".split(" ")
+    ] },
+    { t: "p", items: [["If", "one", "person", "ordered", "much", "more,", "pay", "for", "that", "item", "on", "its", "own", "first.", { k: "chip", t: "[1] PocketPay help" }]] }
+  ];
+  var steps = []; BL.forEach(function (b, bi) { b.items.forEach(function (it, ii) { it.forEach(function (tok) { steps.push([bi, ii, tok]); }); }); });
+  var tok = 0, timer = null, caret = null, streaming = false;
+  function add(st, els) {
+    var bi = st[0], ii = st[1], t = st[2], b = BL[bi], el = els[bi];
+    if (!el) { el = els[bi] = document.createElement(b.t); out.appendChild(el); el.items = []; }
+    var tgt = el;
+    if (b.t === "ol") { tgt = el.items[ii]; if (!tgt) { tgt = el.items[ii] = document.createElement("li"); el.appendChild(tgt); } }
+    var first = !tgt.firstChild; if (!first && !(typeof t === "string" && /^[.,]$/.test(t))) tgt.appendChild(document.createTextNode(" "));
+    var n;
+    if (typeof t === "string") { n = document.createElement("span"); n.className = "w"; n.textContent = t; }
+    else if (t.k === "code") { n = document.createElement("code"); n.className = "w"; n.textContent = t.t; }
+    else { n = document.createElement("span"); n.className = "tag src w"; n.textContent = t.t; }
+    tgt.appendChild(n); if (caret) tgt.appendChild(caret);
+  }
+  function setUI(on) {
+    streaming = on; out.setAttribute("aria-busy", on); stopw.classList.toggle("off", !on); acts.classList.toggle("off", on);
+    stopw.inert = !on; acts.inert = on;
+  }
+  function done(stopped) {
+    clearTimeout(timer); if (caret) { caret.remove(); caret = null; } setUI(false);
+    note.textContent = stopped ? "Stopped. Here is what was written." : "Answer ready.";
+  }
+  function stream() {
+    tok++; var my = tok, s = spd(), i = 0, els = []; clearTimeout(timer);
+    out.innerHTML = ""; good.setAttribute("aria-pressed", "false"); bad.setAttribute("aria-pressed", "false"); note.textContent = "";
+    if (!s) { steps.forEach(function (st) { add(st, els); }); setUI(false); note.textContent = "Answer ready."; return; }
+    caret = document.createElement("span"); caret.className = "caret"; caret.setAttribute("aria-hidden", "true"); setUI(true);
+    (function next() {
+      if (my !== tok) return;
+      if (i >= steps.length) { done(false); return; }
+      add(steps[i++], els); timer = setTimeout(next, 35 * s);
+    })();
+  }
+  $("n16-stop").addEventListener("click", function () { tok++; done(true); });
+  $("n16-regen").addEventListener("click", stream);
+  function toggle(a, b) { var on = a.getAttribute("aria-pressed") !== "true"; a.setAttribute("aria-pressed", on); b.setAttribute("aria-pressed", "false"); note.textContent = on ? "Thanks for the feedback." : ""; }
+  good.addEventListener("click", function () { toggle(good, bad); });
+  bad.addEventListener("click", function () { toggle(bad, good); });
+  var ct = null;
+  copyB.addEventListener("click", function () {
+    var text = out.innerText;
+    try { navigator.clipboard.writeText(text).catch(function () {}); } catch (e) {}
+    var sp = copyB.querySelector("span"); sp.textContent = "Copied"; clearTimeout(ct); ct = setTimeout(function () { sp.textContent = "Copy"; }, 1500);
+  });
+  stream();
+})();
+</script>
+<!--/PART-->

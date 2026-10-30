@@ -1,0 +1,52 @@
+/* Styles for SVGs drawn by tools/diagram_svg.py. Needs the tokens from components/tokens.css. */
+:root { --dg-canvas: var(--canvas); --font-diagram: 'Inter', system-ui, sans-serif; --font-diagram-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace; }
+html[data-theme="dark"] { --dg-canvas: #101317; }
+.dgwrap{overflow-x:auto;background:var(--dg-canvas);-webkit-overflow-scrolling:touch}
+.dgwrap svg{display:block;width:100%;height:auto}
+svg.dg .dg-bg{fill:var(--dg-canvas)}
+svg.dg .dg-dot{fill:rgb(var(--ink-rgb) / .2)}
+svg.dg .dg-nm{fill:var(--dg-canvas)}
+svg.dg .dg-nb{fill:var(--paper-raised);stroke:var(--ink)}
+svg.dg .f .dg-nb{stroke:var(--accent);fill:color-mix(in srgb,var(--accent) 8%,var(--paper-raised))}
+svg.dg .e .dg-nb{stroke:var(--muted);stroke-dasharray:4 3;fill:color-mix(in srgb,var(--ink) 5%,var(--paper-raised))}
+svg.dg .dg-name{font:600 14px var(--font-diagram);fill:var(--ink)}
+svg.dg .dg-sub{font:400 10.5px var(--font-diagram-mono);fill:var(--muted)}
+svg.dg .dg-tg{stroke:var(--line-hi)}
+svg.dg .dg-tt{font:500 8px var(--font-diagram-mono);letter-spacing:.14em;fill:var(--muted)}
+svg.dg .f .dg-tt{fill:var(--accent-text)}
+svg.dg .dg-c{stroke:var(--muted);stroke-width:1.2}
+svg.dg .dg-c.h{stroke:var(--accent);stroke-width:1.6}
+svg.dg .dg-c.d{stroke-dasharray:5 4}
+svg.dg .dg-mk{fill:var(--muted)}
+svg.dg .dg-mk.h{fill:var(--accent)}
+svg.dg .dg-l rect,svg.dg .dg-zm{fill:var(--dg-canvas)}
+svg.dg .dg-l text{font:500 9.5px var(--font-diagram-mono);letter-spacing:.06em;fill:var(--muted)}
+svg.dg .dg-z{stroke:var(--line-hi);fill:color-mix(in srgb,var(--ink) 3.5%,var(--dg-canvas))}
+svg.dg .dg-plate{fill:var(--paper-raised);stroke:var(--line)}
+svg.dg .dg-z.f{stroke:rgb(var(--accent-rgb) / .6)}
+svg.dg .dg-zl{font:500 9.5px var(--font-diagram-mono);letter-spacing:.14em;fill:var(--muted)}
+svg.dg .dg-zl.big{font-size:10px;fill:var(--ink-soft)}
+svg.dg .dg-zl.acc{fill:var(--accent-text)}
+svg.dg .dg-chip rect{fill:var(--paper-raised);stroke:var(--line-hi);stroke-width:1}
+svg.dg .dg-chip text{font:500 11px var(--font-diagram-mono);fill:var(--ink)}
+svg.dg .dg-chip.f rect{stroke:var(--accent);fill:color-mix(in srgb,var(--accent) 8%,var(--paper-raised))}
+svg.dg .dg-chip.k rect{stroke:var(--ink)}
+svg.dg .dg-chip.e rect{stroke:var(--muted);stroke-dasharray:4 3}
+svg.dg .dg-life{stroke:var(--line-hi)}
+svg.dg .dg-band{stroke:rgb(var(--accent-rgb) / .55)}
+svg.dg .dg-start{fill:var(--ink)}
+svg.dg .dg-hd{stroke:var(--line-hi)}
+svg.dg .dg-fld{font:400 12px var(--font-diagram-mono);fill:var(--ink-soft)}
+svg.dg .dg-ty{font:500 10px var(--font-diagram-mono);letter-spacing:.06em;fill:var(--muted)}
+svg.dg .dg-grid{stroke:var(--line)}
+svg.dg .dg-day,svg.dg .dg-row{font:500 10.5px var(--font-diagram-mono);fill:var(--muted)}
+svg.dg .dg-row{font:500 12px var(--font-diagram);fill:var(--ink-soft)}
+svg.dg .dg-gate{stroke:rgb(var(--accent-rgb) / .5)}
+svg.dg .dg-gt rect{fill:var(--paper-raised);stroke:var(--accent)}
+svg.dg .dg-gt text{font:500 9px var(--font-diagram-mono);fill:var(--accent-text)}
+svg.dg .dg-bar{fill:rgb(var(--ink-rgb) / .32)}
+svg.dg .dg-bar.c{fill:var(--accent)}
+svg.dg .dg-bar.dim{fill:rgb(var(--ink-rgb) / .12)}
+svg.dg .dg-cab{fill:var(--paper-sunk);stroke:var(--ink)}
+svg.dg .dg-handle{fill:var(--dim)}
+svg.dg .dg-note{font:italic 380 13px var(--font-display);fill:var(--muted)}

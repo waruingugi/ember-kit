@@ -1,0 +1,98 @@
+/* The design tokens. Paste this :root block at the top of every page's <style>.
+   Light is the default. The night theme is the html[data-theme="dark"] block at the end.
+   Fonts: one Google Fonts link (see components/README.md). */
+:root {
+  /* paper and ink */
+  --paper: #eff2f1;        /* page background */
+  --paper-raised: #f8faf9; /* cards and panels */
+  --paper-sunk: #e5e9e8;   /* wells, hover fills, the columns note pane */
+  --canvas: #f1f3f2;       /* behind dot-grid diagrams */
+  --ink: #15181b;
+  --ink-rgb: 21 24 27;
+  --ink-soft: #363c41;
+  --muted: #5b6368;
+  --dim: #8e969a;
+  --line: rgba(20, 23, 26, .12);
+  --line-hi: rgba(20, 23, 26, .26);
+
+  /* the one accent */
+  --accent: #e14a0e;       /* big text, marks, the one focal thing */
+  --accent-text: #b33a0a;  /* small orange text: links, eyebrow numbers, labels */
+  --accent-rgb: 225 74 14;
+  --accent-soft: rgba(225, 74, 14, .08);
+
+  /* what each colour means, the same everywhere */
+  --sys-frontend: #0891b2;
+  --sys-backend: #047857;
+  --sys-database: #6d28d9;
+  --sys-security: #be123c;
+  --sys-bus: #b45309;
+  --sys-external: #475569;
+
+  /* the dark plate: code, terminals and the end card only */
+  --plate: #0f1216;
+  --plate-raised: #161a1f;
+  --plate-line: rgba(255, 255, 255, .12);
+  --plate-text: #dfe5ea;
+  --plate-dim: #79848d;
+  --syn-k: #ff9b6b; --syn-s: #a8dcb6; --syn-f: #f2d58c; --syn-t: #8fc8ff;
+  --syn-n: #e9b0ff; --syn-c: #6c7882; --syn-p: #c9d3db;
+  --diff-add: #3fb950; --diff-del: #f85149; --diff-mod: #d29922; --diff-ren: #58a6ff;
+
+  /* type */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-grot: 'Space Grotesk', 'Inter', -apple-system, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-num: 'Antonio', 'Arial Narrow', sans-serif;
+
+  /* shape and motion */
+  --radius: 14px;
+  --shadow-sm: 0 1px 0 rgba(20, 23, 26, .03), 0 1px 3px rgba(20, 23, 26, .06);
+  --shadow-lg: 0 1px 0 rgba(20, 23, 26, .03), 0 30px 60px -30px rgba(20, 23, 26, .28);
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+
+  /* Hairline figures take their colours from the page */
+  --hairline-plate: var(--paper-raised);
+  --hairline-hi: var(--accent);
+  --hairline-edge: var(--ink);
+  --hairline-mid: var(--muted);
+  --hairline-lo: rgba(21, 24, 27, .2);
+  --hairline-stroke: .9;
+
+  color-scheme: light;
+}
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 17px/1.65 var(--font-body); -webkit-font-smoothing: antialiased; }
+::selection { background: rgb(var(--accent-rgb) / .2); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+
+/* Night theme: the reader's choice, saved with the motion level. Same jobs, darker paper, brighter orange. */
+html[data-theme="dark"] {
+  --paper: #0d1013;
+  --paper-raised: #14181c;
+  --paper-sunk: #090b0d;
+  --canvas: #101317;
+  --ink: #ebeff1;
+  --ink-rgb: 235 239 241;
+  --ink-soft: #c3cbd1;
+  --muted: #8f999f;
+  --dim: #5f686e;
+  --line: rgb(255 255 255 / .09);
+  --line-hi: rgb(255 255 255 / .2);
+  --shadow-sm: 0 1px 0 rgb(255 255 255 / .03) inset, 0 1px 3px rgb(0 0 0 / .4);
+  --shadow-lg: 0 1px 0 rgb(255 255 255 / .04) inset, 0 30px 60px -30px rgb(0 0 0 / .8);
+  --accent: #ff6a2b;
+  --accent-text: #ff8d5e;
+  --accent-rgb: 255 106 43;
+  --plate: #07090b;
+  --plate-raised: #0e1114;
+  --sys-frontend: #22b8d8;
+  --sys-backend: #2bb98a;
+  --sys-database: #9f7aea;
+  --sys-security: #f0577a;
+  --sys-bus: #e8923a;
+  --sys-external: #8a98ab;
+  --hairline-lo: rgba(235, 239, 241, .2);
+  color-scheme: dark;
+}

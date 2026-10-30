@@ -1,0 +1,193 @@
+<!--PART n01 | Booking calendar | Pick your nights, <em>see the price as you go.</em> | Click a first night, then point at a last day to preview the stay. Booked nights are crossed out and block a stay.-->
+<style>
+.kit #n01 .bk { max-width: 760px; margin: 0 auto; }
+.kit #n01 .bk-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+.kit #n01 .bk-t { margin: 0; font: 400 22px/1.2 var(--font-display); color: var(--ink); }
+.kit #n01 .bk-s { margin: 4px 0 0; font-size: 14px; color: var(--muted); }
+.kit #n01 .bk-nav { display: flex; gap: 6px; flex: none; }
+.kit #n01 .bk-vp { overflow: hidden; }
+.kit #n01 .bk-mos { display: grid; grid-template-columns: repeat(var(--n, 2), minmax(0, 1fr)); gap: 40px; }
+.kit #n01 .mo-t { margin: 0 0 10px; text-align: center; font: 500 15px/1.3 var(--font-body); color: var(--ink); }
+.kit #n01 .dow, .kit #n01 .days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.kit #n01 .dow span { padding: 4px 0 8px; text-align: center; font: 500 10.5px/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.kit #n01 .days { row-gap: 2px; }
+.kit #n01 .d { position: relative; display: grid; place-items: center; height: 44px; padding: 0; border: 0; background: none; font: 400 14.5px/1 var(--font-body); color: var(--ink); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.kit #n01 .d::before { content: ""; position: absolute; inset: 3px 0; background: transparent; }
+.kit #n01 .d span { position: relative; z-index: 1; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; font-variant-numeric: tabular-nums; transition: background-color .15s var(--ease-out), color .15s var(--ease-out), box-shadow .15s var(--ease-out); }
+.kit #n01 .d:hover span { background: rgb(var(--ink-rgb) / .07); }
+.kit #n01 .d:focus-visible { outline: none; }
+.kit #n01 .d:focus-visible span { outline: 2px solid var(--accent); outline-offset: 1px; }
+.kit #n01 .d:disabled { color: var(--dim); cursor: default; }
+.kit #n01 .d:disabled span { background: none; }
+.kit #n01 .d[data-bk] { color: var(--dim); }
+.kit #n01 .d[data-bk] span { text-decoration: line-through; text-decoration-color: var(--dim); }
+.kit #n01 .d.td span::after { content: ""; position: absolute; bottom: 5px; left: 50%; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: currentColor; }
+/* the stay: one unbroken band from the first night to the last day, rounded at week edges */
+.kit #n01 .d.in::before { background: rgb(var(--ink-rgb) / .07); }
+.kit #n01 .d.in.pv::before { background: rgb(var(--ink-rgb) / .04); }
+.kit #n01 .d.in.s::before { left: 50%; }
+.kit #n01 .d.in.e::before { right: 50%; }
+.kit #n01 .d.in.wl:not(.s)::before { left: 2px; border-radius: 19px 0 0 19px; }
+.kit #n01 .d.in.wr:not(.e)::before { right: 2px; border-radius: 0 19px 19px 0; }
+.kit #n01 .d.in.wl.wr:not(.s):not(.e)::before { border-radius: 19px; }
+.kit #n01 .d.s span, .kit #n01 .d.e span { background: var(--ink); color: var(--paper); }
+.kit #n01 .d.e.pv span { background: var(--paper-raised); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
+.kit #n01 .d.no span { box-shadow: inset 0 0 0 1.5px var(--accent-text); background: none; color: var(--accent-text); }
+.kit #n01 .bk-foot { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px 24px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+.kit #n01 .bk-fields { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line-hi); border-radius: 12px; background: var(--paper-raised); max-width: 360px; }
+.kit #n01 .bf { padding: 9px 14px; min-width: 0; }
+.kit #n01 .bf + .bf { border-left: 1px solid var(--line-hi); }
+.kit #n01 .bf .label { display: block; margin-bottom: 3px; }
+.kit #n01 .bf b { display: block; font-weight: 500; font-size: 14.5px; color: var(--ink); white-space: nowrap; }
+.kit #n01 .bf b.ph { color: var(--muted); font-weight: 400; }
+.kit #n01 .bk-tot { display: flex; align-items: center; gap: 14px; justify-content: flex-end; flex-wrap: wrap; }
+.kit #n01 .tot { text-align: right; }
+.kit #n01 .tot .v { display: block; font: 500 26px/1 var(--font-num); font-variant-numeric: tabular-nums; color: var(--ink); }
+.kit #n01 .tot .v small { margin-right: 4px; font: 500 12px/1 var(--font-body); color: var(--muted); }
+.kit #n01 .tot .w { display: block; margin-top: 4px; font-size: 13px; color: var(--muted); }
+@media (max-width: 640px) { .kit #n01 .bk-foot { grid-template-columns: 1fr; } .kit #n01 .bk-tot { justify-content: space-between; } .kit #n01 .bk-fields { max-width: none; } }
+</style>
+<section class="cs" id="n01">
+  <div class="frame"><div class="fbody">
+    <div class="bk">
+      <div class="bk-head">
+        <div><p class="bk-t">Seaview flat, Diani</p><p class="bk-s">KSh 9,000 a night · stays of 2 nights or more</p></div>
+        <div class="bk-nav">
+          <button class="ib bx" type="button" id="n01-prev" aria-label="Previous month"><svg class="i" aria-hidden="true"><use href="#i-cl"/></svg></button>
+          <button class="ib bx" type="button" id="n01-next" aria-label="Next month"><svg class="i" aria-hidden="true"><use href="#i-cr"/></svg></button>
+        </div>
+      </div>
+      <div class="bk-vp"><div class="bk-mos" id="n01-mos"></div></div>
+      <div class="bk-foot">
+        <div class="bk-fields">
+          <div class="bf"><span class="label">Check-in</span><b id="n01-ci">Add date</b></div>
+          <div class="bf"><span class="label">Check-out</span><b id="n01-co">Add date</b></div>
+        </div>
+        <div class="bk-tot">
+          <div class="tot"><span class="v" id="n01-v"></span><span class="w" id="n01-w"></span></div>
+          <button class="b q sm" type="button" id="n01-clr">Clear</button>
+          <button class="b pri" type="button" id="n01-go">Reserve</button>
+        </div>
+      </div>
+    </div>
+    <p class="note" id="n01-note" aria-live="polite">Arrow keys move the day. Page Up and Page Down change the month.</p>
+  </div></div>
+</section>
+<script>
+(function () {
+  "use strict";
+  var box = document.getElementById("n01"); if (!box) return;
+  var $ = function (id) { return document.getElementById(id); };
+  var spd = function () { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; };
+  var EASE = "cubic-bezier(.22,1,.36,1)", DAY = 864e5, RATE = 9000, MIN = 2;
+  var MS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  var MSS = MS.map(function (m) { return m.slice(0, 3); }), DS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  var T = function (y, m, d) { return Date.UTC(y, m, d); };
+  var TODAY = T(2026, 9, 29), BOOKED = {};
+  [[10, 5], [10, 6], [10, 7], [10, 14], [10, 15], [10, 21], [10, 22], [11, 12], [11, 13], [11, 24], [11, 25], [11, 26], [11, 31]].forEach(function (p) { BOOKED[T(2026, p[0], p[1])] = 1; });
+  var fmt = function (x) { var d = new Date(x); return DS[d.getUTCDay()] + " " + d.getUTCDate() + " " + MSS[d.getUTCMonth()]; };
+  var mos = $("n01-mos"), prev = $("n01-prev"), next = $("n01-next"), note = $("n01-note");
+  var view = { y: 2026, m: 10 }, start = T(2026, 10, 26), end = T(2026, 10, 29), hover = null, focusT = start, shown = 0;
+  var say = function (t) { note.textContent = t; };
+  /* the last day a stay from `a` can end on: the morning of the next booked night */
+  function limit(a) { for (var x = a + DAY, i = 0; i < 400; i++, x += DAY) if (BOOKED[x]) return x; return Infinity; }
+  function count() { return box.clientWidth >= 660 ? 2 : 1; }
+  function render(dir) {
+    var n = count(), html = "";
+    shown = n; mos.style.setProperty("--n", n);
+    for (var k = 0; k < n; k++) {
+      var y = view.y, m = view.m + k; if (m > 11) { m -= 12; y++; }
+      var first = T(y, m, 1), lead = (new Date(first).getUTCDay() + 6) % 7, dim = new Date(T(y, m + 1, 0)).getUTCDate();
+      html += '<div class="mo"><p class="mo-t">' + MS[m] + " " + y + '</p><div class="dow" aria-hidden="true"><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span></div><div class="days" role="group" aria-label="' + MS[m] + " " + y + '">';
+      for (var i = 0; i < lead; i++) html += "<i></i>";
+      for (var d = 1; d <= dim; d++) {
+        var x = T(y, m, d), dow = (lead + d - 1) % 7;
+        html += '<button type="button" tabindex="-1" class="d' + (dow === 0 || d === 1 ? " wl" : "") + (dow === 6 || d === dim ? " wr" : "") + (x === TODAY ? " td" : "") + '" data-t="' + x + '"' +
+          (x < TODAY ? " disabled" : "") + (BOOKED[x] ? " data-bk" : "") + ' aria-label="' + fmt(x) + (BOOKED[x] ? ", booked" : "") + (x === TODAY ? ", today" : "") + '"><span>' + d + "</span></button>";
+      }
+      html += "</div></div>";
+    }
+    mos.innerHTML = html;
+    prev.disabled = view.y === 2026 && view.m <= 9;
+    paint();
+    var f = cell(focusT) || mos.querySelector(".d:not(:disabled)"); if (f) f.tabIndex = 0;
+    var s = spd();
+    if (dir && s) mos.animate([{ opacity: 0, transform: "translateX(" + dir * 28 * s + "px)" }, { opacity: 1, transform: "none" }], { duration: s < 1 ? 220 : 340, easing: EASE });
+  }
+  function cell(x) { return mos.querySelector('.d[data-t="' + x + '"]'); }
+  function paint() {
+    var b = end || (hover && hover > start ? Math.min(hover, limit(start)) : null), pv = !end && !!b;
+    [].forEach.call(mos.querySelectorAll(".d"), function (el) {
+      var x = +el.dataset.t, inr = !!b && x >= start && x <= b;
+      el.classList.toggle("s", !!start && x === start);
+      el.classList.toggle("e", !!b && x === b && b > start);
+      el.classList.toggle("in", inr && b > start);
+      el.classList.toggle("pv", pv);
+      el.setAttribute("aria-pressed", String(x === start || x === end));
+    });
+    var ci = $("n01-ci"), co = $("n01-co"), v = $("n01-v"), w = $("n01-w"), nights = b ? Math.round((b - start) / DAY) : 0;
+    ci.textContent = start ? fmt(start) : "Add date"; ci.classList.toggle("ph", !start);
+    co.textContent = b ? fmt(b) : "Add date"; co.classList.toggle("ph", !b || pv);
+    v.innerHTML = nights ? "<small>KSh</small>" + (nights * RATE).toLocaleString("en-US") : "<small>KSh</small>0";
+    w.textContent = nights ? nights + (nights === 1 ? " night" : " nights") + (pv ? " · preview" : "") : (start ? "Pick a check-out day" : "Pick your first night");
+    $("n01-go").disabled = !end;
+  }
+  function pop(x) {
+    var el = cell(x), s = spd(); if (!el || !s) return;
+    el.firstChild.animate([{ transform: "scale(.7)", opacity: .3 }, { transform: "none", opacity: 1 }], { duration: 220 * (s < 1 ? .7 : 1), easing: EASE });
+  }
+  function band() {
+    var s = spd(); if (!s) return;
+    var els = [].slice.call(mos.querySelectorAll(".d.in"));
+    els.forEach(function (el, i) {
+      try { el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260, delay: Math.min(i * 16, 240) * s, easing: EASE, fill: "backwards", pseudoElement: "::before" }); } catch (e) {}
+    });
+  }
+  function nope(x, t) {
+    say(t); var el = cell(x); if (!el) return;
+    el.classList.add("no"); setTimeout(function () { el.classList.remove("no"); }, 900);
+    if (spd()) el.firstChild.animate([{ transform: "translateX(0)" }, { transform: "translateX(-3px)" }, { transform: "translateX(3px)" }, { transform: "none" }], { duration: 260, easing: EASE });
+  }
+  function pick(x) {
+    focusT = x;
+    if (!start || end || x <= start) {
+      if (BOOKED[x]) return nope(x, "The night of " + fmt(x) + " is booked. Pick another first night.");
+      start = x; end = null; hover = null; paint(); pop(x);
+      return say("Check-in " + fmt(x) + ". Now pick a check-out day.");
+    }
+    if (x > limit(start)) return nope(x, "A booked night is in the way. Check out on " + fmt(limit(start)) + " or before.");
+    if ((x - start) / DAY < MIN) return nope(x, "Stays are 2 nights or more.");
+    end = x; hover = null; paint(); pop(x); band();
+    var n = Math.round((end - start) / DAY);
+    say(n + " nights, " + fmt(start) + " to " + fmt(end) + ". KSh " + (n * RATE).toLocaleString("en-US") + " in all.");
+  }
+  function go(dir) { view.m += dir; if (view.m > 11) { view.m = 0; view.y++; } if (view.m < 0) { view.m = 11; view.y--; } render(dir); }
+  mos.addEventListener("click", function (e) { var el = e.target.closest(".d"); if (el && !el.disabled) pick(+el.dataset.t); });
+  function peek(e) { var el = e.target.closest && e.target.closest(".d"); if (!el || !start || end) return; var x = +el.dataset.t; if (x !== hover) { hover = x; paint(); } }
+  mos.addEventListener("mouseover", peek);
+  mos.addEventListener("focusin", peek);
+  mos.addEventListener("mouseleave", function () { if (hover !== null && !end) { hover = null; paint(); } });
+  mos.addEventListener("keydown", function (e) {
+    var el = e.target.closest(".d"); if (!el) return;
+    var x = +el.dataset.t, d = new Date(x), to = null;
+    if (e.key === "ArrowLeft") to = x - DAY; else if (e.key === "ArrowRight") to = x + DAY;
+    else if (e.key === "ArrowUp") to = x - 7 * DAY; else if (e.key === "ArrowDown") to = x + 7 * DAY;
+    else if (e.key === "Home") to = x - ((d.getUTCDay() + 6) % 7) * DAY; else if (e.key === "End") to = x + (6 - (d.getUTCDay() + 6) % 7) * DAY;
+    else if (e.key === "PageUp" || e.key === "PageDown") { e.preventDefault(); var k = e.key === "PageUp" ? -1 : 1; if (k < 0 && prev.disabled) return; focusT = T(d.getUTCFullYear(), d.getUTCMonth() + k, Math.min(d.getUTCDate(), 28)); go(k); var c = cell(focusT); if (c) c.focus(); return; }
+    else return;
+    e.preventDefault(); if (to < TODAY) return;
+    var nd = new Date(to), first = T(view.y, view.m, 1), last = T(view.y, view.m + shown, 0);
+    focusT = to;
+    if (to < first) go(-1); else if (to > last) go(1);
+    var c2 = cell(to); if (c2) { [].forEach.call(mos.querySelectorAll(".d"), function (b) { b.tabIndex = -1; }); c2.tabIndex = 0; c2.focus(); }
+  });
+  prev.addEventListener("click", function () { go(-1); });
+  next.addEventListener("click", function () { go(1); });
+  $("n01-clr").addEventListener("click", function () { start = end = hover = null; paint(); say("Cleared. Pick your first night."); });
+  $("n01-go").addEventListener("click", function () { say("Held for 10 minutes: " + fmt(start) + " to " + fmt(end) + ". Nothing is charged yet."); });
+  if (window.ResizeObserver) new ResizeObserver(function () { if (count() !== shown) render(0); }).observe(box);
+  render(0);
+})();
+</script>
+<!--/PART-->
+
