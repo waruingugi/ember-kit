@@ -16,7 +16,8 @@ ink, one burnt-orange accent, five fonts, slow motion and plain words.
 - **85 working parts.** Charts, dates, tables, forms, steppers, toasts,
   cards, backgrounds and more, each in plain HTML, CSS and JavaScript, with
   no build step. All of them are on one page:
-  `components/showcase/index.html`.
+  `components/showcase/index.html`, also live at
+  [waruingugi.github.io/ember-kit](https://waruingugi.github.io/ember-kit/).
 - **17 pattern files.** Exploded layers, story timelines, state machines,
   data models and more. Each one says what it is, why it works, how it is
   built, and gives a prompt to rebuild it.
@@ -60,7 +61,8 @@ The full rules are in `DESIGN.md`.
    cp ~/.claude/design/claude/rules/design.md ~/.claude/rules/design.md
    ```
 
-3. See it. Open the showcase in a browser:
+3. See it. Visit [the live showcase](https://waruingugi.github.io/ember-kit/),
+   or open your own copy in a browser:
 
    ```bash
    open ~/.claude/design/components/showcase/index.html     # macOS
