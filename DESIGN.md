@@ -241,6 +241,7 @@ Bugs hit while building pages in this style. Check for them.
 - **Padding left out of a height glide.** If a box has padding and only its height animates, it jumps at the start or snaps at the end. Use `box-sizing: border-box` and animate the padding with the height.
 - **Fixed heights on lists.** A `min-height` on a list's box stops its card from shrinking when rows leave. Let the list set the height.
 - **Side slides push the page sideways on phones.** A card that slides in from the side can make the page scroll sideways. Give its parent `overflow-x: clip`.
+- **Hand-built steps.** A list of steps drawn with page CSS (a grey line, circles coloured by who does each step) is not the kit's. Steps with a state use the timeline (part 24), and a form in steps uses the stepper (part 10): the line fills orange up to the step in progress, done steps get a filled orange circle with a tick, and the running step pulses a ring. Orange means progress only, never whose step it is.
 - **Archify**: endpoints use side centres; `via` points must keep segments perpendicular; self-messages are not supported in sequences.
 
 ## Keeping it up to date

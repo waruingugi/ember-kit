@@ -955,6 +955,9 @@ details { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px
 .kit .chk:hover { border-color: var(--muted); }
 .kit .chk:checked { border-color: var(--ink); background-color: var(--ink); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E"); }
 .kit .chk:indeterminate { border-color: var(--ink); background-color: var(--ink); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='M7 12h10'/%3E%3C/svg%3E"); }
+/* At night the box is near-white ink, so the tick turns dark paper to stay visible. */
+html[data-theme="dark"] .kit .chk:checked { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230d1013' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E"); }
+html[data-theme="dark"] .kit .chk:indeterminate { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230d1013' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='M7 12h10'/%3E%3C/svg%3E"); }
 .kit .chk:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .kit .lk { padding: 0; border: 0; background: none; font: inherit; color: var(--accent-text); cursor: pointer; text-decoration: underline; text-decoration-color: rgb(var(--accent-rgb) / .35); text-underline-offset: 3px; }
 .kit .lk:hover { text-decoration-color: currentColor; }
@@ -2212,6 +2215,7 @@ html[data-motion="off"] .kit #n11 .go svg.sp { animation: none; }
 .kit #n14 .ck input:checked + .bx { background: var(--ink); border-color: var(--ink); }
 .kit #n14 .ck input:focus-visible + .bx { outline: 2px solid var(--accent); outline-offset: 2px; }
 .kit #n14 .bx svg { position: absolute; inset: 1px; width: 14px; height: 14px; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset .2s var(--ease-out); }
+html[data-theme="dark"] .kit #n14 .bx svg { stroke: var(--paper); }
 .kit #n14 .ck input:checked + .bx svg { stroke-dashoffset: 0; transition: stroke-dashoffset .25s var(--ease-out) .04s; }
 .kit #n14 .bx.go { animation: n14-settle .32s var(--ease-out); }
 @keyframes n14-settle { 0% { transform: scale(1); } 35% { transform: scale(.88); } 70% { transform: scale(1.06); } 100% { transform: scale(1); } }
