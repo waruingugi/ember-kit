@@ -2,6 +2,8 @@
 
 Newest first. One line per change, with the date.
 
+- 2026-11-02: At night a ticked checkbox showed as a plain light square, because its white tick sat on the near-white ink box. The tick, and the dash for "some picked", now turn dark paper at night (`.chk` in the table, columns menu and tiles, and part `n14`). Day is unchanged. Showcase and `components/parts/base.css` (rebuilt) updated; checked in Chromium at 1440 px, night, and `singles.mjs` passes for c15, c16, n14 and n20.
+
 - 2026-11-02: The showcase is now a web page, at waruingugi.github.io/ember-kit. `.github/workflows/pages.yml` publishes `components/showcase/` to GitHub Pages as it is, with no build step, each time the showcase changes on `main`. The README links to it.
 - 2026-11-02: New trap in `DESIGN.md`: steps are never hand-built. The owner saw a page with a grey line and orange circles that meant "whose step", where the kit's timeline (part 24) was the right part. Steps with a state use part 24, and a form in steps uses part 10. Orange means progress only.
 - 2026-11-02: Code tabs are now the owner's mix: A's editor tab (a plate sheet joined to the code, no colour) that glides between tabs like C, on the snappy spring. Transform only: two ends slide and the middle stretches. Replaces the coloured top edge (D) from earlier today. Classes are `tab-sheet` and `ts-*`, since `.sheet` is the side sheet. Showcase section 19, `components/parts/` (rebuilt) and `patterns/code-blocks.md` updated; checked in Chromium at 1440 px, light and night, no console errors.
