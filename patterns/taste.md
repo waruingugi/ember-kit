@@ -15,7 +15,7 @@ The owner ran a **Taste Lab**: each common part was built in four to six version
 - Every pick, with the owner's own words, is in `notes/choices.md` (rows marked "Taste Lab r1" and "Taste Lab r2").
 - The full taste notes are in `notes/owner-likes.md`.
 
-The 20 winners are house parts `n29` to `n48` in `components/showcase/index.html` and `components/parts/`. Every version from both rounds can be rebuilt from `tools/taste-lab/`.
+The 20 winners are house parts `n29` to `n48`, and the three other kept tooltips are `n49` to `n51`, in `components/showcase/index.html` and `components/parts/`. Every version from both rounds can be rebuilt from `tools/taste-lab/`.
 
 ## 3. The five leanings
 
@@ -44,7 +44,7 @@ Find the job, use the part. When an older part does the same job, the Taste Lab 
 | Pick one of many by typing | `n09` combobox (unchanged) | any new select | "Stick with it" |
 | Turn settings on and off | `n31` spring switches | `n14` | Picked B |
 | Fill a short form in a window | `n39` modal that settles | a plain fade | Picked B |
-| See details at the side of a page | `n41` side sheet whose lines arrive | a plain sheet | Picked A, with the extra motion asked for in round 1 |
+| See details at the side of a page | `n41` side sheet that glides in | a plain sheet | Picked A; on 2026-11-02 the owner dropped the lines arriving in turn and the spring, for one smooth glide each way |
 | Choose one of a few (delivery, plan) | `n43` cards, a springing frame, a box that explains the pick | radio list, segmented pill | Asked for a mix of B, C and D, then picked it |
 | Choose an amount | `n44` slider with marks and a counting number | a plain slider | Picked C |
 | Add their own tags | `n45` tags that suggest as you type | plain tags | Kept C |
@@ -68,7 +68,7 @@ Keeping several versions means "use the one that fits the page". The owner left 
 | Part | Kept | Use |
 |---|---|---|
 | Tabs | A to D | **A** grey track for settings and forms. **B** springy underline for page sections. **C** gliding pill for two to four big views. **D** stretching marker (`n17`) for a showcase or a lively page. |
-| Tooltips | A to D | **A** wait and fade for single icons. **B** drop in from its side near the edge of the screen. **C** fast, with the key, for keyboard power users. **D** (`n34`) for a row of buttons. |
+| Tooltips | A to D | **A** wait and fade for single icons. **B** drop in from its side near the edge of the screen. **C** fast, with the key, for keyboard power users. **D** (`n34`) for a row of buttons. A is `n49`, B is `n50`, C is `n51`. |
 | Toasts | A to C | **A** corner toast for one short message. **B** a pile that opens when many arrive. **C** sending then sent, with a countdown, when there is Undo. |
 | Date pickers | A to D | **A** plain calendar for one date. **B** gliding pill for a quick date. **C** range with quick picks (7 days, 30 days) for reports. **D** prices per day (`n01`) when price changes by day. |
 | Dropdown | B and F | **B** by default. **F** bloom menu when a few actions sit around one thing. |

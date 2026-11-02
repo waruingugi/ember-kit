@@ -359,8 +359,8 @@
   "id": "n41",
   "kind": "part",
   "group": "forms",
-  "name": "A side sheet whose lines arrive in turn.",
-  "heading": "A side sheet whose lines arrive in turn.",
+  "name": "A side sheet that glides in from the edge.",
+  "heading": "A side sheet that glides in from the edge.",
   "needs": [],
   "css": 0,
   "js": 1
@@ -531,6 +531,36 @@
   "group": "nav",
   "name": "One tooltip that slides between buttons.",
   "heading": "One tooltip that slides between buttons.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n49",
+  "kind": "part",
+  "group": "nav",
+  "name": "A tooltip that waits, then fades in.",
+  "heading": "A tooltip that waits, then fades in.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n50",
+  "kind": "part",
+  "group": "nav",
+  "name": "A tooltip that drops in from above.",
+  "heading": "A tooltip that drops in from above.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n51",
+  "kind": "part",
+  "group": "nav",
+  "name": "A quick tooltip that teaches the key.",
+  "heading": "A quick tooltip that teaches the key.",
   "needs": [],
   "css": 0,
   "js": 1

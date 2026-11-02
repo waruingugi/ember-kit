@@ -71,7 +71,7 @@ Each part looks exactly as it does in the showcase because:
 | `n45` | Forms and inputs | Tags that suggest as you type. |  |
 | `n46` | Forms and inputs | Filter chips that add up as you tap. |  |
 | `n39` | Forms and inputs | A window that settles into place. |  |
-| `n41` | Forms and inputs | A side sheet whose lines arrive in turn. |  |
+| `n41` | Forms and inputs | A side sheet that glides in from the edge. |  |
 | `c12` | Forms and inputs | Upload files, and watch each one. |  |
 | `c13` | Forms and inputs | A secret key, shown only when asked. |  |
 | `n15` | Forms and inputs | One button, a choice beside it. |  |
@@ -88,6 +88,9 @@ Each part looks exactly as it does in the showcase because:
 | `n32` | Getting around | A menu that pops on a spring. |  |
 | `n33` | Getting around | Actions that bloom around one button. |  |
 | `n34` | Getting around | One tooltip that slides between buttons. |  |
+| `n49` | Getting around | A tooltip that waits, then fades in. |  |
+| `n50` | Getting around | A tooltip that drops in from above. |  |
+| `n51` | Getting around | A quick tooltip that teaches the key. |  |
 | `c07` | Getting around | A guide, with a line that follows you. |  |
 | `c08` | Getting around | A dock that grows under your finger. |  |
 | `c09` | Getting around | A profile pill that opens up. |  |
