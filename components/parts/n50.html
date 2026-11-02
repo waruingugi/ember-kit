@@ -1,0 +1,35 @@
+<!-- part n50 | part | group nav | A tooltip that drops in from above. | A tooltip that drops in from above. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A tooltip that <em>drops in from above.</em></h3>
+          <p class="kit-p">Point at each button in turn. The label drops onto it on a small spring, as if it came from where it points.</p>
+          <section class="cs kv4" id="n50">
+  <div class="frame"><div class="fbody">
+    <div class="stage"><div class="tw">
+      <div class="bar" role="toolbar" aria-label="Order actions"><button class="b q" type="button" aria-label="Message the driver" aria-describedby="n50-tip" data-k="M"><svg class="i" aria-hidden="true"><use href="#i-msg"></use></svg></button><button class="b q" type="button" aria-label="Change the time" aria-describedby="n50-tip" data-k="T"><svg class="i" aria-hidden="true"><use href="#i-cal"></use></svg></button><button class="b q" type="button" aria-label="See the receipt" aria-describedby="n50-tip" data-k="R"><svg class="i" aria-hidden="true"><use href="#i-receipt"></use></svg></button><button class="b q" type="button" aria-label="Tell me when it's close" aria-describedby="n50-tip" data-k="N"><svg class="i" aria-hidden="true"><use href="#i-bell"></use></svg></button><div class="tip" id="n50-tip" role="tooltip"><span class="tx"></span><span class="ar" aria-hidden="true"></span></div></div>
+      <p class="cap">Order #4821 · on its way</p>
+    </div></div>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0054">
+(function () {
+  "use strict";
+  var box = document.getElementById("n50"); if (!box) return;
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  /* Waits 300 ms before the first label; for 400 ms after you leave, the next one shows at once. */
+  var tip = $("#n50-tip"), tx = $(".tx", tip), t = null, warm = 0;
+  function show(b, now) {
+    clearTimeout(t);
+    var go = function () { tx.textContent = b.getAttribute("aria-label"); tip.style.setProperty("--x", (b.offsetLeft + b.offsetWidth / 2) + "px"); tip.classList.add("on"); };
+    if (now || performance.now() < warm || tip.classList.contains("on")) go(); else t = setTimeout(go, 300);
+  }
+  function hide() { clearTimeout(t); if (tip.classList.contains("on")) warm = performance.now() + 400; tip.classList.remove("on"); }
+  $$(".bar .b").forEach(function (b) {
+    b.addEventListener("pointerenter", function () { show(b); }); b.addEventListener("pointerleave", hide);
+    b.addEventListener("focus", function () { show(b, true); }); b.addEventListener("blur", hide); b.addEventListener("click", hide);
+    b.addEventListener("keydown", function (e) { if (e.key === "Escape") hide(); });
+  });
+})();
+</script>

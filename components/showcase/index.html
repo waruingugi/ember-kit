@@ -966,15 +966,15 @@ html[data-theme="dark"] .kit .chk:indeterminate { background-image: url("data:im
 .kit .live { position: relative; display: inline-block; width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--accent); }
 .kit .live::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--accent); opacity: 0; }
 html[data-motion="lively"] .kit .live::after { animation: ping 1.6s var(--ease-out) infinite; }
-.kit .st { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; color: var(--ink-soft); white-space: nowrap; }
-.kit .st::before { content: ""; width: 7px; height: 7px; flex: none; border-radius: 50%; background: currentColor; }
-.kit .st.ok { color: var(--ink); }
-.kit .st.wait { color: var(--muted); }
-.kit .st.wait::before { background: transparent; box-shadow: inset 0 0 0 1.5px currentColor; }
-.kit .st.off { color: var(--muted); }
-.kit .st.off::before { background: var(--dim); }
-.kit .st.hot { color: var(--accent-text); }
-.kit .st.hot::before { background: var(--accent); }
+.kit .st:where(:not(.kv4 *)) { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; color: var(--ink-soft); white-space: nowrap; }
+.kit .st:where(:not(.kv4 *))::before { content: ""; width: 7px; height: 7px; flex: none; border-radius: 50%; background: currentColor; }
+.kit .st.ok:where(:not(.kv4 *)) { color: var(--ink); }
+.kit .st.wait:where(:not(.kv4 *)) { color: var(--muted); }
+.kit .st.wait:where(:not(.kv4 *))::before { background: transparent; box-shadow: inset 0 0 0 1.5px currentColor; }
+.kit .st.off:where(:not(.kv4 *)) { color: var(--muted); }
+.kit .st.off:where(:not(.kv4 *))::before { background: var(--dim); }
+.kit .st.hot:where(:not(.kv4 *)) { color: var(--accent-text); }
+.kit .st.hot:where(:not(.kv4 *))::before { background: var(--accent); }
 .kit .pop { position: absolute; z-index: 20; box-sizing: border-box; border: 1px solid var(--line); border-radius: 12px; background: var(--paper-raised); box-shadow: var(--shadow-lg); }
 .kit .fade-in { animation: fadeUp .3s var(--ease-out) both; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } }
@@ -1911,7 +1911,7 @@ html[data-motion="off"] .kit #n08 .st-seg i, html[data-motion="off"] .kit #n08 .
 .kit #n17 .rw { display: grid; grid-template-columns: minmax(90px, 140px) 1fr; gap: 4px 16px; padding: 11px 0; border-top: 1px solid var(--line); font-size: 14px; }
 .kit #n17 dt { color: var(--muted); font: 500 11px/1.6 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
 .kit #n17 dd { margin: 0; color: var(--ink); min-width: 0; overflow-wrap: anywhere; }
-.kit #n17 .acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.kit #n17 .acts { display: flex; align-items: center; gap: 8px 12px; flex-wrap: wrap; margin-top: 14px; }
 .kit #n17 .mem { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); font-size: 14px; }
 .kit #n17 .mem span:last-child { color: var(--muted); font: 500 11px/1 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
 @media (max-width: 480px) { .kit #n17 .rw { grid-template-columns: 1fr; } .kit #n17 .tb > button { padding: 0 12px; } }
@@ -1998,6 +1998,12 @@ html[data-motion="off"] .kit #n20 .pb, html[data-motion="off"] .kit #n20 .ar { t
 .kit #n21 .al.warn .lb, .kit #n21 .al.err .lb { color: var(--accent-text); }
 .kit #n21 .ac { display: flex; align-items: center; gap: 4px; flex: none; }
 .kit #n21 .ac .b { min-height: 34px; }
+/* The cross and Retry take the notice's colour, and hover with a tint of it, never grey. */
+.kit #n21 .ac .ib, .kit #n21 .ac .b.q { color: var(--ink-soft); }
+.kit #n21 .ac .ib:hover, .kit #n21 .ac .b.q:hover { background: rgb(var(--ink-rgb) / .07); color: var(--ink); }
+.kit #n21 .al.warn .ac .ib, .kit #n21 .al.err .ac .ib, .kit #n21 .al.warn .ac .b.q, .kit #n21 .al.err .ac .b.q { color: var(--accent-text); }
+.kit #n21 .al.warn .ac .ib:hover, .kit #n21 .al.err .ac .ib:hover, .kit #n21 .al.warn .ac .b.q:hover, .kit #n21 .al.err .ac .b.q:hover { background: rgb(var(--accent-rgb) / .12); color: var(--accent-text); }
+.kit #n21 .ac .b.q.retry { font-weight: 600; }
 
 
 .kit #n22 .bx { position: relative; padding-bottom: 76px; box-sizing: border-box; }
@@ -2560,12 +2566,7 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
 .kit #n41 .scrim { position: absolute; inset: 0; z-index: 5; background: rgb(var(--ink-rgb) / .28); opacity: 0; visibility: hidden; transition: opacity .25s var(--ease-out), visibility 0s linear .25s; }
 .kit #n41 .scrim.on { opacity: 1; visibility: visible; transition: opacity .25s var(--ease-out), visibility 0s; }
 .kit #n41 .sh { position: absolute; z-index: 6; top: 0; right: 0; bottom: 0; width: min(300px, 88%); box-sizing: border-box; padding: 18px; display: flex; flex-direction: column; gap: 14px; text-align: left; background: var(--paper-raised); border-left: 1px solid var(--line); box-shadow: var(--shadow-lg); transform: translateX(104%); visibility: hidden; transition: transform .25s var(--ease-out), visibility 0s linear .25s; }
-.kit #n41 .sh.on { transform: none; visibility: visible; transition: transform var(--sp-soft-d) var(--sp-soft), visibility 0s; }
-.kit #n41 .sh.on > * { animation: n41-up .4s var(--ease-out) both; }
-.kit #n41 .sh.on > .it { animation-delay: .08s; }
-.kit #n41 .sh.on > .sp { animation-delay: .14s; }
-.kit #n41 .sh.on > .go { animation-delay: .2s; }
-@keyframes n41-up { from { opacity: 0; transform: translateY(6px); } }
+.kit #n41 .sh.on { transform: none; visibility: visible; transition: transform .45s var(--ease-out), visibility 0s; }
 .kit #n41 .hd { display: flex; align-items: center; justify-content: space-between; }
 .kit #n41 h4 { margin: 0; font: 400 21px/1.2 var(--font-display); }
 .kit #n41 .x { width: 34px; min-height: 34px; padding: 0; transition: transform .35s var(--sp-bouncy); }
@@ -2695,6 +2696,36 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
 .kit #n48 .gap { color: var(--muted); }
 .kit #n48 .pill { position: absolute; z-index: 0; left: 0; top: 0; height: 34px; border-radius: 9px; background: var(--paper-raised); box-shadow: 0 0 0 1px var(--line-hi), var(--shadow-sm); transition: transform var(--sp-bouncy-d) var(--sp-bouncy), width .2s; }
 .kit #n48 .note { margin: 0; }
+.kit #n49 .tw { text-align: center; }
+.kit #n49 .bar { position: relative; display: inline-flex; gap: 6px; padding: 6px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper-raised); box-shadow: var(--shadow-sm); }
+.kit #n49 .bar .b { width: 40px; padding: 0; }
+.kit #n49 .tip { --x: 0px; position: absolute; left: 0; bottom: calc(100% + 8px); z-index: 6; padding: 7px 9px; border-radius: 7px; background: var(--ink); color: var(--paper); font-size: 12.5px; line-height: 1; white-space: nowrap; pointer-events: none; opacity: 0; visibility: hidden; }
+.kit #n49 .tip.on { opacity: 1; visibility: visible; }
+.kit #n49 .tip { transform: translateX(calc(var(--x) - 50%)) scale(.96); transform-origin: bottom center; transition: opacity .12s var(--ease-out), transform .12s var(--ease-out), visibility 0s linear .12s; }
+.kit #n49 .tip.on { transform: translateX(calc(var(--x) - 50%)); transition: opacity .15s var(--ease-out), transform .15s var(--ease-out), visibility 0s; }
+.kit #n49 .tip .k { margin-left: 8px; padding: 1px 4px; border-radius: 3px; background: color-mix(in srgb, var(--paper) 16%, transparent); font: 500 10.5px/1 var(--font-mono); }
+.kit #n49 .ar { position: absolute; left: 50%; top: 100%; margin-left: -5px; border: 5px solid transparent; border-top-color: var(--ink); }
+.kit #n49 .cap { margin: 14px 0 0; font-size: 14px; color: var(--muted); }
+.kit #n50 .tw { text-align: center; }
+.kit #n50 .bar { position: relative; display: inline-flex; gap: 6px; padding: 6px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper-raised); box-shadow: var(--shadow-sm); }
+.kit #n50 .bar .b { width: 40px; padding: 0; }
+.kit #n50 .tip { --x: 0px; position: absolute; left: 0; bottom: calc(100% + 8px); z-index: 6; padding: 7px 9px; border-radius: 7px; background: var(--ink); color: var(--paper); font-size: 12.5px; line-height: 1; white-space: nowrap; pointer-events: none; opacity: 0; visibility: hidden; }
+.kit #n50 .tip.on { opacity: 1; visibility: visible; }
+.kit #n50 .tip { transform: translate(calc(var(--x) - 50%), -8px); transition: opacity .12s var(--ease-out), transform .12s var(--ease-out), visibility 0s linear .12s; }
+.kit #n50 .tip.on { transform: translate(calc(var(--x) - 50%), 0); transition: opacity .16s var(--ease-out), transform var(--sp-bouncy-d) var(--sp-bouncy), visibility 0s; }
+.kit #n50 .tip .k { margin-left: 8px; padding: 1px 4px; border-radius: 3px; background: color-mix(in srgb, var(--paper) 16%, transparent); font: 500 10.5px/1 var(--font-mono); }
+.kit #n50 .ar { position: absolute; left: 50%; top: 100%; margin-left: -5px; border: 5px solid transparent; border-top-color: var(--ink); }
+.kit #n50 .cap { margin: 14px 0 0; font-size: 14px; color: var(--muted); }
+.kit #n51 .tw { text-align: center; }
+.kit #n51 .bar { position: relative; display: inline-flex; gap: 6px; padding: 6px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper-raised); box-shadow: var(--shadow-sm); }
+.kit #n51 .bar .b { width: 40px; padding: 0; }
+.kit #n51 .tip { --x: 0px; position: absolute; left: 0; bottom: calc(100% + 8px); z-index: 6; padding: 7px 9px; border-radius: 7px; background: var(--ink); color: var(--paper); font-size: 12.5px; line-height: 1; white-space: nowrap; pointer-events: none; opacity: 0; visibility: hidden; }
+.kit #n51 .tip.on { opacity: 1; visibility: visible; }
+.kit #n51 .tip { transform: translateX(calc(var(--x) - 50%)) translateY(3px) scale(.97); transition: opacity .1s var(--ease-out), transform .1s var(--ease-out), visibility 0s linear .1s; }
+.kit #n51 .tip.on { transform: translateX(calc(var(--x) - 50%)); transition: opacity .14s var(--ease-out), transform .18s var(--ease-out), visibility 0s; }
+.kit #n51 .tip .k { margin-left: 8px; padding: 1px 4px; border-radius: 3px; background: color-mix(in srgb, var(--paper) 16%, transparent); font: 500 10.5px/1 var(--font-mono); }
+.kit #n51 .ar { position: absolute; left: 50%; top: 100%; margin-left: -5px; border: 5px solid transparent; border-top-color: var(--ink); }
+.kit #n51 .cap { margin: 14px 0 0; font-size: 14px; color: var(--muted); }
 </style>
 <a class="skip" href="#content">Skip to content</a>
 <canvas id="bg" aria-hidden="true"></canvas>
@@ -2778,7 +2809,7 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
               <div><dt>Status</dt><dd>Showcase</dd></div>
               <div><dt>Built with</dt><dd>DESIGN.md</dd></div>
               <div><dt>Updated</dt><dd>29 Oct 2026</dd></div>
-              <div><dt>Parts</dt><dd>85</dd></div>
+              <div><dt>Parts</dt><dd>88</dd></div>
             </dl>
           </div>
           <div class="card route-card" data-reveal style="--i:3" aria-label="A sample courier on its way">
@@ -3556,8 +3587,8 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
 </section>
         </div>
         <div class="kit kit-part">
-          <h3 class="kit-h">A side sheet whose <em>lines arrive in turn.</em></h3>
-          <p class="kit-p">Open the order. The sheet slides in on a soft spring, then the title, items and steps come in one after another. Escape, the cross or the dark area closes it.</p>
+          <h3 class="kit-h">A side sheet that <em>glides in from the edge.</em></h3>
+          <p class="kit-p">Open the order. The sheet glides in from the right, all at once, and glides back out the same way. Escape, the cross or the dark area closes it.</p>
           <section class="cs kv4" id="n41">
   <div class="frame"><div class="fbody"><div class="stage pg">
     <div class="row"><span><b>Order #4821</b><small>Amina Otieno · 3 items</small></span><button class="b sm" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="n41-dlg" data-open>Open</button></div>
@@ -3759,7 +3790,7 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
         <div class="mem"><span>Amina Hassan</span><span>Member</span></div>
         <div class="mem"><span>Peter Mwangi</span><span>Member</span></div>
         <div class="mem"><span>Grace Achieng</span><span>Member</span></div>
-        <div class="acts"><button type="button" class="b sm">Invite someone</button><span class="note" style="align-self:center">5 of 10 seats used</span></div>
+        <div class="acts"><button type="button" class="b sm">Invite someone</button><span class="note" style="margin:0">5 of 10 seats used</span></div>
       </div>
     </div>
   </div></div>
@@ -3888,7 +3919,7 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
     <div class="stage pg">
       <div class="rw">
         <div><b>Invoice #4821</b><span>Amina Otieno · KSh 4,200</span></div>
-        <button class="b q tr" type="button" id="n32-tr" aria-label="Actions for invoice 4821" aria-haspopup="menu" aria-expanded="false" aria-controls="n32-menu"><svg class="i" viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="1.3" fill="currentColor"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/><circle cx="12.5" cy="8" r="1.3" fill="currentColor"/></svg></button>
+        <button class="b q tr" type="button" id="n32-tr" aria-label="Actions for invoice 4821" aria-haspopup="menu" aria-expanded="false" aria-controls="n32-menu"><svg class="i" viewBox="0 0 16 16" aria-hidden="true"><circle cx="1.7" cy="8" r="1.2" fill="currentColor"/><circle cx="8" cy="8" r="1.2" fill="currentColor"/><circle cx="14.3" cy="8" r="1.2" fill="currentColor"/></svg></button>
         <div class="mn" id="n32-menu" role="menu" aria-label="Invoice actions"><span class="hl" aria-hidden="true"></span><button class="mi-b" type="button" role="menuitem" tabindex="-1" data-msg="Editing invoice #4821."><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 2.8l2.7 2.7L6 12.7H3.3V10zM9.2 4.1l2.7 2.7"/></svg>Edit invoice<span class="k">E</span></button><button class="mi-b" type="button" role="menuitem" tabindex="-1" data-msg="Copied as invoice #4822."><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 5.5h7v7h-7zM3.5 10.5v-7h7"/></svg>Duplicate<span class="k">D</span></button><button class="mi-b" type="button" role="menuitem" tabindex="-1" data-msg="invoice-4821.pdf is ready."><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v8M4.8 7.5 8 10.7l3.2-3.2M3 13.5h10"/></svg>Download PDF<span class="k">P</span></button><button class="mi-b" type="button" role="menuitem" tabindex="-1" data-msg="Reminder sent to Amina by SMS."><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8 13.5 2.8 10.8 13.5 7.8 9.2zM7.8 9.2 13.5 2.8"/></svg>Send reminder<span class="k">R</span></button><div class="sep" role="separator"></div><button class="mi-b del" type="button" role="menuitem" tabindex="-1" data-msg="Invoice #4821 deleted."><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 9h5.8l.6-9"/></svg>Delete invoice</button></div>
       </div>
       <p class="note" id="n32-note" aria-live="polite">Nothing picked yet.</p>
@@ -3904,7 +3935,7 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
   <div class="frame"><div class="fbody">
     <div class="stage"><div class="bl" id="n33-bl">
       <div class="ring" id="n33-ring" role="menu" aria-label="Invoice actions"><button class="pt" type="button" role="menuitem" tabindex="-1" data-msg="Editing invoice #4821." style="--a:-170deg;--j:0"><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 2.8l2.7 2.7L6 12.7H3.3V10zM9.2 4.1l2.7 2.7"/></svg><span class="nm">Edit invoice</span></button><button class="pt" type="button" role="menuitem" tabindex="-1" data-msg="Copied as invoice #4822." style="--a:-130deg;--j:1"><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 5.5h7v7h-7zM3.5 10.5v-7h7"/></svg><span class="nm">Duplicate</span></button><button class="pt" type="button" role="menuitem" tabindex="-1" data-msg="invoice-4821.pdf is ready." style="--a:-90deg;--j:2"><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v8M4.8 7.5 8 10.7l3.2-3.2M3 13.5h10"/></svg><span class="nm">Download PDF</span></button><button class="pt" type="button" role="menuitem" tabindex="-1" data-msg="Reminder sent to Amina by SMS." style="--a:-50deg;--j:3"><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8 13.5 2.8 10.8 13.5 7.8 9.2zM7.8 9.2 13.5 2.8"/></svg><span class="nm">Send reminder</span></button><button class="pt del" type="button" role="menuitem" tabindex="-1" data-msg="Invoice #4821 deleted." style="--a:-10deg;--j:4"><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 9h5.8l.6-9"/></svg><span class="nm">Delete</span></button></div>
-      <button class="b tr" type="button" id="n33-tr" aria-label="Actions for invoice 4821" aria-haspopup="menu" aria-expanded="false" aria-controls="n33-ring"><svg class="i" viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="1.3" fill="currentColor"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/><circle cx="12.5" cy="8" r="1.3" fill="currentColor"/></svg></button>
+      <button class="b tr" type="button" id="n33-tr" aria-label="Actions for invoice 4821" aria-haspopup="menu" aria-expanded="false" aria-controls="n33-ring"><svg class="i" viewBox="0 0 16 16" aria-hidden="true"><circle cx="1.7" cy="8" r="1.2" fill="currentColor"/><circle cx="8" cy="8" r="1.2" fill="currentColor"/><circle cx="14.3" cy="8" r="1.2" fill="currentColor"/></svg></button>
     </div></div>
     <p class="note" id="n33-note" aria-live="polite">Invoice #4821 · Amina Otieno</p>
   </div></div>
@@ -3919,6 +3950,45 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
     <div class="stage"><div class="tw">
       <div class="bar" role="toolbar" aria-label="Sales report"><button class="b q" type="button" aria-label="Refresh" aria-describedby="n34-tip" data-k="R"><svg class="i" aria-hidden="true"><use href="#i-refresh"/></svg></button><button class="b q" type="button" aria-label="Export CSV" aria-describedby="n34-tip" data-k="E"><svg class="i" aria-hidden="true"><use href="#i-dl"/></svg></button><button class="b q" type="button" aria-label="Share report" aria-describedby="n34-tip" data-k="S"><svg class="i" aria-hidden="true"><use href="#i-share"/></svg></button><button class="b q" type="button" aria-label="Filters" aria-describedby="n34-tip" data-k="F"><svg class="i" aria-hidden="true"><use href="#i-sliders"/></svg></button><div class="tip" id="n34-tip" role="tooltip"><span class="tx"></span><span class="ar" aria-hidden="true"></span></div></div>
       <p class="cap">Sales this week: KSh 182,400</p>
+    </div></div>
+  </div></div>
+
+</section>
+        </div>
+        <div class="kit kit-part">
+          <h3 class="kit-h">A tooltip that <em>waits, then fades in.</em></h3>
+          <p class="kit-p">Point at a button and wait a moment. The label fades in with an arrow. Slide along and the next one shows at once.</p>
+          <section class="cs kv4" id="n49">
+  <div class="frame"><div class="fbody">
+    <div class="stage"><div class="tw">
+      <div class="bar" role="toolbar" aria-label="File actions"><button class="b q" type="button" aria-label="Copy link" aria-describedby="n49-tip" data-k="C"><svg class="i" aria-hidden="true"><use href="#i-copy"/></svg></button><button class="b q" type="button" aria-label="Download" aria-describedby="n49-tip" data-k="D"><svg class="i" aria-hidden="true"><use href="#i-dl"/></svg></button><button class="b q" type="button" aria-label="Print" aria-describedby="n49-tip" data-k="P"><svg class="i" aria-hidden="true"><use href="#i-printer"/></svg></button><button class="b q" type="button" aria-label="Archive" aria-describedby="n49-tip" data-k="A"><svg class="i" aria-hidden="true"><use href="#i-archive"/></svg></button><button class="b q" type="button" aria-label="Delete" aria-describedby="n49-tip" data-k="Del"><svg class="i" aria-hidden="true"><use href="#i-trash"/></svg></button><div class="tip" id="n49-tip" role="tooltip"><span class="tx"></span><span class="ar" aria-hidden="true"></span></div></div>
+      <p class="cap">Invoice 4021.pdf · 248 KB</p>
+    </div></div>
+  </div></div>
+
+</section>
+        </div>
+        <div class="kit kit-part">
+          <h3 class="kit-h">A tooltip that <em>drops in from above.</em></h3>
+          <p class="kit-p">Point at each button in turn. The label drops onto it on a small spring, as if it came from where it points.</p>
+          <section class="cs kv4" id="n50">
+  <div class="frame"><div class="fbody">
+    <div class="stage"><div class="tw">
+      <div class="bar" role="toolbar" aria-label="Order actions"><button class="b q" type="button" aria-label="Message the driver" aria-describedby="n50-tip" data-k="M"><svg class="i" aria-hidden="true"><use href="#i-msg"/></svg></button><button class="b q" type="button" aria-label="Change the time" aria-describedby="n50-tip" data-k="T"><svg class="i" aria-hidden="true"><use href="#i-cal"/></svg></button><button class="b q" type="button" aria-label="See the receipt" aria-describedby="n50-tip" data-k="R"><svg class="i" aria-hidden="true"><use href="#i-receipt"/></svg></button><button class="b q" type="button" aria-label="Tell me when it's close" aria-describedby="n50-tip" data-k="N"><svg class="i" aria-hidden="true"><use href="#i-bell"/></svg></button><div class="tip" id="n50-tip" role="tooltip"><span class="tx"></span><span class="ar" aria-hidden="true"></span></div></div>
+      <p class="cap">Order #4821 · on its way</p>
+    </div></div>
+  </div></div>
+
+</section>
+        </div>
+        <div class="kit kit-part">
+          <h3 class="kit-h">A quick tooltip <em>that teaches the key.</em></h3>
+          <p class="kit-p">Run the pointer along the bar. Each label comes fast, with no arrow, and shows the key that does the same thing.</p>
+          <section class="cs kv4" id="n51">
+  <div class="frame"><div class="fbody">
+    <div class="stage"><div class="tw">
+      <div class="bar" role="toolbar" aria-label="Inbox actions"><button class="b q" type="button" aria-label="Archive" aria-describedby="n51-tip" data-k="E"><svg class="i" aria-hidden="true"><use href="#i-archive"/></svg></button><button class="b q" type="button" aria-label="Reply" aria-describedby="n51-tip" data-k="R"><svg class="i" aria-hidden="true"><use href="#i-msg"/></svg></button><button class="b q" type="button" aria-label="Mark as unread" aria-describedby="n51-tip" data-k="U"><svg class="i" aria-hidden="true"><use href="#i-mail"/></svg></button><button class="b q" type="button" aria-label="Search" aria-describedby="n51-tip" data-k="/"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg></button><button class="b q" type="button" aria-label="Delete" aria-describedby="n51-tip" data-k="#"><svg class="i" aria-hidden="true"><use href="#i-trash"/></svg></button><div class="tip" id="n51-tip" role="tooltip"><span class="tx"></span></div></div>
+      <p class="cap">Inbox · 12 unread</p>
     </div></div>
   </div></div>
 
@@ -4315,7 +4385,7 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
     <span class="pv" id="n40-pv" role="dialog" aria-label="Amina Otieno">
       <span class="top"><span class="av">AO</span><span><b>Amina Otieno</b><small>Customer since March 2023</small></span></span>
       <span class="st"><span><em>Orders</em><b>48</b></span><span><em>Spent</em><b>92,300</b></span><span><em>Last</em><b>2 days ago</b></span></span>
-      <span class="tr"><em>Orders by month</em><svg viewBox="0 0 220 44" aria-hidden="true"><path class="ar" d="M0 34 L20 30 L40 32 L60 24 L80 26 L100 18 L120 22 L140 14 L160 16 L180 10 L200 12 L220 6 L220 44 L0 44Z"/><path class="ln" pathLength="1" d="M0 34 L20 30 L40 32 L60 24 L80 26 L100 18 L120 22 L140 14 L160 16 L180 10 L200 12 L220 6"/><circle class="dt" cx="220" cy="6" r="3.5"/></svg></span>
+      <span class="tr"><em>Orders by month</em><svg viewBox="0 0 220 44" aria-hidden="true"><path class="ar" d="M0 34 C6.67 32.67 13.33 30 20 30 C26.67 30 33.33 32 40 32 C46.67 32 53.33 24 60 24 C66.67 24 73.33 26 80 26 C86.67 26 93.33 18 100 18 C106.67 18 113.33 22 120 22 C126.67 22 133.33 14 140 14 C146.67 14 153.33 16 160 16 C166.67 16 173.33 10 180 10 C186.67 10 193.33 12 200 12 C206.67 12 213.33 8 220 6 L220 44 L0 44Z"/><path class="ln" pathLength="1" d="M0 34 C6.67 32.67 13.33 30 20 30 C26.67 30 33.33 32 40 32 C46.67 32 53.33 24 60 24 C66.67 24 73.33 26 80 26 C86.67 26 93.33 18 100 18 C106.67 18 113.33 22 120 22 C126.67 22 133.33 14 140 14 C146.67 14 153.33 16 160 16 C166.67 16 173.33 10 180 10 C186.67 10 193.33 12 200 12 C206.67 12 213.33 8 220 6"/><circle class="dt" cx="220" cy="6" r="3.5"/></svg></span>
       <span class="act"><button class="b sm pri" type="button" data-act="Message sent to Amina.">Message</button><button class="b sm" type="button" data-act="Opening Amina's 48 orders.">View orders</button></span>
     </span></span> came in at 2:14 pm.</p>
     <p class="note" aria-live="polite"></p>
@@ -15804,8 +15874,20 @@ hairline({
     .from('.scroll-cue', { autoAlpha: 0 }, '-=0.6');
 
   /* 2. Reveals: things that enter together come in as one staggered group */
-  var items = gsap.utils.toArray('[data-reveal]').filter(function (el) { return !el.closest('.hero'); });
+  var items = gsap.utils.toArray('[data-reveal]').filter(function (el) { return !el.closest('.hero') && !el.classList.contains('goal'); });
   gsap.set(items, { autoAlpha: 0, y: 26 });
+
+  /* 2b. Goal rows follow the scroll both ways: in as they arrive, and a quiet fade out as they
+     leave the screen, up or down, so going back feels as alive as going forward. */
+  var gy = L.lively() ? 18 : 8;
+  gsap.utils.toArray('.goal[data-reveal]').forEach(function (goal) {
+    gsap.set(goal, { autoAlpha: 0, y: gy });
+    function show() { gsap.to(goal, { autoAlpha: 1, y: 0, duration: 0.9, ease: EASE, overwrite: true }); }
+    function hide(y) { gsap.to(goal, { autoAlpha: 0, y: y, duration: 0.6, ease: 'power2.out', overwrite: true }); }
+    ScrollTrigger.create({ trigger: goal, start: 'top 92%', end: 'bottom top+=72',
+      onEnter: show, onEnterBack: show,
+      onLeave: function () { hide(-gy); }, onLeaveBack: function () { hide(gy); } });
+  });
   ScrollTrigger.batch(items, {
     start: 'top 90%', once: true,
     onEnter: function (batch) { gsap.to(batch, { autoAlpha: 1, y: 0, duration: 1, ease: EASE, stagger: 0.08, overwrite: true, onComplete: function () { done(batch); } }); }
@@ -16492,6 +16574,69 @@ hairline({
   nv.addEventListener("click", function (e) { var b = e.target.closest("[data-p]"); if (b && !b.disabled) go(+b.getAttribute("data-p"), b.getAttribute("aria-label")); });
   new ResizeObserver(function () { px = null; draw(); }).observe(nv);
   go(1);
+})();
+</script>
+<script>
+(function () {
+  "use strict";
+  var box = document.getElementById("n49"); if (!box) return;
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  /* Waits 700 ms before the first label; for 300 ms after you leave, the next one shows at once. */
+  var tip = $("#n49-tip"), tx = $(".tx", tip), t = null, warm = 0;
+  function show(b, now) {
+    clearTimeout(t);
+    var go = function () { tx.textContent = b.getAttribute("aria-label"); tip.style.setProperty("--x", (b.offsetLeft + b.offsetWidth / 2) + "px"); tip.classList.add("on"); };
+    if (now || performance.now() < warm || tip.classList.contains("on")) go(); else t = setTimeout(go, 700);
+  }
+  function hide() { clearTimeout(t); if (tip.classList.contains("on")) warm = performance.now() + 300; tip.classList.remove("on"); }
+  $$(".bar .b").forEach(function (b) {
+    b.addEventListener("pointerenter", function () { show(b); }); b.addEventListener("pointerleave", hide);
+    b.addEventListener("focus", function () { show(b, true); }); b.addEventListener("blur", hide); b.addEventListener("click", hide);
+    b.addEventListener("keydown", function (e) { if (e.key === "Escape") hide(); });
+  });
+})();
+</script>
+<script>
+(function () {
+  "use strict";
+  var box = document.getElementById("n50"); if (!box) return;
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  /* Waits 300 ms before the first label; for 400 ms after you leave, the next one shows at once. */
+  var tip = $("#n50-tip"), tx = $(".tx", tip), t = null, warm = 0;
+  function show(b, now) {
+    clearTimeout(t);
+    var go = function () { tx.textContent = b.getAttribute("aria-label"); tip.style.setProperty("--x", (b.offsetLeft + b.offsetWidth / 2) + "px"); tip.classList.add("on"); };
+    if (now || performance.now() < warm || tip.classList.contains("on")) go(); else t = setTimeout(go, 300);
+  }
+  function hide() { clearTimeout(t); if (tip.classList.contains("on")) warm = performance.now() + 400; tip.classList.remove("on"); }
+  $$(".bar .b").forEach(function (b) {
+    b.addEventListener("pointerenter", function () { show(b); }); b.addEventListener("pointerleave", hide);
+    b.addEventListener("focus", function () { show(b, true); }); b.addEventListener("blur", hide); b.addEventListener("click", hide);
+    b.addEventListener("keydown", function (e) { if (e.key === "Escape") hide(); });
+  });
+})();
+</script>
+<script>
+(function () {
+  "use strict";
+  var box = document.getElementById("n51"); if (!box) return;
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  /* Waits 120 ms before the first label; for 300 ms after you leave, the next one shows at once. */
+  var tip = $("#n51-tip"), tx = $(".tx", tip), t = null, warm = 0;
+  function show(b, now) {
+    clearTimeout(t);
+    var go = function () { tx.textContent = b.getAttribute("aria-label"); var k = document.createElement("span"); k.className = "k"; k.textContent = b.getAttribute("data-k"); tx.appendChild(k); tip.style.setProperty("--x", (b.offsetLeft + b.offsetWidth / 2) + "px"); tip.classList.add("on"); };
+    if (now || performance.now() < warm || tip.classList.contains("on")) go(); else t = setTimeout(go, 120);
+  }
+  function hide() { clearTimeout(t); if (tip.classList.contains("on")) warm = performance.now() + 300; tip.classList.remove("on"); }
+  $$(".bar .b").forEach(function (b) {
+    b.addEventListener("pointerenter", function () { show(b); }); b.addEventListener("pointerleave", hide);
+    b.addEventListener("focus", function () { show(b, true); }); b.addEventListener("blur", hide); b.addEventListener("click", hide);
+    b.addEventListener("keydown", function (e) { if (e.key === "Escape") hide(); });
+  });
 })();
 </script>
 </body></html>

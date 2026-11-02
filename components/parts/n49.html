@@ -1,0 +1,35 @@
+<!-- part n49 | part | group nav | A tooltip that waits, then fades in. | A tooltip that waits, then fades in. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A tooltip that <em>waits, then fades in.</em></h3>
+          <p class="kit-p">Point at a button and wait a moment. The label fades in with an arrow. Slide along and the next one shows at once.</p>
+          <section class="cs kv4" id="n49">
+  <div class="frame"><div class="fbody">
+    <div class="stage"><div class="tw">
+      <div class="bar" role="toolbar" aria-label="File actions"><button class="b q" type="button" aria-label="Copy link" aria-describedby="n49-tip" data-k="C"><svg class="i" aria-hidden="true"><use href="#i-copy"></use></svg></button><button class="b q" type="button" aria-label="Download" aria-describedby="n49-tip" data-k="D"><svg class="i" aria-hidden="true"><use href="#i-dl"></use></svg></button><button class="b q" type="button" aria-label="Print" aria-describedby="n49-tip" data-k="P"><svg class="i" aria-hidden="true"><use href="#i-printer"></use></svg></button><button class="b q" type="button" aria-label="Archive" aria-describedby="n49-tip" data-k="A"><svg class="i" aria-hidden="true"><use href="#i-archive"></use></svg></button><button class="b q" type="button" aria-label="Delete" aria-describedby="n49-tip" data-k="Del"><svg class="i" aria-hidden="true"><use href="#i-trash"></use></svg></button><div class="tip" id="n49-tip" role="tooltip"><span class="tx"></span><span class="ar" aria-hidden="true"></span></div></div>
+      <p class="cap">Invoice 4021.pdf · 248 KB</p>
+    </div></div>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0053">
+(function () {
+  "use strict";
+  var box = document.getElementById("n49"); if (!box) return;
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  /* Waits 700 ms before the first label; for 300 ms after you leave, the next one shows at once. */
+  var tip = $("#n49-tip"), tx = $(".tx", tip), t = null, warm = 0;
+  function show(b, now) {
+    clearTimeout(t);
+    var go = function () { tx.textContent = b.getAttribute("aria-label"); tip.style.setProperty("--x", (b.offsetLeft + b.offsetWidth / 2) + "px"); tip.classList.add("on"); };
+    if (now || performance.now() < warm || tip.classList.contains("on")) go(); else t = setTimeout(go, 700);
+  }
+  function hide() { clearTimeout(t); if (tip.classList.contains("on")) warm = performance.now() + 300; tip.classList.remove("on"); }
+  $$(".bar .b").forEach(function (b) {
+    b.addEventListener("pointerenter", function () { show(b); }); b.addEventListener("pointerleave", hide);
+    b.addEventListener("focus", function () { show(b, true); }); b.addEventListener("blur", hide); b.addEventListener("click", hide);
+    b.addEventListener("keydown", function (e) { if (e.key === "Escape") hide(); });
+  });
+})();
+</script>

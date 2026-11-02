@@ -1,0 +1,35 @@
+<!-- part n51 | part | group nav | A quick tooltip that teaches the key. | A quick tooltip that teaches the key. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A quick tooltip <em>that teaches the key.</em></h3>
+          <p class="kit-p">Run the pointer along the bar. Each label comes fast, with no arrow, and shows the key that does the same thing.</p>
+          <section class="cs kv4" id="n51">
+  <div class="frame"><div class="fbody">
+    <div class="stage"><div class="tw">
+      <div class="bar" role="toolbar" aria-label="Inbox actions"><button class="b q" type="button" aria-label="Archive" aria-describedby="n51-tip" data-k="E"><svg class="i" aria-hidden="true"><use href="#i-archive"></use></svg></button><button class="b q" type="button" aria-label="Reply" aria-describedby="n51-tip" data-k="R"><svg class="i" aria-hidden="true"><use href="#i-msg"></use></svg></button><button class="b q" type="button" aria-label="Mark as unread" aria-describedby="n51-tip" data-k="U"><svg class="i" aria-hidden="true"><use href="#i-mail"></use></svg></button><button class="b q" type="button" aria-label="Search" aria-describedby="n51-tip" data-k="/"><svg class="i" aria-hidden="true"><use href="#i-search"></use></svg></button><button class="b q" type="button" aria-label="Delete" aria-describedby="n51-tip" data-k="#"><svg class="i" aria-hidden="true"><use href="#i-trash"></use></svg></button><div class="tip" id="n51-tip" role="tooltip"><span class="tx"></span></div></div>
+      <p class="cap">Inbox · 12 unread</p>
+    </div></div>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0055">
+(function () {
+  "use strict";
+  var box = document.getElementById("n51"); if (!box) return;
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  /* Waits 120 ms before the first label; for 300 ms after you leave, the next one shows at once. */
+  var tip = $("#n51-tip"), tx = $(".tx", tip), t = null, warm = 0;
+  function show(b, now) {
+    clearTimeout(t);
+    var go = function () { tx.textContent = b.getAttribute("aria-label"); var k = document.createElement("span"); k.className = "k"; k.textContent = b.getAttribute("data-k"); tx.appendChild(k); tip.style.setProperty("--x", (b.offsetLeft + b.offsetWidth / 2) + "px"); tip.classList.add("on"); };
+    if (now || performance.now() < warm || tip.classList.contains("on")) go(); else t = setTimeout(go, 120);
+  }
+  function hide() { clearTimeout(t); if (tip.classList.contains("on")) warm = performance.now() + 300; tip.classList.remove("on"); }
+  $$(".bar .b").forEach(function (b) {
+    b.addEventListener("pointerenter", function () { show(b); }); b.addEventListener("pointerleave", hide);
+    b.addEventListener("focus", function () { show(b, true); }); b.addEventListener("blur", hide); b.addEventListener("click", hide);
+    b.addEventListener("keydown", function (e) { if (e.key === "Escape") hide(); });
+  });
+})();
+</script>
