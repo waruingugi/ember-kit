@@ -1,0 +1,67 @@
+<!-- part c23 | part | group status | A café receipt, printed slowly. | A café receipt, printed slowly. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A café receipt, <em>printed slowly.</em></h3>
+          <p class="kit-p">Scroll it into view. The slip feeds out slowly, like a real printer.</p>
+          <section class="cs" id="c23">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Order receipt</span></div>
+      <div class="fbody">
+        <div class="rp" id="rp" data-state="idle">
+          <div class="rp-status">
+            <div><span class="rp-ok" aria-hidden="true"><svg class="i"><use href="#i-check"></use></svg></span><div><b>Payment received</b><small>Order 2048 · Corner Café</small></div></div>
+            <span class="rp-led"><i></i><span id="rpLed">Ready</span></span>
+          </div>
+          <div class="rp-body">
+            <div class="rp-top"><span><svg class="i s"><use href="#i-printer"></use></svg>TM-30</span><span>80 mm</span></div>
+            <div class="rp-slot"></div>
+          </div>
+          <div class="rp-out">
+            <div class="rp-paper hide" id="rpPaper">
+              <div class="rp-sec"><svg class="i" style="width:20px;height:20px"><use href="#i-store"></use></svg><b>Corner Café</b><small>12 Mill Lane · 29 Oct 2026 · 09:41</small></div>
+              <div class="rp-sec">
+                <div class="rp-kv"><span>1 × Flat white</span><span>$4.20</span></div>
+                <div class="rp-kv"><span>1 × Almond croissant</span><span>$3.80</span></div>
+                <div class="rp-kv"><span>2 × Sparkling water</span><span>$5.00</span></div>
+              </div>
+              <div class="rp-sec">
+                <div class="rp-kv"><span>Subtotal</span><span>$13.00</span></div>
+                <div class="rp-kv"><span>Tax 8%</span><span>$1.04</span></div>
+                <div class="rp-kv rp-tot"><span style="color:inherit">Total</span><span>$14.04</span></div>
+                <div class="rp-kv"><span>Card ···· 4242</span><span>Paid</span></div>
+              </div>
+              <svg class="rp-bc" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true" id="rpBc"></svg>
+              <div class="rp-end">ORDER 2048 · THANK YOU</div>
+              <svg class="zz" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0h100v0L97.5 6 95 0l-2.5 6L90 0l-2.5 6L85 0l-2.5 6L80 0l-2.5 6L75 0l-2.5 6L70 0l-2.5 6L65 0l-2.5 6L60 0l-2.5 6L55 0l-2.5 6L50 0l-2.5 6L45 0l-2.5 6L40 0l-2.5 6L35 0l-2.5 6L30 0l-2.5 6L25 0l-2.5 6L20 0l-2.5 6L15 0l-2.5 6L10 0 7.5 6 5 0 2.5 6z"></path></svg>
+            </div>
+          </div>
+          <div class="rp-acts"><button class="b sm" type="button" id="rpReplay"><svg class="i s"><use href="#i-rot"></use></svg>Replay</button><button class="b sm" type="button" id="rpCopy"><svg class="i s"><use href="#i-copy"></use></svg>Copy order</button></div>
+          <p class="note" id="rpNote" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0020">
+  /* ---------------- 23 receipt printer ---------------- */
+  (function () {
+    var rp = $("rp"), paper = $("rpPaper"), led = $("rpLed"), bc = $("rpBc"), t = 0;
+    var x = 0, w = [2, 1, 3, 1, 1, 2, 1, 3, 2, 1, 1, 2, 3, 1, 2, 1, 1, 3, 1, 2, 2, 1, 3, 1, 1, 2, 1, 2, 3, 1, 1, 2];
+    w.forEach(function (n, i) { if (i % 2 === 0) { var r = document.createElementNS(NS, "rect"); r.setAttribute("x", x); r.setAttribute("width", n * 1.4); r.setAttribute("height", 20); bc.appendChild(r); } x += n * 1.4 + .6; });
+    bc.setAttribute("viewBox", "0 0 " + x + " 20");
+    function print() {
+      clearTimeout(t);
+      var k = spd();
+      if (!k) { paper.classList.remove("hide"); rp.dataset.state = "done"; led.textContent = "Done"; return; }
+      var dur = k < 1 ? 2.4 : 4.5;  /* slow, like a real printer */
+      paper.style.transition = "none"; paper.classList.add("hide"); void paper.offsetWidth;
+      paper.style.transition = "transform " + dur + "s cubic-bezier(.65,0,.35,1)"; paper.classList.remove("hide");
+      rp.dataset.state = "printing"; led.textContent = "Printing";
+      t = setTimeout(function () { rp.dataset.state = "done"; led.textContent = "Done"; }, dur * 1000);
+    }
+    onView(rp, print, .4);
+    $("rpReplay").addEventListener("click", print);
+    $("rpCopy").addEventListener("click", function () {
+      copy("Corner Café, order 2048\n1 x Flat white  $4.20\n1 x Almond croissant  $3.80\n2 x Sparkling water  $5.00\nTax  $1.04\nTotal  $14.04").then(function (ok) { $("rpNote").textContent = ok ? "Order copied." : "Copy was blocked here."; });
+    });
+  })();
+</script>

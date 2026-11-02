@@ -1,0 +1,92 @@
+<!-- part data | pattern | Data model | Two kinds of data, kept in two places. -->
+<section class="sec" id="data">
+        <div class="sec-head">
+          <span class="ghost" aria-hidden="true">16</span>
+          <p class="eyebrow" data-reveal=""><b>16</b> Data model</p>
+          <h2 class="display" data-reveal="" style="--i:1">Two kinds of data, <em>kept in two places.</em></h2>
+          <p class="lead" data-reveal="" style="--i:2">A data model shows the tables and how they link. This one is for a network of weather stations. Facts that rarely change, like where a station stands, live in Postgres. Readings arrive in a flood, so they live in ClickHouse.</p>
+        </div>
+        <figure class="frame" data-reveal="">
+          <div class="frame-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="frame-title">data model · conceptual</span><span class="mono-label" style="font-size:10.5px">5 tables</span></div>
+          <div class="er-wrap">
+            <svg class="er" id="er" viewBox="0 0 1000 500" role="img" aria-labelledby="er-title er-desc">
+              <title id="er-title">Weather station data model</title>
+              <desc id="er-desc">A lake has stations and device keys. Stations fire alerts and send readings. Lakes, keys, stations and alerts live in Postgres; readings live in ClickHouse.</desc>
+              <defs><pattern id="erdots" width="18" height="18" patternUnits="userSpaceOnUse"><circle class="dotp" cx="9" cy="9" r="1"></circle></pattern></defs>
+              <rect class="bgp" width="1000" height="500"></rect>
+              <rect width="1000" height="500" fill="url(#erdots)"></rect>
+              <rect class="zone" x="20" y="56" width="580" height="404" rx="8"></rect>
+              <text class="zone-l" x="36" y="78">POSTGRES · FACTS THAT CHANGE SLOWLY</text>
+              <rect class="zone" x="720" y="56" width="260" height="404" rx="8"></rect>
+              <text class="zone-l" x="736" y="78">CLICKHOUSE · THE FLOOD</text>
+              <line class="rel" pathLength="1" style="--d:0" x1="240" y1="164" x2="360" y2="164"></line>
+              <line class="rel" pathLength="1" style="--d:1" x1="140" y1="232" x2="140" y2="300"></line>
+              <line class="rel" pathLength="1" style="--d:2" x1="470" y1="252" x2="470" y2="300"></line>
+              <line class="rel" pathLength="1" style="--d:3" x1="580" y1="164" x2="740" y2="164"></line>
+              <g class="lbls">
+                <rect class="msk" x="244" y="158" width="12" height="12" rx="2"></rect><text class="card-t" x="250" y="168">1</text>
+                <rect class="msk" x="342" y="158" width="14" height="12" rx="2"></rect><text class="card-t" x="349" y="168">N</text>
+                <rect class="msk" x="276" y="138" width="48" height="14" rx="2"></rect><text class="rel-t" x="300" y="148">HAS</text>
+                <rect class="msk" x="134" y="236" width="12" height="12" rx="2"></rect><text class="card-t" x="140" y="246">1</text>
+                <rect class="msk" x="133" y="284" width="14" height="12" rx="2"></rect><text class="card-t" x="140" y="294">N</text>
+                <rect class="msk" x="150" y="259" width="44" height="14" rx="2"></rect><text class="rel-t" x="172" y="269">HOLDS</text>
+                <rect class="msk" x="464" y="256" width="12" height="12" rx="2"></rect><text class="card-t" x="470" y="266">1</text>
+                <rect class="msk" x="463" y="284" width="14" height="12" rx="2"></rect><text class="card-t" x="470" y="294">N</text>
+                <rect class="msk" x="480" y="269" width="44" height="14" rx="2"></rect><text class="rel-t" x="502" y="279">FIRES</text>
+                <rect class="msk" x="584" y="158" width="12" height="12" rx="2"></rect><text class="card-t" x="590" y="168">1</text>
+                <rect class="msk" x="722" y="158" width="14" height="12" rx="2"></rect><text class="card-t" x="729" y="168">N</text>
+                <rect class="msk" x="636" y="138" width="44" height="14" rx="2"></rect><text class="rel-t" x="658" y="148">SENDS</text>
+              </g>
+              <g class="ent" style="--d:0">
+                <rect class="box" x="40" y="96" width="200" height="136" rx="6"></rect><rect class="hd" x="40.5" y="96.5" width="199" height="39.5" rx="6"></rect><line class="sep" x1="40" y1="136" x2="240" y2="136"></line>
+                <text class="tag" x="56" y="112">ENTITY</text><text class="nm" x="56" y="128">Lake</text>
+                <text class="fd" x="56" y="156"># id</text><text class="ty" x="224" y="156">uuid</text>
+                <text class="fd" x="56" y="176">name</text><text class="ty" x="224" y="176">text</text>
+                <text class="fd" x="56" y="196">status</text><text class="ty" x="224" y="196">enum</text>
+                <text class="fd" x="56" y="216">timezone</text><text class="ty" x="224" y="216">text</text>
+              </g>
+              <g class="ent" style="--d:1">
+                <rect class="box" x="40" y="300" width="200" height="116" rx="6"></rect><rect class="hd" x="40.5" y="300.5" width="199" height="39.5" rx="6"></rect><line class="sep" x1="40" y1="340" x2="240" y2="340"></line>
+                <text class="tag" x="56" y="316">ENTITY</text><text class="nm" x="56" y="332">DeviceKey</text>
+                <text class="fd" x="56" y="360"># id</text><text class="ty" x="224" y="360">uuid</text>
+                <text class="fd" x="56" y="380">→ lake_id</text><text class="ty" x="224" y="380">uuid</text>
+                <text class="fd" x="56" y="400">revoked_at</text><text class="ty" x="224" y="400">timestamp</text>
+              </g>
+              <g class="ent focal" style="--d:2">
+                <rect class="box" x="360" y="96" width="220" height="156" rx="6"></rect><rect class="hd" x="360.5" y="96.5" width="219" height="39.5" rx="6"></rect><line class="sep" x1="360" y1="136" x2="580" y2="136"></line>
+                <text class="tag" x="376" y="112">ENTITY · CENTRE OF THE MODEL</text><text class="nm" x="376" y="128">Station</text>
+                <text class="fd" x="376" y="156"># id</text><text class="ty" x="564" y="156">uuid</text>
+                <text class="fd" x="376" y="176">→ lake_id</text><text class="ty" x="564" y="176">uuid</text>
+                <text class="fd" x="376" y="196">serial</text><text class="ty" x="564" y="196">text · unique</text>
+                <text class="fd" x="376" y="216">status</text><text class="ty" x="564" y="216">enum</text>
+                <text class="fd" x="376" y="236">built_at</text><text class="ty" x="564" y="236">timestamp</text>
+              </g>
+              <g class="ent" style="--d:3">
+                <rect class="box" x="360" y="300" width="220" height="136" rx="6"></rect><rect class="hd" x="360.5" y="300.5" width="219" height="39.5" rx="6"></rect><line class="sep" x1="360" y1="340" x2="580" y2="340"></line>
+                <text class="tag" x="376" y="316">ENTITY</text><text class="nm" x="376" y="332">Alert</text>
+                <text class="fd" x="376" y="360"># id</text><text class="ty" x="564" y="360">uuid</text>
+                <text class="fd" x="376" y="380">→ station_id</text><text class="ty" x="564" y="380">uuid</text>
+                <text class="fd" x="376" y="400">min_knots</text><text class="ty" x="564" y="400">float32</text>
+                <text class="fd" x="376" y="420">phone</text><text class="ty" x="564" y="420">text</text>
+              </g>
+              <g class="ent event" style="--d:4">
+                <rect class="box" x="740" y="96" width="220" height="136" rx="6"></rect><rect class="hd" x="740.5" y="96.5" width="219" height="39.5" rx="6"></rect><line class="sep" x1="740" y1="136" x2="960" y2="136"></line>
+                <text class="tag" x="756" y="112">EVENT</text><text class="nm" x="756" y="128">Reading</text>
+                <text class="fd" x="756" y="156">→ station_id</text><text class="ty" x="944" y="156">uuid</text>
+                <text class="fd" x="756" y="176">knots · dir</text><text class="ty" x="944" y="176">float64</text>
+                <text class="fd" x="756" y="196">gust_knots</text><text class="ty" x="944" y="196">float32</text>
+                <text class="fd" x="756" y="216">at</text><text class="ty" x="944" y="216">datetime64</text>
+              </g>
+              <g class="lbls">
+                <text class="note" x="756" y="276">One row per reading.</text>
+                <text class="note" x="756" y="296">About 2,000 new rows</text>
+                <text class="note" x="756" y="316">a second on a stormy day.</text>
+              </g>
+              <rect class="msk" x="0" y="475" width="1000" height="25"></rect>
+              <line x1="20" y1="474" x2="980" y2="474" stroke="var(--line)"></line>
+              <text class="lg" x="20" y="492" style="white-space:pre"># PRIMARY KEY        → POINTS TO ANOTHER TABLE        1 · N = ONE TO MANY        DASHED BOX = EVENT TABLE</text>
+            </svg>
+          </div>
+        </figure>
+        <p class="tool-note" data-reveal=""><b>Diagram Design</b><span>A data model: the tables, and the lines show which ones connect.</span></p>
+      </section>

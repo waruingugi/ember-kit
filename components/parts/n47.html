@@ -1,0 +1,35 @@
+<!-- part n47 | part | group status | A bar that springs to the end. | A bar that springs to the end. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A bar that <em>springs to the end.</em></h3>
+          <p class="kit-p">Press the button. The bar fills on a spring, the percent counts up, the step name changes, and a tick draws in when it is done.</p>
+          <section class="cs kv4" id="n47">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="pg">
+      <div class="h"><b>October report</b><span class="st" aria-live="polite">Ready to start</span></div>
+      <div class="row"><div class="tr" role="progressbar" aria-label="October report" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="pc">0%</span><span class="dn"></span></div>
+      <div class="a"><button class="b sm pri" type="button" data-go="">Make the report</button></div>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0051">
+(function () {
+  "use strict";
+  var box = document.getElementById("n47"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function money(n) { return n.toLocaleString("en-KE"); }
+  function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  function count(el, from, to, fmt, ms) { if (!moving()) { el.textContent = fmt(to); return; } cancelAnimationFrame(el._an); var t0 = performance.now(); (function f(t) { var k = Math.min(1, (t - t0) / (ms || 320)); el.textContent = fmt(Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)))); if (k < 1) el._an = requestAnimationFrame(f); })(t0); }
+  var go = $("[data-go]"), st = $(".st"), bar = $(".tr"), pc = $(".pc"), dn = $(".dn"), S = ["Checking 24 receipts", "Adding up the totals", "Writing the report", "Done"], raf = null;
+  go.addEventListener("click", function () { cancelAnimationFrame(raf); go.disabled = true; dn.innerHTML = ""; var t0 = performance.now(), dur = moving() ? 4000 : 1200;
+    (function f(t) { var p = Math.min(1, (t - t0) / dur), k = p < 1 ? Math.min(2, Math.floor(p * 3)) : 3, n = Math.round(p * 100);
+      st.textContent = S[k] + (p < 1 ? "…" : "."); bar.style.setProperty("--p", p); bar.setAttribute("aria-valuenow", n); pc.textContent = n + "%";
+      if (p < 1) raf = requestAnimationFrame(f); else { dn.innerHTML = '<svg class="tk" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"/><path d="M6.6 11.4 9.6 14.3l5.8-6.4"/></svg>'; go.disabled = false; go.textContent = "Make it again"; go.focus(); } })(t0); });
+})();
+</script>

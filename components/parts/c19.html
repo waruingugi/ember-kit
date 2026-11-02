@@ -1,0 +1,70 @@
+<!-- part c19 | part | group tables | Clear a busy inbox in one go. | Clear a busy inbox in one go. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Clear a busy inbox <em>in one go.</em></h3>
+          <p class="kit-p">Click rows, or press Space on them. The tray follows you down the list.</p>
+          <section class="cs" id="c19">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Inbox</span></div>
+      <div class="fbody">
+        <div class="bt-list" id="btList" role="group" aria-label="Messages"></div>
+        <div id="btTrayWrap"></div>
+        <p class="note" id="btNote" aria-live="polite"></p>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0016">
+  /* ---------------- 19 batch tray ---------------- */
+  (function () {
+    var M = [["Invoice 4021 is paid", "Billing · 09:12"], ["Maya commented on Pricing", "Maya Ortiz · 08:55"], ["Your export is ready", "Reports · 08:40"], ["New sign-in from Lisbon", "Security · Yesterday"], ["Weekly numbers", "Reports · Yesterday"], ["Sam invited you to Launch", "Sam Reid · Mon"], ["Server 4 is back", "Status · Mon"], ["Trial ends in 3 days", "Billing · Sun"], ["Priya shared a file", "Priya Nair · Sat"], ["Backup finished", "Storage · Fri"]];
+    var list = $("btList"), wrap = $("btTrayWrap"), note = $("btNote"), tray = null, busy = false;
+    function paint() {
+      list.innerHTML = M.map(function (m, i) {
+        return '<div class="bt-item" role="checkbox" tabindex="0" aria-checked="false" data-i="' + i + '"><span class="bt-box" aria-hidden="true">' + ic("check") + '</span><span class="bt-m"><b>' + esc(m[0]) + "</b><small>" + esc(m[1]) + "</small></span></div>";
+      }).join("");
+      sync();
+    }
+    function picked() { return [].slice.call(list.querySelectorAll('[aria-checked="true"]')); }
+    function sync() {
+      var n = picked().length;
+      if (n && !tray) {
+        tray = document.createElement("div");
+        tray.className = "bt-tray" + (spd() ? " in" : ""); tray.setAttribute("role", "toolbar"); tray.setAttribute("aria-label", "Selected messages");
+        tray.innerHTML = '<div><span class="cnt"></span><span style="font-size:13.5px">selected</span><button class="lk" type="button" data-a="all"></button></div>' +
+          '<div><button class="b sm q" type="button" data-a="Archiving" data-done="Archived">' + ic("archive", "s") + "<span>Archive</span></button>" +
+          '<button class="b sm q" type="button" data-a="Marking" data-done="Marked as read">' + ic("check", "s") + "<span>Mark read</span></button>" +
+          '<button class="b sm q danger" type="button" data-a="Deleting" data-done="Deleted">' + ic("trash", "s") + "<span>Delete</span></button></div>";
+        wrap.appendChild(tray);
+      } else if (!n && tray) {
+        var t = tray; tray = null;
+        if (spd()) { t.classList.remove("in"); t.classList.add("out"); setTimeout(function () { t.remove(); }, 200); } else t.remove();
+      }
+      if (tray) {
+        tray.querySelector(".cnt").textContent = n;
+        tray.querySelector('[data-a="all"]').textContent = n === M.length ? "Clear" : "Select all";
+      }
+    }
+    function toggle(el) { if (busy) return; el.setAttribute("aria-checked", String(el.getAttribute("aria-checked") !== "true")); sync(); }
+    function clear() { list.querySelectorAll(".bt-item").forEach(function (x) { x.setAttribute("aria-checked", "false"); }); sync(); }
+    list.addEventListener("click", function (e) { var it = e.target.closest(".bt-item"); if (it) toggle(it); });
+    list.addEventListener("keydown", function (e) { var it = e.target.closest(".bt-item"); if (it && (e.key === " " || e.key === "Enter")) { e.preventDefault(); toggle(it); } });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && tray && !busy && (list.contains(document.activeElement) || tray.contains(document.activeElement))) { clear(); }
+    });
+    wrap.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-a]"); if (!b || busy) return;
+      var p = picked(), a = b.dataset.a;
+      if (a === "all") { var on = p.length !== M.length; list.querySelectorAll(".bt-item").forEach(function (x) { x.setAttribute("aria-checked", String(on)); }); sync(); return; }
+      busy = true;
+      tray.querySelectorAll("button").forEach(function (x) { x.disabled = true; });
+      b.lastChild.textContent = a + "…";
+      setTimeout(function () {
+        busy = false;
+        note.textContent = b.dataset.done + " " + p.length + (p.length === 1 ? " message." : " messages.") + " This is a demo.";
+        if (a !== "Marking") { var gone = p.map(function (x) { return +x.dataset.i; }); M = M.filter(function (m, i) { return gone.indexOf(i) < 0; }); if (tray) { tray.remove(); tray = null; } paint(); }
+        else clear();
+      }, 700);
+    });
+    paint();
+  })();
+</script>

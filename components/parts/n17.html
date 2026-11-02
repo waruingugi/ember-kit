@@ -1,0 +1,94 @@
+<!-- part n17 | part | group nav | Settings tabs with a marker that glides. | Settings tabs with a marker that glides. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Settings tabs with <em>a marker that glides.</em></h3>
+          <p class="kit-p">Click a tab or use the arrow keys. Watch the dark marker slide and the box change size.</p>
+          <section class="cs kv4" id="n17">
+  <div class="frame"><div class="fbody">
+    <div class="tb" role="tablist" aria-label="Account settings">
+      <span class="tmk" aria-hidden="true"></span>
+      <button type="button" role="tab" id="n17-t0" aria-controls="n17-p0" aria-selected="true">Profile</button>
+      <button type="button" role="tab" id="n17-t1" aria-controls="n17-p1" aria-selected="false" tabindex="-1">Security</button>
+      <button type="button" role="tab" id="n17-t2" aria-controls="n17-p2" aria-selected="false" tabindex="-1">Billing</button>
+      <button type="button" role="tab" id="n17-t3" aria-controls="n17-p3" aria-selected="false" tabindex="-1">Team</button>
+    </div>
+    <div class="pst">
+      <div class="pn" role="tabpanel" id="n17-p0" aria-labelledby="n17-t0" tabindex="0">
+        <h4>Your profile</h4>
+        <dl>
+          <div class="rw"><dt>Name</dt><dd>Wanjiru Kamau</dd></div>
+          <div class="rw"><dt>Email</dt><dd>wanjiru@example.com</dd></div>
+          <div class="rw"><dt>Phone</dt><dd>+254 712 345 678</dd></div>
+        </dl>
+      </div>
+      <div class="pn" role="tabpanel" id="n17-p1" aria-labelledby="n17-t1" tabindex="0" hidden="">
+        <h4>Keep your account safe</h4>
+        <dl>
+          <div class="rw"><dt>Two-step sign in</dt><dd>On, by text message to +254 712 *** 678</dd></div>
+          <div class="rw"><dt>Last sign in</dt><dd>Today at 08:12, Nairobi</dd></div>
+          <div class="rw"><dt>Devices</dt><dd>3 devices are signed in</dd></div>
+        </dl>
+        <div class="acts"><button type="button" class="b sm">Sign out other devices</button><button type="button" class="b sm q">Change password</button></div>
+      </div>
+      <div class="pn" role="tabpanel" id="n17-p2" aria-labelledby="n17-t2" tabindex="0" hidden="">
+        <h4>Billing</h4>
+        <dl>
+          <div class="rw"><dt>Plan</dt><dd>Business · KSh 4,500 a month · next charge 1 Nov 2026</dd></div>
+          <div class="rw"><dt>Paid with</dt><dd>PocketPay, 0712 *** 678</dd></div>
+          <div class="rw"><dt>Last receipt</dt><dd>1 Oct 2026 · KSh 4,500</dd></div>
+        </dl>
+        <div class="acts"><button type="button" class="b sm">Download receipts</button><button type="button" class="b sm q">Change plan</button></div>
+      </div>
+      <div class="pn" role="tabpanel" id="n17-p3" aria-labelledby="n17-t3" tabindex="0" hidden="">
+        <h4>Your team</h4>
+        <div class="mem"><span>Wanjiru Kamau</span><span>Owner</span></div>
+        <div class="mem"><span>Brian Otieno</span><span>Admin</span></div>
+        <div class="mem"><span>Amina Hassan</span><span>Member</span></div>
+        <div class="mem"><span>Peter Mwangi</span><span>Member</span></div>
+        <div class="mem"><span>Grace Achieng</span><span>Member</span></div>
+        <div class="acts"><button type="button" class="b sm">Invite someone</button><span class="note" style="align-self:center">5 of 10 seats used</span></div>
+      </div>
+    </div>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0013">
+(function () {
+  "use strict";
+  var box = document.getElementById("n17"); if (!box) return;
+  var tl = box.querySelector(".tb"), mk = box.querySelector(".tmk");
+  var tabs = [].slice.call(tl.querySelectorAll("[role=tab]"));
+  var pn = tabs.map(function (t) { return document.getElementById(t.getAttribute("aria-controls")); });
+  var cur = 0;
+  function place(now) {
+    var t = tabs[cur];
+    if (now) mk.style.transition = "none";
+    mk.style.width = t.offsetWidth + "px"; mk.style.transform = "translateX(" + t.offsetLeft + "px)";
+    if (now) { void mk.offsetWidth; mk.style.transition = ""; }
+  }
+  function sel(i, foc) {
+    if (foc) tabs[i].focus();
+    if (i === cur) return;
+    var dir = i > cur ? 1 : -1;
+    /* the old panel leaves toward where you came from; the new one comes in from the side you moved to */
+    pn.forEach(function (p, k) { p.classList.toggle("l", k < i); p.classList.toggle("r", k > i); });
+    pn[cur].classList.toggle("l", dir > 0); pn[cur].classList.toggle("r", dir < 0);
+    pn[i].classList.remove(dir > 0 ? "l" : "r"); pn[i].classList.add(dir > 0 ? "r" : "l");
+    void pn[i].offsetWidth;
+    pn[cur].hidden = true; pn[i].hidden = false;
+    cur = i;
+    tabs.forEach(function (t, k) { t.setAttribute("aria-selected", k === i ? "true" : "false"); t.tabIndex = k === i ? 0 : -1; });
+    place(false);
+    var t = tabs[i]; if (t.offsetLeft < tl.scrollLeft || t.offsetLeft + t.offsetWidth > tl.scrollLeft + tl.clientWidth) t.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }
+  tabs.forEach(function (t, i) { t.addEventListener("click", function () { sel(i, false); }); });
+  tl.addEventListener("keydown", function (e) {
+    var n = tabs.length, i = tabs.indexOf(document.activeElement); if (i < 0) return;
+    var j = e.key === "ArrowRight" ? (i + 1) % n : e.key === "ArrowLeft" ? (i + n - 1) % n : e.key === "Home" ? 0 : e.key === "End" ? n - 1 : -1;
+    if (j < 0) return; e.preventDefault(); sel(j, true);
+  });
+  place(true);
+  if (window.ResizeObserver) new ResizeObserver(function () { place(true); }).observe(tl);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { place(true); });
+})();
+</script>

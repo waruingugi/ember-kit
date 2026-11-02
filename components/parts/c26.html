@@ -1,0 +1,34 @@
+<!-- part c26 | part | group cards | Cards that lean toward you. | Cards that lean toward you. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Cards that <em>lean toward you.</em></h3>
+          <p class="kit-p">Point at a card. It lifts, leans, and shows one more line.</p>
+          <section class="cs" id="c26">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Overview</span></div>
+      <div class="fbody">
+        <div class="rc-grid">
+          <article class="rc" tabindex="0"><span class="rc-tint" aria-hidden="true"><i></i></span><span class="label">Revenue this month</span><p class="num" style="margin-top:12px">$48,210</p><p style="margin-top:8px">Up 12% on last month, mostly from yearly plans.</p><div class="rc-more"><span>Updated 2 min ago</span><button class="b sm" type="button">Open report<svg class="i s"><use href="#i-ar"></use></svg></button></div></article>
+          <article class="rc" tabindex="0"><span class="rc-tint" aria-hidden="true"><i></i></span><span class="label">Next step</span><h4>Invite your team</h4><p>Work goes faster with three or more people.</p><div class="rc-more"><span>2 of 5 seats used</span><button class="b sm" type="button">Invite</button></div></article>
+        </div>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0023">
+  /* ---------------- 26 reveal card: lift + tilt (mouse) and a warm tint under the pointer ---------------- */
+  document.querySelectorAll(".rc").forEach(function (card) {
+    var tint = card.querySelector(".rc-tint i");
+    function centre() { tint.style.transform = "translate(" + card.offsetWidth / 2 + "px," + card.offsetHeight / 2 + "px)"; }
+    centre();
+    card.addEventListener("pointermove", function (e) {
+      var r = card.getBoundingClientRect();
+      if (lvl() !== "off") tint.style.transform = "translate(" + (e.clientX - r.left) + "px," + (e.clientY - r.top) + "px)";
+      if (e.pointerType !== "mouse" || lvl() === "off") return;
+      var deg = lvl() === "calm" ? 2 : 4, lift = lvl() === "calm" ? 1.5 : 3;
+      var x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      card.style.transition = "transform .15s " + EASE;
+      card.style.transform = "translateY(-" + lift + "px) rotateX(" + (-y * deg).toFixed(2) + "deg) rotateY(" + (x * deg).toFixed(2) + "deg)";
+    });
+    card.addEventListener("pointerleave", function () { card.style.transition = ""; card.style.transform = ""; centre(); });
+  });
+</script>

@@ -1,0 +1,57 @@
+<!-- part c06 | part | group nav | Pick a group, then the thing you want. | Pick a group, then the thing you want. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Pick a group, <em>then the thing you want.</em></h3>
+          <p class="kit-p">A cloud console menu. Each group opens its own list.</p>
+          <section class="cs" id="c06">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">New resource</span></div>
+      <div class="fbody">
+        <div class="bs">
+          <div class="tabs v" id="bsTabs" role="group" aria-label="Resource groups"></div>
+          <div class="bs-p" id="bsPanel" aria-live="polite"></div>
+        </div>
+        <p class="note" id="bsNote"></p>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0003">
+  /* ---------------- 06 branching submenu ---------------- */
+  (function () {
+    var G = [
+      { n: "Compute", d: "Servers and functions", i: "cpu", c: [["Virtual machine", "A server you control"], ["Function", "Code that runs on a call"], ["Container", "Bring your own image"]] },
+      { n: "Storage", d: "Files and backups", i: "db", c: [["Bucket", "Files of any size"], ["Volume", "A disk for one server"], ["Backup plan", "Copies on a timetable"]] },
+      { n: "Network", d: "Traffic and names", i: "globe", c: [["Load balancer", "Share traffic between servers"], ["Private network", "Servers that talk alone"], ["Domain", "A name people can type"]] },
+      { n: "Security", d: "Who gets in", i: "shield", c: [["Firewall", "Rules for what gets through"], ["Access key", "A key for scripts"], ["Audit log", "Who did what, and when"]] }
+    ];
+    var panel = $("bsPanel"), note = $("bsNote"), T;
+    function render(i) {
+      var g = G[i];
+      panel.innerHTML = "<h4>" + ic(g.i, "s") + g.n + "</h4>" + g.c.map(function (c, k) {
+        return '<button type="button" class="bs-c" style="--n:' + k + '"><span><b>' + c[0] + "</b><small>" + c[1] + "</small></span></button>";
+      }).join("");
+      if (spd()) replay(panel, "go");
+    }
+    T = tabs($("bsTabs"), G.map(function (g) {
+      return '<span style="display:flex;gap:10px;align-items:flex-start">' + ic(g.i) + "<span>" + g.n + '<span class="bs-d">' + g.d + "</span></span></span>" + ic("cr", "s");
+    }), {
+      vertical: true,
+      onSelect: function (i) { render(i); },
+      onKey: function (e) { if (e.key === "ArrowRight") { panel.querySelector(".bs-c").focus(); return true; } }
+    });
+    render(0);
+    panel.addEventListener("keydown", function (e) {
+      var list = [].slice.call(panel.querySelectorAll(".bs-c")), i = list.indexOf(document.activeElement);
+      if (i < 0) return;
+      if (e.key === "ArrowDown") list[(i + 1) % list.length].focus();
+      else if (e.key === "ArrowUp") list[(i - 1 + list.length) % list.length].focus();
+      else if (e.key === "ArrowLeft" || e.key === "Escape") T.btns[T.cur()].focus();
+      else return;
+      e.preventDefault();
+    });
+    panel.addEventListener("click", function (e) {
+      var b = e.target.closest(".bs-c"); if (!b) return;
+      note.innerHTML = "You picked <b>" + b.querySelector("b").textContent + "</b> under " + G[T.cur()].n + ".";
+    });
+  })();
+</script>

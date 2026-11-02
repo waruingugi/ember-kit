@@ -1,0 +1,95 @@
+<!-- part n15 | part | group forms | One button, a choice beside it. | One button, a choice beside it. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">One button, <em>a choice beside it.</em></h3>
+          <p class="kit-p">Open the arrow and pick how to merge. Then press the main button.</p>
+          <section class="cs kv4" id="n15">
+  <div class="frame"><div class="fbody">
+    <div class="stage">
+      <div class="wrap" id="n15-wrap">
+        <div class="spl">
+          <button class="b pri main" type="button" id="n15-main"><span class="lab">Merge pull request</span></button>
+          <button class="b pri chev" type="button" id="n15-chev" aria-haspopup="menu" aria-expanded="false" aria-controls="n15-menu" aria-label="Choose how to merge"><svg class="i" aria-hidden="true"><use href="#i-cd"></use></svg></button>
+        </div>
+        <div class="pop menu" id="n15-menu" role="menu" aria-label="Merge method" hidden="">
+          <div class="mi" id="n15-mi">
+            <div class="hl" id="n15-hl" aria-hidden="true"></div>
+            <button class="it" type="button" role="menuitemradio" aria-checked="true" data-lab="Merge pull request"><span><strong>Create a merge commit</strong><small>Keeps every commit and adds one merge commit.</small></span><svg class="i" aria-hidden="true"><use href="#i-check"></use></svg></button>
+            <button class="it" type="button" role="menuitemradio" aria-checked="false" data-lab="Squash and merge"><span><strong>Squash and merge</strong><small>Combines all commits into one on the main branch.</small></span><svg class="i" aria-hidden="true"><use href="#i-check"></use></svg></button>
+            <button class="it" type="button" role="menuitemradio" aria-checked="false" data-lab="Rebase and merge"><span><strong>Rebase and merge</strong><small>Replays each commit on top of the main branch.</small></span><svg class="i" aria-hidden="true"><use href="#i-check"></use></svg></button>
+          </div>
+        </div>
+      </div>
+      <p class="note" id="n15-note" aria-live="polite" style="margin:0">Method: create a merge commit. Pull request #482 is ready.</p>
+    </div>
+
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0027">
+(function () {
+  "use strict";
+  var box = document.getElementById("n15"); if (!box) return;
+  var EASE = "cubic-bezier(.22,1,.36,1)";
+  var spd = function () { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; };
+  var $ = function (id) { return document.getElementById(id); };
+  var wrap = $("n15-wrap"), main = $("n15-main"), chev = $("n15-chev"), menu = $("n15-menu"), hl = $("n15-hl"), note = $("n15-note");
+  var items = Array.prototype.slice.call(menu.querySelectorAll(".it")), isOpen = false, busy = false, anim = null, label = "Merge pull request", cur = 0;
+  function swap(html) { var lab = main.querySelector(".lab"), s = spd(); lab.innerHTML = html; if (s) lab.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 180 * s, easing: EASE }); }
+  function mark(i, animate) {
+    cur = i; var it = items[i], s = spd();
+    hl.style.height = it.offsetHeight + "px";
+    hl.style.transition = animate && s ? "transform " + (.2 * s) + "s " + EASE + ", opacity .15s" : "none";
+    hl.style.opacity = 1; hl.style.transform = "translateY(" + it.offsetTop + "px)";
+  }
+  function open() {
+    if (isOpen || busy) return; isOpen = true; menu.hidden = false; chev.setAttribute("aria-expanded", "true");
+    menu.style.transformOrigin = (chev.offsetLeft + chev.offsetWidth / 2) + "px 0";
+    var sel = items.findIndex(function (b) { return b.getAttribute("aria-checked") === "true"; });
+    mark(sel, false); items[sel].focus();
+    var s = spd(); if (anim) anim.cancel();
+    if (s) anim = menu.animate([{ opacity: 0, transform: "scale(.96)" }, { opacity: 1, transform: "none" }], { duration: 200 * s, easing: EASE });
+  }
+  function close(refocus) {
+    if (!isOpen) return; isOpen = false; chev.setAttribute("aria-expanded", "false"); hl.style.opacity = 0;
+    var s = spd(); if (anim) anim.cancel();
+    if (s) { anim = menu.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "scale(.96)" }], { duration: 140 * s, easing: EASE }); anim.onfinish = function () { if (!isOpen) menu.hidden = true; }; }
+    else menu.hidden = true;
+    if (refocus) chev.focus();
+  }
+  function pick(i) {
+    items.forEach(function (b, n) { b.setAttribute("aria-checked", n === i); });
+    label = items[i].dataset.lab; swap(label);
+    note.textContent = "Method: " + items[i].querySelector("strong").textContent.toLowerCase() + ". Pull request #482 is ready.";
+    close(true);
+  }
+  chev.addEventListener("click", function () { if (isOpen) close(false); else open(); });
+  items.forEach(function (b, i) {
+    b.addEventListener("click", function () { pick(i); });
+    b.addEventListener("mouseenter", function () { if (isOpen) { mark(i, true); } });
+    b.addEventListener("focus", function () { if (isOpen) mark(i, true); });
+    b.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown") { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); items[(i + items.length - 1) % items.length].focus(); }
+      else if (e.key === "Home") { e.preventDefault(); items[0].focus(); }
+      else if (e.key === "End") { e.preventDefault(); items[items.length - 1].focus(); }
+      else if (e.key === "Tab") close(false);
+    });
+  });
+  chev.addEventListener("keydown", function (e) { if (e.key === "ArrowDown" && !isOpen) { e.preventDefault(); open(); } });
+  menu.addEventListener("keydown", function (e) { if (e.key === "Escape") { e.preventDefault(); close(true); } });
+  document.addEventListener("pointerdown", function (e) { if (isOpen && !wrap.contains(e.target)) close(false); });
+  main.addEventListener("click", function () {
+    if (busy) return; close(false); busy = true; main.disabled = true; chev.disabled = true; main.style.opacity = 1; chev.style.opacity = 1;
+    swap('<svg class="sp" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>Merging');
+    var s = spd();
+    setTimeout(function () {
+      swap('<svg class="tk" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M20 6 9 17l-5-5"/></svg>Merged');
+      var p = main.querySelector(".tk path"); p.style.strokeDasharray = 1;
+      if (s) p.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 300 * s, easing: EASE });
+      note.textContent = "Pull request #482 is merged.";
+      setTimeout(function () { swap(label); main.disabled = false; chev.disabled = false; busy = false; note.textContent = "Method: " + items[cur >= 0 ? items.findIndex(function (b) { return b.getAttribute("aria-checked") === "true"; }) : 0].querySelector("strong").textContent.toLowerCase() + ". Pull request #482 is ready."; }, s ? 2400 : 600);
+    }, s ? 1000 : 0);
+  });
+})();
+</script>

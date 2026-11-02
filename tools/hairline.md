@@ -33,13 +33,14 @@ as a global skill in `~/.claude/skills/hairline-create/` (2026-10-09), so
 `rules.md`, `concepts.md` and `look.md` before the first figure in a
 session.
 
-**How it was installed.** It is a copy of the pinned clone in
-`~/tools/hairline`, made with a plain file copy. We did not use
+**How it was installed.** ember-kit ships a copy of the pinned skill in
+`claude/skills/hairline-create/` (with its MIT `LICENSE`), unchanged, and
+`tools/setup.md` copies it to `~/.claude/skills/`. We did not use
 `npx skills add https://github.com/lucasmarkes/hairline --skill hairline-create`,
 because that fetches whatever is newest instead of the pinned commit. To
-move the pin: `git -C ~/tools/hairline fetch`, read what changed, check out
-the new commit, then copy `skills/hairline-create/` over the installed
-skill again.
+move the pin: clone the repo, read what changed, check out the new commit,
+test, then copy `skills/hairline-create/` over `claude/skills/hairline-create/`
+(keep `LICENSE`) and over the installed skill.
 
 ```bash
 HL=~/.claude/skills/hairline-create
@@ -88,8 +89,8 @@ page:
 ```
 
 **Staged explode.** To show something complex, take it apart in stages.
-The study at https://claude.ai/artifact/CPUTrvHqkcTidGkGY9355G is the
-working example (figures `watch`, `movement` and `cabinet` in the library).
+The owner's watch study is the working example (figures `watch`,
+`movement` and `cabinet` in the library).
 The owner called it "very good" on 2026-10-08.
 - **Stage one is the overview.** A few chunky layers that come apart, with
   one layer bright at rest. Motion stays calmer here than in later stages.

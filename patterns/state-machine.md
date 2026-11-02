@@ -34,12 +34,12 @@ section 17 of `components/showcase/index.html`.
 - Every diagram starts with the 18 px dot pattern on `#f1f3f2`. The paint
   order is zones, arrows, labels, nodes, notes.
 - Every `<svg class="dg">` has `role="img"`, a `<title>` and a `<desc>`.
-- **The motion** (`page.js`, "diagrams: boxes, then lines draw, then
+- **The motion** (the showcase script, "diagrams: boxes, then lines draw, then
   labels"): one GSAP timeline per diagram, started once at `top 78%`.
   Boxes (`[data-dg]`) rise 8 px and fade in, staggered. Solid arrows draw
   in with `strokeDashoffset 1 → 0`. Dashed arrows fade in. Labels
   (`[data-dgl]`) fade in last. With motion off, it is simply drawn.
-- **The styles** (`page.css`, `svg.dg …`): node fill `--paper-raised`,
+- **The styles** (section `#states` of the showcase): node fill `--paper-raised`,
   focal `color-mix(in srgb, var(--accent) 8%, var(--paper-raised))`, arrows
   `--muted` at 1.2 px, the happy path `--accent` at 1.6 px, dashes `5 4`.
 - Check each diagram with Diagram Design's `verify-geometry.py` and

@@ -1,0 +1,111 @@
+<!-- part n12 | part | group nav | Every action, one search away. | Every action, one search away. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Every action, <em>one search away.</em></h3>
+          <p class="kit-p">Press the button, or press Ctrl or Cmd + K. Type a few letters, use the arrows, press Enter.</p>
+          <section class="cs kv4" id="n12">
+  <div class="frame"><div class="fbody">
+    <div class="stage">
+      <div class="top"><button class="b" type="button" id="n12-btn" aria-expanded="false" aria-controls="n12-panel"><svg class="i" aria-hidden="true"><use href="#i-search"></use></svg>Search commands <kbd>⌘K</kbd></button></div>
+      <div class="cm" id="n12-panel" hidden="" role="dialog" aria-label="Command menu">
+        <div class="srch"><svg class="i" aria-hidden="true"><use href="#i-search"></use></svg>
+          <input id="n12-in" type="text" role="combobox" aria-expanded="true" aria-controls="n12-list" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Type a command or a note" aria-label="Search commands"></div>
+        <div class="sc" id="n12-sc"><div class="hl" id="n12-hl" aria-hidden="true"></div><div id="n12-list" role="listbox" aria-label="Commands"></div></div>
+        <div class="foot" aria-hidden="true"><span>↑↓ to move</span><span>↵ to pick</span><span>esc to close</span></div>
+      </div>
+    </div>
+    <p class="note" id="n12-note" aria-live="polite">Nothing run yet.</p>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0025">
+(function () {
+  "use strict";
+  var box = document.getElementById("n12"); if (!box) return;
+  var EASE = "cubic-bezier(.22,1,.36,1)";
+  var spd = function () { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; };
+  var $ = function (id) { return document.getElementById(id); };
+  var btn = $("n12-btn"), panel = $("n12-panel"), inp = $("n12-in"), sc = $("n12-sc"), list = $("n12-list"), hl = $("n12-hl"), note = $("n12-note");
+  var G = [
+    ["Suggestions", [["New note", "Note"], ["Search notes", "Search"], ["Open settings", "Settings"]]],
+    ["Notes", [["Shopping list", "Note"], ["Trip to Kisumu", "Note"], ["Book club ideas", "Note"]]],
+    ["Actions", [["Export as PDF", "Export"], ["Share with team", "Share"], ["Dark mode", "Theme"]]]
+  ];
+  var rows = [], act = 0, isOpen = false, uid = 0;
+  // shortcut: simple in-order letter match, fine for 9 items; use a scored matcher for big lists
+  function fuzzy(q, s) {
+    if (!q) return []; var idx = [], j = 0; s = s.toLowerCase();
+    for (var i = 0; i < s.length && j < q.length; i++) if (s[i] === q[j]) { idx.push(i); j++; }
+    return j === q.length ? idx : null;
+  }
+  function glide(el, fn) {
+    var s = spd(), h0 = el.offsetHeight; fn(); if (!s) return;
+    var h1 = el.offsetHeight; if (h0 === h1) return;
+    el.style.overflow = "hidden";
+    var a = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: 220 * s, easing: EASE });
+    a.onfinish = a.oncancel = function () { el.style.overflow = ""; };
+  }
+  function render() {
+    var q = inp.value.trim().toLowerCase().replace(/\s+/g, ""); list.innerHTML = ""; rows = [];
+    G.forEach(function (g) {
+      var hit = [];
+      g[1].forEach(function (it) { var m = fuzzy(q, it[0].replace(/\s+/g, "")); if (m) hit.push({ it: it, m: m, w: q ? m[m.length - 1] - m[0] : 0 }); });
+      if (!hit.length) return;
+      if (q) hit.sort(function (a, b) { return a.w - b.w; });
+      var grp = document.createElement("div"); grp.className = "grp"; grp.setAttribute("role", "group");
+      var h = document.createElement("p"); h.className = "gh"; h.textContent = g[0]; h.id = "n12-g" + (++uid); grp.setAttribute("aria-labelledby", h.id); grp.appendChild(h);
+      var ul = document.createElement("ul"); ul.setAttribute("role", "presentation");
+      hit.forEach(function (x) {
+        var li = document.createElement("li"); li.setAttribute("role", "option"); li.id = "n12-o" + rows.length; li.setAttribute("aria-selected", "false");
+        var sp = document.createElement("span"), txt = x.it[0], map = {}, spaces = 0;
+        // map letters of the no-space query back onto the real text
+        if (q) { var k = 0; for (var c = 0; c < txt.length; c++) { if (txt[c] === " ") { spaces++; continue; } if (x.m.indexOf(c - spaces) > -1) map[c] = 1; k++; } }
+        for (var c2 = 0; c2 < txt.length; c2++) {
+          if (map[c2]) { var b = document.createElement("b"); b.textContent = txt[c2]; sp.appendChild(b); } else sp.appendChild(document.createTextNode(txt[c2]));
+        }
+        li.appendChild(sp); var t = document.createElement("span"); t.className = "tag"; t.textContent = x.it[1]; li.appendChild(t);
+        ul.appendChild(li); rows.push({ el: li, name: x.it[0] });
+      });
+      grp.appendChild(ul); list.appendChild(grp);
+    });
+    if (!rows.length) list.innerHTML = '<p class="emp">No command matches</p>';
+  }
+  function place(animate) {
+    var r = rows[act];
+    if (!r) { hl.style.opacity = 0; inp.removeAttribute("aria-activedescendant"); return; }
+    var s = spd(), li = r.el;
+    hl.style.transition = animate && s ? "transform " + (.22 * s) + "s " + EASE + ", opacity .15s" : "none";
+    hl.style.opacity = 1; hl.style.transform = "translateY(" + (li.offsetTop + li.offsetParent.offsetTop) + "px)";
+    rows.forEach(function (x, i) { x.el.classList.toggle("act", i === act); x.el.setAttribute("aria-selected", i === act); });
+    inp.setAttribute("aria-activedescendant", li.id);
+    var t = li.offsetTop + li.offsetParent.offsetTop, h = li.offsetHeight;
+    if (t < sc.scrollTop + 4) sc.scrollTop = t - 30; else if (t + h > sc.scrollTop + sc.clientHeight - 4) sc.scrollTop = t + h - sc.clientHeight + 4;
+  }
+  function open() {
+    if (isOpen) { inp.focus(); return; } isOpen = true;
+    panel.hidden = false; btn.setAttribute("aria-expanded", "true"); inp.value = ""; render(); act = 0; place(false); inp.focus();
+    var s = spd(); if (s) panel.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 100, easing: "linear" });
+  }
+  function close(refocus) {
+    if (!isOpen) return; isOpen = false; panel.hidden = true; btn.setAttribute("aria-expanded", "false"); if (refocus) btn.focus();
+  }
+  function run(i) { var r = rows[i]; if (!r) return; note.textContent = "Ran: " + r.name; close(true); }
+  btn.addEventListener("click", function () { if (isOpen) close(true); else open(); });
+  inp.addEventListener("input", function () { glide(sc, function () { render(); act = 0; }); place(false); });
+  inp.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); if (rows.length) { act = (act + (e.key === "ArrowDown" ? 1 : -1) + rows.length) % rows.length; place(true); } }
+    else if (e.key === "Enter") { e.preventDefault(); run(act); }
+    else if (e.key === "Escape") { e.preventDefault(); close(true); }
+  });
+  list.addEventListener("mousemove", function (e) { var li = e.target.closest("li"); if (!li) return; var i = rows.map(function (r) { return r.el; }).indexOf(li); if (i > -1 && i !== act) { act = i; place(true); } });
+  list.addEventListener("mousedown", function (e) { e.preventDefault(); });
+  list.addEventListener("click", function (e) { var li = e.target.closest("li"); if (!li) return; run(rows.map(function (r) { return r.el; }).indexOf(li)); });
+  document.addEventListener("pointerdown", function (e) { if (isOpen && !panel.contains(e.target) && !btn.contains(e.target)) close(false); });
+  document.addEventListener("keydown", function (e) {
+    if (!(e.key === "k" || e.key === "K") || !(e.ctrlKey || e.metaKey)) return;
+    var t = e.target, tag = t && t.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (t && t.isContentEditable)) return;
+    e.preventDefault(); open();
+  });
+})();
+</script>

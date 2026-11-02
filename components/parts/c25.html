@@ -1,0 +1,67 @@
+<!-- part c25 | part | group cards | Point at a name to peek. | Point at a name to peek. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Point at a name <em>to peek.</em></h3>
+          <p class="kit-p">Rest your pointer on the underlined words, or tab to them.</p>
+          <section class="cs" id="c25">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Activity</span></div>
+      <div class="fbody">
+        <div class="pk-stage" id="pkStage">
+          <p>On Tuesday <span class="pk-t" tabindex="0" role="button" aria-expanded="false" aria-controls="pkCard" id="pkT">invoice 4021</span> was paid in full, two days early. The team sent a thank-you note, and the account moved to the yearly plan.</p>
+          <div class="pop pk" id="pkCard" role="dialog" aria-label="Invoice 4021" hidden="">
+            <div class="pk-h"><div><b>Invoice 4021</b><small>Paid · 27 Oct 2026</small></div><span class="pk-amt">$1,280</span></div>
+            <div class="pk-who"><span class="av">MO</span><div><b>Maya Ortiz</b><small>maya@example.com</small></div><button class="ib" type="button" id="pkCopy" aria-label="Copy email"><svg class="i s"><use href="#i-copy"></use></svg></button></div>
+            <div class="kv"><span>Plan</span><span>Team, yearly</span></div>
+            <div class="kv"><span>Method</span><span>Card ···· 4242</span></div>
+            <div class="pk-f"><span id="pkMsg">INV-4021</span><button class="lk" type="button" id="pkOpen">Open invoice</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0022">
+  /* ---------------- 25 peek card ---------------- */
+  (function () {
+    var stage = $("pkStage"), trig = $("pkT"), card = $("pkCard"), tOpen = 0, tClose = 0;
+    function place() {
+      var s = stage.getBoundingClientRect(), r = trig.getBoundingClientRect(), cw = card.offsetWidth, ch = card.offsetHeight;
+      var left = clamp(r.left - s.left + r.width / 2 - cw / 2, 0, s.width - cw);
+      var above = r.top - s.top >= ch + 10;
+      var top = above ? r.top - s.top - ch - 8 : r.bottom - s.top + 8;
+      card.style.left = left + "px"; card.style.top = top + "px";
+      card.style.transformOrigin = (r.left - s.left + r.width / 2 - left) + "px " + (above ? "100%" : "0");
+      card.classList.toggle("below", !above);
+    }
+    function open() {
+      clearTimeout(tClose); clearTimeout(tOpen);
+      if (!card.hidden && !card.classList.contains("out")) return;
+      card.hidden = false; card.classList.remove("out"); place();
+      if (spd()) replay(card, "in");
+      trig.setAttribute("aria-expanded", "true");
+    }
+    function close(now) {
+      clearTimeout(tOpen); clearTimeout(tClose);
+      var go = function () {
+        if (card.hidden) return;
+        trig.setAttribute("aria-expanded", "false");
+        if (!spd()) { card.hidden = true; return; }
+        card.classList.remove("in"); card.classList.add("out");
+        setTimeout(function () { if (card.classList.contains("out")) { card.hidden = true; card.classList.remove("out"); } }, 120);
+      };
+      if (now) go(); else tClose = setTimeout(go, 150);
+    }
+    trig.addEventListener("pointerenter", function (e) { if (e.pointerType !== "mouse") return; clearTimeout(tClose); tOpen = setTimeout(open, 200); });
+    trig.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") close(); });
+    card.addEventListener("pointerenter", function () { clearTimeout(tClose); });
+    card.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse" && !card.contains(document.activeElement)) close(); });
+    trig.addEventListener("focus", open);
+    trig.addEventListener("click", function () { if (card.hidden || card.classList.contains("out")) open(); else close(true); });
+    trig.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); if (card.hidden) open(); else card.querySelector("button").focus(); } });
+    stage.addEventListener("focusout", function (e) { if (!stage.contains(e.relatedTarget)) close(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !card.hidden) { close(true); trig.focus(); } });
+    document.addEventListener("click", function (e) { if (!card.hidden && outside(e, card) && e.target !== trig) close(true); });
+    $("pkCopy").addEventListener("click", function () { copy("maya@example.com").then(function (ok) { $("pkMsg").textContent = ok ? "Email copied" : "Copy blocked"; setTimeout(function () { $("pkMsg").textContent = "INV-4021"; }, 1400); }); });
+    $("pkOpen").addEventListener("click", function () { $("pkMsg").textContent = "Opening is off in this demo"; });
+  })();
+</script>

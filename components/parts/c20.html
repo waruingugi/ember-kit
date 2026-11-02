@@ -1,0 +1,84 @@
+<!-- part c20 | part | group tables | Delete a notice, and it turns to dust. | Delete a notice, and it turns to dust. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Delete a notice, <em>and it turns to dust.</em></h3>
+          <p class="kit-p">Delete one. It breaks into orange specks, and the rest close the gap.</p>
+          <section class="cs" id="c20">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Notifications</span></div>
+      <div class="fbody">
+        <div class="pd" id="pd" style="position:relative">
+          <div class="pd-h"><h4>Notifications <span class="pd-n" id="pdN"></span></h4><button class="b sm q" type="button" id="pdRestore"><svg class="i s"><use href="#i-rot"></use></svg>Restore</button></div>
+          <ul class="pd-list" id="pdList"></ul>
+          <canvas id="pdCanvas" aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;width:100%;height:100%"></canvas>
+        </div>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0017">
+  /* ---------------- 20 dissolve delete ---------------- */
+  (function () {
+    var N = [["msg", "Maya left a comment", "“Can we ship the pricing page on Friday?”"], ["user", "Sam joined Launch", "He can see every file in the project."], ["receipt", "Invoice 4021 is paid", "$1,280 from Northwind."], ["alert", "Server 4 was slow", "It is back to normal now."], ["cal", "Review at 15:00", "Pricing page, with Priya and Leo."], ["share", "Priya shared a file", "Brand guide v4.pdf"]];
+    var pd = $("pd"), list = $("pdList"), cv = $("pdCanvas"), ctx = cv.getContext("2d"), parts = [], raf = 0;
+    function count() {
+      var n = list.querySelectorAll(".pd-row").length, el = $("pdN");
+      el.textContent = n; if (spd()) replay(el, "fade-in");
+      if (!n && !list.querySelector(".pd-empty")) list.innerHTML = '<li class="pd-empty"><i aria-hidden="true"></i>All clear. Nothing new.</li>';
+    }
+    function paint() {
+      list.innerHTML = N.map(function (n) {
+        return '<li class="pd-row"><span class="pd-ic" aria-hidden="true">' + ic(n[0]) + '</span><span class="pd-m"><b>' + esc(n[1]) + "</b><small>" + esc(n[2]) + '</small></span><button class="ib pd-del" type="button" aria-label="Delete: ' + esc(n[1]) + '">' + ic("trash") + "</button></li>";
+      }).join("");
+      $("pdN").textContent = N.length;
+    }
+    function dust(li) {
+      var dpr = Math.min(2, window.devicePixelRatio || 1), pr = pd.getBoundingClientRect(), r = li.getBoundingClientRect();
+      cv.width = pr.width * dpr; cv.height = pr.height * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var x0 = r.left - pr.left, y0 = r.top - pr.top, n = Math.min(520, Math.round(r.width * r.height / 55)), now = performance.now();
+      for (var i = 0; i < n; i++) {
+        var x = x0 + Math.random() * r.width;
+        parts.push({ x: x, y: y0 + Math.random() * r.height, vx: .3 + Math.random() * 1.4, vy: -.2 - Math.random() * .7, s: 1 + Math.random() * 1.5, born: now + (x - x0) / r.width * 380, life: 500 + Math.random() * 400, c: Math.random() < .5 ? "225,74,14" : "179,58,10" });
+      }
+      if (!raf) raf = requestAnimationFrame(frame);
+    }
+    function frame(now) {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      parts = parts.filter(function (p) {
+        var t = (now - p.born) / p.life;
+        if (t < 0) { ctx.fillStyle = "rgba(" + p.c + ",1)"; ctx.fillRect(p.x, p.y, p.s, p.s); return true; }
+        if (t >= 1) return false;
+        var k = t * p.life / 16;
+        ctx.fillStyle = "rgba(" + p.c + "," + (1 - t).toFixed(3) + ")";
+        ctx.fillRect(p.x + p.vx * k, p.y + p.vy * k - t * t * 6, p.s, p.s);
+        return true;
+      });
+      raf = parts.length ? requestAnimationFrame(frame) : 0;
+    }
+    function close(li) {
+      var after = [], el = li.nextElementSibling;
+      while (el) { after.push(el); el = el.nextElementSibling; }
+      var before = after.map(function (x) { return x.getBoundingClientRect().top; }), h0 = pd.offsetHeight;
+      li.remove();
+      if (!spd()) return;
+      /* the panel shrinks with the rows instead of snapping shorter */
+      var h1 = pd.offsetHeight;
+      if (h0 !== h1) { pd.style.overflow = "hidden"; pd.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: 450, easing: EASE }).onfinish = function () { pd.style.overflow = ""; }; }
+      after.forEach(function (x, i) {
+        var d = before[i] - x.getBoundingClientRect().top;
+        if (d) x.animate([{ transform: "translateY(" + d + "px)" }, { transform: "none" }], { duration: 450, easing: EASE });
+      });
+    }
+    list.addEventListener("click", function (e) {
+      var b = e.target.closest(".pd-del"); if (!b) return;
+      var li = b.closest(".pd-row"), next = li.nextElementSibling || li.previousElementSibling;
+      var focusNext = function () { var nb = next && next.querySelector(".pd-del"); (nb || $("pdRestore")).focus(); };
+      if (!spd()) { close(li); count(); focusNext(); return; }
+      li.style.pointerEvents = "none";
+      dust(li);
+      li.animate([{ clipPath: "inset(0 0 0 0)" }, { clipPath: "inset(0 0 0 100%)" }], { duration: 420, easing: "linear", fill: "forwards" }).onfinish = function () { close(li); count(); };
+      focusNext();
+    });
+    $("pdRestore").addEventListener("click", function () { paint(); if (spd()) list.querySelectorAll(".pd-row").forEach(function (r, i) { r.animate([{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "none" }], { duration: 300, delay: i * 30, easing: EASE, fill: "backwards" }); }); });
+    paint();
+  })();
+</script>

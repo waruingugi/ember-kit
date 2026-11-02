@@ -1,0 +1,975 @@
+[
+ {
+  "id": "hero",
+  "kind": "hero",
+  "name": "Hero",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "icons-1",
+  "kind": "icons",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "icons-2",
+  "kind": "icons",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "group-charts",
+  "kind": "group",
+  "group": "charts",
+  "name": "Charts and numbers",
+  "heading": "Numbers people can read at a glance.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "c01",
+  "kind": "part",
+  "group": "charts",
+  "name": "Server traffic, live.",
+  "heading": "Server traffic, live.",
+  "needs": [
+   "pair:c01,c02"
+  ],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c02",
+  "kind": "part",
+  "group": "charts",
+  "name": "Revenue, day by day.",
+  "heading": "Revenue, day by day.",
+  "needs": [
+   "pair:c01,c02"
+  ],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "c03",
+  "kind": "part",
+  "group": "charts",
+  "name": "Sign-ups by channel, month by month.",
+  "heading": "Sign-ups by channel, month by month.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n06",
+  "kind": "part",
+  "group": "charts",
+  "name": "Three numbers that count up and can be scrubbed.",
+  "heading": "Three numbers that count up and can be scrubbed.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n07",
+  "kind": "part",
+  "group": "charts",
+  "name": "A live count where each digit rolls on its own.",
+  "heading": "A live count where each digit rolls on its own.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n03",
+  "kind": "part",
+  "group": "charts",
+  "name": "Where the month's money went, in one ring.",
+  "heading": "Where the month's money went, in one ring.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "group-time",
+  "kind": "group",
+  "group": "time",
+  "name": "Dates",
+  "heading": "Pick a day without a fight.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "n01",
+  "kind": "part",
+  "group": "time",
+  "name": "Pick your nights, see the price as you go.",
+  "heading": "Pick your nights, see the price as you go.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "group-tables",
+  "kind": "group",
+  "group": "tables",
+  "name": "Tables and lists",
+  "heading": "Lots of rows, still easy to scan.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "c15",
+  "kind": "part",
+  "group": "tables",
+  "name": "Customers, in one table.",
+  "heading": "Customers, in one table.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n37",
+  "kind": "part",
+  "group": "tables",
+  "name": "Sort, and rows glide to their place.",
+  "heading": "Sort, and rows glide to their place.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n48",
+  "kind": "part",
+  "group": "tables",
+  "name": "Pages with a pill that slides to your page.",
+  "heading": "Pages with a pill that slides to your page.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c16",
+  "kind": "part",
+  "group": "tables",
+  "name": "Open an account to see its history.",
+  "heading": "Open an account to see its history.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n20",
+  "kind": "part",
+  "group": "tables",
+  "name": "Search pages with a marker that slides.",
+  "heading": "Search pages with a marker that slides.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c18",
+  "kind": "part",
+  "group": "tables",
+  "name": "Pick files, act on all at once.",
+  "heading": "Pick files, act on all at once.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c19",
+  "kind": "part",
+  "group": "tables",
+  "name": "Clear a busy inbox in one go.",
+  "heading": "Clear a busy inbox in one go.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c20",
+  "kind": "part",
+  "group": "tables",
+  "name": "Delete a notice, and it turns to dust.",
+  "heading": "Delete a notice, and it turns to dust.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c17",
+  "kind": "part",
+  "group": "tables",
+  "name": "Three plans, side by side.",
+  "heading": "Three plans, side by side.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "group-forms",
+  "kind": "group",
+  "group": "forms",
+  "name": "Forms and inputs",
+  "heading": "Forms that say what went wrong.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "c10",
+  "kind": "part",
+  "group": "forms",
+  "name": "Three steps, one line that fills.",
+  "heading": "Three steps, one line that fills.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c11",
+  "kind": "part",
+  "group": "forms",
+  "name": "Sign in, and see what went wrong.",
+  "heading": "Sign in, and see what went wrong.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n30",
+  "kind": "part",
+  "group": "forms",
+  "name": "Wrong fields shake. Right ones get a tick.",
+  "heading": "Wrong fields shake. Right ones get a tick.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n11",
+  "kind": "part",
+  "group": "forms",
+  "name": "A sign-up form that grades your password.",
+  "heading": "A sign-up form that grades your password.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n10",
+  "kind": "part",
+  "group": "forms",
+  "name": "A six-digit code, checked as you finish.",
+  "heading": "A six-digit code, checked as you finish.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n09",
+  "kind": "part",
+  "group": "forms",
+  "name": "A long list, found by typing.",
+  "heading": "A long list, found by typing.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n14",
+  "kind": "part",
+  "group": "forms",
+  "name": "Settings that respond to a touch.",
+  "heading": "Settings that respond to a touch.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n31",
+  "kind": "part",
+  "group": "forms",
+  "name": "Switches that spring when you flip them.",
+  "heading": "Switches that spring when you flip them.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n43",
+  "kind": "part",
+  "group": "forms",
+  "name": "Pick one, and see what it means.",
+  "heading": "Pick one, and see what it means.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n44",
+  "kind": "part",
+  "group": "forms",
+  "name": "Slide, and the number counts to it.",
+  "heading": "Slide, and the number counts to it.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n45",
+  "kind": "part",
+  "group": "forms",
+  "name": "Tags that suggest as you type.",
+  "heading": "Tags that suggest as you type.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n46",
+  "kind": "part",
+  "group": "forms",
+  "name": "Filter chips that add up as you tap.",
+  "heading": "Filter chips that add up as you tap.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n39",
+  "kind": "part",
+  "group": "forms",
+  "name": "A window that settles into place.",
+  "heading": "A window that settles into place.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n41",
+  "kind": "part",
+  "group": "forms",
+  "name": "A side sheet whose lines arrive in turn.",
+  "heading": "A side sheet whose lines arrive in turn.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c12",
+  "kind": "part",
+  "group": "forms",
+  "name": "Upload files, and watch each one.",
+  "heading": "Upload files, and watch each one.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c13",
+  "kind": "part",
+  "group": "forms",
+  "name": "A secret key, shown only when asked.",
+  "heading": "A secret key, shown only when asked.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n15",
+  "kind": "part",
+  "group": "forms",
+  "name": "One button, a choice beside it.",
+  "heading": "One button, a choice beside it.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c14",
+  "kind": "part",
+  "group": "forms",
+  "name": "One big button for the last step.",
+  "heading": "One big button for the last step.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n29",
+  "kind": "part",
+  "group": "forms",
+  "name": "Pay, and see it go through.",
+  "heading": "Pay, and see it go through.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "group-nav",
+  "kind": "group",
+  "group": "nav",
+  "name": "Getting around",
+  "heading": "Always know where you are.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "c05",
+  "kind": "part",
+  "group": "nav",
+  "name": "A site menu, with a second row.",
+  "heading": "A site menu, with a second row.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c06",
+  "kind": "part",
+  "group": "nav",
+  "name": "Pick a group, then the thing you want.",
+  "heading": "Pick a group, then the thing you want.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n17",
+  "kind": "part",
+  "group": "nav",
+  "name": "Settings tabs with a marker that glides.",
+  "heading": "Settings tabs with a marker that glides.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n18",
+  "kind": "part",
+  "group": "nav",
+  "name": "Shop answers that open without a jump.",
+  "heading": "Shop answers that open without a jump.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n35",
+  "kind": "part",
+  "group": "nav",
+  "name": "Answers that spring open, one at a time.",
+  "heading": "Answers that spring open, one at a time.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n19",
+  "kind": "part",
+  "group": "nav",
+  "name": "A long file path that folds itself to fit.",
+  "heading": "A long file path that folds itself to fit.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n12",
+  "kind": "part",
+  "group": "nav",
+  "name": "Every action, one search away.",
+  "heading": "Every action, one search away.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n36",
+  "kind": "part",
+  "group": "nav",
+  "name": "A command box that springs in.",
+  "heading": "A command box that springs in.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n32",
+  "kind": "part",
+  "group": "nav",
+  "name": "A menu that pops on a spring.",
+  "heading": "A menu that pops on a spring.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n33",
+  "kind": "part",
+  "group": "nav",
+  "name": "Actions that bloom around one button.",
+  "heading": "Actions that bloom around one button.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n34",
+  "kind": "part",
+  "group": "nav",
+  "name": "One tooltip that slides between buttons.",
+  "heading": "One tooltip that slides between buttons.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c07",
+  "kind": "part",
+  "group": "nav",
+  "name": "A guide, with a line that follows you.",
+  "heading": "A guide, with a line that follows you.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c08",
+  "kind": "part",
+  "group": "nav",
+  "name": "A dock that grows under your finger.",
+  "heading": "A dock that grows under your finger.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c09",
+  "kind": "part",
+  "group": "nav",
+  "name": "A profile pill that opens up.",
+  "heading": "A profile pill that opens up.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "group-status",
+  "kind": "group",
+  "group": "status",
+  "name": "Status and news",
+  "heading": "Tell people what just happened.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "n21",
+  "kind": "part",
+  "group": "status",
+  "name": "Notices that close without a jump.",
+  "heading": "Notices that close without a jump.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n42",
+  "kind": "part",
+  "group": "status",
+  "name": "A warning that checks again by itself.",
+  "heading": "A warning that checks again by itself.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c21",
+  "kind": "part",
+  "group": "status",
+  "name": "Small news, then it leaves.",
+  "heading": "Small news, then it leaves.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n22",
+  "kind": "part",
+  "group": "status",
+  "name": "Archive a message and change your mind.",
+  "heading": "Archive a message and change your mind.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n25",
+  "kind": "part",
+  "group": "status",
+  "name": "A bell that swings and counts up.",
+  "heading": "A bell that swings and counts up.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n23",
+  "kind": "part",
+  "group": "status",
+  "name": "Grey shapes that hold the place of the news.",
+  "heading": "Grey shapes that hold the place of the news.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n38",
+  "kind": "part",
+  "group": "status",
+  "name": "Grey blocks that sweep while you wait.",
+  "heading": "Grey blocks that sweep while you wait.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n47",
+  "kind": "part",
+  "group": "status",
+  "name": "A bar that springs to the end.",
+  "heading": "A bar that springs to the end.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c22",
+  "kind": "part",
+  "group": "status",
+  "name": "A payment that says where it is.",
+  "heading": "A payment that says where it is.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c23",
+  "kind": "part",
+  "group": "status",
+  "name": "A café receipt, printed slowly.",
+  "heading": "A café receipt, printed slowly.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c24",
+  "kind": "part",
+  "group": "status",
+  "name": "A deploy, step by step.",
+  "heading": "A deploy, step by step.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n24",
+  "kind": "part",
+  "group": "status",
+  "name": "Team faces that lift and say hello.",
+  "heading": "Team faces that lift and say hello.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "group-ai",
+  "kind": "group",
+  "group": "ai",
+  "name": "AI helpers",
+  "heading": "Show what the AI is doing.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "n08",
+  "kind": "part",
+  "group": "ai",
+  "name": "Watch a helper fix a failing test.",
+  "heading": "Watch a helper fix a failing test.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n16",
+  "kind": "part",
+  "group": "ai",
+  "name": "An answer that writes itself in.",
+  "heading": "An answer that writes itself in.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "group-cards",
+  "kind": "group",
+  "group": "cards",
+  "name": "Cards you can pick up",
+  "heading": "Some things want to be touched.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "c25",
+  "kind": "part",
+  "group": "cards",
+  "name": "Point at a name to peek.",
+  "heading": "Point at a name to peek.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n40",
+  "kind": "part",
+  "group": "cards",
+  "name": "Open a name, see the trend.",
+  "heading": "Open a name, see the trend.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c26",
+  "kind": "part",
+  "group": "cards",
+  "name": "Cards that lean toward you.",
+  "heading": "Cards that lean toward you.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c27",
+  "kind": "part",
+  "group": "cards",
+  "name": "A folder of files, fanning out.",
+  "heading": "A folder of files, fanning out.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n26",
+  "kind": "part",
+  "group": "cards",
+  "name": "Each step takes the whole space.",
+  "heading": "Each step takes the whole space.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "n27",
+  "kind": "part",
+  "group": "cards",
+  "name": "Steps that pile up, so you see how far you are.",
+  "heading": "Steps that pile up, so you see how far you are.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "n28",
+  "kind": "part",
+  "group": "cards",
+  "name": "Covered steps settle back.",
+  "heading": "Covered steps settle back.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c31",
+  "kind": "part",
+  "group": "cards",
+  "name": "A stack of photos, turning as you scroll.",
+  "heading": "A stack of photos, turning as you scroll.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "group-fields",
+  "kind": "group",
+  "group": "fields",
+  "name": "Backgrounds",
+  "heading": "Quiet backgrounds that answer your hand.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "c04",
+  "kind": "part",
+  "group": "fields",
+  "name": "Dots that step aside.",
+  "heading": "Dots that step aside.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c29",
+  "kind": "part",
+  "group": "fields",
+  "name": "Click the field, watch it ripple.",
+  "heading": "Click the field, watch it ripple.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "c30",
+  "kind": "part",
+  "group": "fields",
+  "name": "A wall of photos, sliding as you scroll.",
+  "heading": "A wall of photos, sliding as you scroll.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "why",
+  "kind": "pattern",
+  "name": "Problem cards",
+  "heading": "Three cards, one problem each.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "goals",
+  "kind": "pattern",
+  "name": "Goal list",
+  "heading": "Four goals, each with a test.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "numbers",
+  "kind": "pattern",
+  "name": "Stat tiles",
+  "heading": "The numbers that matter most.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "layers",
+  "kind": "pattern",
+  "name": "Exploded layers",
+  "heading": "Any app, as four layers stacked.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "journey",
+  "kind": "pattern",
+  "name": "Flow",
+  "heading": "A photo's trip, in four steps.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "delivery",
+  "kind": "pattern",
+  "name": "Story timeline",
+  "heading": "One food order, in nine steps.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "data",
+  "kind": "pattern",
+  "name": "Data model",
+  "heading": "Two kinds of data, kept in two places.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "states",
+  "kind": "pattern",
+  "name": "State machine",
+  "heading": "Every alert is always in one state.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "stack",
+  "kind": "pattern",
+  "name": "Tool cards",
+  "heading": "Boring tools, used well.",
+  "needs": [
+   "hairline"
+  ],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "code",
+  "kind": "pattern",
+  "name": "Code changes",
+  "heading": "See what changed, at a glance.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "repo",
+  "kind": "pattern",
+  "name": "Folder views",
+  "heading": "Where everything lives.",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "endcard",
+  "kind": "end",
+  "name": "End card",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ },
+ {
+  "id": "footer",
+  "kind": "footer",
+  "name": "Footer",
+  "needs": [],
+  "css": 0,
+  "js": 0
+ }
+]

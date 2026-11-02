@@ -1,0 +1,42 @@
+<!-- part c05 | part | group nav | A site menu, with a second row. | A site menu, with a second row. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A site menu, <em>with a second row.</em></h3>
+          <p class="kit-p">Products and Docs open a second row with its own marker. Arrow keys move along a row.</p>
+          <section class="cs" id="c05">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Top navigation</span></div>
+      <div class="fbody">
+        <div class="stage" style="align-items:flex-start;min-height:150px">
+          <nav class="pn" aria-label="Demo site">
+            <div class="tabs pn-main" id="pnMain" role="group" aria-label="Main pages"></div>
+            <div id="pnSubWrap"></div>
+          </nav>
+        </div>
+        <p class="note" id="pnNote" aria-live="polite">You are on <b>Overview</b>.</p>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0002">
+  /* ---------------- 05 pill navigation ---------------- */
+  (function () {
+    var items = [{ n: "Overview" }, { n: "Products", sub: ["Analytics", "Billing", "Storage"] }, { n: "Pricing" }, { n: "Docs", sub: ["Guides", "API", "Changelog"] }];
+    var subWrap = $("pnSubWrap"), note = $("pnNote"), main;
+    function say(a, b) { note.innerHTML = "You are on <b>" + a + "</b>" + (b ? " › <b>" + b + "</b>" : "") + "."; }
+    main = tabs($("pnMain"), items.map(function (it) { return it.n + (it.sub ? ic("cd", "s") : ""); }), {
+      attr: "aria-current",
+      onSelect: function (i) {
+        var it = items[i];
+        main.btns.forEach(function (b, j) { b.classList.toggle("flip", j === i && !!it.sub); main.clones[j].classList.toggle("flip", j === i && !!it.sub); });
+        subWrap.textContent = "";
+        if (!it.sub) { say(it.n); return; }
+        var row = document.createElement("div");
+        row.className = "tabs pn-sub"; row.setAttribute("role", "group"); row.setAttribute("aria-label", it.n + " pages");
+        subWrap.appendChild(row);
+        if (spd()) row.classList.add("enter");
+        tabs(row, it.sub, { attr: "aria-current", onSelect: function (j) { say(it.n, it.sub[j]); } });
+        say(it.n, it.sub[0]);
+      }
+    });
+  })();
+</script>

@@ -1,4 +1,4 @@
-# The figure cards (section 07)
+# The figure cards (showcase section 18, Tool cards)
 
 > Part of the design system. Read `~/.claude/design/DESIGN.md` first; it says when to read this file.
 
@@ -35,7 +35,7 @@ does, so the idea sticks:
   `<div class="fig" data-hairline="padlock" data-label="A padlock: tenancy keeps …"></div>`.
   The `data-label` is one sentence: the object, then what it means here.
   It becomes the figure's `aria-label`.
-- **Mounting** (`page.js`, "Hairline figures"): an `IntersectionObserver`
+- **Mounting** (the showcase script, "Hairline figures"): an `IntersectionObserver`
   with `rootMargin: 200px` mounts each figure just before it scrolls in.
   Stock figures mount with `window.Hairline[name](el, { intensity: 0.6, label })`.
   Custom ones mount through `window.hairlineCustom[name].mount(...)`. If a

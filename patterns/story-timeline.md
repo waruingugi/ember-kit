@@ -1,4 +1,4 @@
-# The story timeline (section 08, "The same order, as a story")
+# The story timeline (showcase section 15)
 
 > Part of the design system. Read `~/.claude/design/DESIGN.md` first; it says when to read this file.
 
@@ -13,8 +13,7 @@ small dashed pill next to the heading says "times are an example".
 real path, in order, with times, so the reader feels how fast it goes.
 Scrolling is the clock.
 
-**How it is built** (`page.css` `.flow`, `.spine`, `.runner`, `.step`;
-`page.js` "flow spine" and "flow scene"):
+**How it is built** (copy section `#delivery` of the showcase: classes `.flow`, `.flow-spine`, `.flow-runner`, `.flow-step`):
 - **The markup:** `<div class="flow" id="flow">` holds a
   `.spine` with an `<i>` fill, a `.runner` dot, then one `.step` per beat.
   A step is a `.dot` plus a `.card` with `.who` (actor, then `<span>` time),

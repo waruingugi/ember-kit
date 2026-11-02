@@ -1,0 +1,60 @@
+<!-- part states | pattern | State machine | Every alert is always in one state. -->
+<section class="sec" id="states">
+        <div class="sec-head">
+          <span class="ghost" aria-hidden="true">17</span>
+          <p class="eyebrow" data-reveal=""><b>17</b> State machine</p>
+          <h2 class="display" data-reveal="" style="--i:1">Every alert is always <em>in one state.</em></h2>
+          <p class="lead" data-reveal="" style="--i:2">A state machine shows every status one thing can have, and what moves it on. This one is a weather alert: it watches, rises, gets sent, or is missed and tried again.</p>
+        </div>
+        <figure class="frame" data-reveal="">
+          <div class="frame-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="frame-title">trip status · state machine</span><span class="mono-label" style="font-size:10.5px">6 states</span></div>
+          <div class="er-wrap">
+            <svg class="er sm" id="sm" viewBox="0 0 1000 440" role="img" aria-labelledby="sm-title sm-desc">
+              <title id="sm-title">Alert status</title>
+              <desc id="sm-desc">An alert moves from Watching to Rising to Ready to Sent. If the wind dies down it goes back to Watching. It can be paused, and if the phone is off it is missed and tried again.</desc>
+              <defs>
+                <pattern id="smdots" width="18" height="18" patternUnits="userSpaceOnUse"><circle class="dotp" cx="9" cy="9" r="1"></circle></pattern>
+                <marker id="sm-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon class="mk" points="0 0, 8 3, 0 6"></polygon></marker>
+                <marker id="sm-arrow-acc" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon class="mk-acc" points="0 0, 8 3, 0 6"></polygon></marker>
+              </defs>
+              <rect class="bgp" width="1000" height="440"></rect>
+              <rect width="1000" height="440" fill="url(#smdots)"></rect>
+              <line class="rel" pathLength="1" style="--d:0" x1="46" y1="170" x2="80" y2="170" marker-end="url(#sm-arrow)"></line>
+              <line class="rel" pathLength="1" style="--d:1" x1="230" y1="170" x2="290" y2="170" marker-end="url(#sm-arrow)"></line>
+              <line class="rel" pathLength="1" style="--d:2" x1="440" y1="170" x2="500" y2="170" marker-end="url(#sm-arrow)"></line>
+              <line class="rel acc" pathLength="1" style="--d:3" x1="650" y1="170" x2="710" y2="170" marker-end="url(#sm-arrow-acc)"></line>
+              <line class="rel" pathLength="1" style="--d:4" x1="860" y1="170" x2="908" y2="170" marker-end="url(#sm-arrow)"></line>
+              <path class="rel dash" style="--d:5" d="M 365 134 C 365 76, 155 76, 155 132" marker-end="url(#sm-arrow)"></path>
+              <path class="rel" pathLength="1" style="--d:5" d="M 155 206 V 322 Q 155 330 163 330 H 288" marker-end="url(#sm-arrow)"></path>
+              <line class="rel" pathLength="1" style="--d:6" x1="365" y1="206" x2="365" y2="292" marker-end="url(#sm-arrow)"></line>
+              <line class="rel" pathLength="1" style="--d:6" x1="560" y1="206" x2="560" y2="292" marker-end="url(#sm-arrow)"></line>
+              <line class="rel dash" style="--d:7" x1="600" y1="294" x2="600" y2="208" marker-end="url(#sm-arrow)"></line>
+              <g class="lbls">
+                <rect class="msk" x="40" y="148" width="40" height="12" rx="2"></rect><text class="rel-t" x="60" y="158">SET</text>
+                <rect class="msk" x="236" y="148" width="48" height="12" rx="2"></rect><text class="rel-t" x="260" y="158">GUST</text>
+                <rect class="msk" x="450" y="148" width="40" height="12" rx="2"></rect><text class="rel-t" x="470" y="158">STEADY</text>
+                <rect class="msk" x="660" y="148" width="40" height="12" rx="2"></rect><text class="rel-t acc" x="680" y="158">BUZZ</text>
+                <rect class="msk" x="866" y="148" width="36" height="12" rx="2"></rect><text class="rel-t" x="884" y="158">DONE</text>
+                <rect class="msk" x="226" y="68" width="68" height="12" rx="2"></rect><text class="rel-t" x="260" y="78">DIES DOWN</text>
+                <rect class="msk" x="196" y="310" width="52" height="12" rx="2"></rect><text class="rel-t" x="222" y="320">PAUSE</text>
+                <rect class="msk" x="375" y="243" width="52" height="12" rx="2"></rect><text class="rel-t" x="401" y="253">PAUSE</text>
+                <rect class="msk" x="462" y="243" width="88" height="12" rx="2"></rect><text class="rel-t" x="506" y="253">PHONE OFF</text>
+                <rect class="msk" x="610" y="243" width="44" height="12" rx="2"></rect><text class="rel-t" x="632" y="253">RETRY</text>
+              </g>
+              <g class="ent" style="--d:0"><circle class="sdot" cx="40" cy="170" r="6"></circle></g>
+              <g class="ent st " style="--d:0"><rect class="box" x="80" y="134" width="150" height="72" rx="8"></rect><rect class="stag" x="88" y="142" width="40" height="12" rx="2"></rect><text class="stag-t" x="108" y="151">STATE</text><text class="snm" x="155" y="178">Watching</text><text class="ssub" x="155" y="194">waiting for wind</text></g>
+              <g class="ent st " style="--d:1"><rect class="box" x="290" y="134" width="150" height="72" rx="8"></rect><rect class="stag" x="298" y="142" width="40" height="12" rx="2"></rect><text class="stag-t" x="318" y="151">STATE</text><text class="snm" x="365" y="178">Rising</text><text class="ssub" x="365" y="194">wind building</text></g>
+              <g class="ent st " style="--d:2"><rect class="box" x="500" y="134" width="150" height="72" rx="8"></rect><rect class="stag" x="508" y="142" width="40" height="12" rx="2"></rect><text class="stag-t" x="528" y="151">STATE</text><text class="snm" x="575" y="178">Ready</text><text class="ssub" x="575" y="194">wind is right</text></g>
+              <g class="ent st focal" style="--d:3"><rect class="box" x="710" y="134" width="150" height="72" rx="8"></rect><rect class="stag" x="718" y="142" width="40" height="12" rx="2"></rect><text class="stag-t" x="738" y="151">STATE</text><text class="snm" x="785" y="178">Sent</text><text class="ssub" x="785" y="194">phone buzzed</text></g>
+              <g class="ent st term" style="--d:4"><rect class="box" x="290" y="294" width="150" height="72" rx="8"></rect><rect class="stag" x="298" y="302" width="29" height="12" rx="2"></rect><text class="stag-t" x="312" y="311">END</text><text class="snm" x="365" y="338">Paused</text><text class="ssub" x="365" y="354">stops here</text></g>
+              <g class="ent st warn" style="--d:5"><rect class="box" x="500" y="294" width="150" height="72" rx="8"></rect><rect class="stag" x="508" y="302" width="40" height="12" rx="2"></rect><text class="stag-t" x="528" y="311">STATE</text><text class="snm" x="575" y="338">Missed</text><text class="ssub" x="575" y="354">phone was off</text></g>
+              <g class="ent" style="--d:6"><circle class="sring" cx="920" cy="170" r="8"></circle><circle class="sdot" cx="920" cy="170" r="5"></circle></g>
+              <g class="lbls"><text class="note" x="710" y="320">Most alerts take the top row.</text><text class="note" x="710" y="340">The bottom row is for</text><text class="note" x="710" y="360">when plans change.</text></g>
+              <rect class="msk" x="0" y="405" width="1000" height="35"></rect>
+              <line x1="20" y1="404" x2="980" y2="404" stroke="var(--line)"></line>
+              <text class="lg" x="20" y="424" style="white-space:pre">● START        ◎ END        DASHED ARROW = GOES BACK A STEP        ORANGE = THE HAPPY PATH</text>
+            </svg>
+          </div>
+        </figure>
+        <p class="tool-note" data-reveal=""><b>Diagram Design</b><span>A state machine: each box is a status, and each arrow is the event that changes it.</span></p>
+      </section>

@@ -1,0 +1,38 @@
+<!-- part n43 | part | group forms | Pick one, and see what it means. | Pick one, and see what it means. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Pick one, and <em>see what it means.</em></h3>
+          <p class="kit-p">Three cards, one answer. An orange frame springs to the card you pick, the card lifts and a tick draws in. The box below says what your pick means. Arrow keys work too.</p>
+          <section class="cs kv4" id="n43">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="ch" role="radiogroup" aria-label="Delivery">
+      <div class="cards"><span class="fr" aria-hidden="true"></span><label class="cd"><input type="radio" name="n43-d" value="0" checked=""><span class="nm">Standard</span><span class="pr">Free</span><svg class="tk" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"></circle><path d="M6.6 11.4 9.6 14.3l5.8-6.4"></path></svg></label><label class="cd"><input type="radio" name="n43-d" value="1"><span class="nm">Express</span><span class="pr">KES 250</span><svg class="tk" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"></circle><path d="M6.6 11.4 9.6 14.3l5.8-6.4"></path></svg></label><label class="cd"><input type="radio" name="n43-d" value="2"><span class="nm">Pickup</span><span class="pr">Free</span><svg class="tk" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"></circle><path d="M6.6 11.4 9.6 14.3l5.8-6.4"></path></svg></label></div>
+      <div class="ex"><div class="in"></div></div>
+      <p class="sr" aria-live="polite"></p>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0047">
+(function () {
+  "use strict";
+  var box = document.getElementById("n43"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function money(n) { return n.toLocaleString("en-KE"); }
+  function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  function count(el, from, to, fmt, ms) { if (!moving()) { el.textContent = fmt(to); return; } cancelAnimationFrame(el._an); var t0 = performance.now(); (function f(t) { var k = Math.min(1, (t - t0) / (ms || 320)); el.textContent = fmt(Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)))); if (k < 1) el._an = requestAnimationFrame(f); })(t0); }
+  var D = [["Standard","Free","Arrives Thursday 5 November.","Our rider brings it with other orders on the way."],["Express","KES 250","Arrives today by 6 pm.","A rider leaves within the hour, just for you."],["Pickup","Free","Ready from 4 pm at our Westlands shop.","Show your order number at the counter."]], fr = $(".fr"), ex = $(".ex"), inn = $(".in"), sr = $(".sr"), cds = $$(".cd"), ins = $$("input"), cur = 0;
+  function place(still) { var c = cds[cur]; if (still) fr.style.transition = "none"; fr.style.width = c.offsetWidth + "px"; fr.style.height = c.offsetHeight + "px"; fr.style.transform = "translate(" + c.offsetLeft + "px," + (c.offsetTop - 3) + "px)"; if (still) { fr.offsetWidth; fr.style.transition = ""; } }
+  function show(first) { cur = ins.findIndex(function (x) { return x.checked; }); var d = D[cur], h0 = ex.offsetHeight; place(first);
+    inn.innerHTML = "<b>" + d[1] + "</b><p>" + d[2] + "</p><p class=\"m\">" + d[3] + "</p>"; sr.textContent = d[0] + ", " + d[1] + ". " + d[2];
+    if (first || !moving()) return; inn.animate([{ opacity: 0, transform: "translateY(4px)" }, { opacity: 1, transform: "none" }], { duration: 260, easing: "cubic-bezier(.22,1,.36,1)" }); glide(ex, h0, 320); }
+  ins.forEach(function (x) { x.addEventListener("change", function () { show(false); }); });
+  new ResizeObserver(function () { place(true); }).observe($(".cards"));
+  show(true);
+})();
+</script>

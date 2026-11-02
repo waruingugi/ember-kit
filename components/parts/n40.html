@@ -1,0 +1,39 @@
+<!-- part n40 | part | group cards | Open a name, see the trend. | Open a name, see the trend. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Open a name, <em>see the trend.</em></h3>
+          <p class="kit-p">Click the name. The card lifts out of it, and a line of her orders by month draws in. Escape or a click outside closes it.</p>
+          <section class="cs kv4" id="n40">
+  <div class="frame"><div class="fbody"><div class="stage pg">
+    <p class="s">Last order from <span class="w"><button class="nm" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="n40-pv">Amina Otieno</button>
+    <span class="pv" id="n40-pv" role="dialog" aria-label="Amina Otieno">
+      <span class="top"><span class="av">AO</span><span><b>Amina Otieno</b><small>Customer since March 2023</small></span></span>
+      <span class="st"><span><em>Orders</em><b>48</b></span><span><em>Spent</em><b>92,300</b></span><span><em>Last</em><b>2 days ago</b></span></span>
+      <span class="tr"><em>Orders by month</em><svg viewBox="0 0 220 44" aria-hidden="true"><path class="ar" d="M0 34 L20 30 L40 32 L60 24 L80 26 L100 18 L120 22 L140 14 L160 16 L180 10 L200 12 L220 6 L220 44 L0 44Z"></path><path class="ln" pathLength="1" d="M0 34 L20 30 L40 32 L60 24 L80 26 L100 18 L120 22 L140 14 L160 16 L180 10 L200 12 L220 6"></path><circle class="dt" cx="220" cy="6" r="3.5"></circle></svg></span>
+      <span class="act"><button class="b sm pri" type="button" data-act="Message sent to Amina.">Message</button><button class="b sm" type="button" data-act="Opening Amina's 48 orders.">View orders</button></span>
+    </span></span> came in at 2:14 pm.</p>
+    <p class="note" aria-live="polite"></p>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0044">
+(function () {
+  "use strict";
+  var box = document.getElementById("n40"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function money(n) { return n.toLocaleString("en-KE"); }
+  function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  function count(el, from, to, fmt, ms) { if (!moving()) { el.textContent = fmt(to); return; } cancelAnimationFrame(el._an); var t0 = performance.now(); (function f(t) { var k = Math.min(1, (t - t0) / (ms || 320)); el.textContent = fmt(Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)))); if (k < 1) el._an = requestAnimationFrame(f); })(t0); }
+  var tr = $(".nm"), pv = $(".pv"), note = $(".note");
+  function set(on, back) { pv.classList.toggle("on", on); tr.setAttribute("aria-expanded", String(on)); if (on) setTimeout(function () { $(".b", pv).focus(); }, 40); else if (back) tr.focus(); }
+  tr.addEventListener("click", function () { set(!pv.classList.contains("on"), true); });
+  box.addEventListener("keydown", function (e) { if (e.key === "Escape" && pv.classList.contains("on")) set(false, true); });
+  document.addEventListener("pointerdown", function (e) { if (pv.classList.contains("on") && !pv.contains(e.target) && e.target !== tr) set(false, false); });
+  $$("[data-act]", pv).forEach(function (b) { b.addEventListener("click", function () { note.textContent = b.getAttribute("data-act"); set(false, true); }); });
+})();
+</script>

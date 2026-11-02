@@ -11,6 +11,7 @@ echo "Pinned design tools, checked $(date +%Y-%m-%d)"
 echo
 
 say "GSAP" "pinned 3.15.0, newest $(npm view gsap version 2>/dev/null || echo '?')"
+say "Motion" "pinned 14.3.0, newest $(npm view motion version 2>/dev/null || echo '?')"
 say "Hairline (npm)" "pinned 0.5.1, newest $(npm view @lucasmarkes/hairline version 2>/dev/null || echo '?')"
 
 repo() {  # name, folder, pinned commit

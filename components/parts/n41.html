@@ -1,0 +1,43 @@
+<!-- part n41 | part | group forms | A side sheet whose lines arrive in turn. | A side sheet whose lines arrive in turn. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A side sheet whose <em>lines arrive in turn.</em></h3>
+          <p class="kit-p">Open the order. The sheet slides in on a soft spring, then the title, items and steps come in one after another. Escape, the cross or the dark area closes it.</p>
+          <section class="cs kv4" id="n41">
+  <div class="frame"><div class="fbody"><div class="stage pg">
+    <div class="row"><span><b>Order #4821</b><small>Amina Otieno · 3 items</small></span><button class="b sm" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="n41-dlg" data-open="">Open</button></div>
+    <p class="note" aria-live="polite"></p>
+    <div class="scrim"></div>
+    <div class="sh" id="n41-dlg" role="dialog" aria-modal="true" aria-labelledby="n41-h" inert="">
+      <div class="hd"><h4 id="n41-h">Order #4821</h4><button class="b q x" type="button" aria-label="Close" data-close=""><svg class="i" aria-hidden="true"><use href="#i-x"></use></svg></button></div>
+      <div class="it"><span>Sukuma wiki, 2 bunches</span><span class="n">120</span><span>Unga, 2 kg</span><span class="n">230</span><span>Cooking oil, 1 L</span><span class="n">410</span><b>Total</b><b class="n">KES 760</b></div>
+      <ol class="sp"><li class="d">Paid by PocketPay · 2:14 pm</li><li class="d">Packed · 2:31 pm</li><li class="w">Out for delivery</li></ol>
+      <button class="b pri go" type="button" data-done="">Mark as delivered</button>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0045">
+(function () {
+  "use strict";
+  var box = document.getElementById("n41"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function money(n) { return n.toLocaleString("en-KE"); }
+  function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  function count(el, from, to, fmt, ms) { if (!moving()) { el.textContent = fmt(to); return; } cancelAnimationFrame(el._an); var t0 = performance.now(); (function f(t) { var k = Math.min(1, (t - t0) / (ms || 320)); el.textContent = fmt(Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)))); if (k < 1) el._an = requestAnimationFrame(f); })(t0); }
+  var op = $("[data-open]"), sh = $(".sh"), sc = $(".scrim"), note = $(".note");
+  function set(on) { sh.classList.toggle("on", on); sc.classList.toggle("on", on); sh.inert = !on; op.setAttribute("aria-expanded", String(on)); if (on) setTimeout(function () { $("[data-close]", sh).focus(); }, 60); else op.focus(); }
+  op.addEventListener("click", function () { set(true); });
+  $("[data-close]", sh).addEventListener("click", function () { set(false); });
+  sc.addEventListener("click", function () { set(false); });
+  sh.addEventListener("keydown", function (e) { if (e.key === "Escape") { e.preventDefault(); set(false); return; }
+    if (e.key !== "Tab") return; var f = $$("button", sh), a = f[0], z = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); } });
+  $("[data-done]", sh).addEventListener("click", function () { var w = $(".w", sh); if (w) { w.className = "d"; w.textContent = "Delivered · just now"; } note.textContent = "Order #4821 marked as delivered."; set(false); });
+})();
+</script>

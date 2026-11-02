@@ -1,0 +1,78 @@
+<!-- part c11 | part | group forms | Sign in, and see what went wrong. | Sign in, and see what went wrong. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Sign in, <em>and see what went wrong.</em></h3>
+          <p class="kit-p">Leave a field empty, or type a short password, to see the errors.</p>
+          <section class="cs" id="c11">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Sign in</span></div>
+      <div class="fbody">
+        <form class="lg" id="lg" novalidate="">
+          <div class="lg-mark" aria-hidden="true"><svg class="i l" viewBox="0 0 24 24"><path d="M4 18V6l8 6 8-6v12"></path><circle class="o" cx="12" cy="12" r="1.6"></circle></svg></div>
+          <h3>Welcome back</h3>
+          <p class="lg-sub">Sign in to your workspace.</p>
+          <div id="lgBanner"></div>
+          <div class="lg-sso">
+            <button class="b" type="button" data-sso="GitHub"><svg class="i"><use href="#i-gh"></use></svg>GitHub</button>
+            <button class="b" type="button" data-sso="Google"><svg class="i"><use href="#i-google"></use></svg>Google</button>
+          </div>
+          <p class="or">or use email</p>
+          <div class="fld">
+            <div class="fld-h"><label for="lgEmail">Email</label></div>
+            <div class="inwrap"><svg class="i"><use href="#i-mail"></use></svg><input class="in" id="lgEmail" type="email" autocomplete="email" placeholder="you@company.com" aria-describedby="lgEmailErr"></div>
+            <p class="err" id="lgEmailErr" hidden=""></p>
+          </div>
+          <div class="fld">
+            <div class="fld-h"><label for="lgPass">Password</label><button class="lk" type="button" id="lgForgot">Forgot it?</button></div>
+            <div class="inwrap"><svg class="i"><use href="#i-lock"></use></svg><input class="in" id="lgPass" type="password" autocomplete="current-password" placeholder="Your password" aria-describedby="lgPassErr" style="padding-right:40px"><button class="ib" type="button" id="lgShow" aria-label="Show password" aria-pressed="false"><svg class="i"><use href="#i-eye"></use></svg></button></div>
+            <p class="err" id="lgPassErr" hidden=""></p>
+          </div>
+          <label class="cbx"><input class="chk" type="checkbox" checked=""> Keep me signed in</label>
+          <button class="b pri" type="submit" id="lgGo">Sign in</button>
+          <p class="lg-foot">New here? <button class="lk" type="button" id="lgNew">Make an account</button></p>
+        </form>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0008">
+  /* ---------------- 11 sign in ---------------- */
+  (function () {
+    var form = $("lg"), email = $("lgEmail"), pass = $("lgPass"), go = $("lgGo"), banner = $("lgBanner");
+    function err(input, box, msg) {
+      input.setAttribute("aria-invalid", msg ? "true" : "false");
+      box.hidden = !msg; box.textContent = msg || "";
+    }
+    function say(msg, ok) {
+      banner.innerHTML = '<div class="banner' + (ok ? " ok" : "") + '" role="' + (ok ? "status" : "alert") + '">' + ic(ok ? "check" : "alert") + "<span>" + msg + "</span></div>";
+      fadeIn(banner.firstChild);
+    }
+    email.addEventListener("input", function () { err(email, $("lgEmailErr"), ""); });
+    pass.addEventListener("input", function () { err(pass, $("lgPassErr"), ""); });
+    $("lgShow").addEventListener("click", function () {
+      var show = pass.type === "password";
+      pass.type = show ? "text" : "password";
+      this.setAttribute("aria-pressed", String(show));
+      this.setAttribute("aria-label", show ? "Hide password" : "Show password");
+      this.innerHTML = ic(show ? "eyeoff" : "eye");
+    });
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var v = email.value.trim(), bad = null;
+      var eMsg = !v ? "Enter your email." : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? "That doesn't look like an email. Check for a missing @ or dot." : "";
+      var pMsg = !pass.value ? "Enter your password." : "";
+      err(email, $("lgEmailErr"), eMsg); err(pass, $("lgPassErr"), pMsg);
+      if (eMsg) bad = email; else if (pMsg) bad = pass;
+      if (bad) { bad.focus(); return; }
+      banner.textContent = "";
+      go.disabled = true; go.innerHTML = '<span class="live" aria-hidden="true"></span>Checking…';
+      setTimeout(function () {
+        go.disabled = false; go.textContent = "Sign in";
+        if (pass.value === "wrong") { say("That email and password don't match. Try again, or reset your password."); pass.select(); }
+        else say("Signed in as " + esc(v) + ". This is a demo, so nothing was sent.", true);
+      }, 900);
+    });
+    form.querySelectorAll("[data-sso]").forEach(function (b) { b.addEventListener("click", function () { say(b.dataset.sso + " sign-in would open here. This is a demo.", true); }); });
+    $("lgForgot").addEventListener("click", function () { say("We would email a reset link" + (email.value ? " to " + esc(email.value.trim()) : "") + ". This is a demo.", true); });
+    $("lgNew").addEventListener("click", function () { say("The sign-up form would open here. This is a demo.", true); });
+  })();
+</script>

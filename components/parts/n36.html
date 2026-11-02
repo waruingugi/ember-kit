@@ -1,0 +1,74 @@
+<!-- part n36 | part | group nav | A command box that springs in. | A command box that springs in. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A command box that <em>springs in.</em></h3>
+          <p class="kit-p">Press Search actions, or click the card and press /. Type "pay", move with the arrows, press Enter. The shaded row glides.</p>
+          <section class="cs kv4" id="n36">
+  <div class="frame"><div class="fbody">
+    <div class="stage pg">
+      <button class="b" type="button" id="n36-open" aria-haspopup="dialog" aria-expanded="false" aria-controls="n36-dlg"><svg class="i" aria-hidden="true"><use href="#i-search"></use></svg>Search actions <kbd>/</kbd></button>
+      <p class="note" id="n36-note" aria-live="polite">Nothing run yet.</p>
+      <div class="scrim" id="n36-scrim"></div>
+      <div class="cm" id="n36-dlg" role="dialog" aria-modal="true" aria-label="Command menu" inert="">
+        <div class="srch"><svg class="i" aria-hidden="true"><use href="#i-search"></use></svg><input id="n36-in" type="text" role="combobox" aria-expanded="true" aria-controls="n36-list" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Type a command or search…" aria-label="Command"></div>
+        <div class="sc" id="n36-sc"><span class="hl" id="n36-hl" aria-hidden="true"></span><div id="n36-list" role="listbox" aria-label="Actions"></div><p class="none" id="n36-none" hidden="">No action matches. Try "pay".</p></div>
+        <div class="foot" aria-hidden="true"><span><kbd>↑</kbd><kbd>↓</kbd> move</span><span><kbd>Enter</kbd> run</span><span><kbd>Esc</kbd> close</span></div>
+      </div>
+    </div>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0038">
+(function () {
+  "use strict";
+  var box = document.getElementById("n36"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  var CMDS = [["Create","New invoice","N","Starts a blank invoice for a customer."],["Create","Add customer","C","Adds a name and phone number to your customers."],["Go to","Orders","G O","Opens today's orders, newest first."],["Go to","Payouts","G P","Shows money paid to your PocketPay till."],["Go to","Shop settings","G S","Opens hours, address and team."],["Do","Export orders as CSV","E","Downloads this month's orders as a spreadsheet."],["Do","Print today's report","P","Sends today's sales summary to the printer."],["Do","Invite teammate","I","Sends an invite by SMS and email."]];
+  var tr = $("#n36-open"), dlg = $("#n36-dlg"), sc = $("#n36-scrim"), inp = $("#n36-in"), list = $("#n36-list"), scr = $("#n36-sc"), hl = $("#n36-hl"), none = $("#n36-none"), note = $("#n36-note"), open = false, idx = -1;
+  var groups = []; CMDS.forEach(function (c) { if (groups.indexOf(c[0]) < 0) groups.push(c[0]); });
+  list.innerHTML = groups.map(function (g, gi) { return '<div role="group" aria-labelledby="n36-g' + gi + '" data-g><div class="gh" id="n36-g' + gi + '">' + g + '</div>' + CMDS.map(function (c, i) { return c[0] !== g ? "" : '<div class="op" role="option" id="n36-o' + i + '" data-i="' + i + '" aria-selected="false"><span class="nm">' + c[1] + '</span><span class="k">' + c[2] + '</span></div>'; }).join("") + "</div>"; }).join("");
+  // letters in order, gaps allowed: "nvc" finds "New invoice"
+  function fuzzy(q, s) { q = q.toLowerCase(); var t = s.toLowerCase(), i = 0, hit = []; for (var j = 0; j < t.length && i < q.length; j++) if (t[j] === q[i]) { hit.push(j); i++; } return i === q.length ? hit : null; }
+  function vis() { return $$(".op", list).filter(function (o) { return !o.hidden; }); }
+  function mark(i) {
+    var os = vis(); idx = -1; $$(".op", list).forEach(function (o) { o.setAttribute("aria-selected", "false"); });
+    if (!os.length) { hl.style.opacity = 0; inp.removeAttribute("aria-activedescendant"); return; }
+    idx = (i + os.length) % os.length; var o = os[idx]; o.setAttribute("aria-selected", "true"); inp.setAttribute("aria-activedescendant", o.id);
+    hl.style.height = o.offsetHeight + "px"; hl.style.transform = "translateY(" + o.offsetTop + "px)"; hl.style.opacity = 1;
+    if (o.offsetTop < scr.scrollTop) scr.scrollTop = o.offsetTop - 30; else if (o.offsetTop + o.offsetHeight > scr.scrollTop + scr.clientHeight) scr.scrollTop = o.offsetTop + o.offsetHeight - scr.clientHeight + 4;
+  }
+  function filter() {
+    var q = inp.value.trim(), any = 0;
+    $$(".op", list).forEach(function (o) {
+      var c = CMDS[+o.dataset.i], h = q ? fuzzy(q, c[1]) : [], nm = $(".nm", o);
+      o.hidden = !h; if (h) any++;
+      nm.textContent = ""; c[1].split("").forEach(function (ch, k) { if (h && h.indexOf(k) >= 0) { var m = document.createElement("mark"); m.textContent = ch; nm.appendChild(m); } else nm.appendChild(document.createTextNode(ch)); });
+    });
+    $$("[data-g]", list).forEach(function (g) { g.hidden = !$$(".op", g).some(function (o) { return !o.hidden; }); });
+    none.hidden = !!any; scr.scrollTop = 0; mark(0);
+  }
+  function set(v) {
+    if (v === open) return; open = v;
+    dlg.classList.toggle("on", v); sc.classList.toggle("on", v); dlg.inert = !v; tr.setAttribute("aria-expanded", String(v));
+    if (v) { inp.value = ""; filter(); setTimeout(function () { inp.focus({ preventScroll: true }); }, 30); }
+    else tr.focus({ preventScroll: true });
+  }
+  function runIt(o) { var c = CMDS[+o.dataset.i]; set(false); note.textContent = 'Ran "' + c[1] + '". ' + c[3]; }
+  tr.addEventListener("click", function () { set(!open); });
+  sc.addEventListener("click", function () { set(false); });
+  inp.addEventListener("input", filter);
+  inp.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowDown") { e.preventDefault(); mark(idx + 1); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); mark(idx - 1); }
+    else if (e.key === "Enter") { e.preventDefault(); var o = vis()[idx]; if (o) runIt(o); }
+    else if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); set(false); }
+    else if (e.key === "Tab") e.preventDefault();
+  });
+  list.addEventListener("pointermove", function (e) { var o = e.target.closest(".op"); if (o) { var j = vis().indexOf(o); if (j !== idx) mark(j); } });
+  list.addEventListener("click", function (e) { var o = e.target.closest(".op"); if (o) runIt(o); });
+  box.addEventListener("keydown", function (e) { if (e.key === "/" && !open && !(e.target.closest && e.target.closest("input, textarea"))) { e.preventDefault(); set(true); } });
+})();
+</script>

@@ -1,0 +1,92 @@
+<!-- part c27 | part | group cards | A folder of files, fanning out. | A folder of files, fanning out. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A folder of files, <em>fanning out.</em></h3>
+          <p class="kit-p">Point at it to peek. Click to lay the cards out.</p>
+          <section class="cs" id="c27">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Projects</span></div>
+      <div class="fbody">
+        <div class="fo" id="fo">
+          <button class="fo-btn" type="button" id="foBtn" aria-expanded="false" aria-controls="foOpen">
+            <span class="fo-obj" aria-hidden="true">
+              <span class="fo-back"></span><span class="fo-tab"></span>
+              <span class="fo-cards"><span class="fo-card c3">Q3</span><span class="fo-card c2">Notes</span><span class="fo-card c1"><b>Brand guide</b>v4</span></span>
+              <span class="fo-flap"></span>
+            </span>
+            <span class="fo-lb">Launch kit<small>4 files</small></span>
+          </button>
+          <div class="fo-open" id="foOpen" hidden="">
+            <div class="fo-oh"><span><b>Launch kit</b><small>4 files</small></span><button class="b sm" type="button" id="foClose"><svg class="i s"><use href="#i-al"></use></svg>Close</button></div>
+            <div class="fo-grid" id="foGrid"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0024">
+  /* ---------------- 27 folder: the cards leave the folder and fly to their places; on close they fly back in ---------------- */
+  (function () {
+    var btn = $("foBtn"), openEl = $("foOpen"), grid = $("foGrid"), head = openEl.querySelector(".fo-oh"), box = $("fo"), busy = false;
+    var F = [["layers", "Brand guide", "Logos, colours and type rules. Version 4."], ["cal", "Launch plan", "Dates, owners, and what ships when."], ["msg", "Press notes", "What we say, and what we don't say yet."], ["grid", "Q3 numbers", "Sign-ups, revenue and churn, by week."]];
+    grid.innerHTML = F.map(function (f, i) {
+      return '<article class="fo-c"><div><span class="t2">' + ic(f[0]) + '</span><span class="n">0' + (i + 1) + "</span></div><h4>" + f[1] + "</h4><p>" + f[2] + "</p></article>";
+    }).join("");
+    var cards = [].slice.call(grid.children);
+    // the folder stays put (taken out of the flow) while the cards leave it or come back, so nothing jumps
+    function ghost(on) { btn.classList.toggle("ghost", on); }
+    function glide(change, ms, done) {
+      var h0 = box.offsetHeight; change(); var h1 = box.offsetHeight;
+      if (spd() && h0 !== h1) box.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: ms, easing: EASE }).onfinish = done;
+      else if (done) done();
+    }
+    function mid(el) { var r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width }; }
+    function clear(els) { els.forEach(function (e) { e.getAnimations().forEach(function (a) { a.cancel(); }); }); }
+    btn.addEventListener("click", function () {
+      if (busy) return;
+      var k = spd();
+      btn.setAttribute("aria-expanded", "true");
+      if (!k) { btn.hidden = true; openEl.hidden = false; $("foClose").focus({ preventScroll: true }); return; }
+      busy = true; btn.classList.add("opening");          // flap opens, cards rise (CSS)
+      setTimeout(function () {
+        var from = mid(btn.querySelector(".fo-card.c1"));
+        ghost(true);
+        glide(function () { openEl.hidden = false; }, 700);
+        $("foClose").focus({ preventScroll: true });
+        btn.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "translateY(" + 12 * k + "px) scale(.94)" }], { duration: 420, easing: EASE, fill: "forwards" })
+          .onfinish = function () { btn.hidden = true; ghost(false); btn.classList.remove("opening"); clear([btn]); };
+        head.animate([{ opacity: 0, transform: "translateY(-6px)" }, { opacity: 1, transform: "none" }], { duration: 400, delay: 200, easing: EASE, fill: "backwards" });
+        cards.forEach(function (c, i) {
+          var to = mid(c), s = 1 - (1 - from.w / to.w) * k;
+          c.animate([{ transform: "translate(" + (from.x - to.x) * k + "px," + (from.y - to.y) * k + "px) scale(" + s + ") rotate(" + (i % 2 ? -4 : 4) * k + "deg)", opacity: i ? 0 : 1 },
+            { opacity: 1, offset: .3 }, { transform: "none", opacity: 1 }], { duration: k < 1 ? 500 : 800, delay: i * 60, easing: EASE, fill: "backwards" });
+        });
+        setTimeout(function () { busy = false; }, 1000);
+      }, 200);
+    });
+    $("foClose").addEventListener("click", function () {
+      if (busy) return;
+      var k = spd(), n = cards.length;
+      btn.setAttribute("aria-expanded", "false");
+      if (!k) { openEl.hidden = true; btn.hidden = false; btn.focus({ preventScroll: true }); return; }
+      busy = true;
+      // the folder comes back first, flap open, so the cards have somewhere to go
+      btn.hidden = false; ghost(true); btn.classList.add("opening");
+      var to = mid(btn.querySelector(".fo-card.c1"));
+      btn.animate([{ opacity: 0, transform: "translateY(" + 12 * k + "px) scale(.94)" }, { opacity: 1, transform: "none" }], { duration: 360, easing: EASE });
+      head.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: EASE, fill: "forwards" });
+      cards.forEach(function (c, i) {
+        var f = mid(c), s = 1 - (1 - to.w / f.w) * k, j = n - 1 - i;
+        c.animate([{ transform: "none", opacity: 1 }, { opacity: 1, offset: .55 },
+          { transform: "translate(" + (to.x - f.x) * k + "px," + (to.y - f.y) * k + "px) scale(" + s + ") rotate(" + (i % 2 ? -4 : 4) * k + "deg)", opacity: i ? 0 : 1 }],
+          { duration: k < 1 ? 380 : 560, delay: j * 50, easing: EASE, fill: "forwards" });
+      });
+      setTimeout(function () {
+        glide(function () { openEl.hidden = true; clear(cards.concat([head])); }, 500, function () { ghost(false); });
+        btn.classList.remove("opening");                  // the flap closes on the cards
+        btn.focus({ preventScroll: true });
+        setTimeout(function () { busy = false; }, 520);
+      }, (k < 1 ? 380 : 560) + (n - 1) * 50);
+    });
+  })();
+</script>

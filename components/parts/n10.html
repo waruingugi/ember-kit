@@ -1,0 +1,101 @@
+<!-- part n10 | part | group forms | A six-digit code, checked as you finish. | A six-digit code, checked as you finish. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A six-digit code, <em>checked as you finish.</em></h3>
+          <p class="kit-p">Type 482913 for the right code, or any other digits to see it fail. You can also paste.</p>
+          <section class="cs kv4" id="n10">
+  <div class="frame"><div class="fbody">
+    <div class="stage"><div class="wrap">
+      <p class="q">Enter the 6-digit code we sent to <b>+254 7•• ••• 412</b></p>
+      <div class="boxes" id="n10-boxes" role="group" aria-label="6-digit code">
+        <input type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1 of 6">
+        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 2 of 6">
+        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 3 of 6">
+        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 4 of 6">
+        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 5 of 6">
+        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 6 of 6">
+      </div>
+      <div class="msg" id="n10-msg" aria-live="polite"></div>
+      <div class="rs" id="n10-rs"></div>
+    </div></div>
+    <p class="note">The right code for this demo is 482913.</p>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0023">
+(function () {
+  "use strict";
+  var box = document.getElementById("n10"); if (!box) return;
+  var EASE = "cubic-bezier(.22,1,.36,1)";
+  var spd = function () { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; };
+  var wrap = document.getElementById("n10-boxes"), msg = document.getElementById("n10-msg"), rs = document.getElementById("n10-rs");
+  var ins = Array.prototype.slice.call(wrap.querySelectorAll("input")), locked = false, timer = null, secs = 30;
+  function spring(el) { var s = spd(); if (s) el.animate([{ transform: "scale(.8)", opacity: .3 }, { transform: "none", opacity: 1 }], { duration: 200 * s, easing: EASE }); }
+  function setMsg(t, err) {
+    msg.className = "msg" + (err ? " err" : "");
+    msg.innerHTML = err ? '<svg class="i" aria-hidden="true"><use href="#i-alert"/></svg>' : "";
+    msg.appendChild(document.createTextNode(t));
+  }
+  function code() { return ins.map(function (i) { return i.value; }).join(""); }
+  function clearBad() { wrap.classList.remove("bad"); if (msg.classList.contains("err")) { msg.className = "msg"; msg.textContent = ""; } }
+  function check() {
+    var c = code(); if (c.length < 6 || locked) return;
+    locked = true; ins.forEach(function (i) { i.readOnly = true; }); setMsg("Checking the code", false);
+    setTimeout(function () {
+      var s = spd();
+      if (c === "482913") {
+        wrap.classList.add("ok"); clearInterval(timer); rs.hidden = true; msg.className = "msg";
+        msg.innerHTML = '<span class="vf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12"/><path pathLength="1" d="M20 6 9 17l-5-5" transform="translate(0 0) scale(.62) translate(7.4 7.4)"/></svg>Verified</span>';
+        if (s) {
+          ins.forEach(function (el, n) { el.animate([{ transform: "none" }, { transform: "scale(.94)" }, { transform: "none" }], { duration: 350 * s, delay: n * 30 * s, easing: EASE }); });
+          var vf = msg.querySelector("circle"), p = msg.querySelector("path");
+          vf.animate([{ transform: "scale(.5)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 300 * s, easing: EASE });
+          p.style.strokeDasharray = 1; p.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 300 * s, delay: 140 * s, easing: EASE, fill: "backwards" });
+        }
+      } else {
+        wrap.classList.add("bad"); setMsg("That code is not right. Try again.", true);
+        if (s) wrap.animate([{ transform: "translateX(0)" }, { transform: "translateX(-9px)" }, { transform: "translateX(8px)" }, { transform: "translateX(-5px)" }, { transform: "translateX(3px)" }, { transform: "translateX(0)" }], { duration: 350 * s, easing: EASE });
+        ins.forEach(function (el) { el.value = ""; el.readOnly = false; }); locked = false; ins[0].focus();
+      }
+    }, spd() ? 450 : 0);
+  }
+  function fillFrom(start, digits) {
+    var n = 0; for (var i = start; i < 6 && n < digits.length; i++, n++) { ins[i].value = digits[n]; spring(ins[i]); }
+    var next = Math.min(start + digits.length, 5); ins[next].focus(); check();
+  }
+  ins.forEach(function (el, i) {
+    el.addEventListener("focus", function () { el.select(); });
+    el.addEventListener("input", function () {
+      if (locked) return; clearBad();
+      var d = el.value.replace(/\D/g, ""); el.value = "";
+      if (!d) return; if (d.length > 1) { fillFrom(i, d.slice(0, 6 - i)); return; }
+      fillFrom(i, d);
+    });
+    el.addEventListener("keydown", function (e) {
+      if (locked) return;
+      if (e.key === "Backspace") { if (!el.value && i > 0) { e.preventDefault(); ins[i - 1].value = ""; ins[i - 1].focus(); clearBad(); } else clearBad(); }
+      else if (e.key === "ArrowLeft" && i > 0) { e.preventDefault(); ins[i - 1].focus(); }
+      else if (e.key === "ArrowRight" && i < 5) { e.preventDefault(); ins[i + 1].focus(); }
+    });
+    el.addEventListener("paste", function (e) {
+      e.preventDefault(); if (locked) return;
+      var d = ((e.clipboardData || window.clipboardData).getData("text") || "").replace(/\D/g, "").slice(0, 6); if (!d) return;
+      clearBad(); ins.forEach(function (x) { x.value = ""; }); fillFrom(0, d);
+    });
+  });
+  function mmss() { return "0:" + (secs < 10 ? "0" : "") + secs; }
+  function startCount() {
+    clearInterval(timer); secs = 30;
+    rs.innerHTML = 'Send a new code in <span class="num">&nbsp;' + mmss() + "</span>";
+    timer = setInterval(function () {
+      secs--;
+      if (secs > 0) { rs.querySelector(".num").innerHTML = "&nbsp;" + mmss(); return; }
+      clearInterval(timer); rs.innerHTML = '<button type="button" class="lk">Send a new code</button>';
+      rs.querySelector("button").addEventListener("click", function () {
+        ins.forEach(function (x) { x.value = ""; }); clearBad(); setMsg("A new code is on its way.", false); startCount(); ins[0].focus();
+      });
+    }, 1000);
+  }
+  startCount();
+})();
+</script>

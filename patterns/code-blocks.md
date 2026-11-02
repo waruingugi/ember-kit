@@ -35,9 +35,9 @@ How it looks:
   selectable). Lines that matter get `.hl`: a faint orange wash and a 2 px
   orange bar on the left. Use `hl` for the two or three lines the text
   talks about.
-- **The highlighter** is the small regex one in `build.py` (`RULES`, for
-  python, json, http, toml and text). It runs at build time, so the page
-  ships plain HTML with no highlighting library.
+- **The highlighting is done before the page ships**: the code is plain
+  HTML with `<span>`s already in it (copy them from section 19 of the
+  showcase). Never load a highlighting library.
 - **Copy** copies the lines' text without the numbers, then shows a toast
   ("Copied create-order.http"). Call `navigator.clipboard.writeText` inside
   the click, and fall back to selecting the text if it is refused.

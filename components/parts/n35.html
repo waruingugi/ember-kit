@@ -1,0 +1,44 @@
+<!-- part n35 | part | group nav | Answers that spring open, one at a time. | Answers that spring open, one at a time. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Answers that <em>spring open, one at a time.</em></h3>
+          <p class="kit-p">Open a question. The last one closes as the new one springs open, so only one answer is on screen.</p>
+          <section class="cs kv4" id="n35">
+  <div class="frame"><div class="fbody">
+    <span class="label">Veg box help</span>
+    <div class="ls">
+      <div class="it open"><h3><button type="button" class="hd" id="n35-b0" aria-expanded="true" aria-controls="n35-r0"><span>When does my veg box arrive?</span><svg class="i ch" aria-hidden="true"><use href="#i-cd"></use></svg></button></h3><div class="pn" id="n35-r0"><p>Boxes leave the farm at 6 am on Tuesday and Friday. Inside Nairobi they reach you by noon. We text you when the rider is ten minutes away.</p></div></div>
+      <div class="it"><h3><button type="button" class="hd" id="n35-b1" aria-expanded="false" aria-controls="n35-r1"><span>Can I skip a week?</span><svg class="i ch" aria-hidden="true"><use href="#i-cd"></use></svg></button></h3><div class="pn" id="n35-r1" hidden=""><p>Yes. Open your box and press Skip before Monday at 8 pm. You pay nothing for a week you skip.</p></div></div>
+      <div class="it"><h3><button type="button" class="hd" id="n35-b2" aria-expanded="false" aria-controls="n35-r2"><span>What if something is bruised?</span><svg class="i ch" aria-hidden="true"><use href="#i-cd"></use></svg></button></h3><div class="pn" id="n35-r2" hidden=""><p>Send us a photo the same day. We take it off your next bill, or add a fresh one to your next box.</p></div></div>
+      <div class="it"><h3><button type="button" class="hd" id="n35-b3" aria-expanded="false" aria-controls="n35-r3"><span>How do I pay?</span><svg class="i ch" aria-hidden="true"><use href="#i-cd"></use></svg></button></h3><div class="pn" id="n35-r3" hidden=""><p>PocketPay or card. We charge the day before your box leaves, never earlier.</p></div></div>
+    </div>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0037">
+(function () {
+  "use strict";
+  var box = document.getElementById("n35"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  var items = $$(".it"), hs = items.map(function (it) { return $(".hd", it); });
+  function sp() { var cs = getComputedStyle(root); return { e: cs.getPropertyValue("--sp-bouncy").trim() || "cubic-bezier(.22,1,.36,1)", d: (parseFloat(cs.getPropertyValue("--sp-bouncy-d")) || .49) * 1000 }; }
+  function set(it, open) {
+    var b = $(".hd", it), pn = $(".pn", it); if (it.classList.contains("open") === open) return;
+    it.classList.toggle("open", open); b.setAttribute("aria-expanded", String(open));
+    if (pn._a) pn._a.cancel();
+    if (lv() === "off" || !pn.animate) { pn.hidden = !open; return; }
+    var s = sp();
+    if (open) { pn.hidden = false; var h = pn.scrollHeight; pn._a = pn.animate([{ height: "0px" }, { height: h + "px" }], { duration: s.d, easing: s.e }); $("p", pn).animate([{ opacity: 0, transform: "translateY(-6px)" }, { opacity: 1, transform: "none" }], { duration: s.d * .8, easing: "cubic-bezier(.22,1,.36,1)" }); }
+    else { var h0 = pn.offsetHeight; pn._a = pn.animate([{ height: h0 + "px" }, { height: "0px" }], { duration: 260, easing: "cubic-bezier(.22,1,.36,1)" }); pn._a.onfinish = function () { if (!it.classList.contains("open")) pn.hidden = true; }; }
+  }
+  items.forEach(function (it) { $(".hd", it).addEventListener("click", function () { var open = !it.classList.contains("open"); if (open) items.forEach(function (o) { if (o !== it) set(o, false); }); set(it, open); }); });
+  box.addEventListener("keydown", function (e) {
+    var i = hs.indexOf(document.activeElement); if (i < 0) return;
+    var j = e.key === "ArrowDown" ? (i + 1) % hs.length : e.key === "ArrowUp" ? (i + hs.length - 1) % hs.length : e.key === "Home" ? 0 : e.key === "End" ? hs.length - 1 : -1;
+    if (j < 0) return; e.preventDefault(); hs[j].focus();
+  });
+})();
+</script>

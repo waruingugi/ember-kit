@@ -1,0 +1,70 @@
+<!-- part c07 | part | group nav | A guide, with a line that follows you. | A guide, with a line that follows you. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A guide, <em>with a line that follows you.</em></h3>
+          <p class="kit-p">Scroll the guide. The orange line fills and the marker moves to the part you are reading.</p>
+          <section class="cs" id="c07">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Guide · scroll inside</span></div>
+      <div class="fbody" style="padding:0">
+        <div class="sp" id="sp" tabindex="0" aria-label="Guide, scrolls inside">
+          <nav class="sp-nav" id="spNav" aria-label="Guide parts"><span class="sp-bar" id="spBar" aria-hidden="true"></span><div class="tabs" id="spTabs"></div></nav>
+          <div id="spBody"></div>
+        </div>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0004">
+  /* ---------------- 07 scroll progress ---------------- */
+  (function () {
+    var sp = $("sp"), bar = $("spBar"), nav = $("spNav"), body = $("spBody");
+    var P = [
+      ["Intro", "What this guide covers", "You will set up the tool, connect it to your data, and send your first report. It takes about ten minutes.", "Each part ends with a check, so you know it worked before you move on."],
+      ["Install", "Get it on your machine", "Run the installer for your system. It puts one program in your path and changes nothing else.", "If you already have an older version, the installer replaces it and keeps your settings."],
+      ["Set up", "Tell it where your data is", "Open the settings file and paste the address of your database. Keep the password in your system's key store, not in the file.", "Run the check command. It should print the names of your tables."],
+      ["Use it", "Send your first report", "Pick three numbers you look at every day. Save them as a report and choose who gets it.", "The first report goes out at once, so you can see what people will get."],
+      ["Questions", "Things people ask", "Can I undo a report? Yes, every report keeps its last ten versions.", "Does it work offline? It can build reports offline and sends them when you are back."]
+    ];
+    body.innerHTML = P.map(function (p, i) {
+      return '<section class="sp-sec" id="spS' + i + '"><span class="label">Part ' + (i + 1) + "</span><h4>" + p[1] + "</h4><p>" + p[2] + '</p><p style="margin-top:10px">' + p[3] + "</p></section>";
+    }).join("");
+    var secs = [].slice.call(body.children), topBtn = null, ticking = false;
+    var gliding = false, glideT = 0;
+    var T = tabs($("spTabs"), P.map(function (p, i) { return '<span class="n">0' + (i + 1) + '</span><span class="lb">' + p[0] + "</span>"; }), {
+      onSelect: function (i) {
+        // the marker has already slid to the name; let the box glide under it, then hand back to the scroll
+        gliding = spd() > 0;
+        sp.scrollTo({ top: pos(i), behavior: gliding ? "smooth" : "auto" });
+      }
+    });
+    function pos(k) { return Math.max(0, Math.min(secs[k].offsetTop - 60, sp.scrollHeight - sp.clientHeight)); }
+    function update() {
+      ticking = false;
+      var max = sp.scrollHeight - sp.clientHeight, y = sp.scrollTop;
+      bar.style.transform = "scaleX(" + (max > 0 ? y / max : 0) + ")";
+      if (!gliding) {
+        var i = 0, n = secs.length;
+        for (var k = 0; k < n; k++) if (pos(k) <= y + 1) i = k;
+        // the marker rests while you read a part, then slides to the next name over the last 35% of the way
+        var f = i < n - 1 ? clamp((y - pos(i)) / Math.max(1, pos(i + 1) - pos(i)), 0, 1) : 0;
+        f = ease(clamp((f - .65) / .35, 0, 1));
+        var c = f > .5 ? i + 1 : i;
+        if (c !== T.cur()) T.set(c);
+        T.follow(i, f);
+      }
+      var want = y > 200;
+      if (want && !topBtn) {
+        topBtn = document.createElement("button");
+        topBtn.type = "button"; topBtn.className = "ib sp-top"; topBtn.setAttribute("aria-label", "Back to the top");
+        topBtn.innerHTML = ic("aup");
+        topBtn.addEventListener("click", function () { sp.scrollTo({ top: 0, behavior: spd() ? "smooth" : "auto" }); T.btns[0].focus(); });
+        nav.appendChild(topBtn);
+      } else if (!want && topBtn) { topBtn.remove(); topBtn = null; }
+    }
+    sp.addEventListener("scroll", function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+      clearTimeout(glideT); glideT = setTimeout(function () { if (gliding) { gliding = false; update(); } }, 140);
+    }, { passive: true });
+    update();
+  })();
+</script>

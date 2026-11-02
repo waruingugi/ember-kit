@@ -35,15 +35,18 @@ An answer already written in this folder is settled. Do not ask it again.
 | A step-by-step build guide | `patterns/build-guides.md` |
 | A value over time (a line chart, live or still) | `patterns/line-chart.md` |
 | A small part: card, stat, callout, pill, table, toast | `components/README.md` |
-| A part the reader works: tabs or nav, stepper, form, upload, data table, rows that open, pricing, selection bar, toast, payment or deploy status, peek card, card that tilts, folder, card pile, bar chart, dot field | `patterns/interactive-parts.md` (29 parts in `components/interactive.html`, plus 21 v4 parts in `components/showcase/v4parts/`) |
+| A showcase of the whole kit (every part, then every page pattern) | `patterns/showcase.md` |
+| A part the reader works: tabs or nav, stepper, form, upload, data table, rows that open, pricing, selection bar, toast, payment or deploy status, peek card, card that tilts, folder, card pile, bar chart, dot field | `patterns/interactive-parts.md` (every part is a file in `components/parts/`; build with `scripts/assemble.mjs`) |
+| Which version of a part to build (button, field, menu, sheet, alert, list), and why | `patterns/taste.md`: the owner's Taste Lab picks as rules; read it before building any part the reader works |
+| A kind of part the kit does not have yet, or a new version the owner asks for | `patterns/compare-parts.md`: build 3–4 options side by side, ask, log the pick in `notes/choices.md` |
 | Things the reader can pick up (door cards, widgets, layer stacks, a hero scene) | `patterns/depth.md` |
 
 3. Build from parts: paste `components/tokens.css` and the needed blocks of `components/components.css`. Copy bigger pieces from `components/` as the pattern file says (open any of them with `bash ~/.claude/design/scripts/show-reference.sh …`).
-4. Use the tool named for the job (`tools/toolkit.md`). Motion: `tools/gsap.md`. Publishing: `tools/publishing.md`. Craft and checks: the `craft` skill (the read before code, the craft rules, the scanners, the review); `fixing-*` and `improve-ui` audit. They give rules and audits only; this file sets the look (`tools/toolkit.md`, *UI skills*).
+4. Use the tool named for the job (`tools/toolkit.md`). Motion: `tools/gsap.md` or `tools/motion.md` (which one: the table at its top). Ready-made parts to reuse or learn from: `tools/ui-libraries.md` (shadcn/ui, free beUI and easyui). Publishing: `tools/publishing.md`. How people use screens (Fitts, Hick, Jakob, proximity): `patterns/ux-laws.md`. Craft and checks: the `craft` skill (the read before code, the craft rules, the scanners, the review); `fixing-*` and `improve-ui` audit. They give rules and audits only; this file sets the look (`tools/toolkit.md`, *UI skills*).
 5. Run *The checklist* (end of file), then publish.
 6. When the owner gives design feedback: write the rule into the right file the same day, in plain 6th-grade English, and add a dated line to `CHANGELOG.md` (see *Keeping it up to date*).
 
-**Workflow the owner expects.** When asked to "improve/write the prompt first": rewrite the request as a spec, save it, stop, wait for go. Offer real choices as 3–4 options side by side, never pick silently. He iterates in drafts.
+**Workflow the owner expects.** When asked to "improve/write the prompt first": rewrite the request as a spec, save it, stop, wait for go. Offer real choices as 3–4 options side by side, never pick silently. The owner iterates in drafts.
 
 **Whole-page prompt template:**
 
@@ -73,6 +76,8 @@ Light is the default; a **night theme** is official (`html[data-theme="dark"]` i
 | `--accent-text` | `#b33a0a` | Orange for text under ~18 px: links, eyebrow numbers, labels |
 
 **Progress is orange.** Steps, timelines and checklists show done as a filled orange circle with a white round-cornered tick, and the line between steps fills orange as you go. The step in progress gets an orange ring. Failed is a filled darker orange (`--accent-text`) circle with a white ✕ and the word "Failed". There is still no green or red. Elsewhere orange stays rare.
+
+**The main button stays orange: white text in day, dark text at night** (`--on-accent`). In day it reads about 4 to 1, under the 4.5 to 1 that WCAG AA asks for normal text. At night the dark text passes (about 6.9 to 1). The owner saw the fixes side by side (Taste Lab round 2) and chose to keep it. Do not "fix" it, and do not count it as a problem in a check. Keep button words short and semibold. Small orange words still use `--accent-text`.
 
 **Done is orange too.** A "paid", "sent" or "saved" sign is a filled orange circle with a white tick (drawn in). The tick is two straight lines; only its corner and ends are rounded (`stroke-linejoin` and `stroke-linecap: round`). Never bend the lines into a curve, and its next button is the orange `.b.pri`. All progress lines are orange: upload bars, steppers, the reading line, timer lines. Lines that show a reader keeping up with a log are orange, never green. Dissolve specks are orange. If you are about to type a green, a grey bar or an ink tick for progress, stop: it is orange.
 
@@ -105,8 +110,9 @@ Markup and CSS for all of these: `components/`.
 - Every picture sits in a frame (bar with three dots, a title, a count) with a one-sentence tool note under it.
 - Page background: a faint squares grid, visible only in empty gaps (between sections, page edges, the hero's open side), masked to nothing around content. Never behind text, a card, a callout or a ghost number. Copy the mask from `components/showcase/index.html` (its `bg` canvas script).
 - Diagram canvases use dots, not squares (see *Pictures*).
-- **Showcases show parts on the page itself**: no outer wrapper box, no file-name bar (dots and title), no iframe. Each part **keeps its own card** (the inner wall: border, raised paper, round corners); only the wrapper around the whole set goes. Each part stands alone with its own realistic sample data that fits its job (money in charts, orders in tables, bookings in calendars), not one shared story. Each gets a small heading (a claim with one orange phrase) and one plain line on what to try, then the part. Never add build notes (how React became HTML, file paths) to a reader's page. Story words stay plain: no tech names like NATS or ClickHouse unless the page is about them. A part's own feedback (a toast, a popover, an Undo bar) shows inside its own card, next to what you clicked; leave room in the card so a popover never spills out. Every button in a showcase must visibly do something when clicked. The owner removed these, so don't bring them back: slide to confirm, the flight date picker with fares, the year-of-running heatmap, the shop funnel and stacked pages. The current showcase (v4, every part, 62 in all): `components/showcase/index.html` (the 21 new parts are in `components/showcase/v4parts/`).
-- Interactive parts (29 in `components/interactive.html`, from tabs to a data table, plus the 21 v4 parts) have one house version each: copy it, never restyle it for one page (`patterns/interactive-parts.md`). Secret reveal and the edge-lit button are rare: at most one per page, only for a real secret or one final action.
+- **A showcase has two halves**: the parts in nine groups, then one small story for each page pattern, then the end card. Only parts is half a showcase. The full list and order is in `patterns/showcase.md`.
+- **Showcases show parts on the page itself**: no outer wrapper box, no file-name bar (dots and title), no iframe. Each part **keeps its own card** (the inner wall: border, raised paper, round corners); only the wrapper around the whole set goes. Each part stands alone with its own realistic sample data that fits its job (money in charts, orders in tables, bookings in calendars), not one shared story. Each gets a small heading (a claim with one orange phrase) and one plain line on what to try, then the part. Never add build notes (how React became HTML, file paths) to a reader's page. Story words stay plain: no tech names like NATS or ClickHouse unless the page is about them. A part's own feedback (a toast, a popover, an Undo bar) shows inside its own card, next to what you clicked; leave room in the card so a popover never spills out. Every button in a showcase must visibly do something when clicked. The owner removed these, so don't bring them back: slide to confirm, the flight date picker with fares, the year-of-running heatmap, and the shop funnel. The current showcase (v4, every part, 85 in all): `components/showcase/index.html`. It is the master copy: `components/parts/` is made from it.
+- Interactive parts (every file in `components/parts/`, from tabs to a data table) have one house version each: build with `scripts/assemble.mjs`, never restyle a part for one page (`patterns/interactive-parts.md`). Secret reveal and the edge-lit button are rare: at most one per page, only for a real secret or one final action.
 - **A status word gets its own line.** A short state like "Paused" or "Catching up" sits on a small line under the name, never tacked onto the end of it, so it can't run over a line or a dot next to it.
 
 ## The sidebar
@@ -132,24 +138,26 @@ Minimum set:
 - Cards rise 3 px on hover; links grow an underline from the left; buttons, toggles and clickable cells shrink to 0.97 on press.
 - Ghost numbers drift slowly on scroll.
 - **Progress line**: the parcel line from the old overview (one orange line that fills as the steps are reached, a dot riding its front) is the house way to show progress through steps. The top bar's 2 px orange line shows progress through the page.
-- **Scroll-driven stacks**: don't use stacked pages that stick as you scroll (the owner removed them: too buggy). Card swaps follow the scroll (down sends the front card back, up brings it back). The moving wall slides with the scroll, with no glow.
+- **Scroll-driven stacks**: stacked pages are back in four kinds, always on the page's own scroll, never in a box with its own scroll bar; Claude picks the kind case by case (`patterns/interactive-parts.md`, part 28). Card swaps follow the scroll (down sends the front card back, up brings it back). The moving wall slides with the scroll, with no glow.
 - **Slow printing**: a receipt feeds out in about 4.5 s with ease-in-out (`--ease-in-out`), like a real printer.
 - **The live shimmer**: after a sparkline draws in, one short lighter stroke (~3% of the line's length, same hue mixed with white, slightly thicker, round caps) crosses it every 3.4 s, then rests off the end. Never a band, glow, blur or white bar. Hidden with motion `off`. CSS: `.spark` in `components/components.css`.
 
 Rules:
 - **One curve**: `--ease-out: cubic-bezier(.22,1,.36,1)`; GSAP `expo.out`.
+- **Springs for parts the reader works.** Buttons, fields, switches, menus, modals, accordions, command menus and tables settle on a spring that overshoots a little (`--sp-snappy`, `--sp-bouncy`, `--sp-soft`). This is the owner's default from Taste Lab round 1. Page entrances and scroll scenes keep the one curve. The spring starts moving at once, so the control still answers fast. With `calm` motion, springs become `--ease-out`. Recipe: `tools/motion.md`, *Springs without a library*.
+- **Never an off-look style unless the owner asks.** In Taste Lab round 1 the owner left out every version outside the ember look (brutal, ink terminal, editorial serif, square mono).
 - **Two speeds.** Content that arrives or moves the layout is slow: entrances 0.9–1.3 s; card lift, sidebar and drawers 0.45 s. A control answering the reader is fast: press 0.15 s; hover colour, tooltips, menus and dropdowns 0.15–0.25 s (closing a little faster than opening). Toasts arrive in 0.35 s. A toast is a light paper card with a hairline and a shadow, never a black box with white text. A control that waits half a second feels broken.
 - **The action is the confirmation.** After a clear action (archive, delete, send), never add an "Are you sure?" box. Do it, say so, and offer Undo with an orange countdown line that pauses on hover or focus.
 - **Things that turn into other things stay on screen.** Never make an object vanish in one frame. The old thing fades where it stands while the new pieces leave it (a folder fades as its cards fly out), and on the way back the old thing returns first so the pieces have somewhere to go. While a box glides to a new height, its content sits at the top, never centred, so nothing slides.
 - **Closing boxes glide all the way.** When a row or notice closes, its padding and margin close with its height, so nothing snaps at the end. A list has no fixed height: its card shrinks as rows leave and grows when they come back.
 - **Pinning**: build guides never pin (readers scroll back and forth while coding). Explainer pages may pin.
-- **Levels** on `html[data-motion]`: `lively` (default; full entrances, ghost drift) · `calm` (half distance and time, no drift) · `off` (final state, no animation, no loops, no GSAP). Save the choice under `<project>-motion-v1` in `try`/`catch`.
+- **Levels** on `html[data-motion]`: `lively` (default; full entrances, ghost drift) · `calm` (half distance and time, no drift) · `off` (final state, no animation, no loops, no GSAP or Motion). Save the choice under `<project>-motion-v1` in `try`/`catch`.
 - **Reduced motion always wins**: `prefers-reduced-motion: reduce` acts as `off`, whatever is saved.
 - **Complete at rest**: nothing readable waits at `opacity: 0` for scroll; if scripts fail, everything shows. One exception: story timeline cards may follow the scroll (`patterns/story-timeline.md`). They fade in as they rise, are fully clear through the middle of the screen, and never dim below 0.3 once passed. With motion `off` they all show.
-- **GSAP is an upgrade**: the page works without it. Script tags, bail-out pattern and traps: `tools/gsap.md`.
+- **GSAP or Motion, one per page, and either is an upgrade**: the page works without it. GSAP for timelines and pinned or scrubbed scroll scenes (`tools/gsap.md`); Motion for React and Next apps and for static pages whose motion is small: entrances, hover, press, springs (`tools/motion.md`, the `motion` skill). Each file has the script tag, bail-out pattern and traps.
 - **Two motion helpers, used often** (`tools/toolkit.md`, *Motion helpers*):
   - **`animate`** (Emil Kowalski's own skill) for any piece the reader works: tabs with a sliding marker, toasts, popovers, menus, modals, drawers, accordions, clip-path text reveals, shared-element moves. Take its recipes; our curve and *Two speeds* replace its easing tables. Emil's `review-animations`, `remove-animations` and `animation-performance` check the result.
-  - **`motion-ecosystem`** whenever a page needs more than CSS and GSAP: a React or Next app, a Three.js scene, or a project that already ships Framer Motion or Lenis. It picks one library per job and wires them so they never fight. On our own single-file pages the answer stays CSS plus GSAP.
+  - **`motion-ecosystem`** whenever a page needs more than CSS and GSAP: a React or Next app, a Three.js scene, or a project that already ships Framer Motion or Lenis. It picks one library per job and wires them so they never fight. On our own single-file pages the answer is CSS plus GSAP or Motion, never both.
   - **GreenSock's `gsap-*` skills** for any GSAP code; `tools/gsap.md` still sets the version, the script tags and the traps. Three.js skills, `motion-design` and `design-dna`: when and how in `tools/toolkit.md`.
 - Never start a scale animation from 0; use ~0.6 plus a fade. Exception: the story-timeline dot pop the pattern specifies.
 - **Edges at rest**: cards and picture frames get the 1 px line and the small shadow (`--shadow-sm`). The wide soft shadow (`--shadow-lg`) shows only on something lifted (hover lift, a dragged or floating object), never as a resting look next to a line.
@@ -179,6 +187,7 @@ Settled picks; never offer them again as open choices. Full notes and how the ow
 - Real motion, never show motion (the watch keeps real time, the escapement really ticks).
 - Complex things come apart in stages: overview, then one layer taken apart; each part moves the way it really would and spins as it goes; no dashed guide lines in a layered explode.
 - Options side by side, chosen by looking.
+- Parts the reader works: the lively version (beUI or easyui, on a spring) in the ember look. Which part for which job, and how to choose where several were kept: `patterns/taste.md`.
 - Loved parts: collapsible sidebar, ghost numbers, count-ups, lines that draw in, message-bus tape, code tabs with Copy, exploded layer scene, story timeline, folder views, custom Hairline figures, interactive pieces the reader can break a rule with.
 - Long documents become short visual pages: one picture per idea, final decisions only.
 
@@ -192,14 +201,14 @@ Each tool has one job. Never draw boxes and arrows as plain HTML.
 | States, data models, swimlanes, flows, layer stacks | Diagram Design with the `ember` profile, or hand-drawn SVG | `tools/diagrams.md`, `patterns/state-machine.md` |
 | A real object that reacts to the pointer | Hairline (`hairline-create`), **small, inside a card** | `tools/hairline.md` |
 | One idea shown working as a big machine, with a live read-out | Anatomy (`anatomy`), **one per screen, light theme** | `tools/anatomy.md` |
-| Charts, sparklines | built-in `dataviz` skill; line charts copy `components/line-chart.html` | `tools/toolkit.md`, `patterns/line-chart.md` |
+| Charts, sparklines | built-in `dataviz` skill; line charts are parts `c01`/`c02` | `tools/toolkit.md`, `patterns/line-chart.md` |
 
 - **Canvas rule**: Diagram Design and hand-drawn diagrams sit on an 18 px dot grid on `--canvas`; everything in front of the dots is solid. Archify keeps its own canvas.
 - **Hairline size rule**: a figure is a small drawing at the top of a card: `.card.tcard` → `<div class="fig" data-hairline="…">` at 70% of card width, max 210 px, then a system chip, title, two lines. No dot box or read-out badge around it. Only a staged-explode study page shows a big figure, with a read-out naming the part under the pointer.
 - **Hairline or Anatomy?** Hairline names a thing, small, in a card. Anatomy shows one idea working, big, as the section's main picture.
 - Use the 33 stock Hairline figures first; make a custom one only when none fits, and save it to `hairline/`.
 - **Sparklines are curved too**: the same monotone curve as line charts, never straight segments.
-- **Line charts are curved, never sharp**: one orange line on a monotone curve that passes through every reading and never overshoots it, a soft fill under it, quiet axes, and hover to read. Two kinds: **live** (scrolls, hover pauses it) and **still** (draws in once, 7D/30D/1Y reshape it, hover and arrow keys snap to real days). Copy both from `components/line-chart.html`; rules in `patterns/line-chart.md`.
+- **Line charts are curved, never sharp**: one orange line on a monotone curve that passes through every reading and never overshoots it, a soft fill under it, quiet axes, and hover to read. Two kinds: **live** (scrolls, hover pauses it) and **still** (draws in once, 7D/30D/1Y reshape it, hover and arrow keys snap to real days). Both are parts `c01`/`c02` in `components/parts/`; rules in `patterns/line-chart.md`.
 
 ## Where everything is
 
@@ -207,22 +216,24 @@ Each tool has one job. Never draw boxes and arrows as plain HTML.
 |---|---|
 | `DESIGN.md` | This core. Always read. |
 | `CHANGELOG.md` | Every change, newest first |
-| `components/` | `tokens.css`, `components.css`, README of small parts, `preview.html`, `line-chart.html`, `interactive.html` (29 interactive parts), `showcase/` (every part on one page) |
+| `components/` | `tokens.css`, `components.css`, README of small parts, `preview.html`, `parts/` (every part as its own file, with `README.md`), `showcase/` (every part on one page) |
 | `patterns/` | One file per pattern: what, why, how, rebuild prompt |
-| `tools/` | Archify + Diagram Design, Hairline, Anatomy, GSAP, toolkit, publishing, new-machine setup |
+| `tools/` | Archify + Diagram Design, Hairline, Anatomy, GSAP, Motion, toolkit, publishing, new-machine setup |
 | `notes/` | What the owner likes, in full |
 | `hairline/` | Figure library with a log |
 | `vendor/` | Hairline 0.5.1: original module + plain-script copy (MIT, with its licence) |
 | `claude/` | The Claude Code rule that loads this file, and the `ember` Diagram Design profile |
-| `scripts/` | `show-reference.sh` (open any page in Chrome), `check-updates.sh` (are the pins old?) |
+| `tools/taste-lab/` | The Taste Lab: every version the owner tried, side by side, and how to run a new round |
+| `scripts/` | `show-reference.sh` (open any page in Chrome), `check-updates.sh` (are the pins old?), and the parts tools: `split.mjs` (showcase → `components/parts/`), `assemble.mjs` (parts → a page; `--app` for a real page), `singles.mjs` and `match.mjs` (does it still look the same?), `lint-paths.mjs` (do the paths in the docs exist?). How to use them: `components/parts/README.md` |
 
 ## Known traps
 
 Bugs hit while building pages in this style. Check for them.
 - **Class clashes with older CSS.** Older stylesheets define `.skip` (skip link), `.later`, `.end` (dark end card), `.done`, `.t`, `.k`, `.stat`. Never reuse them for new parts; scope or rename first.
+- **Old parts and v4 parts on one page.** The older parts (`c01`–`c31`) and `components.css` style plain class names (`.sb`, `.pill`, `.seg`, `.wrap`, `.badge`, `.pop`, `.cnt`, `.row`, `.dot`, `.chev`, `.nm`) for the whole page, and they leak into v4 parts that reuse the same names. Give every v4 section the class `kv4`, and write each older part's rule as `X:where(:not(.kv4 *))`, as the showcase does. Keep `.frame`, `.fbody` and `.lead` shared. Then open every v4 part and use it once.
 - **Undefined layout classes.** Older CSS has no `.bento`/`.c4`–`.c12`; add them from `components/components.css` before using them.
 - **Grid overflow.** Long code lines stretch grid tracks. Give grid children `min-width: 0` and single-column grids `minmax(0,1fr)`.
-- **CSS transition + GSAP on the same property** jitters. Turn the CSS transition off under `html.gsap-on`.
+- **CSS transition + GSAP or Motion on the same property** jitters. Turn the CSS transition off under `html.gsap-on` or `html.motion-on`.
 - **GSAP reveals must skip scroll-driven scenes** (`.layers-pin`), which manage their own visibility.
 - **Key handlers**: guard `e.target.closest` (the target can be `document`).
 - **Diagram labels** need a gap wider than their text; `verify-geometry.py` catches clipped label masks.
@@ -245,7 +256,7 @@ Every line, before an artifact goes online:
 - [ ] No sideways scroll at 1440×900 and 390×844 (`document.documentElement.scrollWidth === innerWidth`).
 - [ ] Sidebar collapses by button and `[`, remembers it, becomes a drawer on phones.
 - [ ] Motion runs where it has a job. With motion `off` and with reduced motion, everything is visible and nothing moves.
-- [ ] Works with GSAP blocked.
+- [ ] Works with GSAP or Motion blocked.
 - [ ] No console errors or warnings after scrolling the whole page and using every control.
 - [ ] Every button visibly does something. Every open and close was checked frame by frame (or its height measured each frame): nothing vanishes in one frame, and nothing snaps at the end.
 - [ ] Diagram Design and hand-drawn diagrams sit on the dot grid; no dot shows inside a box, label or legend.
@@ -254,6 +265,8 @@ Every line, before an artifact goes online:
 - [ ] Depth only where `patterns/depth.md` gives it a job; at most one floating group per screen.
 - [ ] Controls audited with `fixing-accessibility`; forms, navigation and touch sizes checked against `craft`'s `rules.md`.
 - [ ] `craft` scan run (`scripts/scan.sh`); every finding fixed or listed as house style in its `house.md`.
+- [ ] Hallmark's `sloplint.mjs` run (`tools/hallmark.md`); every `FAIL` fixed, apart from the gates it lists.
+- [ ] The four UX laws checked (`patterns/ux-laws.md`): targets 44 px on touch, 3–4 choices at a level, familiar keys, space shows the groups.
 - [ ] No page grid line behind text, a card or a box.
 - [ ] Archify: `validate` at `showcase`, 9 of 9.
 - [ ] Diagram Design: `verify-geometry` 0 findings and `self_check` OK.
@@ -261,5 +274,6 @@ Every line, before an artifact goes online:
 - [ ] Anatomy figures: light theme, one per screen, `--audit` passes and `lines.mjs` prints `line ends: 0`.
 - [ ] Small orange text uses `--accent-text`; focus rings show; the keyboard reaches every control.
 - [ ] No class clashes (see *Known traps*).
+- [ ] Pages built from `components/parts/` pass the match check: `node scripts/singles.mjs --ids <the parts>` and, for a page that copies the showcase, `node scripts/match.mjs components/showcase/index.html page.html` (99% or better per section, light and night, 1440 and 390, and no style differences).
 - [ ] Copy reads at a 6th-grade level.
 - [ ] Local file changed first, then published (`tools/publishing.md`).

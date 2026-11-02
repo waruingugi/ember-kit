@@ -1,0 +1,105 @@
+<!-- part n20 | part | group tables | Search pages with a marker that slides. | Search pages with a marker that slides. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Search pages with <em>a marker that slides.</em></h3>
+          <p class="kit-p">Press a page number or the arrows. The dark marker slides and the list fades to the next page.</p>
+          <section class="cs kv4" id="n20">
+  <div class="frame"><div class="fbody">
+    <div class="hd"><h4>Results for “running shoes”</h4><span class="label" id="n20-cnt">11–15 of 60</span></div>
+    <div class="lw" id="n20-lw"></div>
+    <nav class="pg" id="n20-pg" aria-label="Search pages">
+      <button type="button" class="ar" id="n20-prev" aria-label="Previous page"><svg class="i" aria-hidden="true"><use href="#i-cl"></use></svg></button>
+      <div class="nums" id="n20-nums"><span class="pg-pill" aria-hidden="true"></span></div>
+      <button type="button" class="ar" id="n20-next" aria-label="Next page"><svg class="i" aria-hidden="true"><use href="#i-cr"></use></svg></button>
+    </nav>
+    <p class="note" id="n20-note" aria-live="polite">Page 3 of 12</p>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0016">
+(function () {
+  "use strict";
+  var box = document.getElementById("n20"); if (!box) return;
+  var EASE = "cubic-bezier(.22,1,.36,1)";
+  function spd() { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; }
+  function go(el, kf, ms, done) {
+    var s = spd(); if (!s || !el.animate) { if (done) done(); return null; }
+    var a = el.animate(kf, { duration: ms * (s < 1 ? .6 : 1), easing: EASE, fill: "both" });
+    a.onfinish = function () { if (done) done(); a.cancel(); }; return a;
+  }
+  var T = 12, PER = 5, cur = 3, lastX = null;
+  var lw = document.getElementById("n20-lw"), nums = document.getElementById("n20-nums"), pill = nums.querySelector(".pg-pill");
+  var prev = document.getElementById("n20-prev"), next = document.getElementById("n20-next"), cnt = document.getElementById("n20-cnt"), note = document.getElementById("n20-note");
+  var B = ["Zuri", "Kito", "Savanna", "Rift", "Tembo", "Nyika", "Mara", "Kilele", "Simba", "Pwani"];
+  var Ty = ["Trail Runner", "Road Pacer", "Tempo Light", "Cushion Max", "Daily Trainer", "Sprint Flat"];
+  function ul(p) {
+    var u = document.createElement("ul"); u.className = "ul";
+    for (var i = 0; i < PER; i++) {
+      var k = (p - 1) * PER + i, n = B[(k * 3) % 10], li = document.createElement("li");
+      var price = 3200 + ((k * 11) % 27) * 250;
+      li.innerHTML = '<span class="th">' + n.charAt(0) + '</span><span class="nm">' + n + " " + Ty[(k * 7 + p) % 6] + '</span><span class="pr">KSh ' + price.toLocaleString("en-US") + "</span>";
+      u.appendChild(li);
+    }
+    return u;
+  }
+  function seq(c) {
+    var s = {}; [1, T, c - 1, c, c + 1].forEach(function (p) { if (p >= 1 && p <= T) s[p] = 1; });
+    if (c <= 3) for (var a = 1; a <= 4; a++) s[a] = 1;
+    if (c >= T - 2) for (var b = T - 3; b <= T; b++) s[b] = 1;
+    var ps = Object.keys(s).map(Number).sort(function (x, y) { return x - y; }), out = [];
+    ps.forEach(function (p, i) { if (i && p - ps[i - 1] === 2) out.push(p - 1); else if (i && p - ps[i - 1] > 2) out.push(0); out.push(p); });
+    return out;
+  }
+  var cache = {};
+  function btn(p) {
+    if (!cache[p]) { var b = document.createElement("button"); b.type = "button"; b.className = "pb"; b.textContent = p; b.dataset.p = p; b.setAttribute("aria-label", "Page " + p); cache[p] = b; }
+    return cache[p];
+  }
+  function render(focusP) {
+    var before = {}; Object.keys(cache).forEach(function (p) { if (cache[p].isConnected) before[p] = cache[p].getBoundingClientRect().left; });
+    [].slice.call(nums.children).forEach(function (c) { if (c !== pill) nums.removeChild(c); });
+    seq(cur).forEach(function (p) {
+      if (!p) { var g = document.createElement("span"); g.className = "gp"; g.setAttribute("aria-hidden", "true"); g.innerHTML = "&hellip;"; nums.appendChild(g); return; }
+      var b = btn(p); if (p === cur) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
+      nums.appendChild(b);
+    });
+    Object.keys(before).forEach(function (p) {
+      var b = cache[p]; if (!b.isConnected) return;
+      var dx = before[p] - b.getBoundingClientRect().left; if (dx) go(b, [{ transform: "translateX(" + dx + "px)" }, { transform: "none" }], 450);
+    });
+    var x = cache[cur] ? cache[cur].offsetLeft : 0;
+    pill.style.transform = "translateX(" + x + "px)";
+    if (lastX !== null && lastX !== x) go(pill, [{ transform: "translateX(" + lastX + "px)" }, { transform: "translateX(" + x + "px)" }], 450);
+    lastX = x;
+    prev.disabled = cur === 1; next.disabled = cur === T;
+    if (focusP && cache[focusP] && cache[focusP].isConnected) cache[focusP].focus();
+  }
+  function showList(instant) {
+    var old = lw.querySelector(".ul"), nu = ul(cur);
+    if (old && !instant && spd()) {
+      lw.appendChild(nu);
+      var d = 6 * spd();
+      go(old, [{ opacity: 1 }, { opacity: 0 }], 300, function () { old.remove(); });
+      go(nu, [{ opacity: 0, transform: "translateY(" + d + "px)" }, { opacity: 1, transform: "none" }], 350);
+    } else { if (old) old.remove(); lw.appendChild(nu); }
+    var a = (cur - 1) * PER + 1;
+    cnt.textContent = a + "–" + (a + PER - 1) + " of " + (T * PER);
+    note.textContent = "Page " + cur + " of " + T;
+  }
+  function goTo(p, focusP) {
+    p = Math.max(1, Math.min(T, p)); if (p === cur) return;
+    var wasActive = document.activeElement;
+    cur = p; render(focusP || (wasActive && wasActive.dataset && wasActive.dataset.p ? p : 0)); showList();
+  }
+  nums.addEventListener("click", function (e) { var b = e.target.closest(".pb"); if (b) goTo(+b.dataset.p, +b.dataset.p); });
+  prev.addEventListener("click", function () { goTo(cur - 1); });
+  next.addEventListener("click", function () { goTo(cur + 1); });
+  box.querySelector("#n20-pg").addEventListener("keydown", function (e) {
+    var f = e.key === "ArrowLeft" ? cur - 1 : e.key === "ArrowRight" ? cur + 1 : e.key === "Home" ? 1 : e.key === "End" ? T : 0;
+    if (!f) return; e.preventDefault(); goTo(f, f >= 1 && f <= T ? f : 0);
+  });
+  render(); showList(true);
+  pill.style.transform = "translateX(" + cache[cur].offsetLeft + "px)";
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { pill.style.transform = "translateX(" + cache[cur].offsetLeft + "px)"; lastX = cache[cur].offsetLeft; });
+})();
+</script>

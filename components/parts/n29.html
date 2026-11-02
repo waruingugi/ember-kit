@@ -1,0 +1,41 @@
+<!-- part n29 | part | group forms | Pay, and see it go through. | Pay, and see it go through. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Pay, and see it <em>go through.</em></h3>
+          <p class="kit-p">Press Pay. The words roll away, three dots wait, then a tick pops in.</p>
+          <section class="cs kv4" id="n29">
+  <div class="frame"><div class="fbody">
+    <div class="stage">
+      <button class="b pri pay" type="button" id="n29-pay"><span class="st on" data-s="idle">Pay KSh 4,200</span><span class="st" data-s="load" aria-hidden="true"><i></i><i></i><i></i></span><span class="st" data-s="done" aria-hidden="true"><svg class="i" aria-hidden="true"><use href="#i-check"></use></svg>Paid</span></button>
+      <button class="b" type="button" id="n29-draft">Save draft</button>
+    </div>
+    <p class="note" id="n29-note" aria-live="polite">Nothing paid yet.</p>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0033">
+(function () {
+  "use strict";
+  var box = document.getElementById("n29"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  var pay = $("#n29-pay"), note = $("#n29-note"), cur = "idle";
+  function to(s) {
+    var a = $('[data-s="' + cur + '"]', pay), b = $('[data-s="' + s + '"]', pay);
+    a.classList.remove("on"); a.classList.add("out"); a.setAttribute("aria-hidden", "true");
+    setTimeout(function () { a.classList.remove("out"); }, 400);
+    b.classList.add("on"); b.removeAttribute("aria-hidden"); cur = s;
+  }
+  pay.addEventListener("click", function () {
+    if (cur !== "idle") return;
+    to("load"); pay.setAttribute("aria-busy", "true"); note.textContent = "Paying…";
+    setTimeout(function () {
+      to("done"); pay.removeAttribute("aria-busy"); note.textContent = "KSh 4,200 paid to Duka Fresh.";
+      setTimeout(function () { to("idle"); }, 2200);
+    }, 1400);
+  });
+  $("#n29-draft").addEventListener("click", function () { note.textContent = "Draft saved at " + new Date().toTimeString().slice(0, 5) + "."; });
+})();
+</script>

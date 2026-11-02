@@ -1,0 +1,72 @@
+<!-- part c24 | part | group status | A deploy, step by step. | A deploy, step by step. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A deploy, <em>step by step.</em></h3>
+          <p class="kit-p">Click a step to open it. The orange line shows how far it has got.</p>
+          <section class="cs" id="c24">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Deploy 1.8.0</span></div>
+      <div class="fbody">
+        <div class="tl-wrap" id="tlWrap"><span class="tl-track" aria-hidden="true"></span><span class="tl-fill" id="tlFill" aria-hidden="true"></span><ol class="tl" id="tl"></ol></div>
+        <div class="tl-foot"><span id="tlSum"></span><button class="b sm" type="button" id="tlFail" aria-pressed="false">Fail the deploy</button></div>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0021">
+  /* ---------------- 24 timeline ---------------- */
+  (function () {
+    var list = $("tl"), fill = $("tlFill"), sum = $("tlSum"), failBtn = $("tlFail"), failed = false, open = {}, seen = false;
+    var base = [
+      { t: "Commit pushed", time: "09:12", s: "completed", d: "Fix rounding in invoice totals.", hash: "a3f9c2e", m: [["Author", "Maya"], ["Files", "4"]] },
+      { t: "Build", time: "09:13 · 1 m 48 s", s: "completed", d: "Built 214 modules with no warnings.", m: [["Size", "1.9 MB"], ["Cache hit", "86%"]] },
+      { t: "Tests", time: "09:15 · 2 m 51 s", s: "completed", d: "Every test passed.", m: [["Passed", "1,204"], ["Skipped", "3"]] },
+      { t: "Deploy to staging", time: "09:18 · running", s: "in-progress", d: "Rolling out to 3 of 6 servers.", m: [["Servers", "3 / 6"], ["Region", "eu-west"]] },
+      { t: "Smoke tests", time: "Waiting", s: "pending", d: "Runs when staging is up." },
+      { t: "Release to everyone", time: "Waiting", s: "pending", d: "Needs a person to press go." }
+    ];
+    function steps() {
+      return base.map(function (x, i) {
+        if (!failed) return x;
+        if (i === 3) return Object.assign({}, x, { s: "failed", time: "09:19 · stopped", d: "Server 4 did not answer its health check, so the deploy rolled back." });
+        if (i > 3) return Object.assign({}, x, { time: "Skipped" });
+        return x;
+      });
+    }
+    function node(s) {
+      if (s === "completed") return ic("check", "s");
+      if (s === "in-progress") return '<span class="live"></span>';
+      if (s === "failed") return ic("x", "s");
+      return ic("clock", "s");
+    }
+    function render() {
+      var S = steps();
+      list.innerHTML = S.map(function (x, i) {
+        var o = !!open[i], tag = x.s === "in-progress" ? '<span class="tag">Running</span>' : x.s === "failed" ? '<span class="tag" style="color:var(--accent-text)">Failed</span>' : "";
+        return '<li data-s="' + x.s + '" class="' + (o ? "open sel" : "") + '"><span class="tl-node" aria-hidden="true">' + node(x.s) + "</span>" +
+          '<div class="tl-card"><button class="tl-top" type="button" data-i="' + i + '" aria-expanded="' + o + '"><span><span class="tl-t">' + x.t + tag + '</span><span class="tl-time">' + x.time + "</span></span>" + ic("cd") + "</button>" +
+          (o ? '<div class="tl-more' + (spd() ? " fade-in" : "") + '"><p>' + x.d + "</p>" +
+            (x.hash ? '<p style="margin-top:8px"><button class="idb" type="button" data-hash="' + x.hash + '">' + ic("commit", "s") + "<span>" + x.hash + "</span>" + ic("copy", "s") + "</button></p>" : "") +
+            (x.m ? '<div class="mx">' + x.m.map(function (m) { return "<div><span>" + m[0] + "</span><b>" + m[1] + "</b></div>"; }).join("") + "</div>" : "") + "</div>" : "") + "</div></li>";
+      }).join("");
+      var lastI = 0; S.forEach(function (x, i) { if (x.s !== "pending") lastI = i; });
+      var li = list.children[lastI];
+      fill.style.height = Math.max(0, li.offsetTop) + "px";
+      var done = S.filter(function (x) { return x.s === "completed"; }).length;
+      sum.textContent = failed ? "Stopped at " + S[3].t + " · " + done + " of " + S.length + " done" : done + " of " + S.length + " done · deploying";
+      if (seen) fill.classList.add("on");
+    }
+    list.addEventListener("click", function (e) {
+      var h = e.target.closest("[data-hash]");
+      if (h) { copy(h.dataset.hash).then(function (ok) { h.querySelector("span").textContent = ok ? "Copied" : h.dataset.hash; setTimeout(function () { h.querySelector("span").textContent = h.dataset.hash; }, 1400); }); return; }
+      var b = e.target.closest(".tl-top"); if (!b) return;
+      var i = +b.dataset.i; open[i] = !open[i]; render();
+      list.querySelector('[data-i="' + i + '"]').focus();
+    });
+    failBtn.addEventListener("click", function () {
+      failed = !failed; failBtn.setAttribute("aria-pressed", String(failed)); failBtn.textContent = failed ? "Run it again" : "Fail the deploy";
+      open = {}; open[3] = true; render();
+    });
+    render();
+    onView($("tlWrap"), function () { seen = true; if (spd()) fill.classList.add("on"); else { fill.style.transition = "none"; fill.classList.add("on"); } }, .3);
+  })();
+</script>

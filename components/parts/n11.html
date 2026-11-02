@@ -1,0 +1,101 @@
+<!-- part n11 | part | group forms | A sign-up form that grades your password. | A sign-up form that grades your password. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A sign-up form that <em>grades your password.</em></h3>
+          <p class="kit-p">Type a password and watch the bar fill. Press the button with a mistake, then fix it.</p>
+          <section class="cs kv4" id="n11">
+  <div class="frame"><div class="fbody">
+    <form class="card" id="n11-form" novalidate="">
+      <h3>Make your account</h3>
+      <p class="sub">It takes about a minute.</p>
+      <div class="f"><label for="n11-name">Full name</label><input class="in" id="n11-name" autocomplete="name" placeholder="Grace Wanjiru" aria-describedby="n11-e-name"><div class="er" id="n11-e-name" aria-live="polite"><div></div></div></div>
+      <div class="f"><label for="n11-mail">Email</label><input class="in" id="n11-mail" type="email" autocomplete="email" placeholder="grace@example.com" aria-describedby="n11-e-mail"><div class="er" id="n11-e-mail" aria-live="polite"><div></div></div></div>
+      <div class="f"><label for="n11-pw">Password</label>
+        <div class="inwrap"><input class="in" id="n11-pw" type="password" autocomplete="new-password" style="padding-right:42px" aria-describedby="n11-e-pw n11-rules"><button class="ib" type="button" id="n11-eye" aria-label="Show password" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-eye"></use></svg></button></div>
+        <div class="pw-segs" aria-hidden="true"><div class="pw-seg"><i></i></div><div class="pw-seg"><i></i></div><div class="pw-seg"><i></i></div><div class="pw-seg"><i></i></div></div>
+        <p class="sw" id="n11-sw" aria-live="polite">Type a password</p>
+        <ul class="rules" id="n11-rules">
+          <li data-r="len"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.2"></circle><path pathLength="1" d="M4.6 8.2 7 10.5l4.4-4.6"></path></svg>8+ characters</li>
+          <li data-r="num"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.2"></circle><path pathLength="1" d="M4.6 8.2 7 10.5l4.4-4.6"></path></svg>A number</li>
+          <li data-r="up"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.2"></circle><path pathLength="1" d="M4.6 8.2 7 10.5l4.4-4.6"></path></svg>An upper-case letter</li>
+          <li data-r="sym"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.2"></circle><path pathLength="1" d="M4.6 8.2 7 10.5l4.4-4.6"></path></svg>A symbol</li>
+        </ul>
+        <div class="er" id="n11-e-pw" aria-live="polite"><div></div></div>
+      </div>
+      <div class="f"><label for="n11-pw2">Confirm password</label><input class="in" id="n11-pw2" type="password" autocomplete="new-password" aria-describedby="n11-e-pw2"><div class="er" id="n11-e-pw2" aria-live="polite"><div></div></div></div>
+      <button class="b pri go" type="submit" id="n11-go"><span class="lab">Create account</span></button>
+    </form>
+    <p class="note" id="n11-note" aria-live="polite">Demo only: nothing is sent anywhere.</p>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0024">
+(function () {
+  "use strict";
+  var box = document.getElementById("n11"); if (!box) return;
+  var EASE = "cubic-bezier(.22,1,.36,1)";
+  var spd = function () { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; };
+  var $ = function (id) { return document.getElementById(id); };
+  var name = $("n11-name"), mail = $("n11-mail"), pw = $("n11-pw"), pw2 = $("n11-pw2"), eye = $("n11-eye"), go = $("n11-go"), note = $("n11-note");
+  var segs = Array.prototype.slice.call(box.querySelectorAll(".pw-seg i")), rules = box.querySelectorAll(".rules li"), sw = $("n11-sw");
+  var touched = {}, busy = false;
+  function show(field, errId, text, kind) {
+    var er = $(errId), inner = er.firstElementChild;
+    if (!text) { er.classList.remove("on"); field.removeAttribute("aria-invalid"); return; }
+    var good = kind === "good";
+    inner.innerHTML = '<p class="em' + (good ? " good" : "") + '"><svg class="i s" aria-hidden="true"><use href="#i-' + (good ? "check" : "alert") + '"/></svg><span></span></p>';
+    inner.querySelector("span").textContent = text;
+    er.classList.add("on");
+    if (good) field.removeAttribute("aria-invalid"); else field.setAttribute("aria-invalid", "true");
+  }
+  function score(v) { return { len: v.length >= 8, num: /\d/.test(v), up: /[A-Z]/.test(v), sym: /[^A-Za-z0-9]/.test(v) }; }
+  function vName() { var e = name.value.trim() ? "" : "Enter your name."; show(name, "n11-e-name", e); return !e; }
+  function vMail() { var v = mail.value.trim(), e = !v ? "Enter your email." : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? "" : "Use an email like name@example.com."; show(mail, "n11-e-mail", e); return !e; }
+  function vPw() {
+    var r = score(pw.value), n = Object.keys(r).filter(function (k) { return r[k]; }).length;
+    var e = !pw.value ? "Enter a password." : !r.len ? "Use at least 8 characters." : n < 4 ? "Add the missing items in the list." : "";
+    show(pw, "n11-e-pw", e); return !e;
+  }
+  function vPw2() {
+    if (!pw2.value) { show(pw2, "n11-e-pw2", touched.pw2 ? "Type your password again." : ""); return !touched.pw2 ? false : false; }
+    var ok = pw2.value === pw.value; show(pw2, "n11-e-pw2", ok ? "Passwords match." : "Passwords do not match.", ok ? "good" : "bad"); return ok;
+  }
+  function strength() {
+    var r = score(pw.value), n = 0;
+    rules.forEach(function (li) { var m = r[li.dataset.r]; li.classList.toggle("ok", m); if (m) n++; });
+    segs.forEach(function (s, i) { s.style.transitionDelay = i < n && spd() ? i * 50 + "ms" : "0ms"; s.classList.toggle("on", i < n); });
+    sw.textContent = !pw.value ? "Type a password" : ["Too short", "Weak", "Fair", "Good", "Strong"][n];
+  }
+  var V = [[name, vName, "name"], [mail, vMail, "mail"], [pw, vPw, "pw"], [pw2, vPw2, "pw2"]];
+  V.forEach(function (v) {
+    v[0].addEventListener("blur", function () { if (v[0].value || touched[v[2]]) { touched[v[2]] = true; v[1](); } });
+    v[0].addEventListener("input", function () {
+      if (v[0] === pw) { strength(); if (touched.pw) vPw(); if (pw2.value) vPw2(); }
+      else if (touched[v[2]] || v[0] === pw2) { if (v[0] === pw2) touched.pw2 = true; v[1](); }
+    });
+  });
+  eye.addEventListener("click", function () {
+    var on = pw.type === "password"; pw.type = on ? "text" : "password"; pw2.type = pw.type;
+    eye.setAttribute("aria-pressed", on); eye.setAttribute("aria-label", on ? "Hide password" : "Show password");
+    eye.querySelector("use").setAttribute("href", on ? "#i-eyeoff" : "#i-eye");
+  });
+  function label(html) {
+    var lab = go.querySelector(".lab"), s = spd(); lab.innerHTML = html;
+    if (s) lab.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200 * s, easing: EASE });
+  }
+  $("n11-form").addEventListener("submit", function (e) {
+    e.preventDefault(); if (busy) return;
+    touched = { name: 1, mail: 1, pw: 1, pw2: 1 };
+    var res = V.map(function (v) { return v[1](); });
+    var bad = res.indexOf(false); if (bad > -1) { V[bad][0].focus(); return; }
+    busy = true; go.disabled = true; go.style.opacity = 1;
+    label('<svg class="sp" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>Making account');
+    setTimeout(function () {
+      label('<svg class="tk" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M20 6 9 17l-5-5"/></svg>Account made');
+      var p = go.querySelector(".tk path"), s = spd(); p.style.strokeDasharray = 1;
+      if (s) p.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 300 * s, easing: EASE });
+      note.textContent = "Account made for " + name.value.trim() + ". Demo only: nothing was sent.";
+    }, spd() ? 1300 : 0);
+  });
+})();
+</script>

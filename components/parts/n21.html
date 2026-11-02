@@ -1,0 +1,86 @@
+<!-- part n21 | part | group status | Notices that close without a jump. | Notices that close without a jump. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Notices that <em>close without a jump.</em></h3>
+          <p class="kit-p">Close a notice with the cross. The ones below glide up. Then press "Bring them back".</p>
+          <section class="cs kv4" id="n21">
+  <div class="frame"><div class="fbody">
+    <div class="top"><span class="label">Account notices</span><button type="button" class="b sm" id="n21-back" disabled=""><svg class="i s" aria-hidden="true"><use href="#i-rot"></use></svg>Bring them back</button></div>
+    <div id="n21-stack">
+      <div class="al info" role="status"><div class="ai">
+        <span class="ic"><svg class="i" aria-hidden="true"><use href="#i-info"></use></svg></span>
+        <div class="tx"><span class="lb">Notice</span>Your trial ends in 5 days.</div>
+        <div class="ac"><button type="button" class="ib" aria-label="Close notice"><svg class="i" aria-hidden="true"><use href="#i-x"></use></svg></button></div>
+      </div></div>
+      <div class="al warn" role="status"><div class="ai">
+        <span class="ic"><svg class="i" aria-hidden="true"><use href="#i-alert"></use></svg></span>
+        <div class="tx"><span class="lb">Warning</span>Your card ending in 4242 expires next month.</div>
+        <div class="ac"><button type="button" class="ib" aria-label="Close warning"><svg class="i" aria-hidden="true"><use href="#i-x"></use></svg></button></div>
+      </div></div>
+      <div class="al err" role="status"><div class="ai">
+        <span class="ic"><svg class="i" aria-hidden="true"><use href="#i-alert"></use></svg></span>
+        <div class="tx"><span class="lb">Problem</span><span class="msg">We could not sync 2 orders.</span></div>
+        <div class="ac"><button type="button" class="b sm q retry">Retry</button><button type="button" class="ib" aria-label="Close problem"><svg class="i" aria-hidden="true"><use href="#i-x"></use></svg></button></div>
+      </div></div>
+    </div>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0017">
+(function () {
+  "use strict";
+  var box = document.getElementById("n21"); if (!box) return;
+  var EASE = "cubic-bezier(.22,1,.36,1)";
+  function spd() { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; }
+  function go(el, kf, ms, done, delay) {
+    var s = spd(); if (!s || !el.animate) { if (done) done(); return null; }
+    var a = el.animate(kf, { duration: ms * (s < 1 ? .6 : 1), easing: EASE, fill: "both", delay: delay || 0 });
+    a.onfinish = function () { if (done) done(); a.cancel(); }; return a;
+  }
+  var stack = document.getElementById("n21-stack"), back = document.getElementById("n21-back");
+  var als = [].slice.call(stack.querySelectorAll(".al"));
+  function sync() { back.disabled = !als.some(function (a) { return a.hidden && !a._busy; }); }
+  function close(al) {
+    if (al._busy || al.hidden) return; al._busy = true;
+    var ai = al.firstElementChild, s = spd(), h = al.offsetHeight;
+    // fade first, and start closing the gap while it fades; padding goes with the height so the end does not snap
+    go(ai, [{ opacity: 1, transform: "none" }, { opacity: 0, transform: "translateX(" + (10 * s) + "px)" }], 200, function () { ai.style.opacity = "0"; });
+    al.style.overflow = "hidden";
+    go(al, [{ height: h + "px", paddingBottom: "10px" }, { height: "0px", paddingBottom: "0px" }], 380, function () { al.hidden = true; al.style.overflow = ""; al._busy = false; sync(); }, 120);
+    var nx = als.filter(function (a) { return !a.hidden && a !== al; })[0];
+    if (nx) { var b = nx.querySelector("button"); if (b) b.focus(); } else back.focus();
+  }
+  als.forEach(function (al) {
+    al.querySelector(".ib").addEventListener("click", function () { close(al); });
+  });
+  var retry = stack.querySelector(".retry"), msg = stack.querySelector(".msg"), errIc = stack.querySelector(".err .ic");
+  var icon0 = errIc.innerHTML;
+  retry.addEventListener("click", function () {
+    retry.disabled = true; retry.textContent = "Retrying";
+    setTimeout(function () {
+      msg.textContent = "2 orders synced just now.";
+      errIc.innerHTML = '<svg class="i" aria-hidden="true"><use href="#i-check"/></svg>';
+      retry.hidden = true;
+      var a = stack.querySelector(".err"); a.classList.remove("err"); a.classList.add("info", "done");
+    }, 900);
+  });
+  function resetErr() {
+    var a = stack.querySelector(".err, .done"); if (!a.classList.contains("done")) return;
+    a.classList.remove("info", "done"); a.classList.add("err"); msg.textContent = "We could not sync 2 orders.";
+    errIc.innerHTML = icon0; retry.hidden = false; retry.disabled = false; retry.textContent = "Retry";
+  }
+  back.addEventListener("click", function () {
+    var n = 0;
+    als.forEach(function (al) {
+      if (!al.hidden || al._busy) return;
+      if (al.classList.contains("done")) resetErr();
+      var d = n++ * 60, s = spd();
+      al.hidden = false; al.style.overflow = "hidden"; al.firstElementChild.style.opacity = "";
+      var h = al.offsetHeight;
+      go(al, [{ height: "0px", paddingBottom: "0px" }, { height: h + "px", paddingBottom: "10px" }], 380, function () { al.style.overflow = ""; }, d);
+      go(al.firstElementChild, [{ opacity: 0, transform: "translateY(" + (-8 * s) + "px)" }, { opacity: 1, transform: "none" }], 350, null, d);
+    });
+    sync();
+  });
+})();
+</script>

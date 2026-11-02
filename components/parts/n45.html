@@ -1,0 +1,51 @@
+<!-- part n45 | part | group forms | Tags that suggest as you type. | Tags that suggest as you type. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Tags that <em>suggest as you type.</em></h3>
+          <p class="kit-p">Type a shop category. Matching words open under the box; arrow down and press Enter, or type your own. Backspace in the empty box removes the last tag.</p>
+          <section class="cs kv4" id="n45">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="tg">
+      <label for="n45-in">Shop categories</label>
+      <div class="f"><ul class="c" aria-label="Chosen categories"></ul><input id="n45-in" type="text" autocomplete="off" placeholder="Type and press Enter" role="combobox" aria-expanded="false" aria-controls="n45-ls" aria-autocomplete="list"></div>
+      <ul class="ls" id="n45-ls" role="listbox" aria-label="Suggestions" hidden=""></ul>
+      <p class="note" aria-live="polite"></p>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0049">
+(function () {
+  "use strict";
+  var box = document.getElementById("n45"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function money(n) { return n.toLocaleString("en-KE"); }
+  function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  function count(el, from, to, fmt, ms) { if (!moving()) { el.textContent = fmt(to); return; } cancelAnimationFrame(el._an); var t0 = performance.now(); (function f(t) { var k = Math.min(1, (t - t0) / (ms || 320)); el.textContent = fmt(Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)))); if (k < 1) el._an = requestAnimationFrame(f); })(t0); }
+  var ul = $(".c"), inp = $("input"), ls = $(".ls"), note = $(".note"), T = ["Fruit", "Dairy"], S = ["Fruit","Vegetables","Dairy","Bakery","Drinks","Cleaning","Snacks","Meat"], M = [], at = -1, X = '<svg class="i" aria-hidden="true"><use href="#i-x"/></svg>';
+  function chip(t) { var li = document.createElement("li"), s = document.createElement("span"), b = document.createElement("button"); s.textContent = t; b.type = "button"; b.innerHTML = X; b.setAttribute("aria-label", "Remove " + t); b.addEventListener("click", function () { rm(t); inp.focus(); }); li.appendChild(s); li.appendChild(b); return li; }
+  function add(t) { t = t.trim().replace(/^./, function (c) { return c.toUpperCase(); }); if (!t) return; if (T.indexOf(t) > -1) { note.textContent = t + " is already there."; return; } T.push(t); var li = chip(t); ul.appendChild(li); if (moving()) li.animate([{ transform: "scale(.6)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 370, easing: sp("snappy") }); note.textContent = t + " added. " + T.length + " categories."; }
+  function rm(t) { var i = T.indexOf(t); if (i < 0) return; T.splice(i, 1); ul.children[i].remove(); note.textContent = t + " removed. " + T.length + " categories."; fill(); }
+  function fill() { var q = inp.value.trim().toLowerCase(); M = q ? S.filter(function (s) { return s.toLowerCase().indexOf(q) > -1 && T.indexOf(s) < 0; }) : []; at = M.length ? 0 : -1; ls.innerHTML = "";
+    M.forEach(function (s, i) { var li = document.createElement("li"), k = s.toLowerCase().indexOf(q), b = document.createElement("b"); li.id = "n45-o" + i; li.setAttribute("role", "option"); b.textContent = s.slice(k, k + q.length); li.append(s.slice(0, k), b, s.slice(k + q.length)); ls.appendChild(li); });
+    ls.hidden = !M.length; inp.setAttribute("aria-expanded", String(!ls.hidden)); mark(); }
+  function mark() { $$("li", ls).forEach(function (l, i) { l.setAttribute("aria-selected", String(i === at)); }); if (at > -1) inp.setAttribute("aria-activedescendant", "n45-o" + at); else inp.removeAttribute("aria-activedescendant"); }
+  function close() { ls.hidden = true; inp.setAttribute("aria-expanded", "false"); inp.removeAttribute("aria-activedescendant"); }
+  T.forEach(function (t) { ul.appendChild(chip(t)); });
+  inp.addEventListener("input", fill);
+  inp.addEventListener("keydown", function (e) {
+    if (!ls.hidden && e.key === "ArrowDown") { e.preventDefault(); at = (at + 1) % M.length; mark(); }
+    else if (!ls.hidden && e.key === "ArrowUp") { e.preventDefault(); at = (at - 1 + M.length) % M.length; mark(); }
+    else if (e.key === "Escape") close();
+    else if (e.key === "Enter" || e.key === ",") { e.preventDefault(); add(!ls.hidden && at > -1 ? M[at] : inp.value); inp.value = ""; fill(); }
+    else if (e.key === "Backspace" && !inp.value && T.length) rm(T[T.length - 1]); });
+  ls.addEventListener("mousedown", function (e) { var l = e.target.closest("li"); if (!l) return; e.preventDefault(); add(M[$$("li", ls).indexOf(l)]); inp.value = ""; fill(); inp.focus(); });
+  inp.addEventListener("blur", function () { setTimeout(close, 100); });
+  $(".f").addEventListener("click", function (e) { if (e.target === e.currentTarget) inp.focus(); });
+})();
+</script>

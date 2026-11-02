@@ -78,7 +78,10 @@ python3 -I build_layers.py ~/tools/diagram-design/scripts <out-dir>
 - One number, the scroll progress `p` from 0 to 1, drives every part. Part
   `k`, counted from the top, gets `local = clamp(p · 3.6 − k · 1.05)`, then
   `--closed = 1 − easeOut(local)` with `easeOut(t) = 1 − (1 − t)⁴`. So the
-  top layer lifts first and the others follow, one by one.
+  top layer lifts first and the others follow, one by one. Only the top
+  three parts lift (`k` = 0, 1, 2; at `p = 1` the third reaches `1.5`, so
+  it settles). The bottom layer never lifts: it is the floor the stack
+  opens from, and its list item lights with `clamp((p − 0.8) · 5)`.
 - A part's label fades in once `local > 0.92`, when it has settled.
 - The list item for each layer gets `.on` as its part frees itself. The
   bottom layer lights last. A small bar per layer fills with the same

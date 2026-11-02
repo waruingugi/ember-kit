@@ -1,0 +1,96 @@
+<!-- part n25 | part | group status | A bell that swings and counts up. | A bell that swings and counts up. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A bell that <em>swings and counts up.</em></h3>
+          <p class="kit-p">Press "Simulate new" to ring the bell. Open it, then press "Mark all read".</p>
+          <section class="cs kv4" id="n25">
+  <div class="frame"><div class="fbody">
+    <div class="nb" id="n25-nb">
+      <div class="bar">
+        <button type="button" class="b sm" id="n25-sim">Simulate new</button>
+        <button type="button" class="bell" id="n25-bell" aria-haspopup="dialog" aria-expanded="false" aria-controls="n25-pnl" aria-label="Notifications">
+          <svg class="i" aria-hidden="true"><use href="#i-bell"></use></svg>
+          <span class="bd" id="n25-bd" aria-hidden="true"><span class="rl"><span class="dg">3</span></span></span>
+        </button>
+      </div>
+      <div class="pop pnl" id="n25-pnl" role="dialog" aria-label="Notifications" hidden="">
+        <div class="ph"><b>Notifications</b><button type="button" class="b sm q" id="n25-all">Mark all read</button></div>
+        <ul class="nl" id="n25-nl"></ul>
+      </div>
+      <p class="note" id="n25-note" aria-live="polite">3 unread notifications.</p>
+    </div>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0021">
+(function () {
+  "use strict";
+  var box = document.getElementById("n25"); if (!box) return;
+  var EASE = "cubic-bezier(.22,1,.36,1)";
+  function spd() { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; }
+  function go(el, kf, ms, done) {
+    var s = spd(); if (!s || !el.animate) { if (done) done(); return null; }
+    var a = el.animate(kf, { duration: ms * (s < 1 ? .6 : 1), easing: EASE, fill: "both" });
+    a.onfinish = function () { if (done) done(); a.cancel(); }; return a;
+  }
+  var bell = document.getElementById("n25-bell"), bd = document.getElementById("n25-bd"), rl = bd.firstElementChild, pnl = document.getElementById("n25-pnl");
+  var nl = document.getElementById("n25-nl"), note = document.getElementById("n25-note"), sim = document.getElementById("n25-sim"), all = document.getElementById("n25-all");
+  var N = [
+    { t: "Wanjiru paid invoice #1043 · KSh 18,000", w: "2 min ago", u: 1 },
+    { t: "Brian commented on “Shop banner”", w: "14 min ago", u: 1 },
+    { t: "Stock is low: Kikoy towels (4 left)", w: "1 hour ago", u: 1 },
+    { t: "Amina approved your leave request", w: "Yesterday", u: 0 },
+    { t: "Your PocketPay payout of KSh 32,500 arrived", w: "27 Oct", u: 0 }
+  ];
+  var pool = ["Kevin Mutua asked for a quote · 3 pieces", "Peter paid invoice #1044 · KSh 9,400", "Order #2210 left the warehouse", "Grace left a comment on the Q4 plan", "Amina sent a receipt for KSh 7,250"], pi = 0, isOpen = false;
+  function unread() { return N.filter(function (n) { return n.u; }).length; }
+  function li(n) {
+    var e = document.createElement("li"); e.innerHTML = '<span class="dot' + (n.u ? "" : " rd") + '" aria-hidden="true"></span><div class="nt"></div>';
+    var t = e.lastChild; t.textContent = n.t; var s = document.createElement("span"); s.textContent = n.w; t.appendChild(s); n.el = e; return e;
+  }
+  N.forEach(function (n) { nl.appendChild(li(n)); });
+  var shown = 3;
+  function label() { var u = unread(); bell.setAttribute("aria-label", "Notifications, " + (u ? u + " unread" : "none unread")); note.textContent = u ? u + " unread notification" + (u > 1 ? "s" : "") + "." : "All caught up."; }
+  function setBadge(v) {
+    var s = spd();
+    if (v === shown) return;
+    if (v === 0) {
+      go(bd, [{ opacity: 1, transform: "scale(1)" }, { opacity: 0, transform: "scale(.6)" }], 250, function () { bd.hidden = true; });
+    } else if (shown === 0 || bd.hidden) {
+      rl.firstElementChild.textContent = v; bd.hidden = false;
+      go(bd, [{ opacity: 0, transform: "scale(.6)" }, { opacity: 1, transform: "scale(1)" }], 300);
+    } else {
+      var old = rl.lastElementChild, nu = document.createElement("span"); nu.className = "dg"; nu.textContent = v; rl.appendChild(nu);
+      var up = v > shown;
+      go(old, [{ transform: "none" }, { transform: "translateY(" + (up ? -100 : 100) + "%)" }], 350, function () { old.remove(); });
+      go(nu, [{ transform: "translateY(" + (up ? 100 : -100) + "%)" }, { transform: "none" }], 350);
+    }
+    shown = v;
+  }
+  function swing() { var ic = bell.querySelector(".i"), s = spd(); if (!s) return; go(ic, [{ transform: "rotate(0)" }, { transform: "rotate(" + (-12 * s) + "deg)", offset: .2 }, { transform: "rotate(" + (10 * s) + "deg)", offset: .45 }, { transform: "rotate(" + (-6 * s) + "deg)", offset: .65 }, { transform: "rotate(" + (3 * s) + "deg)", offset: .85 }, { transform: "rotate(0)" }], 500); }
+  sim.addEventListener("click", function () {
+    var n = { t: pool[pi++ % pool.length], w: "Just now", u: 1 }; N.unshift(n);
+    var e = li(n); nl.insertBefore(e, nl.firstChild);
+    if (isOpen) { var s = spd(); go(e, [{ opacity: 0, transform: "translateY(" + (-6 * s) + "px)" }, { opacity: 1, transform: "none" }], 300); }
+    swing(); setBadge(unread()); label();
+  });
+  function open() {
+    if (isOpen) return; isOpen = true; pnl.hidden = false; bell.setAttribute("aria-expanded", "true");
+    var s = spd(); go(pnl, [{ opacity: 0, transform: "scale(" + (1 - .04 * (s ? 1 : 0)) + ")" }, { opacity: 1, transform: "none" }], 220);
+    document.addEventListener("pointerdown", outside, true); document.addEventListener("keydown", esc);
+  }
+  function close(refocus) {
+    if (!isOpen) return; isOpen = false; bell.setAttribute("aria-expanded", "false");
+    document.removeEventListener("pointerdown", outside, true); document.removeEventListener("keydown", esc);
+    go(pnl, [{ opacity: 1, transform: "none" }, { opacity: 0, transform: "scale(.97)" }], 150, function () { if (!isOpen) pnl.hidden = true; });
+    if (refocus) bell.focus();
+  }
+  function outside(e) { if (!pnl.contains(e.target) && !bell.contains(e.target)) close(false); }
+  function esc(e) { if (e.key === "Escape") { e.preventDefault(); close(true); } }
+  bell.addEventListener("click", function () { if (isOpen) close(false); else open(); });
+  all.addEventListener("click", function () {
+    N.forEach(function (n) { n.u = 0; n.el.firstChild.classList.add("rd"); });
+    setBadge(0); label();
+  });
+})();
+</script>

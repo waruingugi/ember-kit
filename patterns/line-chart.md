@@ -4,10 +4,10 @@
 
 **What it is.** One value over time, drawn as a smooth orange line with a soft
 fill under it. It comes in two kinds, both picked by the owner on 2026-10-29, both
-in one working page to copy: `components/line-chart.html`.
-- **Live** (section 01 of that page): the newest point sits on the right edge
+in the parts: `components/parts/c01.html` and `c02.html` (they always come together).
+- **Live** (`c01`): the newest point sits on the right edge
   and the line scrolls; pointing at it pauses it.
-- **Still** (section 02): a fixed set of numbers. It draws itself in once,
+- **Still** (`c02`): a fixed set of numbers. It draws itself in once,
   reshapes between ranges, and reads each day on hover or with the arrow
   keys.
 
@@ -22,7 +22,7 @@ is made up.
   through every reading and never goes above the highest one or below the
   lowest. Do not use a plain smooth curve (Catmull-Rom, `curveBasis`): it adds
   bumps the data never had. Do not average the data to make it smoother unless
-  the owner asks.
+  The owner asks.
 - **One orange line**: `--accent`, 2 px, round joins and caps. Under it, a fill
   that fades from the accent at 20% to nothing at the bottom.
 - **The newest point** is a 4 px accent dot with a 2 px `--paper-raised` ring.
@@ -78,8 +78,8 @@ is made up.
 ## How it is built
 
 Plain SVG and one `requestAnimationFrame` loop that writes the path straight
-into the page. No chart library, no React. The helpers to copy from
-`components/line-chart.html`: `slopes` (the monotone slopes), `seg` (a point
+into the page. No chart library, no React. The helpers live in the shared chart script
+(`components/parts/lib/closure-*.js` and `c01.html`): `slopes` (the monotone slopes), `seg` (a point
 on the curve), `valueAt` (used by the hover dot, so it stays on the line),
 `buildFrame` (the path, the fill and the head) and `visibleExtent`.
 The still chart adds `niceScale`, `curve`/`pathOf` (the monotone path
@@ -88,6 +88,6 @@ through the 72 points), `ease` (our curve as a function) and `changeRange`.
 ## Rebuild prompt
 
 > Add a line chart of `<value>` over `<time window>` in the style of
-> `~/.claude/design/patterns/line-chart.md`. Copy the code from
-> `~/.claude/design/components/line-chart.html`, keep the monotone curve, and
+> `~/.claude/design/patterns/line-chart.md`. Build it from
+> `~/.claude/design/components/parts/` (`c01`, `c02`) with `scripts/assemble.mjs`, keep the monotone curve, and
 > swap the sample feed for `<the real data>`.

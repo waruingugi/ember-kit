@@ -1,0 +1,32 @@
+<!-- part stack | pattern | Tool cards | Boring tools, used well. | needs hairline -->
+<section class="sec" id="stack">
+        <div class="sec-head">
+          <span class="ghost" aria-hidden="true">18</span>
+          <p class="eyebrow" data-reveal=""><b>18</b> Tool cards</p>
+          <h2 class="display" data-reveal="" style="--i:1">Boring tools, <em>used well.</em></h2>
+          <p class="lead" data-reveal="" style="--i:2">Each card names one tool and its job in one line. The tape shows a shared log, where each reader keeps its own place. Move your mouse over the drawings; they react.</p>
+        </div>
+        <div class="bento">
+          <article class="card lift b-hero" data-reveal="">
+            <span class="sys bus" style="align-self:flex-start">Message bus</span>
+            <div class="tape" id="tape" aria-hidden="true">
+              <div class="tape-head"><span class="mono-label">The log · newest on the right</span><span class="mono-label tnum" id="tapeHead">#1040</span></div>
+              <div class="tape-track" id="tapeTrack"></div>
+              <div class="tape-readers" id="tapeReaders">
+                <div class="rd" data-r="index"><span class="rd-n">Index</span><span class="rd-lane"><i class="rd-line"></i><i class="rd-dot"></i></span><span class="rd-at tnum">#1039</span></div>
+                <div class="rd" data-r="tile38"><span class="rd-n">Alerts</span><span class="rd-lane"><i class="rd-line"></i><i class="rd-dot"></i></span><span class="rd-at tnum">#1037</span></div>
+                <div class="rd" data-r="ch"><span class="rd-n">ClickHouse</span><span class="rd-lane"><i class="rd-line"></i><i class="rd-dot"></i></span><span class="rd-at tnum">#1036</span></div>
+              </div>
+              <div class="tape-foot"><p class="tape-cap" id="tapeCap">Each helper reads at its own speed. ClickHouse waits and reads in batches, and that is fine.</p><button type="button" class="btn mini" id="tapeBtn">Pause ClickHouse</button></div>
+            </div>
+            <h3>NATS JetStream: the shared log</h3>
+            <p>Every reading lands here first and stays for 48 hours. If a helper breaks, it can restart and catch up by reading the log again. Nothing is lost.</p>
+          </article>
+          <article class="card lift b-2" data-reveal="" style="--i:1"><div class="card-top"><span class="sys db">Database</span></div><div class="hl" data-hairline="cabinet" data-label="A rack of server blades"></div><h3>Postgres</h3><p>Remembers our users, our stations, and who is allowed in.</p></article>
+          <article class="card lift b-2" data-reveal="" style="--i:2"><div class="card-top"><span class="sys sec">Security</span></div><div class="hl" data-hairline="padlock" data-label="A padlock"></div><h3>Auth callout</h3><p>Checks each station once, when it connects.</p></article>
+          <article class="card lift b-2" data-reveal=""><div class="card-top"><span class="sys be">Backend</span></div><div class="hl hl-wide" data-hairline="pigeonholes" data-label="A mail rack of twelve slots. Point at one and its envelope slides out."></div><h3>FastAPI</h3><p>Sends each question to the right place, like "how windy is it at the coast?", and answers it.</p></article>
+          <article class="card lift b-2" data-reveal="" style="--i:1"><div class="card-top"><span class="sys be">Backend</span></div><div class="hl" data-hairline="terrain" data-label="Pillars that rise around the pointer, like an area on a map"></div><h3>Alerts</h3><p>Notices when the wind crosses the line you set.</p></article>
+          <article class="card lift b-2" data-reveal="" style="--i:2"><div class="card-top"><span class="sys db">Database</span></div><div class="hl" data-hairline="drawer" data-label="A cabinet of drawers"></div><h3>ClickHouse</h3><p>Keeps every day's wind, quick to search and draw.</p></article>
+        </div>
+        <p class="tool-note" data-reveal=""><b>Hairline</b><span>Small line drawings that react to your mouse. They make plain tools easier to remember.</span></p>
+      </section>

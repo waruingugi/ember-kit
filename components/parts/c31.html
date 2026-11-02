@@ -1,0 +1,127 @@
+<!-- part c31 | part | group cards | A stack of photos, turning as you scroll. | A stack of photos, turning as you scroll. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A stack of photos, <em>turning as you scroll.</em></h3>
+          <p class="kit-p">Scroll down and the front photo drops to the back. Scroll up and it comes back.</p>
+          <section class="cs" id="c31">
+    <div class="cw-scroll"><div class="cw-sticky"><div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Photo stack</span></div>
+      <div class="fbody">
+        <div class="cw" id="cw" role="region" aria-roledescription="card stack" aria-label="Four cards"></div>
+        <div class="cw-ctl"><button class="b sm" type="button" id="cwPlay" aria-pressed="false">Play</button><button class="b sm" type="button" id="cwNext">Next card<svg class="i s" aria-hidden="true"><use href="#i-ar"></use></svg></button></div>
+        <p class="note" id="cwNote" aria-live="polite"></p>
+      </div>
+    </div></div></div>
+</section>
+        </div>
+<script data-slot="0007" data-block="0002">
+  /* ---------------- 31 card swap ---------------- */
+  (function () {
+    var box = $("cw"), note = $("cwNote"), playBtn = $("cwPlay");
+    var C = [["Golden hour", "sky"], ["Canola field", "field"], ["The pier", "pier"], ["Pink drift", "cloud"]];
+    var DX = 40, DY = 36, DZ = 90, SKEW = 6, n = C.length;
+    var cards = C.map(function (c, i) {
+      var el = document.createElement("article");
+      el.className = "cw-c"; el.setAttribute("aria-roledescription", "card");
+      el.innerHTML = '<svg aria-hidden="true"><use href="#sc-' + c[1] + '"/></svg><header><h4>' + c[0] + '</h4><span class="label">0' + (i + 1) + " / 0" + n + "</span></header>";
+      box.appendChild(el); return el;
+    });
+    var order = cards.map(function (c, i) { return i; }), spread = 0, timer = 0, busy = false;
+    function pose(p, extra) {
+      var k = 1 + spread;
+      return "translate3d(" + (p * DX * k + (extra ? extra.x : 0)) + "px," + (-p * DY * k + (extra ? extra.y : 0)) + "px," + (-p * DZ * k) + "px) skewY(" + SKEW + "deg)";
+    }
+    function layout() {
+      order.forEach(function (ci, p) {
+        var el = cards[ci];
+        el.style.zIndex = n - p; el.style.transform = pose(p); el.style.setProperty("--dim", (p * .17).toFixed(2));
+        el.classList.toggle("front", p === 0); el.setAttribute("aria-hidden", String(p !== 0));
+      });
+    }
+    function swap(how) {
+      if (busy) return;
+      var m = spd(), front = cards[order[0]];
+      order.push(order.shift());
+      note.textContent = "Front card: " + C[order[0]][0] + ".";
+      if (!m) { layout(); return; }
+      busy = true;
+      front.style.zIndex = n + 1;
+      front.style.transform = "translate3d(0," + (how === "drag" ? 320 : 280) + "px,0) skewY(" + SKEW + "deg)"; front.style.opacity = 0;
+      order.slice(0, -1).forEach(function (ci, p) { var el = cards[ci]; el.style.zIndex = n - p; el.style.transform = pose(p); el.style.setProperty("--dim", (p * .17).toFixed(2)); });
+      setTimeout(function () {
+        front.style.transition = "none"; front.style.zIndex = 1; front.style.transform = pose(n - 1); void front.offsetWidth;
+        front.style.transition = ""; front.style.opacity = 1; layout(); busy = false;
+      }, 380 * (m < 1 ? .6 : 1));
+    }
+    var timerEl = document.createElement("div"), run = null, playing = false, held = false;
+    timerEl.className = "cw-timer"; timerEl.setAttribute("aria-hidden", "true"); timerEl.innerHTML = "<i></i>";
+    box.after(timerEl);
+    function cycle() {
+      run = timerEl.firstChild.animate([{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }], { duration: 4000 });
+      if (held) run.pause();
+      run.onfinish = function () { if (playing) { swap(); cycle(); } };
+    }
+    function play(on) {
+      playing = on;
+      if (run) { run.onfinish = null; run.cancel(); run = null; }
+      playBtn.setAttribute("aria-pressed", String(on)); playBtn.textContent = on ? "Pause" : "Play";
+      timerEl.classList.toggle("on", on);
+      if (on) { swap(); cycle(); }
+    }
+    function hold(h) {
+      held = h;
+      if (run) { if (h) run.pause(); else run.play(); }
+      if (playing) note.textContent = h ? "Paused while you point at the cards." : "Front card: " + C[order[0]][0] + ".";
+    }
+    playBtn.addEventListener("click", function () { play(!playing); });
+    $("cwNext").addEventListener("click", function () { swap(); if (playing) { run.cancel(); cycle(); } });
+    box.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") hold(true); });
+    box.addEventListener("pointerleave", function () { hold(false); });
+    box.addEventListener("focusin", function () { hold(true); });
+    box.addEventListener("focusout", function () { hold(false); });
+    box.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse" && spd()) { spread = .12; if (!busy) layout(); } });
+    box.addEventListener("pointerleave", function () { spread = 0; if (!busy) layout(); });
+    // drag the front card; let go past the line to send it to the back
+    var drag = null;
+    box.addEventListener("pointerdown", function (e) {
+      var el = e.target.closest(".cw-c.front"); if (!el || busy) return;
+      drag = { el: el, x: e.clientX, y: e.clientY, dx: 0, dy: 0 }; el.classList.add("drag"); el.setPointerCapture(e.pointerId);
+    });
+    box.addEventListener("pointermove", function (e) {
+      if (!drag) return;
+      drag.dx = e.clientX - drag.x; drag.dy = e.clientY - drag.y;
+      drag.el.style.transform = pose(0, { x: drag.dx, y: drag.dy });
+    });
+    function end() {
+      if (!drag) return;
+      var d = drag; drag = null; d.el.classList.remove("drag");
+      if (d.dy > 70 || Math.abs(d.dx) > 90) swap("drag"); else d.el.style.transform = pose(0);
+    }
+    box.addEventListener("pointerup", end); box.addEventListener("pointercancel", end);
+    box.addEventListener("keydown", function (e) { if (e.key === "ArrowRight" || e.key === "Enter") { e.preventDefault(); swap(); } });
+    box.tabIndex = 0;
+    function back() {
+      if (busy) return;
+      var m = spd(); order.unshift(order.pop());
+      var el = cards[order[0]]; note.textContent = "Front card: " + C[order[0]][0] + ".";
+      if (!m) { layout(); return; }
+      busy = true;
+      el.style.transition = "none"; el.style.zIndex = n + 1; el.style.opacity = 0;
+      el.style.transform = "translate3d(0,280px,0) skewY(" + SKEW + "deg)"; void el.offsetWidth;
+      el.style.transition = ""; el.style.opacity = 1; layout(); el.style.zIndex = n + 1;
+      setTimeout(function () { busy = false; layout(); }, 380 * (m < 1 ? .6 : 1));
+    }
+    var pin = box.closest(".cw-scroll"), lastScroll = 0;
+    if (pin) {
+      var tick = function () {
+        var r = pin.getBoundingClientRect(), span = r.height - innerHeight, p = span > 0 ? clamp(-r.top / span, 0, 1) : 0;
+        var want = Math.min(n - 1, Math.floor(p * n * .999)), at = order[0];
+        if (busy || want === at) return;
+        if (want > at) swap(); else back();
+      };
+      addEventListener("scroll", function () { lastScroll = Date.now(); tick(); }, { passive: true });
+      setInterval(function () { if (Date.now() - lastScroll < 2000) tick(); }, 150);  /* catch up after a fast scroll */
+    }
+    layout(); note.textContent = "Front card: " + C[0][0] + ".";
+    if (reduce.matches) play(false);
+  })();
+</script>

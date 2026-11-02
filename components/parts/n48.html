@@ -1,0 +1,45 @@
+<!-- part n48 | part | group tables | Pages with a pill that slides to your page. | Pages with a pill that slides to your page. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Pages with a pill that <em>slides to your page.</em></h3>
+          <p class="kit-p">48 orders, 4 to a page. A pill springs to the page you pick, and the rows slide in from the side you moved to.</p>
+          <section class="cs kv4" id="n48">
+  <div class="frame"><div class="fbody">
+    <nav class="pgn" aria-label="Orders">
+      <ul class="l"></ul>
+      <div class="nv"></div>
+      <p class="note" aria-live="polite"></p>
+    </nav>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0052">
+(function () {
+  "use strict";
+  var box = document.getElementById("n48"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function money(n) { return n.toLocaleString("en-KE"); }
+  function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  function count(el, from, to, fmt, ms) { if (!moving()) { el.textContent = fmt(to); return; } cancelAnimationFrame(el._an); var t0 = performance.now(); (function f(t) { var k = Math.min(1, (t - t0) / (ms || 320)); el.textContent = fmt(Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)))); if (k < 1) el._an = requestAnimationFrame(f); })(t0); }
+  var l = $(".l"), nv = $(".nv"), note = $(".note"), N = ["Amina Otieno","Brian Kiprop","Chebet Rono","David Mwangi","Esther Wanjiku","Faith Achieng","George Njoroge","Halima Hassan","Ian Kamau","Joy Muthoni","Kevin Odhiambo","Lucy Nyambura"], P = 1, px = null, L = '<svg class="i" aria-hidden="true"><use href="#i-cl"/></svg>', R = '<svg class="i" aria-hidden="true"><use href="#i-cr"/></svg>';
+  function rows() { var h = ""; for (var i = (P - 1) * 4; i < P * 4; i++) h += "<li><span>#" + (4848 - i) + " · " + N[i % 12] + "</span><span>KES " + money(((i * 7919) % 4200) + 300) + "</span></li>"; l.innerHTML = h; }
+  function nums() { var s = [1]; for (var i = Math.max(2, P - 1); i <= Math.min(11, P + 1); i++) s.push(i); s.push(12); return s; }
+  function draw(focus) { var h = '<span class="pill" aria-hidden="true"></span><button class="pg" type="button" aria-label="Previous page" data-p="' + (P - 1) + '"' + (P === 1 ? " disabled" : "") + ">" + L + "</button>", last = 0;
+    nums().forEach(function (n) { if (n - last > 1) h += '<span class="gap" aria-hidden="true">…</span>'; h += '<button class="pg" type="button" data-p="' + n + '" aria-label="Page ' + n + '"' + (n === P ? ' aria-current="page"' : "") + ">" + n + "</button>"; last = n; });
+    nv.innerHTML = h + '<button class="pg" type="button" aria-label="Next page" data-p="' + (P + 1) + '"' + (P === 12 ? " disabled" : "") + ">" + R + "</button>";
+    var c = $("[aria-current]", nv), p = $(".pill", nv), x = c.offsetLeft, y = c.offsetTop; p.style.width = c.offsetWidth + "px";
+    if (px && moving()) { p.style.transition = "none"; p.style.transform = "translate(" + px[0] + "px," + px[1] + "px)"; p.offsetWidth; p.style.transition = ""; }
+    p.style.transform = "translate(" + x + "px," + y + "px)"; px = [x, y];
+    if (focus) { var f = $('[aria-label="' + focus + '"]:not(:disabled)', nv) || c; f.focus(); } }
+  function go(n, focus) { var old = P; P = Math.max(1, Math.min(12, n)); rows(); draw(focus); note.textContent = "Orders " + ((P - 1) * 4 + 1) + " to " + P * 4 + " of 48";
+    if (moving() && old !== P) l.animate([{ opacity: 0, transform: "translateX(" + (P > old ? 16 : -16) + "px)" }, { opacity: 1, transform: "none" }], { duration: 300, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  nv.addEventListener("click", function (e) { var b = e.target.closest("[data-p]"); if (b && !b.disabled) go(+b.getAttribute("data-p"), b.getAttribute("aria-label")); });
+  new ResizeObserver(function () { px = null; draw(); }).observe(nv);
+  go(1);
+})();
+</script>

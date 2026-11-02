@@ -1,0 +1,151 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><style>[hidden]{display:none!important}</style>
+<meta name="color-scheme" content="light dark">
+<title>Design System v4</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Every part of Design System v4, each with its own sample data.">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@400..700&family=JetBrains+Mono:wght@400;500&family=Antonio:wght@300..700&family=Space+Grotesk:wght@400..600&display=swap">
+
+<style>
+/*@@CSS@@*/
+</style>
+<a class="skip" href="#content">Skip to content</a>
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<div class="shell">
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar" id="sidebar" aria-label="Page sections">
+    <div class="sb-head">
+      <div class="mark"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.5 17 8l-7 10.5L3 8z" fill="var(--accent)"/><path d="M10 1.5v17M3 8h14" stroke="var(--paper-raised)" stroke-width="1.2"/></svg></div>
+      <div class="wordmark"><strong>kit<i>.</i></strong><span>Design system · v4</span></div>
+      <button class="icon-btn sb-collapse" id="sbCollapse" aria-label="Collapse sidebar" aria-keyshortcuts="[">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3.5 5.5 8l4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <nav class="sb-nav" id="sbNav">
+      <span class="sb-indicator" id="sbIndicator" aria-hidden="true"></span>
+      <div class="sb-group">Parts</div>
+      <ul class="sb-list">
+        <li><a class="sb-link" href="#top" data-tip="Overview"><span class="k">00</span><span class="t">Overview</span></a></li>
+        <li><a class="sb-link" href="#charts" data-tip="Charts and numbers"><span class="k">01</span><span class="t">Charts and numbers</span></a></li>
+        <li><a class="sb-link" href="#time" data-tip="Dates"><span class="k">02</span><span class="t">Dates</span></a></li>
+        <li><a class="sb-link" href="#tables" data-tip="Tables and lists"><span class="k">03</span><span class="t">Tables and lists</span></a></li>
+        <li><a class="sb-link" href="#forms" data-tip="Forms"><span class="k">04</span><span class="t">Forms</span></a></li>
+        <li><a class="sb-link" href="#nav" data-tip="Getting around"><span class="k">05</span><span class="t">Getting around</span></a></li>
+        <li><a class="sb-link" href="#status" data-tip="Status"><span class="k">06</span><span class="t">Status</span></a></li>
+        <li><a class="sb-link" href="#ai" data-tip="AI helpers"><span class="k">07</span><span class="t">AI helpers</span></a></li>
+        <li><a class="sb-link" href="#cards" data-tip="Cards"><span class="k">08</span><span class="t">Cards</span></a></li>
+        <li><a class="sb-link" href="#fields" data-tip="Backgrounds"><span class="k">09</span><span class="t">Backgrounds</span></a></li>
+      </ul>
+      <div class="sb-group">Page patterns</div>
+      <ul class="sb-list">
+        <li><a class="sb-link" href="#why" data-tip="Problem cards"><span class="k">10</span><span class="t">Problem cards</span></a></li>
+        <li><a class="sb-link" href="#goals" data-tip="Goal list"><span class="k">11</span><span class="t">Goal list</span></a></li>
+        <li><a class="sb-link" href="#numbers" data-tip="Stat tiles"><span class="k">12</span><span class="t">Stat tiles</span></a></li>
+        <li><a class="sb-link" href="#layers" data-tip="Exploded layers"><span class="k">13</span><span class="t">Exploded layers</span></a></li>
+        <li><a class="sb-link" href="#journey" data-tip="Flow"><span class="k">14</span><span class="t">Flow</span></a></li>
+        <li><a class="sb-link" href="#delivery" data-tip="Story timeline"><span class="k">15</span><span class="t">Story timeline</span></a></li>
+        <li><a class="sb-link" href="#data" data-tip="Data model"><span class="k">16</span><span class="t">Data model</span></a></li>
+        <li><a class="sb-link" href="#states" data-tip="State machine"><span class="k">17</span><span class="t">State machine</span></a></li>
+        <li><a class="sb-link" href="#stack" data-tip="Tool cards"><span class="k">18</span><span class="t">Tool cards</span></a></li>
+        <li><a class="sb-link" href="#code" data-tip="Code changes"><span class="k">19</span><span class="t">Code changes</span></a></li>
+        <li><a class="sb-link" href="#repo" data-tip="Folder views"><span class="k">20</span><span class="t">Folder views</span></a></li>
+      </ul>
+    </nav>
+    <div class="sb-foot">
+      <div class="sb-progress" aria-hidden="true"><div class="bar"><i id="sbBar"></i></div><span class="pct" id="sbPct">0%</span></div>
+      <span class="sb-hint"><kbd>[</kbd> collapse · drag the edge to resize</span>
+    </div>
+    <div class="sb-resize" id="sbResize" role="separator" aria-orientation="vertical" aria-label="Resize sidebar" tabindex="0"></div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <main id="content">
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 5.5h12M3 12.5h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="crumbs"><span class="hide-sm">Design system</span><span class="sep hide-sm">/</span><span class="hide-sm">v4 showcase</span><span class="sep hide-sm">/</span><span>Every part</span></div>
+      <span class="badge">v4 · Live</span>
+      <span class="spacer"></span>
+      <button class="btn" data-open-sheet><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 4.5h7M12 4.5h2M2 11.5h2M7 11.5h7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="10.5" cy="4.5" r="1.6" stroke="currentColor" stroke-width="1.4"/><circle cx="5.5" cy="11.5" r="1.6" stroke="currentColor" stroke-width="1.4"/></svg><span class="lbl">Options</span></button>
+      <button class="icon-btn theme-toggle" id="themeBtn" aria-label="Switch to dark theme">
+        <svg class="sun" width="17" height="17" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3.4" stroke="currentColor" stroke-width="1.5"/><path d="M9 1.8v1.6M9 14.6v1.6M1.8 9h1.6M14.6 9h1.6M3.9 3.9l1.1 1.1M13 13l1.1 1.1M3.9 14.1 5 13M13 5l1.1-1.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <svg class="moon" width="17" height="17" viewBox="0 0 18 18" fill="none"><path d="M14.8 11.2A6.3 6.3 0 0 1 6.8 3.2a6.3 6.3 0 1 0 8 8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      </button>
+      <i class="topbar-progress" id="topProgress" aria-hidden="true"></i>
+    </header>
+
+    <div class="wrap">
+<!--@@PARTS@@-->
+    </div>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sheet-head">
+    <div><h2 id="sheetTitle">Options</h2><p>How the page looks and moves for you.</p></div>
+    <button class="icon-btn" id="sheetClose" aria-label="Close options"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+  </div>
+  <div class="sheet-body" id="sheetBody"></div>
+</aside>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--@@SCRIPTS@@-->
+</body></html>

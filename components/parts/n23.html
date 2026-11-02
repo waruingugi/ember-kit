@@ -1,0 +1,53 @@
+<!-- part n23 | part | group status | Grey shapes that hold the place of the news. | Grey shapes that hold the place of the news. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Grey shapes that <em>hold the place</em> of the news.</h3>
+          <p class="kit-p">Press Reload. Grey outlines appear for a moment, then the stories fade in one by one.</p>
+          <section class="cs kv4" id="n23">
+  <div class="frame"><div class="fbody">
+    <div class="top"><span class="label">Latest stories</span><button type="button" class="b sm" id="n23-rl"><svg class="i s" aria-hidden="true"><use href="#i-refresh"></use></svg>Reload</button></div>
+    <div class="feed" id="n23-feed" aria-busy="false">
+      <div class="real" id="n23-real">
+        <article class="cdx"><div class="th t1" aria-hidden="true"></div><div style="min-width:0"><h3>Nairobi opens its first night bus route</h3><p>The new service runs from the city centre to Embakasi until 2 am, with a flat fare of KSh 100. City officials say more routes will follow next year.</p><div class="by"><i></i>Amina Hassan · 4 min read</div></div></article>
+        <article class="cdx"><div class="th t2" aria-hidden="true"></div><div style="min-width:0"><h3>Coffee prices rise for the third month</h3><p>Farmers in Nyeri say good rain helped the harvest, yet buyers still pay more. Cafes expect a cup to cost a little extra by December.</p><div class="by"><i></i>Peter Mwangi · 6 min read</div></div></article>
+        <article class="cdx"><div class="th t3" aria-hidden="true"></div><div style="min-width:0"><h3>How a Kisumu school runs on solar</h3><p>Panels on the roof now power every classroom and the computer lab. The school saves about KSh 40,000 a month on its power bill.</p><div class="by"><i></i>Grace Achieng · 5 min read</div></div></article>
+      </div>
+      <div class="skel" id="n23-skel" aria-hidden="true">
+        <div class="cdx"><div class="sk th"></div><div style="min-width:0"><div class="sk sl tt"></div><div class="sk sl"></div><div class="sk sl" style="width:86%"></div><div class="sk-sb"><div class="sk" style="width:18px;height:18px;border-radius:50%"></div><div class="sk" style="width:110px;height:10px"></div></div></div></div>
+        <div class="cdx"><div class="sk th"></div><div style="min-width:0"><div class="sk sl tt"></div><div class="sk sl"></div><div class="sk sl" style="width:86%"></div><div class="sk-sb"><div class="sk" style="width:18px;height:18px;border-radius:50%"></div><div class="sk" style="width:110px;height:10px"></div></div></div></div>
+        <div class="cdx"><div class="sk th"></div><div style="min-width:0"><div class="sk sl tt"></div><div class="sk sl"></div><div class="sk sl" style="width:86%"></div><div class="sk-sb"><div class="sk" style="width:18px;height:18px;border-radius:50%"></div><div class="sk" style="width:110px;height:10px"></div></div></div></div>
+      </div>
+    </div>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0019">
+(function () {
+  "use strict";
+  var box = document.getElementById("n23"); if (!box) return;
+  var EASE = "cubic-bezier(.22,1,.36,1)";
+  function spd() { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; }
+  function go(el, kf, ms, done, delay) {
+    var s = spd(); if (!s || !el.animate) { if (done) done(); return null; }
+    var a = el.animate(kf, { duration: ms * (s < 1 ? .6 : 1), easing: EASE, fill: "both", delay: (delay || 0) * (s < 1 ? .6 : 1) });
+    a.onfinish = function () { if (done) done(); a.cancel(); }; return a;
+  }
+  var feed = document.getElementById("n23-feed"), real = document.getElementById("n23-real"), skel = document.getElementById("n23-skel"), btn = document.getElementById("n23-rl");
+  var busy = false;
+  btn.addEventListener("click", function () {
+    if (busy) return; busy = true; btn.disabled = true; feed.setAttribute("aria-busy", "true");
+    real.inert = true; feed.classList.add("loading");
+    go(real, [{ opacity: 1 }, { opacity: 0 }], 200, function () { real.style.opacity = "0"; });
+    go(skel, [{ opacity: 0 }, { opacity: 1 }], 250, function () { skel.style.opacity = "1"; });
+    setTimeout(function () {
+      var s = spd(); real.style.opacity = ""; real.inert = false;
+      [].slice.call(real.children).forEach(function (c, i) {
+        go(c, [{ opacity: 0, transform: "translateY(" + (6 * s) + "px)" }, { opacity: 1, transform: "none" }], 400, null, i * 60);
+      });
+      go(skel, [{ opacity: 1 }, { opacity: 0 }], 350, function () {
+        skel.style.opacity = ""; feed.classList.remove("loading"); feed.setAttribute("aria-busy", "false"); busy = false; btn.disabled = false;
+      });
+    }, 1600);
+  });
+})();
+</script>

@@ -13,13 +13,17 @@ ink, one burnt-orange accent, five fonts, slow motion and plain words.
 
 - **A look Claude follows on its own.** `DESIGN.md` sets the colours, type,
   motion and words. Claude reads it before any design work, in any project.
-- **62 working parts.** Charts, dates, tables, forms, steppers, toasts,
+- **85 working parts.** Charts, dates, tables, forms, steppers, toasts,
   cards, backgrounds and more, each in plain HTML, CSS and JavaScript, with
   no build step. All of them are on one page:
   `components/showcase/index.html`.
-- **14 pattern files.** Exploded layers, story timelines, state machines,
+- **17 pattern files.** Exploded layers, story timelines, state machines,
   data models and more. Each one says what it is, why it works, how it is
   built, and gives a prompt to rebuild it.
+- **A taste guide for Claude.** `patterns/taste.md` says which version of
+  each part to build, and why. It comes from 25 parts tried side by side
+  in 122 versions, so Claude builds the lively version you would pick
+  without asking.
 - **Diagram rules.** Which tool draws what (Archify, Diagram Design or
   Hairline), the dot-grid canvas, and the checks to run.
 - **A checklist** Claude runs before it calls a page done: contrast, motion,
@@ -85,6 +89,11 @@ cards come in too softly"), Claude writes it into the right file here, in
 plain words, and adds a dated line to `CHANGELOG.md`. Commit and push the
 folder now and then, so your rules travel with you.
 
+**It learns your taste.** When a part matters, Claude builds three or four
+versions side by side, the lively one first, and you keep the ones you
+like (`patterns/compare-parts.md`). Each pick goes into `notes/choices.md`
+and becomes a rule in `patterns/taste.md`.
+
 ## How it is built
 
 ```
@@ -98,14 +107,14 @@ one file a page needs, so Claude does not read the whole folder every time.
 | Folder | What is in it |
 |---|---|
 | `DESIGN.md` | The core: ask-first rules, the picker, colours, type, parts, motion, words and the checklist |
-| `components/` | `tokens.css` and `components.css`, the small parts, `interactive.html` (29 parts), `line-chart.html`, and `showcase/` (all 62 parts on one page; the 21 newer parts' sources are in `showcase/v4parts/`) |
+| `components/` | `tokens.css` and `components.css`, the small parts, `showcase/` (all 85 parts on one page, the master copy) and `parts/` (each part as its own file, made from the showcase) |
 | `patterns/` | One file per page pattern |
-| `tools/` | How to use each tool: diagrams, Hairline, Anatomy, GSAP, publishing, setup. Also two small builders: `diagram_svg.py` (hand-drawn diagrams) and `build_layers.py` (an exploded layer stack) |
+| `tools/` | How to use each tool: diagrams, Hairline, Anatomy, GSAP, Motion, publishing, setup. `taste-lab/` holds every version the owner tried, side by side, and how to run a new round. Also two small builders: `diagram_svg.py` (hand-drawn diagrams) and `build_layers.py` (an exploded layer stack) |
 | `hairline/` | A small library of Hairline figures, with a log |
 | `notes/` | The owner's taste, in full |
-| `claude/` | Files to copy into `~/.claude`: the rule, the `ember` Diagram Design profile, and two skills, `craft` (make a page well and prove it) and `motion-ecosystem` (pick and wire motion libraries) |
+| `claude/` | Files to copy into `~/.claude`: the rule, the `ember` Diagram Design profile, and six skills, `craft` (make a page well and prove it), `motion-ecosystem` (pick and wire motion libraries), `hairline-create` (Lucas Marques's Hairline figure skill, MIT, pinned `37d2e78`) `beui` (find free beUI parts to reuse, MIT, pinned `a866cb2`) `shadcn` (shadcn/ui's own skill, MIT, pinned `4233ed1`) and `hallmark` (nutlope's anti-slop linter, MIT, pinned `4f6a46c`, used as a checker only) |
 | `vendor/` | Hairline 0.5.1 (MIT, licence included) |
-| `scripts/` | `show-reference.sh` opens any page in Chrome; `check-updates.sh` says whether a pinned tool has a newer version (it only reports) |
+| `scripts/` | `show-reference.sh` opens any page in Chrome; `check-updates.sh` says whether a pinned tool has a newer version (it only reports); `split.mjs`, `assemble.mjs`, `singles.mjs`, `match.mjs` and `diff.mjs` cut the showcase into parts, build pages from them and check they still look the same (see `components/parts/README.md`); `lint-paths.mjs` checks every path the docs name |
 | `assets/` | The screenshots in this file |
 | `CHANGELOG.md` | Every change, newest first |
 
@@ -134,11 +143,15 @@ Built on other people's work, each used at a pinned version:
 Lavery; the `ember` profile is a changed copy of its style guide),
 [Archify](https://github.com/tt-a1i/archify),
 [Anatomy](https://github.com/wheresryan22/anatomy),
+[shadcn/ui](https://ui.shadcn.com),
+[Hallmark](https://github.com/nutlope/hallmark),
+[beUI](https://beui.dev) (Saurabh Chauhan; free parts only),
 [GSAP](https://gsap.com) and its [skills](https://github.com/greensock/gsap-skills),
+[Motion](https://motion.dev),
 [Emil Kowalski's skills](https://github.com/emilkowalski/skills),
 [design-motion-principles](https://github.com/kylezantos/design-motion-principles)
-(Kyle Zantos), and [easyui.site](https://easyui.site) (the ideas behind the
-21 newer parts, rebuilt here in plain HTML, CSS and JavaScript).
+(Kyle Zantos), and [easyui.site](https://easyui.site) (the ideas behind many
+newer parts, rebuilt here in plain HTML, CSS and JavaScript).
 
 ## Licence
 

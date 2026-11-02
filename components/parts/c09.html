@@ -1,0 +1,72 @@
+<!-- part c09 | part | group nav | A profile pill that opens up. | A profile pill that opens up. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A profile pill <em>that opens up.</em></h3>
+          <p class="kit-p">Click the pill. It grows into actions, then a card.</p>
+          <section class="cs" id="c09">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Profile pill</span></div>
+      <div class="fbody">
+        <div class="di-stage"><div class="di" id="di" data-s="collapsed"><span class="di-bg" id="diBg" aria-hidden="true"></span><div class="di-c" id="diC"></div></div></div>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0006">
+  /* ---------------- 09 dynamic island ---------------- */
+  (function () {
+    var di = $("di"), bg = $("diBg"), c = $("diC"), EMAIL = "ada@example.com";
+    var V = {
+      collapsed: function () {
+        return '<button type="button" class="b q" data-go="expanded" aria-expanded="false" aria-label="Ada Lane, open profile menu" style="min-height:36px;padding:0 12px 0 0;border-radius:99px;gap:8px"><span class="av">AL</span><span class="di-g" style="padding:0">Ada Lane</span><span class="live" aria-hidden="true"></span></button>';
+      },
+      expanded: function () {
+        return '<span class="av">AL</span><span class="di-g" id="diName">Ada Lane</span><span class="vr"></span>' +
+          '<button class="ib" type="button" data-go="profile" aria-label="Profile">' + ic("user") + "</button>" +
+          '<button class="ib" type="button" data-go="share" aria-label="Share links">' + ic("share") + "</button>" +
+          '<button class="ib" type="button" data-copy aria-label="Copy email">' + ic("mail") + "</button>" +
+          '<span class="vr"></span><button class="ib" type="button" data-go="collapsed" aria-label="Close">' + ic("x") + "</button>";
+      },
+      profile: function () {
+        return '<div class="di-ph"><span class="av l">AL</span><div class="di-pn"><b>Ada Lane</b><small>Product designer · Lisbon</small><span class="di-ok"><span class="live" aria-hidden="true"></span>Available for work</span></div>' +
+          '<button class="ib" type="button" data-go="collapsed" aria-label="Close">' + ic("x") + "</button></div>" +
+          '<p class="di-p">Designs tools for people who run small shops. Ten years in, still sketches on paper first.</p>' +
+          '<div class="di-tags"><span class="tag">Design systems</span><span class="tag">Research</span><span class="tag">Prototypes</span></div>' +
+          '<div class="di-f"><span class="xr-dim">Replies within a day</span><button class="b sm" type="button" data-go="share">' + ic("share", "s") + "Share</button></div>";
+      },
+      share: function () {
+        return '<button class="ib" type="button" data-go="expanded" aria-label="Back">' + ic("cl") + "</button>" +
+          '<a class="ib" href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub (made-up profile)"><svg class="i soc" aria-hidden="true"><use href="#i-gh"/></svg></a>' +
+          '<a class="ib" href="https://www.linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn (made-up profile)"><svg class="i soc" aria-hidden="true"><use href="#i-in"/></svg></a>' +
+          '<a class="ib" href="https://x.com" target="_blank" rel="noopener" aria-label="X (made-up profile)"><svg class="i soc" aria-hidden="true"><use href="#i-xlogo"/></svg></a>' +
+          '<span class="vr"></span><span class="di-g" id="diName" style="font:400 12.5px/1 var(--font-mono);color:var(--ink-soft)">' + EMAIL + "</span>" +
+          '<button class="ib" type="button" data-copy aria-label="Copy email">' + ic("copy") + "</button>" +
+          '<span class="vr"></span><button class="ib" type="button" data-go="collapsed" aria-label="Close">' + ic("x") + "</button>";
+      }
+    };
+    function go(s, focus) {
+      var a = c.getBoundingClientRect();
+      di.dataset.s = s; c.innerHTML = V[s]();
+      var b = c.getBoundingClientRect(), k = spd();
+      if (k && a.width && b.width) {
+        bg.style.transition = "none";
+        bg.style.transform = "scale(" + (a.width / b.width).toFixed(4) + "," + (a.height / b.height).toFixed(4) + ")";
+        void bg.offsetWidth;
+        bg.style.transition = "transform " + (k < 1 ? .3 : .45) + "s " + EASE;
+        bg.style.transform = "";
+        [].forEach.call(c.children, function (el) { fadeIn(el); });
+      }
+      if (focus) { var f = c.querySelector("button, a"); if (f) f.focus(); }
+    }
+    c.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-go], [data-copy]"); if (!b) return;
+      if (b.hasAttribute("data-copy")) {
+        copy(EMAIL).then(function (ok) { var n = $("diName"); if (!n) return; var was = n.textContent; n.textContent = ok ? "Email copied" : EMAIL; setTimeout(function () { if (n.isConnected) n.textContent = was; }, 1400); });
+        return;
+      }
+      go(b.dataset.go, true);
+    });
+    document.addEventListener("click", function (e) { if (di.dataset.s !== "collapsed" && outside(e, di)) go("collapsed"); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && di.dataset.s !== "collapsed" && di.contains(document.activeElement)) go("collapsed", true); });
+    go("collapsed");
+  })();
+</script>

@@ -1,0 +1,87 @@
+<!-- part n06 | part | group charts | Three numbers that count up and can be scrubbed. | Three numbers that count up and can be scrubbed. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Three numbers that <em>count up and can be scrubbed.</em></h3>
+          <p class="kit-p">Drag a finger or the mouse across a little line to read any day.</p>
+          <section class="cs kv4" id="n06">
+  <div class="frame"><div class="fbody"><div class="tiles" id="n06-tiles"></div></div></div>
+
+</section>
+        </div>
+<script data-slot="0009">
+(function () {
+  "use strict";
+  var box = document.getElementById("n06"); if (!box) return;
+  var spd = function () { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; };
+  function bez(x1, y1, x2, y2) { return function (t) { if (t <= 0) return 0; if (t >= 1) return 1; var lo = 0, hi = 1, s = t, i; for (i = 0; i < 24; i++) { var x = 3 * (1 - s) * (1 - s) * s * x1 + 3 * (1 - s) * s * s * x2 + s * s * s; if (x < t) lo = s; else hi = s; s = (lo + hi) / 2; } return 3 * (1 - s) * (1 - s) * s * y1 + 3 * (1 - s) * s * s * y2 + s * s * s; }; }
+  var ease = bez(.16, 1, .3, 1);
+  var N = 30, W = 240, H = 64, PAD = 7, DS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"], MS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  function rng(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function series(seed, total, unit, trend, sparse) {
+    var r = rng(seed), raw = [], s = 0, i;
+    for (i = 0; i < N; i++) { var v = sparse ? (r() < .5 ? 0 : .5 + r()) : 1 + trend * i / (N - 1) + .16 * Math.sin(i * 2 * Math.PI / 7 + seed) + (r() - .5) * .18; raw.push(Math.max(0, v)); s += raw[i]; }
+    var q = total / unit, out = raw.map(function (v) { return Math.round(v / s * q); }), diff = q - out.reduce(function (a, b) { return a + b; }, 0), j = 3;
+    while (diff !== 0) { var k = j % N; if (diff > 0 || out[k] > 0) { out[k] += diff > 0 ? 1 : -1; diff += diff > 0 ? -1 : 1; } j += 7; }
+    return out.map(function (v) { return v * unit; });
+  }
+  function fmtM(v) { return "<small>KSh</small>" + (v / 1e6).toFixed(2) + "<small>M</small>"; }
+  function fmtD(v) { return "<small>KSh</small>" + Math.round(v).toLocaleString("en-US"); }
+  function fmtI(v) { return Math.round(v).toLocaleString("en-US"); }
+  var T = [
+    { label: "Monthly revenue", total: 1840000, up: true, words: "Up 12.4% on September", head: function (v) { return fmtM(v); }, day: fmtD, data: series(11, 1840000, 100, .5) },
+    { label: "New customers", total: 312, up: true, words: "Up 8.1% on September", head: fmtI, day: fmtI, data: series(23, 312, 1, .35) },
+    { label: "Refunds", total: 14, up: false, words: "3 fewer than September", head: fmtI, day: function (v) { return fmtI(v) + " so far"; }, data: series(37, 14, 1, 0, true).reduce(function (a, v) { a.push((a.length ? a[a.length - 1] : 0) + v); return a; }, []) }
+  ];
+  function mono(pts) {
+    var n = pts.length, d = [], m = [], i;
+    for (i = 0; i < n - 1; i++) d[i] = (pts[i + 1][1] - pts[i][1]) / (pts[i + 1][0] - pts[i][0]);
+    m[0] = d[0]; m[n - 1] = d[n - 2];
+    for (i = 1; i < n - 1; i++) m[i] = d[i - 1] * d[i] <= 0 ? 0 : (d[i - 1] + d[i]) / 2;
+    for (i = 0; i < n - 1; i++) {
+      if (d[i] === 0) { m[i] = m[i + 1] = 0; continue; }
+      var a = m[i] / d[i], b = m[i + 1] / d[i], s = a * a + b * b;
+      if (s > 9) { var t = 3 / Math.sqrt(s); m[i] = t * a * d[i]; m[i + 1] = t * b * d[i]; }
+    }
+    var p = "M" + pts[0][0] + " " + pts[0][1];
+    for (i = 0; i < n - 1; i++) { var h = (pts[i + 1][0] - pts[i][0]) / 3; p += "C" + (pts[i][0] + h) + " " + (pts[i][1] + m[i] * h) + " " + (pts[i + 1][0] - h) + " " + (pts[i + 1][1] - m[i + 1] * h) + " " + pts[i + 1][0] + " " + pts[i + 1][1]; }
+    return p;
+  }
+  var root = box.querySelector("#n06-tiles");
+  T.forEach(function (t, ti) {
+    var mn = Math.min.apply(null, t.data), mx = Math.max.apply(null, t.data), rg = mx - mn || 1;
+    var pts = t.data.map(function (v, i) { return [i / (N - 1) * W, PAD + (1 - (v - mn) / rg) * (H - 2 * PAD)]; });
+    var line = mono(pts), el = document.createElement("article"); el.className = "tl";
+    el.innerHTML = '<div class="th"><span class="label">' + t.label + '</span><span class="cap">Last 30 days</span></div><div class="hn">' + t.head(t.total) + '</div>' +
+      '<span class="dl' + (t.up ? "" : " dn") + '"><svg class="i s" aria-hidden="true"><use href="#i-aup"/></svg><span>' + t.words + '</span></span>' +
+      '<div class="sp" tabindex="0" role="img" aria-label="' + t.label + ' over 30 days. Use the left and right arrow keys to read each day."><svg viewBox="0 0 ' + W + " " + H + '" preserveAspectRatio="none" aria-hidden="true"><path class="ar" d="' + line + "L" + W + " " + H + "L0 " + H + 'Z"/><path class="ln" d="' + line + '"/></svg><span class="dot"></span></div>';
+    root.appendChild(el);
+    var hn = el.querySelector(".hn"), cap = el.querySelector(".cap"), sp = el.querySelector(".sp"), dot = el.querySelector(".dot"), raf = 0, idx = -1;
+    function stop() { cancelAnimationFrame(raf); }
+    function scrub(i) {
+      stop(); idx = i; var r = sp.getBoundingClientRect(), dt = new Date(2026, 9, 29 - (N - 1 - i));
+      hn.innerHTML = t.day(t.data[i]); cap.textContent = DS[dt.getDay()] + " " + dt.getDate() + " " + MS[dt.getMonth()];
+      dot.style.transform = "translate(" + (pts[i][0] / W * r.width) + "px," + (pts[i][1] / H * r.height) + "px)"; dot.classList.add("on");
+    }
+    function restore() { stop(); idx = -1; hn.innerHTML = t.head(t.total); cap.textContent = "Last 30 days"; dot.classList.remove("on"); }
+    function at(e) { var r = sp.getBoundingClientRect(); return Math.max(0, Math.min(N - 1, Math.round((e.clientX - r.left) / r.width * (N - 1)))); }
+    sp.addEventListener("pointerdown", function (e) { if (e.pointerType === "touch") { try { sp.setPointerCapture(e.pointerId); } catch (x) {} } scrub(at(e)); });
+    sp.addEventListener("pointermove", function (e) { scrub(at(e)); });
+    sp.addEventListener("pointerleave", function (e) { if (!sp.hasPointerCapture || !sp.hasPointerCapture(e.pointerId)) restore(); });
+    sp.addEventListener("pointerup", function (e) { if (e.pointerType === "touch") restore(); });
+    sp.addEventListener("pointercancel", restore);
+    sp.addEventListener("keydown", function (e) {
+      var s = e.key === "ArrowLeft" ? -1 : e.key === "ArrowRight" ? 1 : 0; if (!s) return; e.preventDefault();
+      scrub(Math.max(0, Math.min(N - 1, (idx < 0 ? N - 1 : idx) + s)));
+    });
+    sp.addEventListener("blur", restore);
+    function count() {
+      var s = spd(); if (!s) return; var d = 2200 * (s === 1 ? 1 : .6), t0 = performance.now();
+      (function f(now) { var p = Math.min(1, (now - t0) / d); hn.innerHTML = t.head(t.total * ease(p)); if (p < 1) raf = requestAnimationFrame(f); })(t0);
+    }
+    if ("IntersectionObserver" in window && spd()) {
+      hn.innerHTML = t.head(0);
+      var io = new IntersectionObserver(function (es) { if (!es.some(function (x) { return x.isIntersecting; })) return; io.disconnect(); if (idx < 0) count(); }, { threshold: .4 });
+      io.observe(el);
+    }
+  });
+})();
+</script>

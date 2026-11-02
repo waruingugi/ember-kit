@@ -1,0 +1,51 @@
+<!-- part n30 | part | group forms | Wrong fields shake. Right ones get a tick. | Wrong fields shake. Right ones get a tick. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Wrong fields shake. <em>Right ones get a tick.</em></h3>
+          <p class="kit-p">Type an email and leave the field: a tick pops in. Press Create account with a mistake, and that field shakes.</p>
+          <section class="cs kv4" id="n30">
+  <div class="frame"><div class="fbody">
+    <form class="fm" id="n30-form" novalidate="">
+      <div class="f"><label for="n30-e">Email</label><div class="iw"><input class="in" id="n30-e" data-f="e" type="email" autocomplete="off" spellcheck="false" aria-describedby="n30-em"></div><p class="hp" id="n30-em" data-m="e">We send receipts here.</p></div>
+      <div class="f"><label for="n30-p">Password</label><div class="iw"><input class="in" id="n30-p" data-f="p" type="password" autocomplete="new-password" aria-describedby="n30-pm"></div><p class="hp" id="n30-pm" data-m="p">8 or more characters.</p></div>
+      <button class="b pri" type="submit">Create account</button>
+      <p class="ok" id="n30-ok" aria-live="polite"></p>
+    </form>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0034">
+(function () {
+  "use strict";
+  var box = document.getElementById("n30"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  var TICK = '<svg class="tk" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"/><path d="M6.6 11.4 9.6 14.3l5.8-6.4"/></svg>';
+  var form = $("#n30-form"), ok = $("#n30-ok"), f = { e: $('[data-f="e"]'), p: $('[data-f="p"]') }, help = {}, tried = false, left = {};
+  ["e", "p"].forEach(function (k) { help[k] = $('[data-m="' + k + '"]').textContent; });
+  function msg(k, v) {
+    if (k === "e") { if (!v) return "Enter your email."; if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return "Enter an email like amina@example.com."; return ""; }
+    if (!v) return "Enter a password."; if (v.length < 8) return "Use 8 or more characters. You have " + v.length + "."; return "";
+  }
+  function tick(k, on) { var w = f[k].parentNode, t = $(".tk", w); if (on && !t) w.insertAdjacentHTML("beforeend", TICK); if (!on && t) t.remove(); }
+  function show(k) {
+    var m = msg(k, f[k].value), on = !!m && (tried || left[k]), el = $('[data-m="' + k + '"]');
+    f[k].setAttribute("aria-invalid", on ? "true" : "false");
+    el.classList.toggle("bad", on); el.textContent = on ? m : help[k];
+    if (m) tick(k, false); return m;
+  }
+  form.addEventListener("submit", function (e) {
+    e.preventDefault(); tried = true;
+    var bad = ["e", "p"].filter(function (k) { return show(k); });
+    bad.forEach(function (k) { var w = f[k].parentNode; w.classList.remove("shake"); void w.offsetWidth; w.classList.add("shake"); });
+    if (bad.length) { ok.textContent = ""; f[bad[0]].focus(); return; }
+    ok.innerHTML = TICK; ok.appendChild(document.createTextNode("Account made for " + f.e.value + "."));
+  });
+  ["e", "p"].forEach(function (k) {
+    f[k].addEventListener("input", function () { if (tried || left[k]) show(k); });
+    f[k].addEventListener("blur", function () { if (f[k].value) { left[k] = true; tick(k, !show(k)); } });
+  });
+})();
+</script>

@@ -1,0 +1,92 @@
+<!-- part c12 | part | group forms | Upload files, and watch each one. | Upload files, and watch each one. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Upload files, <em>and watch each one.</em></h3>
+          <p class="kit-p">Try the sample files. One is too big and one fails halfway, so you can see both errors.</p>
+          <section class="cs" id="c12">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Upload · 25 MB a file</span></div>
+      <div class="fbody">
+        <div class="up-drop" id="upDrop" role="button" tabindex="0" aria-describedby="upHint">
+          <span class="up-ic" aria-hidden="true"><svg class="i l"><use href="#i-up"></use></svg></span>
+          <p class="up-t">Drop files here, or click to choose</p>
+          <p class="up-s" id="upHint">Any file up to 25 MB. Nothing leaves your browser.</p>
+          <input type="file" id="upInput" multiple="" hidden="">
+        </div>
+        <div class="up-try"><button class="b sm" type="button" id="upTry">Try sample files</button></div>
+        <div id="upHead" class="up-head" hidden=""><span class="label" id="upCount"></span><button class="lk" type="button" id="upClear" style="font-size:13px">Clear all</button></div>
+        <ul class="up-list" id="upList" aria-live="polite"></ul>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0009">
+  /* ---------------- 12 file upload ---------------- */
+  (function () {
+    var drop = $("upDrop"), input = $("upInput"), list = $("upList"), head = $("upHead"), count = $("upCount");
+    var LIMIT = 25 * 1048576, files = [], uid = 0;
+    var kind = function (n) {
+      var e = (n.split(".").pop() || "").toLowerCase();
+      if (/^(png|jpe?g|gif|svg|webp|avif)$/.test(e)) return "img";
+      if (/^(mov|mp4|webm|avi)$/.test(e)) return "film";
+      if (/^(mp3|wav|m4a|ogg)$/.test(e)) return "music";
+      if (/^(zip|rar|7z|gz|tar)$/.test(e)) return "zip";
+      if (/^(js|ts|json|html|css|py|md)$/.test(e)) return "code";
+      return "file";
+    };
+    var size = function (b) { return b >= 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.max(1, Math.round(b / 1024)) + " KB"; };
+    function head_() {
+      head.hidden = !files.length;
+      var done = files.filter(function (f) { return f.s === "complete"; }).length;
+      count.textContent = files.length + (files.length === 1 ? " file" : " files") + " · " + done + " done";
+    }
+    function paint(f) {
+      var li = f.el;
+      li.dataset.s = f.s;
+      li.querySelector(".up-bar i").style.transform = "scaleX(" + (f.s === "error" && f.big ? 0 : f.p) + ")";
+      var st = li.querySelector(".up-st"), acts = li.querySelector(".up-acts");
+      if (f.s === "uploading") st.textContent = "Uploading · " + Math.round(f.p * 100) + "%";
+      else if (f.s === "complete") st.textContent = "✓ Uploaded";
+      else st.textContent = f.big ? "Too big · the limit is 25 MB" : "Failed at " + Math.round(f.p * 100) + "% · connection lost";
+      acts.innerHTML = (f.s === "error" && !f.big ? '<button class="ib" type="button" data-retry aria-label="Retry ' + esc(f.name) + '">' + ic("rot") + "</button>" : "") +
+        '<button class="ib" type="button" data-rm aria-label="Remove ' + esc(f.name) + '">' + ic("x") + "</button>";
+      head_();
+    }
+    function run(f) {
+      clearInterval(f.t);
+      if (f.size > LIMIT) { f.s = "error"; f.big = true; paint(f); return; }
+      f.s = "uploading"; paint(f);
+      f.t = setInterval(function () {
+        f.p = Math.min(1, f.p + (.05 + Math.random() * .1) * Math.min(1, 6e6 / Math.max(f.size, 1e6)));
+        if (f.failAt && f.p >= f.failAt) { f.failAt = 0; f.s = "error"; clearInterval(f.t); }
+        else if (f.p >= 1) { f.s = "complete"; clearInterval(f.t); }
+        paint(f);
+      }, 140);
+    }
+    function add(list_) {
+      list_.forEach(function (x) {
+        var f = { id: ++uid, name: x.name, size: x.size, failAt: x.failAt || 0, p: 0, s: "uploading" };
+        var li = document.createElement("li");
+        li.className = "up-row" + (spd() ? " rowin" : "");
+        li.innerHTML = '<span class="up-fi" aria-hidden="true">' + ic(kind(f.name)) + '</span><div class="up-m"><div class="up-n"><span>' + esc(f.name) + "</span><small>" + size(f.size) + '</small></div><div class="up-st"></div></div><span class="up-acts" style="display:flex"></span><span class="up-bar" aria-hidden="true"><i></i></span>';
+        f.el = li; li._f = f; list.appendChild(li); files.push(f); run(f);
+      });
+    }
+    function remove(f) { clearInterval(f.t); f.el.remove(); files = files.filter(function (x) { return x !== f; }); head_(); }
+    list.addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b) return;
+      var f = b.closest(".up-row")._f;
+      if (b.hasAttribute("data-rm")) remove(f);
+      else if (b.hasAttribute("data-retry")) { f.p = 0; run(f); }
+    });
+    $("upClear").addEventListener("click", function () { files.slice().forEach(remove); });
+    $("upTry").addEventListener("click", function () {
+      add([{ name: "launch-deck.pdf", size: 3.2 * 1048576 }, { name: "hero-shot.png", size: 1.4 * 1048576 }, { name: "walkthrough.mov", size: 48 * 1048576 }, { name: "brand-assets.zip", size: 12.6 * 1048576, failAt: .55 }]);
+    });
+    drop.addEventListener("click", function () { input.click(); });
+    drop.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); } });
+    input.addEventListener("change", function () { add([].slice.call(input.files)); input.value = ""; });
+    ["dragenter", "dragover"].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.dataset.over = "1"; }); });
+    drop.addEventListener("dragleave", function (e) { if (!drop.contains(e.relatedTarget)) drop.dataset.over = "0"; });
+    drop.addEventListener("drop", function (e) { e.preventDefault(); drop.dataset.over = "0"; add([].slice.call(e.dataTransfer.files)); });
+  })();
+</script>

@@ -1,0 +1,54 @@
+<!-- part c13 | part | group forms | A secret key, shown only when asked. | A secret key, shown only when asked. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A secret key, <em>shown only when asked.</em></h3>
+          <p class="kit-p">Press Reveal and the letters settle from left to right.</p>
+          <section class="cs" id="c13">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">API keys</span></div>
+      <div class="fbody">
+        <div class="sc">
+          <span class="label">Live secret key</span>
+          <div class="sc-row">
+            <code class="sc-key" id="scKey" aria-live="polite"></code>
+            <button class="b sm" type="button" id="scBtn" aria-pressed="false"><svg class="i s"><use href="#i-eye"></use></svg><span>Reveal</span></button>
+            <button class="b sm" type="button" id="scCopy"><svg class="i s"><use href="#i-copy"></use></svg><span>Copy</span></button>
+          </div>
+          <p class="sc-hint">Made-up key. Anyone with this key can charge your account.</p>
+        </div>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0010">
+  /* ---------------- 13 secret reveal ---------------- */
+  (function () {
+    var KEY = "sk_demo_Xq7pR2mVn9Lc4Tz8Hw3Ka6Jb", MASK = KEY.slice(0, 8) + "•".repeat(KEY.length - 11) + KEY.slice(-3);
+    var CH = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+    var box = $("scKey"), btn = $("scBtn"), shown = false, raf = 0;
+    box.removeAttribute("aria-live"); box.setAttribute("aria-hidden", "true");
+    var sr = document.createElement("span"); sr.className = "sr-only"; sr.setAttribute("aria-live", "polite"); box.after(sr);
+    function setText(s) { box.textContent = s; }
+    function label() { btn.setAttribute("aria-pressed", String(shown)); btn.innerHTML = ic(shown ? "eyeoff" : "eye", "s") + "<span>" + (shown ? "Hide" : "Reveal") + "</span>"; }
+    setText(MASK); sr.textContent = "Secret key hidden.";
+    btn.addEventListener("click", function () {
+      cancelAnimationFrame(raf); shown = !shown; label();
+      sr.textContent = shown ? "Secret key: " + KEY.split("").join(" ") : "Secret key hidden.";
+      if (!shown) { setText(MASK); return; }
+      var k = spd(); if (!k) { setText(KEY); return; }
+      var dur = 800 * k, t0 = performance.now(), n = KEY.length;
+      (function frame(now) {
+        var t = now - t0, html = "", done = true;
+        for (var i = 0; i < n; i++) {
+          if (i < 8 || t >= dur * (i - 7) / (n - 8)) html += esc(KEY[i]);
+          else { done = false; html += '<span class="x">' + CH[Math.floor(Math.random() * CH.length)] + "</span>"; }
+        }
+        box.innerHTML = html;
+        if (!done) raf = requestAnimationFrame(frame);
+      })(t0);
+    });
+    $("scCopy").addEventListener("click", function () {
+      var b = this;
+      copy(KEY).then(function (ok) { b.lastChild.textContent = ok ? "Copied" : "Copy failed"; setTimeout(function () { b.lastChild.textContent = "Copy"; }, 1500); });
+    });
+  })();
+</script>

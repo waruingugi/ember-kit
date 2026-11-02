@@ -1,0 +1,89 @@
+<!-- part c17 | part | group tables | Three plans, side by side. | Three plans, side by side. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Three plans, <em>side by side.</em></h3>
+          <p class="kit-p">Search for a feature, or turn on Differences only. The middle plan is the one most people pick.</p>
+          <section class="cs" id="c17">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Pricing</span></div>
+      <div class="fbody">
+        <div class="cmp" id="cmp">
+          <div class="cmp-ctl">
+            <div>
+              <div class="inwrap"><svg class="i"><use href="#i-search"></use></svg><input class="in" id="cmpQ" type="search" placeholder="Find a feature" aria-label="Find a feature"></div>
+              <button class="b" type="button" id="cmpDiff" aria-pressed="false">Differences only</button>
+            </div>
+            <div class="tabs cmp-mob" id="cmpMob" role="group" aria-label="Plan to show"></div>
+          </div>
+          <div class="cmp-head" id="cmpHead"></div>
+          <div id="cmpBody"></div>
+        </div>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0014">
+  /* ---------------- 17 plan comparison ---------------- */
+  (function () {
+    var P = [{ n: "Starter", p: 0, d: "For trying it out alone." }, { n: "Team", p: 24, d: "For small teams that ship each week.", feat: 1 }, { n: "Business", p: 79, d: "For companies with rules to follow." }];
+    var C = [
+      { n: "Core", f: [["Projects", ["3", "Unlimited", "Unlimited"], "A project holds one product and its pages."], ["Members", ["1", "10", "Unlimited"]], ["Storage", ["1 GB", "50 GB", "1 TB"]], ["Version history", ["7 days", "90 days", "1 year"]]] },
+      { n: "Working together", f: [["Comments", [true, true, true]], ["Guest access", [false, true, true], "People outside your company can view and comment."], ["Shared workspaces", [false, true, true]], ["Single sign-on", [false, false, true], "Sign in with your company's own login."]] },
+      { n: "Support", f: [["Help", ["Email", "Email, 1 day", "Chat, 1 hour"]], ["Uptime promise", [false, "99.9%", "99.99%"]], ["Audit log", [false, false, true]], ["Onboarding call", [false, true, true]]] }
+    ];
+    var head = $("cmpHead"), bodyEl = $("cmpBody"), qEl = $("cmpQ"), diff = $("cmpDiff"), sel = 1, closed = {}, tipN = 0;
+    head.innerHTML = '<div class="cmp-lead"><span class="label">Plans</span><span>Prices are per person, per month.</span></div>' + P.map(function (p, i) {
+      return '<div class="cmp-plan c' + i + (p.feat ? " feat" : "") + '" data-p="' + i + '">' + (p.feat ? '<span class="cmp-badge">Suggested</span>' : "") +
+        "<div><h4>" + p.n + "</h4><p>" + p.d + '</p></div><div class="cmp-price">$' + p.p + "<small>/ month</small></div>" +
+        '<button class="b' + (p.feat ? " pri" : "") + '" type="button" data-choose="' + i + '">' + (p.feat ? "Start with Team" : "Choose " + p.n) + "</button></div>";
+    }).join("");
+    head.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-choose]"); if (!b) return;
+      head.querySelectorAll("[data-choose]").forEach(function (x, i) { x.innerHTML = x === b ? ic("check", "s") + "Chosen" : P[i].feat ? "Start with Team" : "Choose " + P[i].n; });
+    });
+    function val(v) {
+      if (v === true) return '<span class="yes">' + ic("check") + '<span class="sr-only">Included</span></span>';
+      if (v === false) return '<span class="no" aria-hidden="true">—</span><span class="sr-only">Not included</span>';
+      return '<span class="cmp-txt">' + v + "</span>";
+    }
+    function render() {
+      var q = qEl.value.trim().toLowerCase(), only = diff.getAttribute("aria-pressed") === "true", any = false;
+      bodyEl.innerHTML = C.map(function (c, ci) {
+        var f = c.f.filter(function (x) {
+          if (q && x[0].toLowerCase().indexOf(q) < 0) return false;
+          return !only || JSON.stringify(x[1][0]) !== JSON.stringify(x[1][1]) || JSON.stringify(x[1][1]) !== JSON.stringify(x[1][2]);
+        });
+        if (!f.length) return "";
+        any = true;
+        var open = !closed[ci] || !!q;
+        return '<div class="cmp-cat"><h4><button type="button" data-cat="' + ci + '" aria-expanded="' + open + '"><span>' + c.n + "<small>" + f.length + "</small></span>" + ic("cd") + "</button></h4>" +
+          (open ? '<div class="cmp-feats" role="list">' + f.map(function (x) {
+            var tid = x[2] ? "cmpT" + (++tipN) : "";
+            return '<div class="cmp-row" role="listitem"><span class="cmp-f">' + x[0] +
+              (x[2] ? '<button class="ib" type="button" data-tip="' + tid + '" aria-label="About ' + x[0] + '" aria-describedby="' + tid + '">' + ic("info", "s") + '</button><span class="pop cmp-tipbox" id="' + tid + '" role="tooltip" hidden>' + x[2] + "</span>" : "") + "</span>" +
+              x[1].map(function (v, i) { return '<span class="cmp-v c' + i + (i === sel ? " sel" : "") + '"><span>' + P[i].n + ": </span>" + val(v) + "</span>"; }).join("") + "</div>";
+          }).join("") + "</div>" : "") + "</div>";
+      }).join("");
+      if (!any) bodyEl.innerHTML = '<p class="cmp-empty">No feature matches “' + esc(qEl.value.trim()) + "”.</p>";
+      head.querySelectorAll(".cmp-plan").forEach(function (p, i) { p.classList.toggle("sel", i === sel); });
+    }
+    qEl.addEventListener("input", render);
+    diff.addEventListener("click", function () { diff.setAttribute("aria-pressed", String(diff.getAttribute("aria-pressed") !== "true")); render(); });
+    bodyEl.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-cat]"); if (!b) return;
+      var ci = +b.dataset.cat; closed[ci] = !closed[ci]; render();
+      var nb = bodyEl.querySelector('[data-cat="' + ci + '"]'); if (nb) nb.focus();
+    });
+    function tip(e, show) {
+      var b = e.target.closest && e.target.closest("[data-tip]"); if (!b) return;
+      var t = $(b.dataset.tip); if (t) { t.hidden = !show; if (show) fadeIn(t); }
+    }
+    ["mouseover", "focusin"].forEach(function (ev) { bodyEl.addEventListener(ev, function (e) { tip(e, true); }); });
+    ["mouseout", "focusout"].forEach(function (ev) { bodyEl.addEventListener(ev, function (e) { tip(e, false); }); });
+    bodyEl.addEventListener("keydown", function (e) { if (e.key === "Escape") tip(e, false); });
+    var cmp = $("cmp");
+    cmp.addEventListener("mouseover", function (e) { var c = e.target.closest(".cmp-v, .cmp-plan"); if (c) cmp.dataset.hc = c.className.match(/\bc(\d)\b/)[1]; else delete cmp.dataset.hc; });
+    cmp.addEventListener("mouseleave", function () { delete cmp.dataset.hc; });
+    tabs($("cmpMob"), P.map(function (p) { return p.n; }), { active: sel, onSelect: function (i) { sel = i; render(); } });
+    render();
+  })();
+</script>

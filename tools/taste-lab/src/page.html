@@ -1,0 +1,121 @@
+<title>Taste Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Round 1: sixteen common components, four to six working versions each. The owner picks one of each, and Claude learns the owner's taste from the picks.">
+<script>
+/* Runs before paint: restore saved theme, motion and sidebar so nothing flashes. */
+(function () {
+  var r = document.documentElement, d = { theme: '', motion: 'lively' }, s = {};
+  try { s = JSON.parse(localStorage.getItem('taste-lab-v1') || '{}') || {}; } catch (e) {}
+  d.theme = s.theme || r.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  d.motion = s.motion || 'lively';
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) d.motion = 'off';
+  r.classList.add('js');
+  r.setAttribute('data-theme', d.theme); r.setAttribute('data-motion', d.motion);
+  try { var sb = JSON.parse(localStorage.getItem('taste-lab-sb-v1') || '{}') || {}; if (sb.w) r.style.setProperty('--sb-w', sb.w + 'px'); if (sb.collapsed) r.setAttribute('data-sb', 'collapsed'); } catch (e) {}
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Space+Grotesk:wght@400;500;600&family=Inter:wght@400..700&family=JetBrains+Mono:wght@400;500;600&family=Antonio:wght@300..700&display=swap">
+<style>
+/*CSS*/
+</style>
+<a class="skip" href="#content">Skip to content</a>
+<div class="bg-grid" aria-hidden="true"></div>
+<div class="scrim" id="scrim"></div>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar" aria-label="Components">
+    <div class="sb-head">
+      <div class="mark"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.5 17 8l-7 10.5L3 8z" fill="var(--accent)"/><path d="M10 1.5v17M3 8h14" stroke="var(--paper-raised)" stroke-width="1.2"/></svg></div>
+      <div class="wordmark"><strong>Taste Lab<i>.</i></strong><span>Round 1 · {{COUNT}} parts</span></div>
+      <button class="icon-btn sb-collapse" id="sbCollapse" type="button" aria-label="Collapse sidebar" aria-expanded="true" aria-keyshortcuts="[">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <nav class="sb-nav" id="sbNav">
+      <span class="sb-indicator" id="sbIndicator" aria-hidden="true"></span>
+      <div class="sb-group">Start</div>
+      <ul class="sb-list"><li><a class="sb-link" href="#top" data-tip="How it works"><span class="k">00</span><span class="t">How it works</span></a></li></ul>
+      <div class="sb-group">Round 1</div>
+      <ul class="sb-list">
+<!--SB-->
+      </ul>
+      <div class="sb-group">End</div>
+      <ul class="sb-list"><li><a class="sb-link" href="#summary" data-tip="Your picks"><span class="k">∑</span><span class="t">Your picks</span></a></li></ul>
+    </nav>
+    <div class="sb-foot">
+      <div class="sb-progress"><div class="bar" aria-hidden="true"><i id="sbBar"></i></div><span class="pct" id="sbPct">0 of {{COUNT}}</span></div>
+      <span class="sb-hint"><kbd>[</kbd> collapse · drag the edge to resize</span>
+    </div>
+    <div class="sb-resize" id="sbResize" role="separator" aria-orientation="vertical" aria-label="Resize sidebar" aria-valuemin="216" aria-valuemax="420" aria-valuenow="272" tabindex="0"></div>
+  </aside>
+
+  <main id="content">
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="Open the list of components" aria-controls="sidebar" aria-expanded="false">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3 5.5h12M3 12.5h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="crumbs"><span class="hide-sm">Taste Lab</span><span class="sep hide-sm">/</span><span>Round 1</span></div>
+      <span class="badge" id="pickCount">0 of {{COUNT}} picked</span>
+      <span class="spacer"></span>
+      <span class="store" id="storeState" aria-live="polite"></span>
+      <div class="seg motion-seg" role="group" aria-label="Motion">
+        <button type="button" data-motion-set="lively" aria-pressed="false">Lively</button>
+        <button type="button" data-motion-set="calm" aria-pressed="false">Calm</button>
+        <button type="button" data-motion-set="off" aria-pressed="false">Off</button>
+      </div>
+      <button class="icon-btn theme-toggle" id="themeBtn" type="button" aria-label="Switch to night theme">
+        <svg class="sun" width="17" height="17" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="3.4" stroke="currentColor" stroke-width="1.5"/><path d="M9 1.8v1.6M9 14.6v1.6M1.8 9h1.6M14.6 9h1.6M3.9 3.9l1.1 1.1M13 13l1.1 1.1M3.9 14.1 5 13M13 5l1.1-1.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <svg class="moon" width="17" height="17" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M14.8 11.2A6.3 6.3 0 0 1 6.8 3.2a6.3 6.3 0 1 0 8 8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      </button>
+      <i class="topbar-progress" id="topProgress" aria-hidden="true"></i>
+    </header>
+
+    <div class="wrap">
+      <section class="hero" id="top">
+        <p class="eyebrow" data-reveal><b>00</b> Taste Lab · Round 1</p>
+        <h1 class="display" data-reveal style="--i:1">Pick what feels right. <em>Claude learns your taste.</em></h1>
+        <p class="lead" data-reveal style="--i:2">Here are {{COUNT}} parts that every product needs. Each one comes in four to six working versions, {{OPTS}} in all. They all use the same sample data, so only the design is different. Try them, then pick one of each.</p>
+        <ol class="how" data-reveal style="--i:3">
+          <li><b>Try</b> every version. Menus, pop-ups and messages open inside their own card, so you can compare them side by side.</li>
+          <li><b>Pick</b> one per part, or press "None of these". Add a note like "B, but slower".</li>
+          <li><b>Done.</b> Picks save to this page. Claude reads them, writes down what you lean towards, and builds the winners into the kit.</li>
+        </ol>
+        <div class="legend" data-reveal style="--i:4">
+          <div class="lg"><span class="opt-k">A</span><p><b>Plain.</b> How shadcn/ui builds it, in our look. Familiar keys, quiet motion.</p></div>
+          <div class="lg"><span class="opt-k">B</span><p><b>Lively.</b> Motion is the point, from free beUI and easyui parts.</p></div>
+          <div class="lg"><span class="opt-k">C</span><p><b>Mix.</b> The best of A and B, plus our motion skills, depth and thinking orbs.</p></div>
+          <div class="lg"><span class="opt-k">D</span><p><b>Reference, pushed.</b> Your current house part, one step further.</p></div>
+          <div class="lg is-off"><span class="opt-k">E</span><p><b>Off-look.</b> Steps outside the ember look on purpose. Marked with a stripe.</p></div>
+          <div class="lg"><span class="opt-k">F</span><p><b>Wild card.</b> A bold idea, shown only where it helps.</p></div>
+        </div>
+        <p class="hero-note" data-reveal style="--i:5">Each card lists where its idea came from, what it needs, how the keys work, what happens with motion off, and which UX law it bends (Fitts, Hick, Jakob or proximity). The small tags under it are what Claude counts.</p>
+      </section>
+
+<!--SECTIONS-->
+
+      <section class="sec" id="summary">
+        <div class="sec-head" data-reveal>
+          <span class="sec-ghost" aria-hidden="true">∑</span>
+          <p class="eyebrow"><b>∑</b> Your picks</p>
+          <h2 class="display">Every pick, <em>in one place.</em></h2>
+          <p class="lead">This list fills in as you pick. It is saved to the page for Claude. If saving ever fails, copy it and paste it into the chat.</p>
+        </div>
+        <div class="sum card" data-reveal>
+          <ol class="sum-list" id="sumList"></ol>
+          <label class="sr" for="sumText">Picks as plain text</label>
+          <textarea id="sumText" class="sum-text" rows="6" readonly></textarea>
+          <div class="sum-act"><button class="l-btn pri" type="button" id="copyPicks">Copy picks</button><span id="copyState" aria-live="polite"></span></div>
+        </div>
+      </section>
+      <footer class="foot"><span>Taste Lab · round 1 · {{OPTS}} options</span><span>Ideas from shadcn/ui (MIT), beUI free parts (MIT), easyui (MIT) and thinking-orbs (MIT). Every part here was rebuilt by hand.</span></footer>
+    </div>
+  </main>
+</div>
+
+<script>
+/*META*/
+/*LIB*/
+/*PARTS*/
+</script>

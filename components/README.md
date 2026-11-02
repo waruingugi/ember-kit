@@ -8,7 +8,7 @@ one family. Do not invent a new style for one of these. Copy it.
 - `tokens.css` holds every colour, font, radius, shadow and curve. Paste
   its `:root` block at the top of the page's `<style>`.
 - `components.css` holds the parts below. Paste the ones the page uses.
-- `interactive.html` holds 29 bigger parts the reader works (tabs, stepper, data table, toast, payment status, folder and more). Which to use and what to keep: `patterns/interactive-parts.md`.
+- `parts/` holds every bigger part the reader works (tabs, stepper, data table, toast, payment status, folder and more), one file each, made from `showcase/index.html`. How to build a page from them: `parts/README.md`. Which to use and what to keep: `patterns/interactive-parts.md`.
 - `preview.html` shows every part on one page. Open it with
   `bash ~/.claude/design/scripts/show-reference.sh ../components/preview.html`,
   or straight from the file.

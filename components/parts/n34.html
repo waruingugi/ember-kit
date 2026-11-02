@@ -1,0 +1,42 @@
+<!-- part n34 | part | group nav | One tooltip that slides between buttons. | One tooltip that slides between buttons. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">One tooltip that <em>slides between buttons.</em></h3>
+          <p class="kit-p">Point at a button and wait. Then move along the row: the same tooltip slides to the next one, with no wait.</p>
+          <section class="cs kv4" id="n34">
+  <div class="frame"><div class="fbody">
+    <div class="stage"><div class="tw">
+      <div class="bar" role="toolbar" aria-label="Sales report"><button class="b q" type="button" aria-label="Refresh" aria-describedby="n34-tip" data-k="R"><svg class="i" aria-hidden="true"><use href="#i-refresh"></use></svg></button><button class="b q" type="button" aria-label="Export CSV" aria-describedby="n34-tip" data-k="E"><svg class="i" aria-hidden="true"><use href="#i-dl"></use></svg></button><button class="b q" type="button" aria-label="Share report" aria-describedby="n34-tip" data-k="S"><svg class="i" aria-hidden="true"><use href="#i-share"></use></svg></button><button class="b q" type="button" aria-label="Filters" aria-describedby="n34-tip" data-k="F"><svg class="i" aria-hidden="true"><use href="#i-sliders"></use></svg></button><div class="tip" id="n34-tip" role="tooltip"><span class="tx"></span><span class="ar" aria-hidden="true"></span></div></div>
+      <p class="cap">Sales this week: KSh 182,400</p>
+    </div></div>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0041">
+(function () {
+  "use strict";
+  var box = document.getElementById("n34"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  var tip = $("#n34-tip"), tx = $(".tx", tip), t = null, warm = 0;
+  function show(b, now) {
+    clearTimeout(t);
+    var go = function () {
+      var was = tip.classList.contains("on");
+      tx.textContent = b.getAttribute("aria-label"); var k = document.createElement("span"); k.className = "k"; k.textContent = b.getAttribute("data-k"); tx.appendChild(k);
+      if (!was) { tip.classList.add("jump"); tip.style.setProperty("--x", (b.offsetLeft + b.offsetWidth / 2) + "px"); void tip.offsetWidth; requestAnimationFrame(function () { tip.classList.remove("jump"); }); }
+      else tip.style.setProperty("--x", (b.offsetLeft + b.offsetWidth / 2) + "px");
+      tip.classList.add("on");
+    };
+    if (now || performance.now() < warm || tip.classList.contains("on")) go(); else t = setTimeout(go, 400);
+  }
+  function hide() { clearTimeout(t); if (tip.classList.contains("on")) warm = performance.now() + 500; tip.classList.remove("on"); }
+  $$(".bar .b").forEach(function (b) {
+    b.addEventListener("pointerenter", function () { show(b); }); b.addEventListener("pointerleave", hide);
+    b.addEventListener("focus", function () { show(b, true); }); b.addEventListener("blur", hide); b.addEventListener("click", hide);
+    b.addEventListener("keydown", function (e) { if (e.key === "Escape") hide(); });
+  });
+})();
+</script>

@@ -1,0 +1,86 @@
+<!-- part n19 | part | group nav | A long file path that folds itself to fit. | A long file path that folds itself to fit. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A long file path that <em>folds itself to fit.</em></h3>
+          <p class="kit-p">Drag the width slider to make the box narrow. Press the three dots to open the folded folders.</p>
+          <section class="cs kv4" id="n19">
+  <div class="frame"><div class="fbody">
+    <div class="rg"><label class="label" for="n19-w">Box width</label><input type="range" id="n19-w" min="260" max="640" value="340"></div>
+    <div class="bx" id="n19-bx" style="width:340px">
+      <nav aria-label="File path">
+        <ol class="ol" id="n19-ol">
+          <span class="hp" aria-hidden="true"></span>
+          <li class="c"><a class="lk2" href="#" data-n="Home">Home</a><span class="sp" aria-hidden="true"><svg class="i"><use href="#i-cr"></use></svg></span></li>
+          <li class="c ell"><button type="button" class="lk2" id="n19-more" aria-label="Show 3 hidden folders">…</button><span class="sp" aria-hidden="true"><svg class="i"><use href="#i-cr"></use></svg></span></li>
+          <li class="c mid"><a class="lk2" href="#" data-n="Clients">Clients</a><span class="sp" aria-hidden="true"><svg class="i"><use href="#i-cr"></use></svg></span></li>
+          <li class="c mid"><a class="lk2" href="#" data-n="Kamau &amp; Sons">Kamau &amp; Sons</a><span class="sp" aria-hidden="true"><svg class="i"><use href="#i-cr"></use></svg></span></li>
+          <li class="c mid"><a class="lk2" href="#" data-n="2026">2026</a><span class="sp" aria-hidden="true"><svg class="i"><use href="#i-cr"></use></svg></span></li>
+          <li class="c"><a class="lk2" href="#" data-n="Invoices">Invoices</a><span class="sp" aria-hidden="true"><svg class="i"><use href="#i-cr"></use></svg></span></li>
+          <li class="c"><span class="cur" aria-current="page">October</span></li>
+        </ol>
+      </nav>
+    </div>
+    <p class="note" id="n19-note" aria-live="polite">Pretend this is a cloud drive. Click a folder to go there.</p>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0015">
+(function () {
+  "use strict";
+  var box = document.getElementById("n19"); if (!box) return;
+  var EASE = "cubic-bezier(.22,1,.36,1)";
+  function spd() { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; }
+  function go(el, kf, ms, done, delay) {
+    var s = spd(); if (!s || !el.animate) { if (done) done(); return null; }
+    var a = el.animate(kf, { duration: ms * (s < 1 ? .6 : 1), easing: EASE, fill: "both", delay: delay || 0 });
+    a.onfinish = function () { if (done) done(); a.cancel(); }; return a;
+  }
+  var bx = document.getElementById("n19-bx"), ol = document.getElementById("n19-ol"), hp = ol.querySelector(".hp");
+  var rng = document.getElementById("n19-w"), more = document.getElementById("n19-more"), note = document.getElementById("n19-note");
+  var expanded = false;
+  function fit() {
+    if (expanded) { ol.classList.remove("col"); return; }
+    ol.classList.remove("col"); ol.classList.add("nw");
+    var over = ol.scrollWidth > ol.clientWidth + 1;
+    ol.classList.remove("nw"); ol.classList.toggle("col", over);
+  }
+  function shown() { return [].slice.call(ol.querySelectorAll(".c")).filter(function (c) { return c.offsetParent !== null; }); }
+  function expand() {
+    var before = shown().map(function (c) { var r = c.getBoundingClientRect(); return { c: c, x: r.left, y: r.top }; });
+    expanded = true; ol.classList.remove("col");
+    var s = spd();
+    before.forEach(function (b) {
+      if (b.c.classList.contains("ell")) return;
+      var r = b.c.getBoundingClientRect(), dx = b.x - r.left, dy = b.y - r.top;
+      if (dx || dy) go(b.c, [{ transform: "translate(" + dx + "px," + dy + "px)" }, { transform: "none" }], 450);
+    });
+    [].slice.call(ol.querySelectorAll(".mid")).forEach(function (c, i) {
+      go(c, [{ opacity: 0, transform: "translateX(" + (-6 * s) + "px)" }, { opacity: 1, transform: "none" }], 300, null, i * 50);
+    });
+    var first = ol.querySelector(".mid a"); if (first) first.focus();
+    note.textContent = "Showing the full path.";
+  }
+  more.addEventListener("click", expand);
+  rng.addEventListener("input", function () { bx.style.width = rng.value + "px"; expanded = false; fit(); });
+  if (window.ResizeObserver) new ResizeObserver(fit).observe(box.querySelector(".fbody"));
+  fit();
+  ol.addEventListener("click", function (e) {
+    var a = e.target.closest("a"); if (!a) return; e.preventDefault();
+    note.textContent = "Opened the folder " + a.dataset.n + ".";
+  });
+  var shownPill = false;
+  function pill(t) {
+    var was = shownPill; shownPill = true;
+    hp.style.height = t.offsetHeight + "px";
+    if (!was) hp.classList.add("snap");
+    hp.style.transform = "translate(" + t.offsetLeft + "px," + t.offsetTop + "px) scaleX(" + (t.offsetWidth / 100) + ")";
+    if (!was) { void hp.offsetWidth; hp.classList.remove("snap"); }
+    hp.classList.add("on");
+  }
+  function target(e) { var t = e.target.closest(".lk2"); return t && ol.contains(t) ? t : null; }
+  ol.addEventListener("pointerover", function (e) { var t = target(e); if (t) pill(t); });
+  ol.addEventListener("focusin", function (e) { var t = target(e); if (t) pill(t); });
+  ol.addEventListener("pointerleave", function () { hp.classList.remove("on"); shownPill = false; });
+  ol.addEventListener("focusout", function (e) { if (!ol.contains(e.relatedTarget)) { hp.classList.remove("on"); shownPill = false; } });
+})();
+</script>

@@ -1,0 +1,78 @@
+<!-- part n18 | part | group nav | Shop answers that open without a jump. | Shop answers that open without a jump. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Shop answers that <em>open without a jump.</em></h3>
+          <p class="kit-p">Open a question. Then turn on "Open one at a time" and open another.</p>
+          <section class="cs kv4" id="n18">
+  <div class="frame"><div class="fbody">
+    <div class="top">
+      <span class="label">Shop help</span>
+      <label class="sw"><input type="checkbox" role="switch" id="n18-one" checked="">Open one at a time</label>
+    </div>
+    <div id="n18-list">
+      <div class="it open">
+        <h3><button type="button" class="hd" id="n18-b0" aria-expanded="true" aria-controls="n18-r0"><span>How long does delivery take?</span><svg class="i ch" aria-hidden="true"><use href="#i-cd"></use></svg></button></h3>
+        <div class="pn" id="n18-r0" role="region" aria-labelledby="n18-b0"><div><p>Orders inside Nairobi arrive in one to two working days. Orders to other towns take three to five working days. We text you a tracking link as soon as your parcel leaves our shop.</p></div></div>
+      </div>
+      <div class="it">
+        <h3><button type="button" class="hd" id="n18-b1" aria-expanded="false" aria-controls="n18-r1"><span>Can I return an item?</span><svg class="i ch" aria-hidden="true"><use href="#i-cd"></use></svg></button></h3>
+        <div class="pn" id="n18-r1" role="region" aria-labelledby="n18-b1" inert=""><div><p>Yes. You have 14 days from the day it arrives to send an item back, as long as it is unused and in its box. We refund the money to your PocketPay within three days of getting it.</p></div></div>
+      </div>
+      <div class="it">
+        <h3><button type="button" class="hd" id="n18-b2" aria-expanded="false" aria-controls="n18-r2"><span>Do you deliver outside Nairobi?</span><svg class="i ch" aria-hidden="true"><use href="#i-cd"></use></svg></button></h3>
+        <div class="pn" id="n18-r2" role="region" aria-labelledby="n18-b2" inert=""><div><p>We deliver to Mombasa, Kisumu, Nakuru, Eldoret and most other towns in Kenya. Delivery costs KSh 350 in Nairobi and KSh 600 anywhere else. Orders over KSh 5,000 ship free.</p></div></div>
+      </div>
+      <div class="it">
+        <h3><button type="button" class="hd" id="n18-b3" aria-expanded="false" aria-controls="n18-r3"><span>How do I pay with PocketPay?</span><svg class="i ch" aria-hidden="true"><use href="#i-cd"></use></svg></button></h3>
+        <div class="pn" id="n18-r3" role="region" aria-labelledby="n18-b3" inert=""><div><p>At checkout, choose PocketPay and type your phone number. You get a prompt on your phone: enter your PIN to pay. Your order is confirmed in a few seconds.</p></div></div>
+      </div>
+      <div class="it">
+        <h3><button type="button" class="hd" id="n18-b4" aria-expanded="false" aria-controls="n18-r4"><span>Can I change my order?</span><svg class="i ch" aria-hidden="true"><use href="#i-cd"></use></svg></button></h3>
+        <div class="pn" id="n18-r4" role="region" aria-labelledby="n18-b4" inert=""><div><p>You can change the size, colour or address until we pack it, which is usually within two hours. Open your order and press Edit. After that, call us on 0700 123 456 and we will try to help.</p></div></div>
+      </div>
+    </div>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0014">
+(function () {
+  "use strict";
+  var box = document.getElementById("n18"); if (!box) return;
+  var EASE = "cubic-bezier(.22,1,.36,1)";
+  function spd() { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; }
+  function go(el, kf, ms, done) {
+    var s = spd(); if (!s || !el.animate) { if (done) done(); return null; }
+    var a = el.animate(kf, { duration: ms * (s < 1 ? .6 : 1), easing: EASE, fill: "both" });
+    a.onfinish = function () { if (done) done(); a.cancel(); }; return a;
+  }
+  var items = [].slice.call(box.querySelectorAll(".it")), one = document.getElementById("n18-one");
+  function setOpen(it, open) {
+    if (it.classList.contains("open") === open) return;
+    var pn = it.querySelector(".pn"), inn = pn.firstElementChild, b = it.querySelector(".hd");
+    var h0 = pn.offsetHeight;
+    if (it._a) { it._a.cancel(); it._b && it._b.cancel(); }
+    it.classList.toggle("open", open); b.setAttribute("aria-expanded", open ? "true" : "false"); pn.inert = !open;
+    var h1 = open ? pn.offsetHeight : 0;
+    it._a = go(pn, [{ height: h0 + "px" }, { height: h1 + "px" }], open ? 400 : 300, function () { it._a = it._b = null; });
+    it._b = go(inn, [{ opacity: open ? 0 : 1 }, { opacity: open ? 1 : 0 }], open ? 400 : 250);
+  }
+  items.forEach(function (it) {
+    it.querySelector(".hd").addEventListener("click", function () {
+      var open = !it.classList.contains("open");
+      if (open && one.checked) items.forEach(function (o) { if (o !== it) setOpen(o, false); });
+      setOpen(it, open);
+    });
+  });
+  one.addEventListener("change", function () {
+    if (!one.checked) return;
+    var first = null;
+    items.forEach(function (it) { if (it.classList.contains("open")) { if (!first) first = it; else setOpen(it, false); } });
+  });
+  box.addEventListener("keydown", function (e) {
+    var hs = items.map(function (it) { return it.querySelector(".hd"); }), i = hs.indexOf(document.activeElement);
+    if (i < 0) return;
+    var j = e.key === "ArrowDown" ? (i + 1) % hs.length : e.key === "ArrowUp" ? (i + hs.length - 1) % hs.length : e.key === "Home" ? 0 : e.key === "End" ? hs.length - 1 : -1;
+    if (j < 0) return; e.preventDefault(); hs[j].focus();
+  });
+})();
+</script>

@@ -1,4 +1,4 @@
-# The folder views (section 05)
+# The folder views (showcase section 20)
 
 > Part of the design system. Read `~/.claude/design/DESIGN.md` first; it says when to read this file.
 
@@ -23,7 +23,7 @@ nobody has to guess.
 
 **How it is built** (a working copy is section 20, *Folder views*, in
 `components/showcase/index.html`, `#repo`):
-- **The data** is a nested tree in `build.py`: `TREE` for the Explorer
+- **The data** is a nested tree in section `#repo` of the showcase: `TREE` for the Explorer
   (name, comment, children, and which folders start open) and `COLS` for
   the Columns (each entry has `children` and a `note`). `tree_html()` turns
   `TREE` into nested `<ul>`s. `COLS` goes into the page as `window.__COLS`.
@@ -32,17 +32,17 @@ nobody has to guess.
   `.cm` (comment), followed by `<ul class="kids" id="tkN" hidden>`. A file
   is a plain `<span class="row">` with `.fl` instead of `.fi`. A
   `.tag` can mark a folder "new" or "removing".
-- **The Explorer motion** (`page.js`, "folder explorer"): on click, flip
+- **The Explorer motion** (section `#repo`): on click, flip
   `aria-expanded`. With GSAP and motion on, close with `height → 0` over
   0.35 s `power2.inOut`, then set `hidden`. Open by clearing `hidden`, then
   `height 0 → auto` over 0.5 s `expo.out`. Clear the height after. The
   chevron turns 90° in CSS over 0.35 s. Without motion, just toggle
   `hidden`.
-- **The Columns** (`page.js`, "columns walk"): `renderCols(path)` draws
+- **The Columns** (section `#repo`): `renderCols(path)` draws
   three `role="listbox"` panes of `role="option"` buttons, one per depth,
   then a note pane with `aria-live="polite"`. A click cuts the path to that
   depth, adds the choice, redraws, and keeps focus on the same button.
-- **The styles** (`page.css`, "Folder explorer" and `.cols`): the Columns
+- **The styles** (section `#repo`, `.cols`): the Columns
   grid is `repeat(3, minmax(0,1fr)) minmax(0,1.3fr)`, the note pane is
   `--paper-sunk`, and the chosen option is `--accent` with white text.
   Below 1100 px the Columns become two by two.

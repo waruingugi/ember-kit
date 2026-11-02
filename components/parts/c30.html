@@ -1,0 +1,56 @@
+<!-- part c30 | part | group fields | A wall of photos, sliding as you scroll. | A wall of photos, sliding as you scroll. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A wall of photos, <em>sliding as you scroll.</em></h3>
+          <p class="kit-p">Scroll, and the rows slide past each other, every other row the other way.</p>
+          <section class="cs" id="c30">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Gallery wall</span></div>
+      <div class="fbody"><div class="gm" id="gm" aria-label="Gallery wall of sample tiles"><div class="gm-in" id="gmIn"></div><div class="gm-spot" id="gmSpot" aria-hidden="true"></div></div></div>
+    </div>
+</section>
+        </div>
+<script data-slot="0007" data-block="0001">
+  /* ---------------- 30 moving grid: rows follow page scroll and the pointer, never loop on their own ---------------- */
+  (function () {
+    var box = $("gm"), inner = $("gmIn"), spot = $("gmSpot");
+    var T = [["s", "sky"], ["t", "Any <em>text</em> works too"], ["s", "field"], ["s", "pier"], ["t", "Or your own <em>parts</em>"], ["s", "cloud"], ["t", "Drawings, <em>not photos</em>"], ["s", "sky"]];
+    var rows = [];
+    for (var r = 0; r < 4; r++) {
+      var row = document.createElement("div"); row.className = "gm-row";
+      var html = "";
+      for (var i = 0; i < 9; i++) {
+        var t = T[(i + r * 3) % T.length];
+        html += '<div class="gm-t' + ((i + r) % 2 ? " alt" : "") + '">' + (t[0] === "s" ? '<svg aria-hidden="true"><use href="#sc-' + t[1] + '"/></svg>' : "<p>" + t[1] + "</p>") + "</div>";
+      }
+      row.innerHTML = html; inner.appendChild(row); rows.push({ el: row, x: 0 });
+    }
+    var px = 0, tgtPx = 0, sx = 0, sy = 0, tsx = 0, tsy = 0, prog = 0, raf = 0, inside = false;
+    function measure() {
+      var b = box.getBoundingClientRect(), vh = window.innerHeight;
+      prog = clamp((vh - b.top) / (vh + b.height), 0, 1) - .5; // -0.5 .. 0.5 while it crosses the screen
+    }
+    function frame() {
+      var m = spd(), busy = false;
+      px += (tgtPx - px) * .1; sx += (tsx - sx) * .2; sy += (tsy - sy) * .2;
+      if (Math.abs(tgtPx - px) > .001 || Math.abs(tsx - sx) + Math.abs(tsy - sy) > .5) busy = true;
+      rows.forEach(function (r, i) {
+        var dir = i % 2 ? -1 : 1, x = dir * (prog * 260 + px * 60 * .5) * m;
+        r.el.style.transform = "translateX(" + x.toFixed(1) + "px)";
+      });
+      spot.style.transform = "translate(" + sx.toFixed(1) + "px," + sy.toFixed(1) + "px)";
+      raf = busy ? requestAnimationFrame(frame) : 0;
+    }
+    function kick() { if (!raf) raf = requestAnimationFrame(frame); }
+    var visible = false;
+    if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { visible = es[0].isIntersecting; if (visible) { measure(); kick(); } }).observe(box);
+    window.addEventListener("scroll", function () { if (visible && spd()) { measure(); kick(); } }, { passive: true });
+    box.addEventListener("pointermove", function (e) {
+      var b = box.getBoundingClientRect();
+      tsx = e.clientX - b.left; tsy = e.clientY - b.top;
+      if (!inside) { sx = tsx; sy = tsy; inside = true; }
+      tgtPx = spd() ? (e.clientX - b.left) / b.width - .5 : 0; spot.style.opacity = 1; kick();
+    });
+    box.addEventListener("pointerleave", function () { inside = false; tgtPx = 0; spot.style.opacity = 0; kick(); });
+    spot.style.opacity = 0; measure(); frame();
+  })();
+</script>

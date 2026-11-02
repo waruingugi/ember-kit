@@ -19,7 +19,10 @@ Node 18 or newer (22.15 works). Python 3.10 or newer (on a Mac, Homebrew's
 `/opt/homebrew/bin/python3`; macOS's own `/usr/bin/python3` is 3.9, too
 old). git.
 
-## 3. The rule, the profile and our two skills
+The match check (`scripts/match.mjs`, `singles.mjs`) needs its own small install, once:
+`cd scripts && npm install && npx playwright install chromium-headless-shell`.
+
+## 3. The rule, the profile and the bundled skills
 
 ```bash
 D=~/.claude/design/claude
@@ -28,6 +31,11 @@ cp $D/rules/design.md                 ~/.claude/rules/design.md
 cp $D/diagram-design/ember.md         ~/.diagram-design/profiles/ember.md
 cp -R $D/skills/craft                 ~/.claude/skills/
 cp -R $D/skills/motion-ecosystem      ~/.claude/skills/
+cp -R $D/skills/hairline-create       ~/.claude/skills/
+cp -R $D/skills/beui                  ~/.claude/skills/
+cp -R $D/skills/shadcn                ~/.claude/skills/
+cp -R $D/skills/hallmark              ~/tools/hallmark   # checker only (tools/hallmark.md)
+cp -R $D/skills/motion                ~/.claude/skills/
 ```
 
 The rule makes Claude Code read `DESIGN.md` before any design work. It
@@ -41,7 +49,6 @@ you install it, and never run its install scripts.
 ```bash
 K=~/.claude/skills
 c() { git clone https://github.com/$1 ~/tools/$2 && git -C ~/tools/$2 checkout $3; }
-c lucasmarkes/hairline            hairline            37d2e78dcb333ab30c3338e28ed4a690364ea014
 c wheresryan22/anatomy            anatomy             1482e8469b0a9e0d8cc18ea2740a01423d29ae80
 c ibelick/ui-skills               ui-skills           d036a68
 c greensock/gsap-skills           gsap-skills         aed9cfd3277740755f6bfc1155c7aa645403b760
@@ -51,7 +58,6 @@ c LottieFiles/motion-design-skill motion-design-skill f9a8a041b85185ee4881b3471d
 c zanwei/design-dna               design-dna          593e39bc9e3652734653bd75544a333d7d43615e
 c kylezantos/design-motion-principles design-motion-principles 4a9ca879f24a361f4dca4174fe2da0f67b5ddee3
 c tt-a1i/archify                  archify             v3.2.0
-cp -R ~/tools/hairline/skills/hairline-create $K/
 cp -R ~/tools/anatomy $K/anatomy && rm -rf $K/anatomy/.git
 # from ~/tools/ui-skills, copy these four skill folders into $K:
 #   fixing-accessibility  fixing-metadata  fixing-motion-performance  improve-ui

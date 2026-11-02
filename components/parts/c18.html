@@ -1,0 +1,65 @@
+<!-- part c18 | part | group tables | Pick files, act on all at once. | Pick files, act on all at once. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Pick files, <em>act on all at once.</em></h3>
+          <p class="kit-p">Tick a few. A bar slides up with what you can do to all of them.</p>
+          <section class="cs" id="c18">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Files</span></div>
+      <div class="fbody">
+        <div class="sb" id="sb"><div class="sb-grid" id="sbGrid"></div><div id="sbBarWrap"></div></div>
+        <p class="note" id="sbNote" aria-live="polite" style="margin-top:0"></p>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0015">
+  /* ---------------- 18 selection basket ---------------- */
+  (function () {
+    var F = [["Q3 report.pdf", "2.1 MB", "file"], ["Launch photo.jpg", "4.8 MB", "img"], ["Interview.mp3", "18 MB", "music"], ["Brand kit.zip", "36 MB", "zip"], ["Demo cut.mov", "120 MB", "film"], ["Pricing.csv", "40 KB", "list"], ["Script.md", "12 KB", "code"], ["Logo.svg", "8 KB", "img"]];
+    var grid = $("sbGrid"), wrap = $("sbBarWrap"), note = $("sbNote"), bar = null;
+    function paint() {
+      grid.innerHTML = F.map(function (f, i) {
+        return '<label class="sb-tile"><input class="chk" type="checkbox" data-i="' + i + '" aria-label="' + esc(f[0]) + '">' + ic(f[2], "l") + "<b>" + esc(f[0]) + "</b><small>" + f[1] + "</small></label>";
+      }).join("");
+      sync();
+    }
+    function picked() { return [].slice.call(grid.querySelectorAll("input:checked")); }
+    function sync() {
+      var n = picked().length;
+      if (n && !bar) {
+        bar = document.createElement("div");
+        bar.className = "sb-bar" + (spd() ? " in" : ""); bar.setAttribute("role", "toolbar"); bar.setAttribute("aria-label", "Selected files");
+        bar.innerHTML = '<span class="sb-sel"><span class="cnt" id="sbN"></span><span>selected</span><button class="lk" type="button" data-a="all"></button></span>' +
+          '<button class="b sm q" type="button" data-a="Exported">' + ic("dl", "s") + "Export</button>" +
+          '<button class="b sm q" type="button" data-a="Moved">' + ic("folder", "s") + "Move</button>" +
+          '<button class="b sm q" type="button" data-a="Shared">' + ic("share", "s") + "Share</button>" +
+          '<button class="b sm q danger" type="button" data-a="del">' + ic("trash", "s") + "Delete</button>" +
+          '<button class="ib" type="button" data-a="clear" aria-label="Clear selection">' + ic("x") + "</button>";
+        wrap.appendChild(bar);
+      } else if (!n && bar) {
+        var b = bar; bar = null;
+        if (spd()) { b.classList.remove("in"); b.classList.add("out"); setTimeout(function () { b.remove(); }, 200); } else b.remove();
+      }
+      if (bar) {
+        $("sbN").textContent = n;
+        bar.querySelector('[data-a="all"]').textContent = n === F.length ? "None" : "All (" + F.length + ")";
+      }
+    }
+    grid.addEventListener("change", sync);
+    wrap.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-a]"); if (!b) return;
+      var a = b.dataset.a, p = picked();
+      if (a === "all") { var on = p.length !== F.length; grid.querySelectorAll("input").forEach(function (x) { x.checked = on; }); }
+      else if (a === "clear") grid.querySelectorAll("input").forEach(function (x) { x.checked = false; });
+      else if (a === "del") {
+        var gone = p.map(function (x) { return +x.dataset.i; });
+        F = F.filter(function (f, i) { return gone.indexOf(i) < 0; });
+        note.textContent = "Deleted " + gone.length + (gone.length === 1 ? " file." : " files.") + " This is a demo.";
+        paint(); return;
+      } else { note.textContent = a + " " + p.length + (p.length === 1 ? " file" : " files") + ". This is a demo."; grid.querySelectorAll("input").forEach(function (x) { x.checked = false; }); }
+      sync();
+    });
+    grid.addEventListener("keydown", function (e) { if (e.key === "Escape" && picked().length) { grid.querySelectorAll("input").forEach(function (x) { x.checked = false; }); sync(); } });
+    paint();
+  })();
+</script>

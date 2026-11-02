@@ -1,0 +1,81 @@
+<!-- part code | pattern | Code changes | See what changed, at a glance. -->
+<section class="sec" id="code">
+        <div class="sec-head">
+          <span class="ghost" aria-hidden="true">19</span>
+          <p class="eyebrow" data-reveal=""><b>19</b> Code changes</p>
+          <h2 class="display" data-reveal="" style="--i:1">See what changed, <em>at a glance.</em></h2>
+          <p class="lead" data-reveal="" style="--i:2">When we share code, you should not have to guess what is new. Green lines were added and red lines were removed. The letter beside each file name tells you what happened to the whole file.</p>
+        </div>
+        <div class="code-side">
+          <div class="code-win" data-reveal="">
+            <div class="code-tabs" role="tablist" aria-label="Changed files">
+              <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <button class="tab" role="tab" aria-selected="true" aria-controls="p-mod" id="t-mod"><span class="st st-M">M</span><span class="nm">reading.ts</span></button>
+              <button class="tab" role="tab" aria-selected="false" aria-controls="p-add" id="t-add" tabindex="-1"><span class="st st-A">A</span><span class="nm">wind.py</span></button>
+              <button class="tab is-del" role="tab" aria-selected="false" aria-controls="p-del" id="t-del" tabindex="-1"><span class="st st-D">D</span><span class="nm">tracker_poll.php</span></button>
+              <button class="tab" role="tab" aria-selected="false" aria-controls="p-ren" id="t-ren" tabindex="-1"><span class="st st-R">R</span><span class="nm">cells.ts</span></button>
+              <span class="spacer"></span>
+              <button class="copy-btn" data-copy="" aria-label="Copy the new version of this file"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8.5" height="8.5" rx="2" stroke="currentColor" stroke-width="1.4"></rect><path d="M11 5V4a1.5 1.5 0 0 0-1.5-1.5h-5A1.5 1.5 0 0 0 3 4v5.5A1.5 1.5 0 0 0 4.5 11H5" stroke="currentColor" stroke-width="1.4"></path></svg><span>Copy</span></button>
+            </div>
+
+            <div class="code-panel is-active" role="tabpanel" id="p-mod" aria-labelledby="t-mod">
+              <div class="file-bar"><span class="kind st-M">Edited</span><span class="path">services/station/reading.ts</span><span class="dstat"><span class="p">+3</span><span class="m">−2</span><span class="blocks"><i class="a"></i><i class="a"></i><i class="a"></i><i class="d"></i><i class="d"></i></span></span></div>
+<pre><code data-diff="" data-old="9" data-new="9">  <span class="k">export function</span> <span class="f">sendReading</span>(p: <span class="t">Reading</span>) {
+- <span class="c">// Old: one topic for everyone, no delivery promise.</span>
+-   client.<span class="f">publish</span>(<span class="s">"pings"</span>, <span class="t">JSON</span>.<span class="f">stringify</span>(p));
++   <span class="c">// Each station writes only to its own topic.</span>
++   <span class="k">const</span> topic = <span class="s">`stations.${p.stationId}.wind`</span>;
++   client.<span class="f">publish</span>(topic, <span class="t">JSON</span>.<span class="f">stringify</span>(p), { <span class="p">qos</span>: <span class="n">1</span> });
+  }</code></pre>
+            </div>
+            <div class="code-panel" role="tabpanel" id="p-add" aria-labelledby="t-add">
+              <div class="file-bar"><span class="kind st-A">New file</span><span class="path">services/api/wind.py</span><span class="dstat"><span class="p">+9</span><span class="blocks"><i class="a"></i><i class="a"></i><i class="a"></i><i class="a"></i><i class="a"></i></span></span></div>
+<pre><code data-diff="" data-old="0" data-new="1">+ <span class="k">from</span> fastapi <span class="k">import</span> <span class="t">FastAPI</span>, <span class="t">Query</span>
++
++ app = <span class="t">FastAPI</span>(title=<span class="s">"Weather API"</span>)
++
++ <span class="f">@app.get</span>(<span class="s">"/v1/wind/now"</span>)
++ <span class="k">async def</span> <span class="f">nearest</span>(lat: <span class="t">float</span>, lng: <span class="t">float</span>, limit: <span class="t">int</span> = <span class="t">Query</span>(<span class="n">5</span>, le=<span class="n">20</span>)):
++     <span class="c"># The index lives in memory, so this is fast.</span>
++     wind = index.<span class="f">nearest</span>(lat, lng, limit=limit)
++     <span class="k">return</span> {<span class="s">"count"</span>: <span class="f">len</span>(wind), <span class="s">"wind"</span>: wind}</code></pre>
+            </div>
+            <div class="code-panel" role="tabpanel" id="p-del" aria-labelledby="t-del">
+              <div class="file-bar"><span class="kind st-D">Deleted</span><span class="path"><s>legacy/tracker_poll.php</s></span><span class="dstat"><span class="m">−7</span><span class="blocks"><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i></span></span></div>
+<pre><code data-diff="" data-old="1" data-new="0">- <span class="c">// Asked the database for every station, every 3 seconds.</span>
+- <span class="c">// Slow at rush hour. Replaced by the shared log.</span>
+- <span class="k">while</span> (<span class="k">true</span>) {
+-   $stations = $db-&gt;<span class="f">query</span>(<span class="s">"SELECT * FROM stations"</span>);
+-   <span class="f">broadcast</span>($stations);
+-   <span class="f">sleep</span>(<span class="n">3</span>);
+- }</code></pre>
+            </div>
+            <div class="code-panel" role="tabpanel" id="p-ren" aria-labelledby="t-ren">
+              <div class="file-bar"><span class="kind st-R">Moved</span><span class="path"><s>geo/cells.ts</s> → packages/geo/cells.ts</span><span class="dstat"><span class="p">+1</span><span class="m">−1</span><span class="blocks"><i class="a"></i><i class="d"></i><i></i><i></i><i></i></span></span></div>
+<pre><code data-diff="" data-old="1" data-new="1">@ <span>File moved so every service can share it.</span>
+- <span class="k">import</span> { <span class="t">Cell</span> } <span class="k">from</span> <span class="s">"./types"</span>;
++ <span class="k">import</span> { <span class="t">Cell</span> } <span class="k">from</span> <span class="s">"@app/types"</span>;
+
+  <span class="k">export function</span> <span class="f">cellOf</span>(lat: <span class="t">number</span>, lng: <span class="t">number</span>): <span class="t">Cell</span> {</code></pre>
+            </div>
+          </div>
+
+          <div style="display:grid;gap:20px">
+            <div class="card diff-legend" data-reveal="" style="--i:1">
+              <span class="mono-label">How to read a change</span>
+              <div class="row"><span class="st st-A">A</span><span><b>Added.</b> A brand-new file.</span></div>
+              <div class="row"><span class="st st-M">M</span><span><b>Edited.</b> Some lines changed inside the file.</span></div>
+              <div class="row"><span class="st st-D">D</span><span><b>Deleted.</b> The whole file is gone.</span></div>
+              <div class="row"><span class="st st-R">R</span><span><b>Moved.</b> The file has a new name or home.</span></div>
+            </div>
+            <div class="code-win term" data-reveal="" style="--i:2">
+              <div class="code-tabs"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="tab" aria-selected="true">terminal</span><span class="spacer"></span><button class="copy-btn" data-copy="" aria-label="Copy command"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8.5" height="8.5" rx="2" stroke="currentColor" stroke-width="1.4"></rect><path d="M11 5V4a1.5 1.5 0 0 0-1.5-1.5h-5A1.5 1.5 0 0 0 3 4v5.5A1.5 1.5 0 0 0 4.5 11H5" stroke="currentColor" stroke-width="1.4"></path></svg><span>Copy</span></button></div>
+              <div class="code-panel is-active"><pre><code data-plain=""><span class="c"># Make the shared log. Keep readings 48 hours.</span>
+<span class="prompt">$ </span><span class="f">nats</span> stream add WIND \
+    --subjects <span class="s">"stations.*.wind"</span> \
+    --max-age <span class="n">48h</span> --replicas <span class="n">3</span>
+<span class="ok">✓</span> Stream WIND created</code></pre></div>
+            </div>
+          </div>
+        </div>
+      </section>

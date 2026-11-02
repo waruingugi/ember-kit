@@ -1,0 +1,74 @@
+<!-- part c29 | part | group fields | Click the field, watch it ripple. | Click the field, watch it ripple. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Click the field, <em>watch it ripple.</em></h3>
+          <p class="kit-p">The dots fill in once. Move near them and they lean away. Click, and a ripple runs out.</p>
+          <section class="cs" id="c29">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Background grid</span></div>
+      <div class="fbody"><div class="dg" id="dg"><canvas id="dgCanvas" aria-hidden="true"></canvas><span class="label dg-hint">Move, then click</span></div></div>
+    </div>
+</section>
+        </div>
+<script data-slot="0007" data-block="0000">
+  /* ---------------- 29 dot grid: a spring per dot, pointer push, click ripple, one-time fill-in ---------------- */
+  (function () {
+    var box = $("dg"), cv = $("dgCanvas"), ctx = cv.getContext("2d");
+    var GAP = 23, R = 140, SHOCK = 320, K = .07, DAMP = .62; // DAMP low enough that dots don't overshoot home
+    var dots = [], p = null, raf = 0, w = 0, h = 0, intro = -1, t0 = 0, cx = 0, cy = 0, maxD = 1;
+    var DIM = [146, 154, 158], ACC = [225, 74, 14];
+    function build() {
+      var dpr = Math.min(2, window.devicePixelRatio || 1);
+      w = box.clientWidth; h = box.clientHeight; cv.width = w * dpr; cv.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      dots = []; cx = w / 2; cy = h / 2; maxD = Math.hypot(cx, cy);
+      var ox = (w % GAP) / 2 + GAP / 2, oy = (h % GAP) / 2 + GAP / 2;
+      for (var y = oy; y < h; y += GAP) for (var x = ox; x < w; x += GAP) dots.push({ x: x, y: y, ox: 0, oy: 0, vx: 0, vy: 0, k: 0, d: Math.hypot(x - cx, y - cy) / maxD });
+      paint(performance.now());
+    }
+    function paint(now) {
+      ctx.clearRect(0, 0, w, h);
+      var it = intro < 0 ? 1 : 0;
+      for (var i = 0; i < dots.length; i++) {
+        var d = dots[i], a = 1, s = 1;
+        if (intro >= 0) { var q = clamp((now - t0 - d.d * 500) / 700, 0, 1); q = 1 - Math.pow(1 - q, 3); a = q; s = .6 + .4 * q; }
+        else if (intro === -2) { a = 0; }
+        var k = clamp(d.k, 0, 1);
+        ctx.globalAlpha = a * (.55 + .45 * k);
+        ctx.fillStyle = "rgb(" + Math.round(DIM[0] + (ACC[0] - DIM[0]) * k) + "," + Math.round(DIM[1] + (ACC[1] - DIM[1]) * k) + "," + Math.round(DIM[2] + (ACC[2] - DIM[2]) * k) + ")";
+        ctx.beginPath(); ctx.arc(d.x + d.ox, d.y + d.oy, 2.5 * s * (1 + .3 * k), 0, 6.2832); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      return it;
+    }
+    function step(now) {
+      var busy = false, m = spd();
+      for (var i = 0; i < dots.length; i++) {
+        var d = dots[i], tx = 0, ty = 0, tk = 0;
+        if (p) {
+          var dx = d.x - p.x, dy = d.y - p.y, dist = Math.sqrt(dx * dx + dy * dy) || 1;
+          if (dist < R) { var f = 1 - dist / R; tx = dx / dist * f * 12 * m; ty = dy / dist * f * 12 * m; tk = f; }
+        }
+        d.vx = (d.vx + (tx - d.ox) * K) * DAMP; d.vy = (d.vy + (ty - d.oy) * K) * DAMP;
+        d.ox += d.vx; d.oy += d.vy; d.k += (tk - d.k) * .15;
+        if (Math.abs(d.vx) + Math.abs(d.vy) > .02 || Math.abs(tx - d.ox) + Math.abs(ty - d.oy) > .05 || Math.abs(tk - d.k) > .01) busy = true;
+      }
+      if (intro >= 0) { if (now - t0 > 1300) intro = -1; else busy = true; }
+      paint(now);
+      raf = busy ? requestAnimationFrame(step) : 0;
+    }
+    function kick() { if (!raf) raf = requestAnimationFrame(step); }
+    box.addEventListener("pointermove", function (e) { if (!spd()) return; var r = box.getBoundingClientRect(); p = { x: e.clientX - r.left, y: e.clientY - r.top }; kick(); });
+    box.addEventListener("pointerleave", function () { p = null; kick(); });
+    box.addEventListener("click", function (e) {
+      var m = spd(); if (!m) return;
+      var r = box.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+      dots.forEach(function (d) {
+        var dx = d.x - x, dy = d.y - y, dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        if (dist < SHOCK) { var f = 1 - dist / SHOCK; d.vx += dx / dist * f * 5 * m; d.vy += dy / dist * f * 5 * m; d.k = Math.max(d.k, f * .8); }
+      });
+      kick();
+    });
+    build();
+    if (spd()) { intro = -2; paint(0); onView(box, function () { if (!spd()) { intro = -1; paint(0); return; } intro = 0; t0 = performance.now(); kick(); }, .3); }
+    if ("ResizeObserver" in window) new ResizeObserver(function () { if (box.clientWidth !== w || box.clientHeight !== h) { build(); } }).observe(box);
+  })();
+</script>

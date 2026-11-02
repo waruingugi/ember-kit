@@ -1,0 +1,66 @@
+<!-- part n39 | part | group forms | A window that settles into place. | A window that settles into place. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A window that <em>settles into place.</em></h3>
+          <p class="kit-p">Press Invite teammate. The window lands with a small bounce and its lines follow. Escape, Cancel or the dark area closes it.</p>
+          <section class="cs kv4" id="n39">
+  <div class="frame"><div class="fbody">
+    <div class="stage pg">
+      <p class="tm">Team: 3 people</p>
+      <button class="b" type="button" id="n39-open" aria-haspopup="dialog" aria-expanded="false" aria-controls="n39-dlg"><svg class="i" aria-hidden="true"><use href="#i-user"></use></svg>Invite teammate</button>
+      <p class="note" id="n39-note" aria-live="polite"></p>
+      <div class="scrim" id="n39-scrim"></div>
+      <div class="dlg" id="n39-dlg" role="dialog" aria-modal="true" aria-labelledby="n39-h" inert="">
+        <button class="b q x" type="button" aria-label="Close" data-cancel=""><svg class="i" aria-hidden="true"><use href="#i-x"></use></svg></button>
+        <h4 id="n39-h">Invite a teammate</h4>
+        <p class="sub">They get an SMS and an email with a link.</p>
+        <div class="f"><label for="n39-e">Email</label><input class="in" id="n39-e" type="email" autocomplete="off" placeholder="brian@example.com" aria-describedby="n39-err"><p class="err" id="n39-err" aria-live="polite"></p></div>
+        <div class="f"><span class="lb" id="n39-rl">Role</span><div class="seg" role="radiogroup" aria-labelledby="n39-rl"><button type="button" role="radio" aria-checked="true" tabindex="0">Cashier</button><button type="button" role="radio" aria-checked="false" tabindex="-1">Stock</button><button type="button" role="radio" aria-checked="false" tabindex="-1">Manager</button></div></div>
+        <div class="act"><button class="b q" type="button" data-cancel="">Cancel</button><button class="b pri" type="button" id="n39-send">Send invite</button></div>
+      </div>
+    </div>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0036">
+(function () {
+  "use strict";
+  var box = document.getElementById("n39"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  var TICK = '<svg class="tk" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"/><path d="M6.6 11.4 9.6 14.3l5.8-6.4"/></svg>';
+  var tr = $("#n39-open"), dlg = $("#n39-dlg"), sc = $("#n39-scrim"), inp = $("#n39-e"), err = $("#n39-err"), note = $("#n39-note"), open = false;
+  var rs = $$('[role="radio"]', dlg);
+  function set(v) {
+    if (v === open) return; open = v;
+    dlg.classList.toggle("on", v); sc.classList.toggle("on", v); dlg.inert = !v; tr.setAttribute("aria-expanded", String(v));
+    if (v) setTimeout(function () { inp.focus({ preventScroll: true }); }, 30);
+    else { err.textContent = ""; inp.removeAttribute("aria-invalid"); tr.focus({ preventScroll: true }); }
+  }
+  tr.addEventListener("click", function () { set(true); });
+  sc.addEventListener("click", function () { set(false); });
+  $$("[data-cancel]", dlg).forEach(function (b) { b.addEventListener("click", function () { set(false); }); });
+  dlg.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") { e.stopPropagation(); set(false); return; }
+    if (e.key !== "Tab") return;
+    var f = $$("button, input", dlg).filter(function (x) { return x.tabIndex >= 0 && x.offsetParent !== null; }), a = f[0], z = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+  });
+  function pick(r, f) { rs.forEach(function (x) { x.setAttribute("aria-checked", String(x === r)); x.tabIndex = x === r ? 0 : -1; }); if (f) r.focus(); }
+  rs.forEach(function (r, i) {
+    r.addEventListener("click", function () { pick(r); });
+    r.addEventListener("keydown", function (e) { var d = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0; if (d) { e.preventDefault(); pick(rs[(i + d + rs.length) % rs.length], true); } });
+  });
+  function send() {
+    var v = inp.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { err.textContent = "Enter an email like brian@example.com."; inp.setAttribute("aria-invalid", "true"); inp.focus(); return; }
+    var role = $('[aria-checked="true"]', dlg).textContent.toLowerCase();
+    set(false); inp.value = "";
+    note.innerHTML = TICK; note.appendChild(document.createTextNode("Invite sent to " + v + " as " + role + "."));
+  }
+  $("#n39-send").addEventListener("click", send);
+  inp.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); send(); } });
+})();
+</script>

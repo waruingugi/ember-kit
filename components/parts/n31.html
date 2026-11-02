@@ -1,0 +1,35 @@
+<!-- part n31 | part | group forms | Switches that spring when you flip them. | Switches that spring when you flip them. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Switches that <em>spring when you flip them.</em></h3>
+          <p class="kit-p">Flip a switch. Hold it down and the knob squeezes; let go and it springs across. Tick the box to see the tick draw.</p>
+          <section class="cs kv4" id="n31">
+  <div class="frame"><div class="fbody">
+    <div class="stage"><div class="card">
+      <h3>Payment alerts</h3>
+      <div class="row"><span id="n31-l1">Email me each receipt</span><button class="sw" type="button" role="switch" aria-checked="true" aria-labelledby="n31-l1"><span class="th"></span></button></div>
+      <div class="row"><span id="n31-l2">SMS when a payment lands</span><button class="sw" type="button" role="switch" aria-checked="false" aria-labelledby="n31-l2"><span class="th"></span></button></div>
+      <div class="row"><span id="n31-l3">Weekly summary</span><button class="sw" type="button" role="switch" aria-checked="true" aria-labelledby="n31-l3"><span class="th"></span></button></div>
+      <div class="row cbr"><button class="cb" type="button" role="checkbox" aria-checked="false" aria-labelledby="n31-l4"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.8 8.3 6.7 11 12.2 5"></path></svg></button><span id="n31-l4">Also send them to my accountant</span></div>
+    </div></div>
+    <p class="note" id="n31-note" aria-live="polite">2 alerts on.</p>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0035">
+(function () {
+  "use strict";
+  var box = document.getElementById("n31"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  var note = $("#n31-note");
+  function count() { var n = $$('[role="switch"][aria-checked="true"]').length, c = $('[role="checkbox"]').getAttribute("aria-checked") === "true"; note.textContent = n + (n === 1 ? " alert on" : " alerts on") + (c ? ", copied to your accountant." : "."); }
+  $$('[role="switch"], [role="checkbox"]').forEach(function (b) {
+    b.addEventListener("click", function () { b.setAttribute("aria-checked", b.getAttribute("aria-checked") === "true" ? "false" : "true"); count(); });
+    var l = document.getElementById(b.getAttribute("aria-labelledby"));
+    if (l) l.addEventListener("click", function () { b.click(); b.focus(); });
+  });
+})();
+</script>

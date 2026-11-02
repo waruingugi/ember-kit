@@ -1,0 +1,40 @@
+<!-- part n07 | part | group charts | A live count where each digit rolls on its own. | A live count where each digit rolls on its own. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A live count where <em>each digit rolls on its own.</em></h3>
+          <p class="kit-p">Watch the visitor count. Only the digits that change will roll.</p>
+          <section class="cs kv4" id="n07">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="hd"><span class="live" aria-hidden="true"></span><span class="label">Visitors on the site now</span></div>
+    <div class="num" id="n07-num" role="img" aria-label="1,284 visitors"></div>
+    <div class="chg" id="n07-chg"></div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0010">
+(function () {
+  "use strict";
+  var box = document.getElementById("n07"); if (!box) return;
+  var spd = function () { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; };
+  var num = box.querySelector("#n07-num"), chg = box.querySelector("#n07-chg"), strips = [], value = 1284, vis = true, i, s = "";
+  for (i = 0; i < 10; i++) s += "<span>" + i + "</span>";
+  for (i = 0; i < 4; i++) {
+    var c = document.createElement("div"); c.className = "dg"; c.innerHTML = '<span class="st7" aria-hidden="true">' + s + "</span>"; strips.push(c.firstChild);
+    num.appendChild(c);
+    if (i === 0) { var cm = document.createElement("span"); cm.className = "cm"; cm.setAttribute("aria-hidden", "true"); cm.textContent = ","; num.appendChild(cm); }
+  }
+  function set(v, d) {
+    var t = String(v), sp = spd();
+    strips.forEach(function (el, k) { el.style.transitionDuration = sp === 0 ? "0s" : sp === .5 ? ".3s" : ""; el.style.transform = "translateY(" + (-t[k] * 10) + "%)"; });
+    num.setAttribute("aria-label", v.toLocaleString("en-US") + " visitors");
+    chg.textContent = d ? (d > 0 ? "+" : "−") + Math.abs(d) + " just now" : "";
+  }
+  set(value, 0);
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { vis = es[es.length - 1].isIntersecting; }).observe(box);
+  setInterval(function () {
+    if (!vis || document.hidden || spd() === 0) return;   // paused: off-screen, hidden tab or motion off
+    var d = 1 + Math.floor(Math.random() * 12), up = Math.random() < (value < 1284 ? .62 : .38);
+    d = up ? d : -d; value = Math.max(1100, Math.min(1500, value + d)); set(value, d);
+  }, 2500);
+})();
+</script>

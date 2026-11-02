@@ -1,0 +1,45 @@
+<!-- part c02 | part | group charts | Revenue, day by day. | Revenue, day by day. | needs pair:c01,c02 -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Revenue, <em>day by day.</em></h3>
+          <p class="kit-p">The line draws itself once. Pick 7D, 30D or 1Y and it reshapes. Point at a day to read it.</p>
+          <section class="cs" id="c02"><div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Revenue · sample data</span><span id="sRangeName">30 days</span></div>
+      <div class="fbody">
+        <div class="readout">
+          <div>
+            <p class="label">Revenue</p>
+            <p class="big" style="margin-top:10px"><span id="sNow">—</span></p>
+            <p class="delta" id="sDelta"></p>
+          </div>
+          <div class="range" role="group" aria-label="Time range" id="sRange">
+            <span class="mk" id="sMark" aria-hidden="true"></span>
+            <button type="button" data-r="7D" aria-pressed="false">7D</button>
+            <button type="button" data-r="30D" aria-pressed="true">30D</button>
+            <button type="button" data-r="1Y" aria-pressed="false">1Y</button>
+          </div>
+        </div>
+        <div class="wrap" id="sWrap" style="height:280px" data-hover="0">
+          <svg id="ssvg" role="img" tabindex="0" aria-label="Revenue chart">
+            <defs><clipPath id="sclip"><rect id="sClipRect" x="0" y="0" width="0"></rect></clipPath></defs>
+            <g class="grid" id="sGrid"></g>
+            <g clip-path="url(#sclip)">
+              <path id="sArea" fill="url(#fill)"></path>
+              <path id="sLine" class="ln"></path>
+            </g>
+            <circle id="sLead" class="lead-dot" r="3.5" cx="-20" cy="-20" opacity="0"></circle>
+            <g class="scrub">
+              <line id="sCross"></line>
+              <circle id="sDot" class="ring" r="4.5" cx="-20" cy="-20"></circle>
+            </g>
+            <rect id="sHit" x="0" y="0" fill="transparent" style="touch-action:pan-y"></rect>
+          </svg>
+          <div class="stip" id="sTip" aria-hidden="true"><p class="d" id="sTipD"></p><p class="v" id="sTipV"></p></div>
+        </div>
+        <details id="sTableView">
+          <summary>Show these numbers as a table</summary>
+          <table class="readings"><thead><tr><th scope="col">Day</th><th scope="col">Revenue</th></tr></thead><tbody id="sRows"></tbody></table>
+        </details>
+      </div>
+    </div>
+</section>
+        </div>

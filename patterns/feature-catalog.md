@@ -28,15 +28,15 @@ laid out the same way.
 - **The data is one list**, `FEATURES`, kept in the page's build script.
   Each feature is a dict: `name`, `who`, `when`, `module`, `does`, `steps`,
   `endpoints` (each with a flag for "Our proposal"), `events`, `caps`,
-  `tables`, `fails` and `proof`. `features()` in `build.py` turns each one
+  `tables`, `fails` and `proof`. One small function turns each one
   into a card. To add a feature, add a dict. Never hand-write a card.
-- **The styles** (`page.css`, `.feat`): the summary is a grid,
+- **The styles** (`.feat`): the summary is a grid,
   `44px minmax(0,1fr) auto`. The number is `--font-num` at 26 px in
   `--accent`. The `+` is a 28 px circle that turns 45° over 0.35 s when
   `[open]`. The open body is `minmax(0,1.2fr) minmax(0,1fr)`, padded 78 px
   on the left so it lines up under the title. Below 1100 px it becomes one
   column.
-- **The filters** (`page.js`, "feature filters"): each `.fbtn` is a toggle
+- **The filters**: each `.fbtn` is a toggle
   with `aria-pressed`. A card is hidden unless its `data-who` holds the
   chosen user. "Open all" flips every card's `open` and its own label.
   After any open, close or filter, call `ScrollTrigger.refresh()`, because

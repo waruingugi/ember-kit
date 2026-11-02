@@ -1,0 +1,70 @@
+<!-- part c10 | part | group forms | Three steps, one line that fills. | Three steps, one line that fills. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Three steps, <em>one line that fills.</em></h3>
+          <p class="kit-p">Go forward and back. Done steps fill orange, and the line fills behind you.</p>
+          <section class="cs" id="c10">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Create a workspace</span></div>
+      <div class="fbody">
+        <ol class="sx" id="sx" aria-label="Steps"></ol>
+        <div class="sx-panel" id="sxPanel" aria-live="polite"></div>
+        <div class="sx-nav"><button class="b" type="button" id="sxBack">Back</button><button class="b pri" type="button" id="sxNext">Next</button></div>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0007">
+  /* ---------------- 10 stepper ---------------- */
+  (function () {
+    var ol = $("sx"), panel = $("sxPanel"), back = $("sxBack"), next = $("sxNext");
+    var ST = [["Account", "Name and email"], ["Workspace", "Name and address"], ["Plan", "Pick a size"], ["Review", "Check and finish"]];
+    var cur = 0, plan = 1;
+    ol.innerHTML = '<li class="sx-ring" aria-hidden="true"></li>' + ST.map(function (s, i) {
+      return '<li><button class="sx-row" type="button" data-i="' + i + '"><span class="sx-ind"></span><span class="sx-lb"><span class="sx-t">' + s[0] + '</span><span class="sx-d">' + s[1] + "</span></span></button>" +
+        (i < ST.length - 1 ? '<span class="sx-ln" aria-hidden="true"><i></i></span>' : "") + "</li>";
+    }).join("");
+    var lis = [].slice.call(ol.querySelectorAll("li:not(.sx-ring)")), ring = ol.querySelector(".sx-ring");
+    var CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+    var P = [
+      function () { return "<h4>Your account</h4><p>Who is setting this up?</p><div class=\"row2\"><input class=\"in\" placeholder=\"Full name\" aria-label=\"Full name\" value=\"Maya Ortiz\"><input class=\"in\" placeholder=\"Email\" aria-label=\"Email\" value=\"maya@example.com\"></div>"; },
+      function () { return "<h4>Name the workspace</h4><p>People will see this name when you invite them.</p><div class=\"row2\"><input class=\"in\" aria-label=\"Workspace name\" value=\"Corner Studio\"><input class=\"in\" aria-label=\"Address\" value=\"corner-studio\"></div>"; },
+      function () { return "<h4>Pick a plan</h4><p>You can change it at any time.</p><div class=\"row2\">" + ["Starter · free", "Team · $24", "Business · $79"].map(function (p, i) { return '<button type="button" class="b" data-plan="' + i + '" aria-pressed="' + (i === plan) + '">' + p + "</button>"; }).join("") + "</div>"; },
+      function () { return "<h4>Ready to go</h4><p>Corner Studio, on the " + ["Starter", "Team", "Business"][plan] + " plan, owned by Maya Ortiz. Press Finish to make it.</p>"; },
+      function () { return "<h4>Workspace made</h4><p>Corner Studio is ready. Invite your team next. This is a demo, so nothing was saved.</p>"; }
+    ];
+    function update(prev) {
+      lis.forEach(function (li, i) {
+        var s = i < cur ? "complete" : i === cur ? "current" : "upcoming", was = li.dataset.s;
+        li.dataset.s = s;
+        var ind = li.querySelector(".sx-ind"), row = li.querySelector(".sx-row");
+        if (s === "complete") { if (was !== "complete") { ind.innerHTML = CHECK; if (was && spd()) ind.querySelector("path").classList.add("draw"); } }
+        else ind.textContent = i + 1;
+        row.disabled = s !== "complete";
+        row.setAttribute("aria-label", ST[i][0] + ", " + (s === "complete" ? "done, go back to it" : s === "current" ? "current step" : "not started"));
+        if (s === "current") row.setAttribute("aria-current", "step"); else row.removeAttribute("aria-current");
+        var ln = li.querySelector(".sx-ln i"); if (ln) ln.classList.toggle("on", i < cur);
+      });
+      var tgt = lis[Math.min(cur, lis.length - 1)].querySelector(".sx-ind");
+      ring.style.transform = "translateX(" + (tgt.offsetLeft + tgt.offsetWidth / 2) + "px)";
+      ring.style.opacity = cur >= lis.length ? 0 : 1;
+      panel.innerHTML = '<div class="sx-in">' + P[cur]() + "</div>";
+      var k = spd();
+      if (prev != null && k) panel.firstChild.animate([{ opacity: 0, transform: "translateX(" + (cur > prev ? 24 : -24) * k + "px)" }, { opacity: 1, transform: "none" }], { duration: 180, easing: EASE });
+      back.disabled = cur === 0 || cur >= lis.length;
+      next.textContent = cur === lis.length - 1 ? "Finish" : cur >= lis.length ? "Start over" : "Next";
+    }
+    next.addEventListener("click", function () { var p = cur; cur = cur >= lis.length ? 0 : cur + 1; update(p); });
+    back.addEventListener("click", function () { var p = cur; cur = Math.max(0, cur - 1); update(p); });
+    ol.addEventListener("click", function (e) { var b = e.target.closest(".sx-row"); if (!b || b.disabled) return; var p = cur; cur = +b.dataset.i; update(p); });
+    panel.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-plan]"); if (!b) return;
+      plan = +b.dataset.plan;
+      panel.querySelectorAll("[data-plan]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+    });
+    ring.style.transition = "none"; update(); void ring.offsetWidth; ring.style.transition = "";
+    if ("ResizeObserver" in window) new ResizeObserver(function () {
+      var tgt = lis[Math.min(cur, lis.length - 1)].querySelector(".sx-ind");
+      ring.style.transform = "translateX(" + (tgt.offsetLeft + tgt.offsetWidth / 2) + "px)";
+    }).observe(ol);
+  })();
+</script>

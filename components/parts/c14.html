@@ -1,0 +1,28 @@
+<!-- part c14 | part | group forms | One big button for the last step. | One big button for the last step. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">One big button <em>for the last step.</em></h3>
+          <p class="kit-p">Point at it and a light runs round the edge. Keep it for one final action per page.</p>
+          <section class="cs" id="c14">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Release</span></div>
+      <div class="fbody">
+        <div class="stage" style="min-height:160px">
+          <button class="b" type="button" id="ebCancel">Not yet</button>
+          <button class="eb" type="button" id="eb"><span class="eb-beam" aria-hidden="true"></span><span class="eb-in"><svg class="i"><use href="#i-zap"></use></svg>Deploy to production</span></button>
+        </div>
+        <p class="note" id="ebNote" aria-live="polite"></p>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0011">
+  /* ---------------- 14 edge-lit button ---------------- */
+  (function () {
+    var note = $("ebNote"), t = 0;
+    $("eb").addEventListener("click", function () {
+      clearTimeout(t); note.innerHTML = '<span class="live" aria-hidden="true" style="margin-right:8px"></span>Deploying 1.8.0…';
+      t = setTimeout(function () { note.innerHTML = "✓ <b>1.8.0</b> is live. This is a demo; nothing was deployed."; }, 1400);
+    });
+    $("ebCancel").addEventListener("click", function () { clearTimeout(t); note.textContent = "Nothing was deployed."; });
+  })();
+</script>

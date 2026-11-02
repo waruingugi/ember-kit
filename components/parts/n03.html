@@ -1,0 +1,86 @@
+<!-- part n03 | part | group charts | Where the month's money went, in one ring. | Where the month's money went, in one ring. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Where the month's money <em>went, in one ring.</em></h3>
+          <p class="kit-p">Hover or tab to a slice or a row in the list. The middle tells you more.</p>
+          <section class="cs kv4" id="n03">
+  <div class="frame"><div class="fbody"><div class="row">
+    <div class="dn">
+      <div class="ring" id="n03-ring">
+        <svg viewBox="0 0 200 200" role="group" aria-label="Spending by group, October 2026">
+          <defs><mask id="n03-m"><circle id="n03-mc" cx="100" cy="100" r="70" fill="none" stroke="#fff" stroke-width="40" pathLength="100" stroke-dasharray="100 100" stroke-dashoffset="0" transform="rotate(-90 100 100)"></circle></mask></defs>
+          <circle cx="100" cy="100" r="70" fill="none" stroke="var(--line)" stroke-width="22" opacity=".5"></circle>
+          <g id="n03-sl" mask="url(#n03-m)"></g>
+        </svg>
+        <div class="ctr" id="n03-ctr" aria-live="polite"></div>
+      </div>
+      <ul class="lg" id="n03-lg" aria-label="Spending groups"></ul>
+    </div>
+    <div class="gz" id="n03-gz">
+      <svg viewBox="0 0 200 108" role="img" aria-label="Savings goal, 62 percent reached">
+        <path d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="var(--line)" stroke-width="16" stroke-linecap="round" pathLength="100"></path>
+        <path id="n03-ga" d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="var(--accent)" stroke-width="16" stroke-linecap="round" pathLength="100" stroke-dasharray="100 100" stroke-dashoffset="38"></path>
+      </svg>
+      <div class="gv" id="n03-gv">62%</div>
+      <span class="label">Savings goal</span>
+      <p>KSh 93,000 of KSh 150,000</p>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0008">
+(function () {
+  "use strict";
+  var box = document.getElementById("n03"); if (!box) return;
+  var spd = function () { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; };
+  var EASE = "cubic-bezier(.22,1,.36,1)";
+  var DATA = [["Rent", 45000, .85], ["Food", 22000, .6], ["Transport", 9500, .4], ["Bills", 7800, .24], ["Savings", 15000, 0]];
+  var total = DATA.reduce(function (s, d) { return s + d[1]; }, 0);
+  function money(v) { return "<small>KSh</small>" + v.toLocaleString("en-US"); }
+  var NS = "http://www.w3.org/2000/svg", sl = box.querySelector("#n03-sl"), lg = box.querySelector("#n03-lg"), ctr = box.querySelector("#n03-ctr"), ring = box.querySelector("#n03-ring");
+  var slices = [], rows = [], start = 0;
+  function fill(i) { return i === 4 ? "var(--accent)" : "rgb(var(--ink-rgb) / " + DATA[i][2] + ")"; }
+  function rest() { ctr.innerHTML = '<span class="label">Total spent</span><span class="am">' + money(total) + '</span><span class="dn-mo">October 2026</span>'; }
+  function act(i) {
+    ring.classList.toggle("act", i !== null);
+    slices.forEach(function (s, j) { s.classList.toggle("on", j === i); rows[j].classList.toggle("on", j === i); });
+    if (i === null) rest();
+    else ctr.innerHTML = '<span class="label">' + DATA[i][0] + '</span><span class="am">' + money(DATA[i][1]) + '</span><span class="dn-mo">' + (DATA[i][1] / total * 100).toFixed(1) + '% of the month</span>';
+    if (spd()) ctr.animate([{ opacity: .3 }, { opacity: 1 }], { duration: 200, easing: EASE });
+  }
+  DATA.forEach(function (d, i) {
+    var pct = d[1] / total * 100, c = document.createElementNS(NS, "circle");
+    c.setAttribute("class", "sl"); c.setAttribute("cx", 100); c.setAttribute("cy", 100); c.setAttribute("r", 70); c.setAttribute("pathLength", 100);
+    c.setAttribute("stroke-dasharray", (pct - .8) + " " + (100 - pct + .8)); c.setAttribute("stroke-dashoffset", -(start + .4));
+    c.setAttribute("transform", "rotate(-90 100 100)"); c.style.stroke = fill(i);
+    c.setAttribute("tabindex", 0); c.setAttribute("role", "img"); c.setAttribute("aria-label", d[0] + ", KSh " + d[1].toLocaleString("en-US") + ", " + pct.toFixed(1) + " percent");
+    start += pct; sl.appendChild(c); slices.push(c);
+    var li = document.createElement("li"), b = document.createElement("button");
+    b.type = "button"; b.className = "lr";
+    b.innerHTML = '<i style="background:' + fill(i) + '"></i><span>' + d[0] + '</span><span class="n">' + d[1].toLocaleString("en-US") + '</span><span class="p">' + pct.toFixed(1) + '%</span>';
+    li.appendChild(b); lg.appendChild(li); rows.push(b);
+    [c, b].forEach(function (el) {
+      el.addEventListener("pointerenter", function () { act(i); }); el.addEventListener("focus", function () { act(i); });
+      el.addEventListener("pointerleave", function () { if (document.activeElement !== el) act(null); }); el.addEventListener("blur", function () { act(null); });
+    });
+  });
+  rest();
+
+  var mc = box.querySelector("#n03-mc"), ga = box.querySelector("#n03-ga"), gv = box.querySelector("#n03-gv");
+  function drawIn() {
+    var s = spd(), d = 1100 * (s === .5 ? .6 : 1);
+    mc.animate([{ strokeDashoffset: 100 }, { strokeDashoffset: 0 }], { duration: d, easing: EASE });
+    ga.animate([{ strokeDashoffset: 100 }, { strokeDashoffset: 38 }], { duration: d, easing: EASE });
+    var t0 = performance.now(), bz = function (t) { return 1 - Math.pow(1 - t, 4); };
+    (function f(n) { var t = Math.min(1, (n - t0) / d); gv.textContent = Math.round(62 * bz(t)) + "%"; if (t < 1) requestAnimationFrame(f); })(t0);
+  }
+  if ("IntersectionObserver" in window && spd()) {
+    mc.setAttribute("stroke-dashoffset", 100); ga.setAttribute("stroke-dashoffset", 100); gv.textContent = "0%";
+    var io = new IntersectionObserver(function (es) {
+      if (!es.some(function (e) { return e.isIntersecting; })) return; io.disconnect();
+      mc.setAttribute("stroke-dashoffset", 0); ga.setAttribute("stroke-dashoffset", 38); drawIn();
+    }, { threshold: .4 });
+    io.observe(box);
+  }
+})();
+</script>

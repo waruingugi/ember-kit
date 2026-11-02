@@ -1,0 +1,36 @@
+<!-- part n28 | part | group cards | Covered steps settle back. | Covered steps settle back. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Covered steps <em>settle back.</em></h3>
+          <p class="kit-p">Scroll slowly. The step being covered sinks a little and its words fade.</p>
+          <section class="cs kv4" id="n28">
+    <div class="spk spk-settle" aria-label="Starting a project, four steps"><section class="spk-p"><span class="spk-gh" aria-hidden="true">01</span><span class="spk-lb">Step 1 of 4</span><h4>Give it <em>a name</em></h4><p>Short and plain. The team will see it every day.</p><span class="spk-v">harbour-site</span></section><section class="spk-p"><span class="spk-gh" aria-hidden="true">02</span><span class="spk-lb">Step 2 of 4</span><h4>Invite <em>the team</em></h4><p>Three people to start. They get one email each.</p><span class="spk-v">3 invites sent</span></section><section class="spk-p"><span class="spk-gh" aria-hidden="true">03</span><span class="spk-lb">Step 3 of 4</span><h4>Connect <em>the code</em></h4><p>Point it at the repo. Every push builds a preview.</p><span class="spk-v">main · 41 commits</span></section><section class="spk-p"><span class="spk-gh" aria-hidden="true">04</span><span class="spk-lb">Step 4 of 4</span><h4>Ship the <em>first version</em></h4><p>One click puts the preview live for everyone.</p><span class="spk-v">Live · v1.0 · 2 min ago</span></section></div>
+</section>
+        </div>
+<script data-slot="0032">
+(function () {
+  "use strict";
+  var box = document.getElementById("n28"); if (!box) return;
+  /* A covered step sinks back as the next step reaches its line. Only transform and opacity move. */
+  var pages = Array.prototype.slice.call(box.querySelectorAll(".spk-p"));
+  function level() { var m = document.documentElement.dataset.motion || "lively"; return matchMedia("(prefers-reduced-motion: reduce)").matches ? "off" : m; }
+  function fade(p, o) { for (var k = 0; k < p.children.length; k++) if (!p.children[k].classList.contains("spk-gh")) p.children[k].style.opacity = o; }
+  function settle() {
+    var m = level(), d = m === "calm" ? 0.5 : 1;
+    for (var i = 0; i < pages.length - 1; i++) {
+      var p = pages[i];
+      if (m === "off") { p.style.transform = ""; fade(p, ""); continue; }
+      var gap = pages[i + 1].getBoundingClientRect().top - p.getBoundingClientRect().top;
+      var full = p.offsetHeight + 16;
+      var t = Math.min(1, Math.max(0, 1 - (gap - 14) / (full - 14)));
+      p.style.transform = t ? "scale(" + (1 - 0.05 * d * t).toFixed(4) + ")" : "";
+      fade(p, t ? (1 - 0.65 * d * t).toFixed(3) : "");
+    }
+  }
+  var busy = false;
+  function onScroll() { if (busy) return; busy = true; requestAnimationFrame(function () { busy = false; settle(); }); }
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  new MutationObserver(settle).observe(document.documentElement, { attributes: true, attributeFilter: ["data-motion"] });
+  settle();
+})();
+</script>

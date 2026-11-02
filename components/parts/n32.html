@@ -1,0 +1,49 @@
+<!-- part n32 | part | group nav | A menu that pops on a spring. | A menu that pops on a spring. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A menu that <em>pops on a spring.</em></h3>
+          <p class="kit-p">Open the ⋯ menu on the invoice. It springs out of the button; move with the arrows and the shaded row glides.</p>
+          <section class="cs kv4" id="n32">
+  <div class="frame"><div class="fbody">
+    <div class="stage pg">
+      <div class="rw">
+        <div><b>Invoice #4821</b><span>Amina Otieno · KSh 4,200</span></div>
+        <button class="b q tr" type="button" id="n32-tr" aria-label="Actions for invoice 4821" aria-haspopup="menu" aria-expanded="false" aria-controls="n32-menu"><svg class="i" viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="1.3" fill="currentColor"></circle><circle cx="8" cy="8" r="1.3" fill="currentColor"></circle><circle cx="12.5" cy="8" r="1.3" fill="currentColor"></circle></svg></button>
+        <div class="mn" id="n32-menu" role="menu" aria-label="Invoice actions"><span class="hl" aria-hidden="true"></span><button class="mi-b" type="button" role="menuitem" tabindex="-1" data-msg="Editing invoice #4821."><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 2.8l2.7 2.7L6 12.7H3.3V10zM9.2 4.1l2.7 2.7"></path></svg>Edit invoice<span class="k">E</span></button><button class="mi-b" type="button" role="menuitem" tabindex="-1" data-msg="Copied as invoice #4822."><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 5.5h7v7h-7zM3.5 10.5v-7h7"></path></svg>Duplicate<span class="k">D</span></button><button class="mi-b" type="button" role="menuitem" tabindex="-1" data-msg="invoice-4821.pdf is ready."><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v8M4.8 7.5 8 10.7l3.2-3.2M3 13.5h10"></path></svg>Download PDF<span class="k">P</span></button><button class="mi-b" type="button" role="menuitem" tabindex="-1" data-msg="Reminder sent to Amina by SMS."><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8 13.5 2.8 10.8 13.5 7.8 9.2zM7.8 9.2 13.5 2.8"></path></svg>Send reminder<span class="k">R</span></button><div class="sep" role="separator"></div><button class="mi-b del" type="button" role="menuitem" tabindex="-1" data-msg="Invoice #4821 deleted."><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 9h5.8l.6-9"></path></svg>Delete invoice</button></div>
+      </div>
+      <p class="note" id="n32-note" aria-live="polite">Nothing picked yet.</p>
+    </div>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0039">
+(function () {
+  "use strict";
+  var box = document.getElementById("n32"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  var tr = $("#n32-tr"), mn = $("#n32-menu"), hl = $(".hl", mn), note = $("#n32-note"), its = $$(".mi-b", mn), open = false, idx = -1;
+  function mark(i, focus) { idx = (i + its.length) % its.length; var el = its[idx]; hl.style.height = el.offsetHeight + "px"; hl.style.transform = "translateY(" + el.offsetTop + "px)"; hl.style.opacity = 1; if (focus) el.focus({ preventScroll: true }); }
+  function set(v, back) {
+    if (v === open) return; open = v; mn.classList.toggle("on", v); tr.setAttribute("aria-expanded", String(v));
+    if (v) setTimeout(function () { mark(0, true); }, 20);
+    else { hl.style.opacity = 0; idx = -1; if (back !== false) tr.focus({ preventScroll: true }); }
+  }
+  tr.addEventListener("click", function (e) { e.stopPropagation(); set(!open); });
+  tr.addEventListener("keydown", function (e) { if (e.key === "ArrowDown" && !open) { e.preventDefault(); set(true); } });
+  document.addEventListener("pointerdown", function (e) { if (open && !mn.contains(e.target) && !tr.contains(e.target)) set(false, false); });
+  mn.addEventListener("keydown", function (e) {
+    var k = e.key;
+    if (k === "Escape" || k === "Tab") { if (k === "Escape") e.preventDefault(); set(false, k === "Escape"); return; }
+    if (k === "ArrowDown") { e.preventDefault(); mark(idx + 1, true); } else if (k === "ArrowUp") { e.preventDefault(); mark(idx - 1, true); }
+    else if (k === "Home") { e.preventDefault(); mark(0, true); } else if (k === "End") { e.preventDefault(); mark(its.length - 1, true); }
+    else if (k.length === 1 && /\S/.test(k)) { for (var j = 1; j <= its.length; j++) { var c = its[(idx + j) % its.length]; if (c.textContent.trim().toLowerCase().indexOf(k.toLowerCase()) === 0) { mark((idx + j) % its.length, true); break; } } }
+  });
+  its.forEach(function (it, i) {
+    it.addEventListener("pointermove", function () { if (i !== idx) mark(i, true); });
+    it.addEventListener("click", function () { note.textContent = it.getAttribute("data-msg"); set(false); });
+  });
+})();
+</script>

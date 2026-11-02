@@ -1,0 +1,124 @@
+<!-- part n09 | part | group forms | A long list, found by typing. | A long list, found by typing. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A long list, <em>found by typing.</em></h3>
+          <p class="kit-p">Type a city or press the down arrow. Press Enter to pick.</p>
+          <section class="cs kv4" id="n09">
+  <div class="frame"><div class="fbody">
+    <div class="stage" style="flex-direction:column;align-items:stretch">
+      <div class="fld" id="n09-fld" style="align-self:center">
+        <label class="label" for="n09-in">Time zone</label>
+        <div class="inwrap">
+          <svg class="i" aria-hidden="true"><use href="#i-globe"></use></svg>
+          <input class="in" id="n09-in" type="text" role="combobox" aria-expanded="false" aria-controls="n09-list" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Search a city">
+          <button class="ib chv" type="button" tabindex="-1" aria-label="Show all time zones"><svg class="i" aria-hidden="true"><use href="#i-cd"></use></svg></button>
+        </div>
+        <div class="pop cbpop" id="n09-pop" hidden="">
+          <div class="sc" id="n09-sc">
+            <div class="hl" id="n09-hl" aria-hidden="true"></div>
+            <ul id="n09-list" role="listbox" aria-label="Time zones"></ul>
+            <p class="emp" id="n09-emp" hidden="">No zone matches</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="note" id="n09-note" aria-live="polite">No zone picked yet.</p>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0022">
+(function () {
+  "use strict";
+  var box = document.getElementById("n09"); if (!box) return;
+  var EASE = "cubic-bezier(.22,1,.36,1)";
+  var spd = function () { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; };
+  var $ = function (id) { return document.getElementById(id); };
+  var inp = $("n09-in"), pop = $("n09-pop"), sc = $("n09-sc"), ul = $("n09-list"), hl = $("n09-hl"), emp = $("n09-emp"), fld = $("n09-fld"), note = $("n09-note");
+  var Z = [["Nairobi","+3"],["Lagos","+1"],["London","+0"],["Accra","+0"],["Cairo","+2"],["Johannesburg","+2"],["Addis Ababa","+3"],["Dar es Salaam","+3"],["Kampala","+3"],["Kigali","+2"],["Casablanca","+1"],["Dakar","+0"],["Lisbon","+0"],["Paris","+1"],["Berlin","+1"],["Athens","+2"],["Istanbul","+3"],["Dubai","+4"],["Karachi","+5"],["Delhi","+5:30"],["Dhaka","+6"],["Bangkok","+7"],["Singapore","+8"],["Tokyo","+9"],["Sydney","+11"],["Auckland","+13"],["Honolulu","-10"],["Los Angeles","-7"],["Mexico City","-6"],["New York","-4"],["Sao Paulo","-3"]
+  ].map(function (z) { return { n: z[0], l: z[0] + " · GMT" + z[1] }; });
+  var cur = Z, act = -1, sel = null, dirty = false, isOpen = false, anim = null;
+
+  function glide(el, fn) {
+    var s = spd(), h0 = el.offsetHeight; fn(); if (!s) return;
+    var h1 = el.offsetHeight; if (h0 === h1) return;
+    el.style.overflow = "hidden";
+    var a = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: 220 * s, easing: EASE });
+    a.onfinish = a.oncancel = function () { el.style.overflow = ""; };
+  }
+  function render() {
+    var q = dirty ? inp.value.trim().toLowerCase() : "";
+    cur = Z.filter(function (z) { return !q || z.l.toLowerCase().indexOf(q) > -1; });
+    ul.innerHTML = "";
+    cur.forEach(function (z, i) {
+      var li = document.createElement("li"); li.id = "n09-o" + Z.indexOf(z); li.setAttribute("role", "option");
+      li.setAttribute("aria-selected", z === sel ? "true" : "false");
+      var span = document.createElement("span"), at = q ? z.l.toLowerCase().indexOf(q) : -1;
+      if (at > -1) {
+        span.appendChild(document.createTextNode(z.l.slice(0, at)));
+        var b = document.createElement("b"); b.textContent = z.l.slice(at, at + q.length); span.appendChild(b);
+        span.appendChild(document.createTextNode(z.l.slice(at + q.length)));
+      } else span.textContent = z.l;
+      li.appendChild(span);
+      if (z === sel) { li.insertAdjacentHTML("beforeend", '<svg class="i" aria-hidden="true"><use href="#i-check"/></svg>'); }
+      ul.appendChild(li);
+    });
+    emp.hidden = cur.length > 0;
+  }
+  function place(animate) {
+    var li = ul.children[act];
+    if (!li) { hl.style.opacity = 0; inp.removeAttribute("aria-activedescendant"); return; }
+    var s = spd();
+    hl.style.transition = animate && s ? "transform " + (.22 * s) + "s " + EASE + ", opacity .15s" : "none";
+    hl.style.opacity = 1; hl.style.transform = "translateY(" + li.offsetTop + "px)";
+    Array.prototype.forEach.call(ul.children, function (n, i) { n.classList.toggle("act", i === act); });
+    inp.setAttribute("aria-activedescendant", li.id);
+    var t = li.offsetTop, h = li.offsetHeight;
+    if (t < sc.scrollTop + 4) sc.scrollTop = t - 4; else if (t + h > sc.scrollTop + sc.clientHeight - 4) sc.scrollTop = t + h - sc.clientHeight + 4;
+  }
+  function open() {
+    if (isOpen) return; isOpen = true;
+    pop.hidden = false; fld.classList.add("open"); inp.setAttribute("aria-expanded", "true");
+    render(); act = sel && cur.indexOf(sel) > -1 && !dirty ? cur.indexOf(sel) : (cur.length ? 0 : -1); place(false);
+    var s = spd(); if (anim) anim.cancel();
+    if (s) anim = pop.animate([{ opacity: 0, transform: "scale(.96)" }, { opacity: 1, transform: "none" }], { duration: 200 * s, easing: EASE });
+  }
+  function close() {
+    if (!isOpen) return; isOpen = false;
+    fld.classList.remove("open"); inp.setAttribute("aria-expanded", "false"); inp.removeAttribute("aria-activedescendant");
+    dirty = false; inp.value = sel ? sel.l : "";
+    var s = spd(); if (anim) anim.cancel();
+    if (s) { anim = pop.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "scale(.96)" }], { duration: 140 * s, easing: EASE }); anim.onfinish = function () { if (!isOpen) pop.hidden = true; }; }
+    else pop.hidden = true;
+  }
+  function pick(i) {
+    var z = cur[i]; if (!z) return; sel = z; note.textContent = "Time zone set to " + z.l + "."; dirty = false; inp.value = z.l; close();
+  }
+  inp.addEventListener("focus", function () { open(); inp.select(); });
+  inp.addEventListener("click", function () { open(); });
+  inp.addEventListener("blur", close);
+  inp.addEventListener("input", function () {
+    dirty = true;
+    if (!isOpen) { open(); return; }
+    glide(sc, function () { render(); act = cur.length ? 0 : -1; }); place(false);
+  });
+  inp.addEventListener("keydown", function (e) {
+    var k = e.key;
+    if (k === "ArrowDown" || k === "ArrowUp") {
+      e.preventDefault(); if (!isOpen) { open(); return; }
+      if (!cur.length) return; act = (act + (k === "ArrowDown" ? 1 : -1) + cur.length) % cur.length; place(true);
+    } else if (k === "Home" || k === "End") {
+      if (isOpen && cur.length && e.ctrlKey) { e.preventDefault(); act = k === "Home" ? 0 : cur.length - 1; place(true); }
+    } else if (k === "Enter") { if (isOpen) { e.preventDefault(); pick(act); } }
+    else if (k === "Escape") { if (isOpen) { e.preventDefault(); close(); } }
+  });
+  pop.addEventListener("mousedown", function (e) { e.preventDefault(); });
+  ul.addEventListener("mousemove", function (e) {
+    var li = e.target.closest("li"); if (!li) return;
+    var i = Array.prototype.indexOf.call(ul.children, li); if (i !== act) { act = i; place(true); }
+  });
+  ul.addEventListener("click", function (e) { var li = e.target.closest("li"); if (li) pick(Array.prototype.indexOf.call(ul.children, li)); });
+  var chv = box.querySelector(".chv");
+  chv.addEventListener("mousedown", function (e) { e.preventDefault(); });
+  chv.addEventListener("click", function () { if (isOpen) close(); else { inp.focus(); open(); } });
+})();
+</script>

@@ -1,0 +1,44 @@
+<!-- part n42 | part | group status | A warning that checks again by itself. | A warning that checks again by itself. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A warning that <em>checks again by itself.</em></h3>
+          <p class="kit-p">When we can check a problem again, the banner counts down and checks for you, then says the good news and leaves. When we cannot, it only drops in, and the page glides up when you close it.</p>
+          <section class="cs kv4" id="n42">
+  <div class="frame"><div class="fbody">
+    <div class="top"><span class="label">Today's sales</span><button type="button" class="b sm" data-back="" hidden=""><svg class="i s" aria-hidden="true"><use href="#i-rot"></use></svg>Show the notices again</button></div>
+    <div class="slot" data-slot="a"><div class="bn" role="status" data-b=""><svg class="i" aria-hidden="true"><use href="#i-alert"></use></svg><div class="tx"><b>PocketPay is slow right now.</b><span>Payments may take up to 5 minutes to show.</span><span class="ac"><button class="b sm" type="button" data-chk="">Check now</button><span class="cd" aria-live="off"></span></span></div><button class="b q x" type="button" aria-label="Dismiss" data-x=""><svg class="i" aria-hidden="true"><use href="#i-x"></use></svg></button></div></div>
+    <div class="slot" data-slot="b"><div class="bn" role="status" data-b=""><svg class="i" aria-hidden="true"><use href="#i-cal"></use></svg><div class="tx"><b>We close at 2 pm on 24 December.</b><span>Orders after 2 pm go out on 27 December.</span></div><button class="b q x" type="button" aria-label="Dismiss" data-x=""><svg class="i" aria-hidden="true"><use href="#i-x"></use></svg></button></div></div>
+    <div class="ln"></div><div class="ln s"></div><div class="ln"></div>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0046">
+(function () {
+  "use strict";
+  var box = document.getElementById("n42"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function money(n) { return n.toLocaleString("en-KE"); }
+  function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  function count(el, from, to, fmt, ms) { if (!moving()) { el.textContent = fmt(to); return; } cancelAnimationFrame(el._an); var t0 = performance.now(); (function f(t) { var k = Math.min(1, (t - t0) / (ms || 320)); el.textContent = fmt(Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)))); if (k < 1) el._an = requestAnimationFrame(f); })(t0); }
+  var back = $("[data-back]"), A = $("[data-slot=a]"), B = $("[data-slot=b]"), t = null, n = 8, seen = false, MSG = A.querySelector(".tx").innerHTML;
+  function enter(slot) { var b = $("[data-b]", slot); slot.hidden = false; if (moving()) b.animate([{ transform: "translateY(-14px) scale(.97)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 490, easing: sp("bouncy") }); }
+  function leave(slot) { var b = $("[data-b]", slot), h0 = slot.offsetHeight;
+    function fin() { b.getAnimations().forEach(function (x) { x.cancel(); }); slot.hidden = true; if (A.hidden && B.hidden) { back.hidden = false; back.focus(); } else { var o = A.hidden ? B : A; $("[data-x]", o).focus(); } }
+    if (!moving()) return fin();
+    b.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "translateY(-8px)" }], { duration: 180, fill: "forwards" }).onfinish = function () { slot.animate([{ height: h0 + "px" }, { height: "0px" }], { duration: 320, easing: "cubic-bezier(.22,1,.36,1)" }).onfinish = fin; }; }
+  function tick() { var cd = $(".cd", A); if (!cd) return; cd.textContent = "Checking again in " + n + " s"; if (n-- <= 0) ok(); else t = setTimeout(tick, 1000); }
+  function ok() { clearTimeout(t); var b = $("[data-b]", A), tx = $(".tx", b); b.classList.add("ok"); tx.innerHTML = "<b>Payments are back.</b><span>Everything paid in the last 5 minutes now shows.</span>"; if (moving()) tx.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260 }); setTimeout(function () { if (!A.hidden) leave(A); }, 2600); }
+  function wire() { var c = $("[data-chk]", A); if (c) c.addEventListener("click", ok); }
+  function start() { n = 8; clearTimeout(t); if (seen) tick(); }
+  new IntersectionObserver(function (es) { if (es[0].isIntersecting && !seen) { seen = true; tick(); } }, { threshold: .6 }).observe(A);
+  $("[data-x]", A).addEventListener("click", function () { clearTimeout(t); leave(A); });
+  $("[data-x]", B).addEventListener("click", function () { leave(B); });
+  back.addEventListener("click", function () { back.hidden = true; var b = $("[data-b]", A); b.classList.remove("ok"); $(".tx", b).innerHTML = MSG; wire(); [A, B].forEach(function (s) { s.style.height = ""; enter(s); }); start(); $("[data-x]", A).focus(); });
+  wire();
+})();
+</script>

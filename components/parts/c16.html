@@ -1,0 +1,52 @@
+<!-- part c16 | part | group tables | Open an account to see its history. | Open an account to see its history. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Open an account <em>to see its history.</em></h3>
+          <p class="kit-p">Each row opens into details, recent activity and actions.</p>
+          <section class="cs" id="c16">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Accounts · sample data</span></div>
+      <div class="fbody" style="padding:clamp(10px,2vw,18px)">
+        <div class="xr-top"><span class="label">5 accounts</span><button class="lk" type="button" id="xrAll" style="font-size:13.5px">Open all</button></div>
+        <div class="xr" id="xr"></div>
+        <p class="note" id="xrNote" aria-live="polite"></p>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0013">
+  /* ---------------- 16 expandable rows ---------------- */
+  (function () {
+    var box = $("xr"), note = $("xrNote"), all = $("xrAll");
+    var A = [
+      { n: "Northwind", d: "northwind.io", s: ["ok", "Active"], mrr: 4200, seats: 18, own: "Maya Ortiz", plan: "Business", since: "Mar 2023", reg: "Europe" },
+      { n: "Lumen Labs", d: "lumen.dev", s: ["wait", "Pending"], mrr: 1150, seats: 6, own: "Sam Reid", plan: "Team", since: "Oct 2026", reg: "North America" },
+      { n: "Harbor & Co", d: "harbor.co", s: ["off", "Paused"], mrr: 860, seats: 4, own: "Priya Nair", plan: "Team", since: "Jan 2025", reg: "Europe" },
+      { n: "Fieldstone", d: "fieldstone.app", s: ["ok", "Active"], mrr: 7940, seats: 32, own: "Leo Brandt", plan: "Business", since: "Jul 2022", reg: "Asia Pacific" },
+      { n: "Quill Studio", d: "quill.studio", s: ["hot", "Churned"], mrr: 0, seats: 0, own: "Maya Ortiz", plan: "Starter", since: "May 2024", reg: "North America" }
+    ];
+    var initials = function (n) { return n.replace(/&/g, "").split(/\s+/).map(function (w) { return w[0]; }).join("").slice(0, 2).toUpperCase(); };
+    box.innerHTML = '<div class="xr-h xr-g" aria-hidden="true"><span>Account</span><span>Status</span><span class="r">MRR</span><span class="r">Seats</span><span></span></div>' + A.map(function (a, i) {
+      return '<div class="xr-item"><button class="xr-btn xr-g" type="button" aria-expanded="false" aria-controls="xrB' + i + '">' +
+        '<span class="xr-u"><span class="xr-av" aria-hidden="true">' + initials(a.n) + "</span><span><b>" + esc(a.n) + "</b><small>" + a.d + "</small></span></span>" +
+        '<span><span class="st ' + a.s[0] + '">' + a.s[1] + '</span></span><span class="xr-num r hide-s">$' + fmt(a.mrr) + '</span><span class="xr-dim r hide-s">' + a.seats + '</span><span class="xr-chev" aria-hidden="true">' + ic("cd") + "</span></button>" +
+        '<div class="xr-body" id="xrB' + i + '" hidden>' +
+        '<section class="xr-card"><span class="label">Details</span><div class="kv"><span>Owner</span><span>' + a.own + '</span></div><div class="kv"><span>Plan</span><span>' + a.plan + '</span></div><div class="kv"><span>Customer since</span><span>' + a.since + '</span></div><div class="kv"><span>Region</span><span>' + a.reg + "</span></div></section>" +
+        '<section class="xr-card"><span class="label">Recent activity</span><ul class="acty"><li><span>Paid invoice ' + (4100 + i * 13) + "<small>2 days ago</small></span></li><li><span>Added " + (1 + i % 3) + " seats<small>1 week ago</small></span></li><li><span>Changed billing email<small>3 weeks ago</small></span></li></ul></section>" +
+        '<section class="xr-card"><span class="label">Actions</span><div class="xr-acts"><button class="b sm" type="button" data-act="Opened ' + esc(a.n) + '">' + ic("ext", "s") + 'Open account</button><button class="b sm" type="button" data-act="Invoice sent to ' + esc(a.n) + '">' + ic("receipt", "s") + 'Send invoice</button><button class="b sm danger" type="button" data-act="' + esc(a.n) + ' would be paused">' + ic("clock", "s") + 'Pause account</button></div><p class="xr-ref">ID acc_' + (7310 + i * 97) + "</p></section></div></div>";
+    }).join("");
+    var btns = [].slice.call(box.querySelectorAll(".xr-btn"));
+    function set(b, open) {
+      b.setAttribute("aria-expanded", String(open));
+      b.parentNode.classList.toggle("open", open);
+      var body = $(b.getAttribute("aria-controls")); body.hidden = !open;
+      if (open && spd()) [].forEach.call(body.children, function (c, k) { c.animate([{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "none" }], { duration: 300, delay: k * 40, easing: EASE, fill: "backwards" }); });
+      var n = btns.filter(function (x) { return x.getAttribute("aria-expanded") === "true"; }).length;
+      all.textContent = n === btns.length ? "Close all" : "Open all";
+    }
+    box.addEventListener("click", function (e) {
+      var b = e.target.closest(".xr-btn"); if (b) { set(b, b.getAttribute("aria-expanded") !== "true"); return; }
+      var a = e.target.closest("[data-act]"); if (a) note.textContent = a.dataset.act + ". This is a demo.";
+    });
+    all.addEventListener("click", function () { var open = all.textContent === "Open all"; btns.forEach(function (b) { set(b, open); }); });
+  })();
+</script>

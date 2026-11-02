@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 # Open a page from this folder in Chrome, served on localhost.
-# Usage: bash ~/.claude/design/scripts/show-reference.sh [showcase|components|parts|<path>] [#section]
+# Usage: bash ~/.claude/design/scripts/show-reference.sh [showcase|components|<path>] [#section]
 #   bash ~/.claude/design/scripts/show-reference.sh                    -> the showcase (every part)
 #   bash ~/.claude/design/scripts/show-reference.sh showcase delivery  -> its story timeline
 #   bash ~/.claude/design/scripts/show-reference.sh components         -> every small part, in our tokens
-#   bash ~/.claude/design/scripts/show-reference.sh parts              -> the 29 interactive parts
 set -euo pipefail
 
 DIR="$HOME/.claude/design"
@@ -12,7 +11,6 @@ PORT=8766
 case "${1:-showcase}" in
   showcase)   PAGE="components/showcase/index.html" ;;
   components) PAGE="components/preview.html" ;;
-  parts)      PAGE="components/interactive.html" ;;
   *)          PAGE="$1" ;;
 esac
 HASH="${2:+#$2}"

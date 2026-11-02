@@ -1,0 +1,92 @@
+<!-- part n16 | part | group ai | An answer that writes itself in. | An answer that writes itself in. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">An answer that <em>writes itself in.</em></h3>
+          <p class="kit-p">Watch the answer stream in. Stop it, copy it, or ask for it again.</p>
+          <section class="cs kv4" id="n16">
+  <div class="frame"><div class="fbody">
+    <div class="chat">
+      <div class="me">How do I split a bill between four friends?</div>
+      <div class="ai">
+        <div class="av" aria-hidden="true"><svg class="i s"><use href="#i-zap"></use></svg></div>
+        <div class="body">
+          <div class="out" id="n16-out" aria-busy="false"></div>
+          <div class="ctl">
+            <div class="stopw off" id="n16-stopw"><button class="b sm" type="button" id="n16-stop"><svg class="i s" aria-hidden="true"><use href="#i-x"></use></svg>Stop</button></div>
+            <div class="acts off" id="n16-acts">
+              <button class="b sm q" type="button" id="n16-copy"><svg class="i s" aria-hidden="true"><use href="#i-copy"></use></svg><span>Copy</span></button>
+              <button class="b sm q" type="button" id="n16-good" aria-pressed="false"><svg class="i s" aria-hidden="true"><use href="#i-check"></use></svg>Good</button>
+              <button class="b sm q" type="button" id="n16-bad" aria-pressed="false"><svg class="i s" aria-hidden="true"><use href="#i-x"></use></svg>Not good</button>
+              <button class="b sm q" type="button" id="n16-regen"><svg class="i s" aria-hidden="true"><use href="#i-refresh"></use></svg>Regenerate</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="note" id="n16-note" aria-live="polite"></p>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0028">
+(function () {
+  "use strict";
+  var box = document.getElementById("n16"); if (!box) return;
+  var spd = function () { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; };
+  var $ = function (id) { return document.getElementById(id); };
+  var out = $("n16-out"), stopw = $("n16-stopw"), acts = $("n16-acts"), copyB = $("n16-copy"), good = $("n16-good"), bad = $("n16-bad"), note = $("n16-note");
+  var BL = [
+    { t: "p", items: ["Add up the whole bill, then divide it by four. Here is the quick way:".split(" ")] },
+    { t: "ol", items: [
+      "Add every cost: food, drinks and the ride home.".split(" "),
+      ["Divide the total by 4. A KSh 13,000 bill becomes", { k: "code", t: "KSh 3,250 each" }, "."].reduce(function (a, x) { return a.concat(typeof x === "string" && x !== "." ? x.split(" ") : [x]); }, []),
+      "Send the money by PocketPay before you leave the table.".split(" ")
+    ] },
+    { t: "p", items: [["If", "one", "person", "ordered", "much", "more,", "pay", "for", "that", "item", "on", "its", "own", "first.", { k: "chip", t: "[1] PocketPay help" }]] }
+  ];
+  var steps = []; BL.forEach(function (b, bi) { b.items.forEach(function (it, ii) { it.forEach(function (tok) { steps.push([bi, ii, tok]); }); }); });
+  var tok = 0, timer = null, caret = null, streaming = false;
+  function add(st, els) {
+    var bi = st[0], ii = st[1], t = st[2], b = BL[bi], el = els[bi];
+    if (!el) { el = els[bi] = document.createElement(b.t); out.appendChild(el); el.items = []; }
+    var tgt = el;
+    if (b.t === "ol") { tgt = el.items[ii]; if (!tgt) { tgt = el.items[ii] = document.createElement("li"); el.appendChild(tgt); } }
+    var first = !tgt.firstChild; if (!first && !(typeof t === "string" && /^[.,]$/.test(t))) tgt.appendChild(document.createTextNode(" "));
+    var n;
+    if (typeof t === "string") { n = document.createElement("span"); n.className = "w"; n.textContent = t; }
+    else if (t.k === "code") { n = document.createElement("code"); n.className = "w"; n.textContent = t.t; }
+    else { n = document.createElement("span"); n.className = "tag src w"; n.textContent = t.t; }
+    tgt.appendChild(n); if (caret) tgt.appendChild(caret);
+  }
+  function setUI(on) {
+    streaming = on; out.setAttribute("aria-busy", on); stopw.classList.toggle("off", !on); acts.classList.toggle("off", on);
+    stopw.inert = !on; acts.inert = on;
+  }
+  function done(stopped) {
+    clearTimeout(timer); if (caret) { caret.remove(); caret = null; } setUI(false);
+    note.textContent = stopped ? "Stopped. Here is what was written." : "Answer ready.";
+  }
+  function stream() {
+    tok++; var my = tok, s = spd(), i = 0, els = []; clearTimeout(timer);
+    out.innerHTML = ""; good.setAttribute("aria-pressed", "false"); bad.setAttribute("aria-pressed", "false"); note.textContent = "";
+    if (!s) { steps.forEach(function (st) { add(st, els); }); setUI(false); note.textContent = "Answer ready."; return; }
+    caret = document.createElement("span"); caret.className = "caret"; caret.setAttribute("aria-hidden", "true"); setUI(true);
+    (function next() {
+      if (my !== tok) return;
+      if (i >= steps.length) { done(false); return; }
+      add(steps[i++], els); timer = setTimeout(next, 35 * s);
+    })();
+  }
+  $("n16-stop").addEventListener("click", function () { tok++; done(true); });
+  $("n16-regen").addEventListener("click", stream);
+  function toggle(a, b) { var on = a.getAttribute("aria-pressed") !== "true"; a.setAttribute("aria-pressed", on); b.setAttribute("aria-pressed", "false"); note.textContent = on ? "Thanks for the feedback." : ""; }
+  good.addEventListener("click", function () { toggle(good, bad); });
+  bad.addEventListener("click", function () { toggle(bad, good); });
+  var ct = null;
+  copyB.addEventListener("click", function () {
+    var text = out.innerText;
+    try { navigator.clipboard.writeText(text).catch(function () {}); } catch (e) {}
+    var sp = copyB.querySelector("span"); sp.textContent = "Copied"; clearTimeout(ct); ct = setTimeout(function () { sp.textContent = "Copy"; }, 1500);
+  });
+  stream();
+})();
+</script>

@@ -1,0 +1,53 @@
+<!-- part c08 | part | group nav | A dock that grows under your finger. | A dock that grows under your finger. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A dock that <em>grows under your finger.</em></h3>
+          <p class="kit-p">Slide along the dock. Icons near your pointer grow a little.</p>
+          <section class="cs" id="c08">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">App dock</span></div>
+      <div class="fbody">
+        <div class="stage" style="align-items:flex-end;min-height:170px"><nav class="dk" id="dk" aria-label="App dock"></nav></div>
+        <p class="note" id="dkNote" aria-live="polite">Open: <b>Home</b></p>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0005">
+  /* ---------------- 08 floating dock ---------------- */
+  (function () {
+    var dk = $("dk"), note = $("dkNote");
+    var I = [["Home", "home"], ["Search", "search"], ["Messages", "msg", 1], ["Calendar", "cal"], ["Files", "folder"], ["Settings", "sliders"], null, ["Trash", "trash"]];
+    dk.innerHTML = I.map(function (it, i) {
+      if (!it) return '<span class="vr" style="height:30px;align-self:center" aria-hidden="true"></span>';
+      return '<button type="button" aria-label="' + it[0] + (it[2] ? ", 1 new" : "") + '"' + (i === 0 ? ' aria-current="page"' : "") + ">" + ic(it[1]) + (it[2] ? '<span class="badge" aria-hidden="true"></span>' : "") + '<span class="dk-tip" aria-hidden="true">' + it[0] + "</span></button>";
+    }).join("");
+    var btns = [].slice.call(dk.querySelectorAll("button")), sc = btns.map(function () { return 1; }), tg = sc.slice(), raf = 0;
+    function frame() {
+      var busy = false;
+      btns.forEach(function (b, i) {
+        sc[i] += (tg[i] - sc[i]) * .22;
+        if (Math.abs(tg[i] - sc[i]) > .002) busy = true; else sc[i] = tg[i];
+        b.style.transform = sc[i] === 1 ? "" : "scale(" + sc[i].toFixed(3) + ")";
+      });
+      raf = busy ? requestAnimationFrame(frame) : 0;
+    }
+    function kick() { if (!raf) raf = requestAnimationFrame(frame); }
+    dk.addEventListener("pointermove", function (e) {
+      var k = spd(); if (!k || e.pointerType !== "mouse") return;
+      var max = k < 1 ? 1.15 : 1.3, left = dk.getBoundingClientRect().left;
+      btns.forEach(function (b, i) {
+        var f = clamp(1 - Math.abs(e.clientX - (left + b.offsetLeft + b.offsetWidth / 2)) / 110, 0, 1);
+        tg[i] = 1 + (max - 1) * f * f * (3 - 2 * f);
+      });
+      kick();
+    });
+    dk.addEventListener("pointerleave", function () { tg = tg.map(function () { return 1; }); kick(); });
+    dk.addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b) return;
+      btns.forEach(function (x) { x.removeAttribute("aria-current"); });
+      b.setAttribute("aria-current", "page");
+      var badge = b.querySelector(".badge"); if (badge) { badge.remove(); b.setAttribute("aria-label", "Messages"); }
+      note.innerHTML = "Open: <b>" + b.querySelector(".dk-tip").textContent + "</b>";
+    });
+  })();
+</script>

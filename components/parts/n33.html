@@ -1,0 +1,41 @@
+<!-- part n33 | part | group nav | Actions that bloom around one button. | Actions that bloom around one button. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Actions that <em>bloom around one button.</em></h3>
+          <p class="kit-p">Press the round button. Five actions fan out one after another. Use the arrow keys, or click one. Good when a few actions sit around one thing.</p>
+          <section class="cs kv4" id="n33">
+  <div class="frame"><div class="fbody">
+    <div class="stage"><div class="bl" id="n33-bl">
+      <div class="ring" id="n33-ring" role="menu" aria-label="Invoice actions"><button class="pt" type="button" role="menuitem" tabindex="-1" data-msg="Editing invoice #4821." style="--a:-170deg;--j:0"><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 2.8l2.7 2.7L6 12.7H3.3V10zM9.2 4.1l2.7 2.7"></path></svg><span class="nm">Edit invoice</span></button><button class="pt" type="button" role="menuitem" tabindex="-1" data-msg="Copied as invoice #4822." style="--a:-130deg;--j:1"><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 5.5h7v7h-7zM3.5 10.5v-7h7"></path></svg><span class="nm">Duplicate</span></button><button class="pt" type="button" role="menuitem" tabindex="-1" data-msg="invoice-4821.pdf is ready." style="--a:-90deg;--j:2"><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v8M4.8 7.5 8 10.7l3.2-3.2M3 13.5h10"></path></svg><span class="nm">Download PDF</span></button><button class="pt" type="button" role="menuitem" tabindex="-1" data-msg="Reminder sent to Amina by SMS." style="--a:-50deg;--j:3"><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8 13.5 2.8 10.8 13.5 7.8 9.2zM7.8 9.2 13.5 2.8"></path></svg><span class="nm">Send reminder</span></button><button class="pt del" type="button" role="menuitem" tabindex="-1" data-msg="Invoice #4821 deleted." style="--a:-10deg;--j:4"><svg class="mi" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 9h5.8l.6-9"></path></svg><span class="nm">Delete</span></button></div>
+      <button class="b tr" type="button" id="n33-tr" aria-label="Actions for invoice 4821" aria-haspopup="menu" aria-expanded="false" aria-controls="n33-ring"><svg class="i" viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="1.3" fill="currentColor"></circle><circle cx="8" cy="8" r="1.3" fill="currentColor"></circle><circle cx="12.5" cy="8" r="1.3" fill="currentColor"></circle></svg></button>
+    </div></div>
+    <p class="note" id="n33-note" aria-live="polite">Invoice #4821 · Amina Otieno</p>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0040">
+(function () {
+  "use strict";
+  var box = document.getElementById("n33"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  var tr = $("#n33-tr"), bl = $("#n33-bl"), ring = $("#n33-ring"), note = $("#n33-note"), pts = $$(".pt", ring), open = false, idx = 0;
+  function focusAt(i) { idx = (i + pts.length) % pts.length; pts[idx].focus({ preventScroll: true }); }
+  function set(v, back) {
+    if (v === open) return; open = v; bl.classList.toggle("on", v); tr.setAttribute("aria-expanded", String(v));
+    if (v) setTimeout(function () { focusAt(0); }, 30); else if (back !== false) tr.focus({ preventScroll: true });
+  }
+  tr.addEventListener("click", function (e) { e.stopPropagation(); set(!open); });
+  document.addEventListener("pointerdown", function (e) { if (open && !bl.contains(e.target)) set(false, false); });
+  ring.addEventListener("keydown", function (e) {
+    var k = e.key;
+    if (k === "Escape") { e.preventDefault(); set(false); }
+    else if (k === "Tab") set(false, false);
+    else if (k === "ArrowRight" || k === "ArrowDown") { e.preventDefault(); focusAt(idx + 1); }
+    else if (k === "ArrowLeft" || k === "ArrowUp") { e.preventDefault(); focusAt(idx - 1); }
+  });
+  pts.forEach(function (p, i) { p.addEventListener("focus", function () { idx = i; }); p.addEventListener("click", function () { note.textContent = p.getAttribute("data-msg"); set(false); }); });
+})();
+</script>

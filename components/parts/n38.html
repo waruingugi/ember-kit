@@ -1,0 +1,46 @@
+<!-- part n38 | part | group status | Grey blocks that sweep while you wait. | Grey blocks that sweep while you wait. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Grey blocks that <em>sweep while you wait.</em></h3>
+          <p class="kit-p">Press Reload to watch the sweep for two seconds, then the orders rise in one by one. Press Show empty to see what a new shop sees.</p>
+          <section class="cs kv4" id="n38">
+  <div class="frame"><div class="fbody">
+    <div class="stage"><div class="crd">
+      <div class="hd"><b>Recent orders</b><div class="bs"><button class="b sm" type="button" id="n38-re"><svg class="i s" aria-hidden="true"><use href="#i-refresh"></use></svg>Reload</button><button class="b sm q" type="button" id="n38-em">Show empty</button></div></div>
+      <div class="bd" id="n38-body" aria-live="polite" aria-busy="false"></div>
+    </div></div>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0043">
+(function () {
+  "use strict";
+  var box = document.getElementById("n38"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  var ORDERS = [["AO","Amina Otieno","Sukuma, unga, oil","760"],["BK","Brian Kiprop","Rice 10 kg, sugar","2,350"],["WM","Wanjiru Mwangi","Bread, milk","180"],["OO","Otieno Ouma","Soap, flour, eggs","640"]];
+  var body = $("#n38-body"), t = null;
+  function esc(s) { var d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+  function loaded() {
+    body.setAttribute("aria-busy", "false");
+    body.innerHTML = ORDERS.map(function (o) { return '<div class="rw"><span class="av" aria-hidden="true">' + o[0] + '</span><div><b>' + esc(o[1]) + '</b><span class="w">' + esc(o[2]) + '</span></div><span class="n">KSh ' + o[3] + "</span></div>"; }).join("");
+    if (lv() === "off") return;
+    $$(".rw", body).forEach(function (r, i) { r.animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 420, delay: i * 70, easing: "cubic-bezier(.22,1,.36,1)", fill: "backwards" }); });
+  }
+  function load() {
+    clearTimeout(t); body.setAttribute("aria-busy", "true");
+    body.innerHTML = [1, 2, 3, 4].map(function () { return '<div class="sk" aria-hidden="true"><i style="width:36px;height:36px;border-radius:50%"></i><div style="flex:1;display:grid;gap:6px"><i style="width:55%;height:11px"></i><i style="width:75%;height:9px"></i></div><i style="width:64px;height:12px"></i></div>'; }).join("") + '<span class="vh">Loading orders</span>';
+    t = setTimeout(loaded, 2000);
+  }
+  function empty() {
+    clearTimeout(t); body.setAttribute("aria-busy", "false");
+    body.innerHTML = '<div class="em"><svg class="i" aria-hidden="true"><use href="#i-receipt"/></svg><b>No orders yet</b><p>When a customer pays, their order shows up here.</p><button class="b sm pri" type="button" data-new>Create an order</button></div>';
+    $("[data-new]", body).addEventListener("click", load);
+  }
+  $("#n38-re").addEventListener("click", load);
+  $("#n38-em").addEventListener("click", empty);
+  loaded();
+})();
+</script>

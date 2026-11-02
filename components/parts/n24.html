@@ -1,0 +1,91 @@
+<!-- part n24 | part | group status | Team faces that lift and say hello. | Team faces that lift and say hello. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Team faces that <em>lift and say hello.</em></h3>
+          <p class="kit-p">Move over a face to see the name. Press +3 to spread the whole team out.</p>
+          <section class="cs kv4" id="n24">
+  <div class="frame"><div class="fbody">
+    <div class="cardx">
+      <h4>Website redesign</h4>
+      <div class="meta"><span class="tag">In progress</span><span>Due 20 Nov 2026</span></div>
+      <div class="as" id="n24-as">
+        <div class="row" id="n24-row">
+          <button type="button" class="av a0" data-n="Wanjiru Kamau" data-r="Project lead" aria-label="Wanjiru Kamau, project lead">WK</button>
+          <button type="button" class="av a1" data-n="Brian Otieno" data-r="Designer" aria-label="Brian Otieno, designer">BO</button>
+          <button type="button" class="av a2" data-n="Amina Hassan" data-r="Front-end developer" aria-label="Amina Hassan, front-end developer">AH</button>
+          <button type="button" class="av a3" data-n="Peter Mwangi" data-r="Back-end developer" aria-label="Peter Mwangi, back-end developer">PM</button>
+          <button type="button" class="av a0" data-n="Grace Achieng" data-r="Copywriter" aria-label="Grace Achieng, copywriter">GA</button>
+          <button type="button" class="av a1" data-n="Daniel Kipchoge" data-r="Tester" aria-label="Daniel Kipchoge, tester">DK</button>
+          <button type="button" class="av a2 x" data-n="Faith Njeri" data-r="Researcher" aria-label="Faith Njeri, researcher">FN</button>
+          <button type="button" class="av a3 x" data-n="Samuel Odhiambo" data-r="Data analyst" aria-label="Samuel Odhiambo, data analyst">SO</button>
+          <button type="button" class="av a0 x" data-n="Lucy Wambui" data-r="Account manager" aria-label="Lucy Wambui, account manager">LW</button>
+          <button type="button" class="more" id="n24-more" aria-expanded="false" aria-label="Show 3 more people">+3</button>
+        </div>
+        <div class="tp" id="n24-tp" aria-hidden="true"><div class="tb"><b></b><span></span></div></div>
+      </div>
+    </div>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0020">
+(function () {
+  "use strict";
+  var box = document.getElementById("n24"); if (!box) return;
+  var EASE = "cubic-bezier(.22,1,.36,1)";
+  function spd() { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; }
+  function go(el, kf, ms, done, delay) {
+    var s = spd(); if (!s || !el.animate) { if (done) done(); return null; }
+    var a = el.animate(kf, { duration: ms * (s < 1 ? .6 : 1), easing: EASE, fill: "both", delay: delay || 0 });
+    a.onfinish = function () { if (done) done(); a.cancel(); }; return a;
+  }
+  var as = document.getElementById("n24-as"), row = document.getElementById("n24-row"), tp = document.getElementById("n24-tp"), tb = tp.firstElementChild, more = document.getElementById("n24-more");
+  var avs = [].slice.call(row.querySelectorAll(".av"));
+  function vis() { return avs.filter(function (a) { return a.offsetParent !== null; }); }
+  function lift(on) {
+    var v = vis(), s = spd();
+    v.forEach(function (a) {
+      var k = on ? v.indexOf(a) - v.indexOf(on) : 0, d = Math.abs(k);
+      a.style.setProperty("--sx", on && d ? (k > 0 ? 1 : -1) * Math.max(0, 7 - 3 * (d - 1)) * s + "px" : "0px");
+      a.style.setProperty("--ty", on && !d ? -4 * s + "px" : "0px");
+      a.style.setProperty("--sc", on && !d ? 1 + .06 * (s ? 1 : 0) : 1);
+    });
+  }
+  function show(a, ox, oy) {
+    tb.firstElementChild.textContent = a.dataset.n; tb.lastElementChild.textContent = a.dataset.r;
+    tp.style.transition = "none"; tp.style.opacity = "1";
+    tp.style.left = (a.offsetLeft + a.offsetWidth / 2) + "px"; tp.style.top = (a.offsetTop - 10) + "px";
+    var half = tb.offsetWidth / 2, c = a.offsetLeft + a.offsetWidth / 2, W = as.clientWidth;
+    var cl = Math.max(half, Math.min(W - half, c)); tp.style.left = cl + "px";
+    var s = spd();
+    go(tb, [{ opacity: 0, transform: "translate(" + ox * 6 * s + "px," + oy * 6 * s + "px)" }, { opacity: 1, transform: "none" }], 180);
+  }
+  function hide() { tp.style.transition = "opacity .12s"; tp.style.opacity = "0"; }
+  avs.forEach(function (a) {
+    a.addEventListener("pointerenter", function (e) {
+      var r = a.getBoundingClientRect(), dx = (e.clientX - r.left - r.width / 2) / (r.width / 2), dy = (e.clientY - r.top - r.height / 2) / (r.height / 2);
+      var ox = 0, oy = 0; if (Math.abs(dx) > Math.abs(dy)) ox = dx > 0 ? 1 : -1; else oy = dy > 0 ? 1 : -1;
+      lift(a); show(a, ox, oy);
+    });
+    a.addEventListener("pointerleave", function () { if (!a.matches(":focus-visible")) { lift(null); hide(); } });
+    a.addEventListener("focus", function () { lift(a); show(a, 0, -1); });
+    a.addEventListener("blur", function () { lift(null); hide(); });
+  });
+  more.addEventListener("click", function () {
+    lift(null); hide();
+    var els = vis().concat([more]), first = els.map(function (el) { var r = el.getBoundingClientRect(); return { el: el, x: r.left, y: r.top }; });
+    var ex = !row.classList.contains("ex"); row.classList.toggle("ex", ex);
+    more.setAttribute("aria-expanded", ex ? "true" : "false");
+    more.textContent = ex ? "−3" : "+3";
+    more.setAttribute("aria-label", ex ? "Show fewer people" : "Show 3 more people");
+    var s = spd(), isOld = {};
+    first.forEach(function (f) {
+      isOld[f.el.dataset.n || "m"] = 1;
+      var r = f.el.getBoundingClientRect(), dx = f.x - r.left, dy = f.y - r.top;
+      if (dx || dy) go(f.el, [{ transform: "translate(" + dx + "px," + dy + "px)" }, { transform: "none" }], 500);
+    });
+    if (ex) avs.filter(function (a) { return a.classList.contains("x"); }).forEach(function (a, i) {
+      go(a, [{ opacity: 0, transform: "scale(.6)" }, { opacity: 1, transform: "none" }], 400, null, 80 + i * 50);
+    });
+  });
+})();
+</script>

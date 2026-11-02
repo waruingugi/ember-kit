@@ -1,0 +1,44 @@
+<!-- part n14 | part | group forms | Settings that respond to a touch. | Settings that respond to a touch. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Settings that <em>respond to a touch.</em></h3>
+          <p class="kit-p">Press and hold a switch to see the knob stretch. Tick a box and watch it draw.</p>
+          <section class="cs kv4" id="n14">
+  <div class="frame"><div class="fbody">
+    <div class="stage"><div class="card">
+      <h3>Notifications</h3>
+      <div class="row"><span id="n14-l1">Email me a weekly summary</span><button class="sw" type="button" role="switch" aria-checked="true" aria-labelledby="n14-l1"><span class="th"><i></i></span></button></div>
+      <div class="row"><span id="n14-l2">Push alerts for new orders</span><button class="sw" type="button" role="switch" aria-checked="true" aria-labelledby="n14-l2"><span class="th"><i></i></span></button></div>
+      <div class="row"><span id="n14-l3">Sounds</span><button class="sw" type="button" role="switch" aria-checked="false" aria-labelledby="n14-l3"><span class="th"><i></i></span></button></div>
+      <div class="row"><span id="n14-l4">Marketing news</span><button class="sw" type="button" role="switch" aria-checked="false" aria-labelledby="n14-l4"><span class="th"><i></i></span></button></div>
+      <p class="sub" id="n14-sub">Send me alerts for:</p>
+      <div class="cks" role="group" aria-labelledby="n14-sub">
+        <label class="ck"><input type="checkbox" checked=""><span class="bx"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M20 6 9 17l-5-5"></path></svg></span>Orders</label>
+        <label class="ck"><input type="checkbox"><span class="bx"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M20 6 9 17l-5-5"></path></svg></span>Refunds</label>
+        <label class="ck"><input type="checkbox"><span class="bx"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M20 6 9 17l-5-5"></path></svg></span>Low stock</label>
+      </div>
+    </div></div>
+    <p class="note" id="n14-note" aria-live="polite">Changes save as you make them.</p>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0026">
+(function () {
+  "use strict";
+  var box = document.getElementById("n14"); if (!box) return;
+  var note = document.getElementById("n14-note");
+  Array.prototype.forEach.call(box.querySelectorAll(".sw"), function (sw) {
+    var lab = document.getElementById(sw.getAttribute("aria-labelledby"));
+    function flip() { var on = sw.getAttribute("aria-checked") !== "true"; sw.setAttribute("aria-checked", on); note.textContent = lab.textContent + ": " + (on ? "on" : "off") + "."; }
+    sw.addEventListener("click", flip);
+    lab.addEventListener("click", function () { flip(); sw.focus(); });
+  });
+  Array.prototype.forEach.call(box.querySelectorAll(".ck input"), function (c) {
+    c.addEventListener("change", function () {
+      var bx = c.nextElementSibling; bx.classList.remove("go"); void bx.offsetWidth;
+      if (c.checked) { bx.classList.add("go"); bx.addEventListener("animationend", function () { bx.classList.remove("go"); }, { once: true }); }
+      note.textContent = c.parentNode.textContent.trim() + " alerts: " + (c.checked ? "on" : "off") + ".";
+    });
+  });
+})();
+</script>

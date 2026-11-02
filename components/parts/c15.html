@@ -1,0 +1,179 @@
+<!-- part c15 | part | group tables | Customers, in one table. | Customers, in one table. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Customers, <em>in one table.</em></h3>
+          <p class="kit-p">Search, filter, sort and pick. Open a row for more. On a phone it turns into cards.</p>
+          <section class="cs" id="c15">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Customers · sample data</span></div>
+      <div class="fbody" style="padding:clamp(10px,2vw,18px)">
+        <div class="dt" id="dt">
+          <div class="dt-bar">
+            <div class="dt-title">Customers <span class="tag" id="dtCount"></span></div>
+            <div class="dt-tools">
+              <div class="dt-search"><svg class="i"><use href="#i-search"></use></svg><input class="in" id="dtQ" type="search" placeholder="Search name or email" aria-label="Search customers"><button class="ib" type="button" id="dtQx" aria-label="Clear search" hidden=""><svg class="i s"><use href="#i-x"></use></svg></button></div>
+              <button class="ib bx" type="button" id="dtView" aria-label="Show as cards" aria-pressed="false"><svg class="i"><use href="#i-grid"></use></svg></button>
+              <div style="position:relative"><button class="ib bx" type="button" id="dtColsBtn" aria-label="Choose columns" aria-expanded="false" aria-controls="dtCols"><svg class="i"><use href="#i-cols"></use></svg></button><div class="pop dt-menu" id="dtCols" hidden=""></div></div>
+            </div>
+          </div>
+          <div class="dt-bulk" id="dtBulk" hidden=""><span id="dtBulkN"></span><span><button class="b sm" type="button" id="dtExport"><svg class="i s"><use href="#i-copy"></use></svg>Copy as CSV</button><button class="b sm danger" type="button" id="dtDel"><svg class="i s"><use href="#i-trash"></use></svg>Delete</button></span></div>
+          <div class="dt-filters" id="dtFilters"></div>
+          <div id="dtBody"></div>
+          <p class="dt-note" id="dtNote" aria-live="polite"></p>
+          <div class="dt-foot" id="dtFoot"></div>
+        </div>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0012">
+  /* ---------------- 15 data table ---------------- */
+  (function () {
+    var NAMES = ["Northwind Traders", "Lumen Labs", "Harbor & Co", "Fieldstone", "Quill Studio", "Bright Path", "Copperleaf", "Atlas Freight", "Juniper Health", "Kestrel Bank", "Mosaic Learning", "Orchard Foods", "Pine & Pixel", "Riverside Clinic", "Saltwater Surf", "Tandem Bikes", "Umber Coffee", "Vale Outdoors", "Willow Legal", "Yardline Sports", "Zephyr Air", "Granite Build", "Ember Bakery"];
+    var STAT = ["active", "active", "trial", "active", "overdue", "active", "cancelled", "active", "trial", "active", "overdue", "active", "active", "trial", "cancelled", "active", "active", "overdue", "active", "trial", "active", "active", "cancelled"];
+    var PLANS = ["Starter", "Team", "Business"], PRICE = { Starter: 0, Team: 24, Business: 79 };
+    var OWN = ["Maya Ortiz", "Sam Reid", "Priya Nair", "Leo Brandt"], REG = ["Europe", "North America", "Asia Pacific"];
+    var rows = NAMES.map(function (n, i) {
+      var plan = PLANS[(i * 7 + 1) % 3], seats = plan === "Starter" ? 1 + i % 3 : 3 + (i * 5) % 28;
+      var d = new Date(2026, 10 + (i % 5), 1 + (i * 11) % 27);
+      return {
+        id: i + 1, name: n, email: "billing@" + n.toLowerCase().replace(/[^a-z]+/g, "") + ".com", status: STAT[i], plan: plan, seats: seats,
+        mrr: STAT[i] === "cancelled" || STAT[i] === "trial" ? 0 : PRICE[plan] * seats, renews: d, owner: OWN[i % 4], region: REG[i % 3], invoice: "INV-" + (4000 + i * 7)
+      };
+    });
+    var COLS = [{ k: "status", l: "Status" }, { k: "plan", l: "Plan" }, { k: "seats", l: "Seats", r: 1 }, { k: "mrr", l: "MRR", r: 1 }, { k: "renews", l: "Renews" }];
+    var SL = { active: ["ok", "Active"], trial: ["wait", "Trial"], overdue: ["hot", "Overdue"], cancelled: ["off", "Cancelled"] };
+    var st = { q: "", fs: "all", fp: "all", sk: "name", sd: 1, page: 0, size: 10, sel: new Set(), open: new Set(), cols: { status: 1, plan: 1, seats: 1, mrr: 1, renews: 1 }, cards: false, picked: false };
+    var lastDel = [];
+    var dt = $("dt"), body = $("dtBody"), foot = $("dtFoot"), note = $("dtNote"), q = $("dtQ"), qx = $("dtQx"), cols = $("dtCols"), colsBtn = $("dtColsBtn"), viewBtn = $("dtView");
+    var mq = matchMedia("(max-width: 640px)");
+    var date = function (d) { return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); };
+    var money = function (n) { return "$" + fmt(n); };
+    function cell(r, k) {
+      if (k === "status") return '<span class="st ' + SL[r.status][0] + '">' + SL[r.status][1] + "</span>";
+      if (k === "mrr") return money(r.mrr);
+      if (k === "renews") return r.status === "cancelled" ? '<span class="xr-dim">—</span>' : date(r.renews);
+      return esc(r[k]);
+    }
+    function view() {
+      var t = st.q.toLowerCase();
+      var v = rows.filter(function (r) {
+        return (!t || r.name.toLowerCase().indexOf(t) >= 0 || r.email.indexOf(t) >= 0) && (st.fs === "all" || r.status === st.fs) && (st.fp === "all" || r.plan === st.fp);
+      });
+      v.sort(function (a, b) { var x = a[st.sk], y = b[st.sk]; return (x < y ? -1 : x > y ? 1 : 0) * st.sd; });
+      return v;
+    }
+    function details(r) {
+      return '<div class="dt-det fade-in"><div><span>Owner </span><b>' + r.owner + "</b></div><div><span>Region </span><b>" + r.region + "</b></div><div><span>Last invoice </span><b>" + r.invoice + "</b></div><div><span>Email </span><b>" + r.email + "</b></div></div>";
+    }
+    function render() {
+      var keep = document.activeElement && dt.contains(document.activeElement) ? document.activeElement.getAttribute("data-f") : null;
+      var v = view(), pages = Math.max(1, Math.ceil(v.length / st.size));
+      st.page = Math.min(st.page, pages - 1);
+      var pg = v.slice(st.page * st.size, st.page * st.size + st.size);
+      var vis = COLS.filter(function (c) { return st.cols[c.k]; });
+      $("dtCount").textContent = v.length === rows.length ? rows.length + " total" : v.length + " of " + rows.length;
+      // filters
+      var fg = function (name, key, opts) {
+        return '<span class="dt-fg" role="group" aria-label="' + name + '"><span>' + name + "</span>" + opts.map(function (o) {
+          return '<button type="button" data-f="' + key + "-" + o[0] + '" data-' + key + '="' + o[0] + '" aria-pressed="' + (st[key] === o[0]) + '">' + o[1] + "</button>";
+        }).join("") + "</span>";
+      };
+      $("dtFilters").innerHTML = ic("filter", "s") +
+        fg("Status", "fs", [["all", "All"], ["active", "Active"], ["trial", "Trial"], ["overdue", "Overdue"], ["cancelled", "Cancelled"]]) +
+        fg("Plan", "fp", [["all", "All"], ["Starter", "Starter"], ["Team", "Team"], ["Business", "Business"]]) +
+        (st.fs !== "all" || st.fp !== "all" || st.q ? '<button class="lk" type="button" data-f="reset" data-reset>Clear filters</button>' : "");
+      // bulk
+      $("dtBulk").hidden = !st.sel.size;
+      $("dtBulkN").innerHTML = "<b style=\"color:var(--ink)\">" + st.sel.size + "</b> selected · " + '<button class="lk" type="button" data-f="selclear" data-selclear>Clear</button>';
+      // body
+      if (!v.length) {
+        body.innerHTML = '<div class="dt-empty">' + ic("search", "l") + "<b>No customers match</b><span>Try a shorter search or clear the filters.</span>" + '<button class="b sm" type="button" data-f="reset2" data-reset>Clear filters</button></div>';
+      } else if (st.cards) {
+        body.innerHTML = '<div class="dt-cards">' + pg.map(function (r) {
+          var o = st.open.has(r.id);
+          return '<div class="dt-card" aria-selected="' + st.sel.has(r.id) + '"><div class="dt-card-h"><input class="chk" type="checkbox" data-f="sel-' + r.id + '" data-sel="' + r.id + '"' + (st.sel.has(r.id) ? " checked" : "") + ' aria-label="Select ' + esc(r.name) + '">' +
+            '<div class="cust"><b>' + esc(r.name) + "</b><small>" + r.email + "</small></div>" +
+            '<button class="ib xp" type="button" data-f="xp-' + r.id + '" data-xp="' + r.id + '" aria-expanded="' + o + '" aria-label="More about ' + esc(r.name) + '">' + ic("cr") + "</button></div>" +
+            (vis.length ? "<dl>" + vis.map(function (c) { return "<div><dt>" + c.l + "</dt><dd>" + cell(r, c.k) + "</dd></div>"; }).join("") + "</dl>" : "") + (o ? details(r) : "") + "</div>";
+        }).join("") + "</div>";
+      } else {
+        var all = pg.length && pg.every(function (r) { return st.sel.has(r.id); }), some = pg.some(function (r) { return st.sel.has(r.id); });
+        var th = function (k, l, r) {
+          var s = st.sk === k;
+          return "<th" + (r ? ' class="r"' : "") + (s ? ' aria-sort="' + (st.sd > 0 ? "ascending" : "descending") + '"' : "") + '><button class="sortb" type="button" data-f="sort-' + k + '" data-sort="' + k + '">' + l + ic(s ? (st.sd > 0 ? "asc" : "desc") : "sort") + "</button></th>";
+        };
+        body.innerHTML = '<div class="dt-scroll"><table><thead><tr><th class="w"><input class="chk" type="checkbox" data-f="all" data-all aria-label="Select all on this page"' + (all ? " checked" : "") + '></th><th class="w"><span class="sr-only">Details</span></th>' +
+          th("name", "Customer") + vis.map(function (c) { return th(c.k, c.l, c.r); }).join("") + "</tr></thead><tbody>" +
+          pg.map(function (r) {
+            var o = st.open.has(r.id);
+            return '<tr aria-selected="' + st.sel.has(r.id) + '"><td class="w"><input class="chk" type="checkbox" data-f="sel-' + r.id + '" data-sel="' + r.id + '"' + (st.sel.has(r.id) ? " checked" : "") + ' aria-label="Select ' + esc(r.name) + '"></td>' +
+              '<td class="w"><button class="ib xp" type="button" data-f="xp-' + r.id + '" data-xp="' + r.id + '" aria-expanded="' + o + '" aria-label="More about ' + esc(r.name) + '">' + ic("cr") + "</button></td>" +
+              '<td class="cust"><b>' + esc(r.name) + "</b><small>" + r.email + "</small></td>" +
+              vis.map(function (c) { return "<td" + (c.r ? ' class="r"' : "") + ">" + cell(r, c.k) + "</td>"; }).join("") + "</tr>" +
+              (o ? '<tr class="dt-detail"><td colspan="' + (3 + vis.length) + '">' + details(r) + "</td></tr>" : "");
+          }).join("") + "</tbody></table></div>";
+        var a = body.querySelector("[data-all]"); if (a) a.indeterminate = some && !all;
+      }
+      if (!spd()) body.querySelectorAll(".fade-in").forEach(function (x) { x.classList.remove("fade-in"); });
+      // foot
+      foot.innerHTML = "<span>" + (v.length ? "Showing <b>" + (st.page * st.size + 1) + "–" + (st.page * st.size + pg.length) + "</b> of <b>" + v.length + "</b>" : "Nothing to show") + "</span>" +
+        '<span class="dt-pg"><label>Rows <select data-f="size" data-size aria-label="Rows per page">' + [5, 10, 25].map(function (n) { return "<option" + (n === st.size ? " selected" : "") + ">" + n + "</option>"; }).join("") + "</select></label>" +
+        '<button class="ib" type="button" data-f="prev" data-pg="-1" aria-label="Previous page"' + (st.page ? "" : " disabled") + ">" + ic("cl") + '</button><span class="pgn">' + (st.page + 1) + " / " + pages + "</span>" +
+        '<button class="ib" type="button" data-f="next" data-pg="1" aria-label="Next page"' + (st.page < pages - 1 ? "" : " disabled") + ">" + ic("cr") + "</button></span>";
+      viewBtn.setAttribute("aria-pressed", String(st.cards));
+      viewBtn.setAttribute("aria-label", st.cards ? "Show as table" : "Show as cards");
+      viewBtn.innerHTML = ic(st.cards ? "list" : "grid");
+      if (keep) { var f = dt.querySelector('[data-f="' + keep + '"]'); if (f && !f.disabled) f.focus(); }
+    }
+    function say(html) { note.innerHTML = html; }
+    cols.innerHTML = '<span class="label">Columns</span>' + COLS.map(function (c) { return '<label><input class="chk" type="checkbox" data-col="' + c.k + '" checked>' + c.l + "</label>"; }).join("");
+    function menu(open) { cols.hidden = !open; colsBtn.setAttribute("aria-expanded", String(open)); if (open) { cols.classList.remove("pkx"); fadeIn(cols); } }
+    colsBtn.addEventListener("click", function () { menu(cols.hidden); });
+    document.addEventListener("click", function (e) { if (!cols.hidden && outside(e, cols) && !colsBtn.contains(e.target)) menu(false); });
+    dt.addEventListener("keydown", function (e) { if (e.key === "Escape" && !cols.hidden) { menu(false); colsBtn.focus(); } });
+    cols.addEventListener("change", function (e) { var k = e.target.dataset.col; if (k) { st.cols[k] = e.target.checked ? 1 : 0; render(); } });
+    q.addEventListener("input", function () { st.q = q.value.trim(); st.page = 0; qx.hidden = !q.value; render(); });
+    qx.addEventListener("click", function () { q.value = ""; st.q = ""; qx.hidden = true; render(); q.focus(); });
+    viewBtn.addEventListener("click", function () { st.cards = !st.cards; st.picked = true; render(); });
+    mq.addEventListener("change", function () { if (!st.picked) { st.cards = mq.matches; render(); } });
+    dt.addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b || !dt.contains(b)) return;
+      var d = b.dataset;
+      if (d.fs) { st.fs = d.fs; st.page = 0; }
+      else if (d.fp) { st.fp = d.fp; st.page = 0; }
+      else if (d.reset != null) { st.fs = st.fp = "all"; st.q = ""; q.value = ""; qx.hidden = true; st.page = 0; }
+      else if (d.sort) { if (st.sk === d.sort) st.sd = -st.sd; else { st.sk = d.sort; st.sd = 1; } }
+      else if (d.xp) { var id = +d.xp; if (st.open.has(id)) st.open.delete(id); else st.open.add(id); }
+      else if (d.pg) st.page += +d.pg;
+      else if (d.selclear != null) st.sel.clear();
+      else if (d.undo != null) { rows = rows.concat(lastDel).sort(function (a, b) { return a.id - b.id; }); say("Restored " + lastDel.length + "."); lastDel = []; }
+      else return;
+      render();
+    });
+    dt.addEventListener("change", function (e) {
+      var t = e.target, d = t.dataset;
+      if (d.sel) { var id = +d.sel; if (t.checked) st.sel.add(id); else st.sel.delete(id); }
+      else if (d.all != null) {
+        var v = view(), pg = v.slice(st.page * st.size, st.page * st.size + st.size);
+        pg.forEach(function (r) { if (t.checked) st.sel.add(r.id); else st.sel.delete(r.id); });
+      }
+      else if (d.size) { st.size = +t.value; st.page = 0; }
+      else return;
+      render();
+    });
+    $("dtExport").addEventListener("click", function () {
+      var pick = rows.filter(function (r) { return st.sel.has(r.id); });
+      var csv = ["Customer,Email,Status,Plan,Seats,MRR"].concat(pick.map(function (r) { return ['"' + r.name + '"', r.email, r.status, r.plan, r.seats, r.mrr].join(","); })).join("\n");
+      copy(csv).then(function (ok) { say(ok ? "Copied " + pick.length + " rows as CSV. Paste them into a sheet." : "Copy was blocked here."); });
+    });
+    $("dtDel").addEventListener("click", function () {
+      lastDel = rows.filter(function (r) { return st.sel.has(r.id); });
+      rows = rows.filter(function (r) { return !st.sel.has(r.id); });
+      st.sel.clear(); render();
+      say("Deleted " + lastDel.length + (lastDel.length === 1 ? " customer. " : " customers. ") + '<button class="lk" type="button" data-undo data-f="undo">Undo</button>');
+      var u = note.querySelector("button"); if (u) u.focus();
+    });
+    st.cards = mq.matches;
+    render();
+  })();
+</script>

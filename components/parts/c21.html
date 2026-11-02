@@ -1,0 +1,55 @@
+<!-- part c21 | part | group status | Small news, then it leaves. | Small news, then it leaves. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Small news, <em>then it leaves.</em></h3>
+          <p class="kit-p">Pick a kind. It rises, waits four seconds, and goes. Point at it to make it wait.</p>
+          <section class="cs" id="c21">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Toasts</span></div>
+      <div class="fbody">
+        <div class="stage" style="min-height:120px">
+          <button class="b" type="button" data-vt="ok">Saved</button>
+          <button class="b" type="button" data-vt="info">Invite sent</button>
+          <button class="b" type="button" data-vt="undo">Moved, with undo</button>
+          <button class="b" type="button" data-vt="error">Sync failed</button>
+        </div>
+        <div class="vt-wrap" id="vtWrap" role="status" aria-live="polite"></div>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0018">
+  /* ---------------- 21 toast ---------------- */
+  (function () {
+    var wrap = $("vtWrap"), cur = null;
+    var V = {
+      ok: ["check", "Changes saved", "Your profile is up to date."],
+      info: ["mail", "Invite sent", "Maya will get an email in a minute."],
+      undo: ["archive", "Moved to Archive", "3 messages.", "Undo"],
+      error: ["alert", "Sync failed", "We will try again in 30 seconds.", "Retry"]
+    };
+    function dismiss(t) {
+      if (!t || t._gone) return; t._gone = true;
+      if (cur === t) cur = null;
+      if (spd()) { t.classList.remove("in"); t.classList.add("out"); setTimeout(function () { t.remove(); }, 200); } else t.remove();
+    }
+    function show(k) {
+      if (cur) { cur._gone = true; cur.remove(); cur = null; }
+      var v = V[k], t = document.createElement("div");
+      t.className = "vt" + (spd() ? " in" : ""); t.dataset.v = k;
+      t.innerHTML = '<span class="vt-ic" aria-hidden="true">' + ic(v[0]) + '</span><span class="vt-m"><b>' + v[1] + "</b><span>" + v[2] + "</span></span>" +
+        (v[3] ? '<button class="b sm" type="button" data-act>' + v[3] + "</button>" : "") +
+        '<button class="ib" type="button" data-x aria-label="Dismiss">' + ic("x") + '</button><span class="vt-p" aria-hidden="true"><i></i></span>';
+      wrap.appendChild(t); cur = t;
+      var a = t.querySelector(".vt-p i").animate([{ transform: "scaleX(1)" }, { transform: "scaleX(0)" }], { duration: 4000, fill: "forwards" });
+      a.onfinish = function () { dismiss(t); };
+      var pause = function () { a.pause(); }, play = function () { if (!t.matches(":hover") && !t.contains(document.activeElement)) a.play(); };
+      t.addEventListener("mouseenter", pause); t.addEventListener("focusin", pause);
+      t.addEventListener("mouseleave", play); t.addEventListener("focusout", function () { setTimeout(play, 0); });
+      t.addEventListener("click", function (e) {
+        if (e.target.closest("[data-x]")) dismiss(t);
+        else if (e.target.closest("[data-act]")) { dismiss(t); show(k === "undo" ? "ok" : "info"); }
+      });
+    }
+    document.querySelectorAll("[data-vt]").forEach(function (b) { b.addEventListener("click", function () { show(b.dataset.vt); }); });
+  })();
+</script>

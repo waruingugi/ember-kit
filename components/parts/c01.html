@@ -1,0 +1,619 @@
+<!-- part c01 | part | group charts | Server traffic, live. | Server traffic, live. | needs pair:c01,c02 -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Server traffic, <em>live.</em></h3>
+          <p class="kit-p">One reading lands every second. Point at the line to stop it and read any moment.</p>
+          <section class="cs" id="c01"><div class="frame">
+    <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Requests per second, live · sample feed</span><span>60 s window</span></div>
+    <div class="fbody" id="root">
+      <div class="readout">
+        <div>
+          <p class="big"><span id="now">—</span><small>req/s</small></p>
+          <p class="delta" id="delta"></p>
+        </div>
+        <button class="btn" id="pause" type="button" aria-pressed="false" aria-label="Pause live updates" data-state="live"><i aria-hidden="true"></i><span>Live</span></button>
+      </div>
+      <div class="wrap" id="wrap" data-live="1">
+        <svg id="svg" role="img" aria-label="Live chart of the last 60 seconds">
+          <defs>
+            <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#e14a0e" stop-opacity=".2"></stop>
+              <stop offset="1" stop-color="#e14a0e" stop-opacity="0"></stop>
+            </linearGradient>
+            <clipPath id="clip"><rect id="cliprect"></rect></clipPath>
+          </defs>
+          <g class="grid" id="grid"></g>
+          <g id="xlabels"></g>
+          <g clip-path="url(#clip)">
+            <path id="area" fill="url(#fill)"></path>
+            <path id="line" class="ln"></path>
+          </g>
+          <circle id="halo" class="halo" r="4" cx="-20" cy="-20"></circle>
+          <circle id="head" class="head" r="4" cx="-20" cy="-20"></circle>
+          <g class="scrub">
+            <line id="crossLine"></line>
+            <circle id="crossDot" r="5" cx="-20" cy="-20"></circle>
+          </g>
+          <rect id="hit" fill="transparent"></rect>
+        </svg>
+        <div class="tip" id="tip" hidden=""><p class="v" id="tipV"></p><p class="a" id="tipA"></p></div>
+      </div>
+      <details id="tableView">
+        <summary>Show the last 10 readings as a table</summary>
+        <table class="readings"><thead><tr><th scope="col">When</th><th scope="col">Requests per second, live</th></tr></thead><tbody id="rows"></tbody></table>
+      </details>
+      <p class="sr-only" role="status" aria-live="polite" id="sr"></p>
+    </div>
+  </div>
+</section>
+        </div>
+<script data-slot="0005">
+(function () {
+  "use strict";
+  var M = { l: 46, t: 10, r: 14, b: 24 };
+  var INTERVAL = 1000, WIN = 60000, UNIT = "req/s";
+  var $ = function (id) { return document.getElementById(id); };
+  var el = { root: $("root"), wrap: $("wrap"), svg: $("svg"), line: $("line"), area: $("area"), head: $("head"), halo: $("halo"),
+    cross: $("crossLine"), dot: $("crossDot"), hit: $("hit"), grid: $("grid"), xl: $("xlabels"), clip: $("cliprect"),
+    tip: $("tip"), tipV: $("tipV"), tipA: $("tipA"), now: $("now"), delta: $("delta"), pause: $("pause"), sr: $("sr"),
+    rows: $("rows"), table: $("tableView") };
+  var NS = "http://www.w3.org/2000/svg";
+  var fmt = function (n) { return Math.round(n).toLocaleString("en-US"); };
+  var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
+
+  /* ---------- motion level: lively / calm / off; reduced motion always wins ---------- */
+  var KEY = "livechart-motion-v1";
+  var rm = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var saved = "lively";
+  saved = document.documentElement.dataset.motion || "lively";
+  function setMotion(m) {
+    var lvl = rm.matches ? "off" : m;
+    document.documentElement.dataset.motion = lvl;
+    document.querySelectorAll(".kit .seg:not(.kv4 *) button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.m === m)); });
+    state.reduce = lvl === "off";
+    state.delay = state.reduce ? 0 : INTERVAL;
+    state.dirty = true;
+  }
+  (document.querySelector(".kit .seg:not(.kv4 *)") || document.createElement("i")).addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("button[data-m]");
+    if (!b) return;
+    saved = b.dataset.m;
+    try { localStorage.setItem(KEY, saved); } catch (err) {}
+    setMotion(saved);
+  });
+  rm.addEventListener("change", function () { setMotion(saved); });
+
+  /* ---------- state (what the React refs held) ---------- */
+  var state = { buf: [], w: 640, h: 260, manual: false, hover: false, hoverX: null, dirty: true, delay: INTERVAL, reduce: false, latest: null, first: null };
+  setMotion(saved);
+  var paused = function () { return state.manual || state.hover; };
+
+  /* ---------- data helpers ---------- */
+  /* Monotone cubic slopes (Fritsch-Carlson): the curve is smooth but never swings past a real high or low. */
+  function slopes(b) {
+    var n = b.length, m = new Array(n), d = new Array(n - 1), k;
+    for (k = 0; k < n - 1; k++) d[k] = (b[k + 1].v - b[k].v) / (b[k + 1].t - b[k].t);
+    m[0] = d[0]; m[n - 1] = d[n - 2];
+    for (k = 1; k < n - 1; k++) m[k] = d[k - 1] * d[k] <= 0 ? 0 : (d[k - 1] + d[k]) / 2;
+    for (k = 0; k < n - 1; k++) {
+      if (d[k] === 0) { m[k] = 0; m[k + 1] = 0; continue; }
+      var a = m[k] / d[k], c = m[k + 1] / d[k], s = a * a + c * c;
+      if (s > 9) { var tau = 3 / Math.sqrt(s); m[k] = tau * a * d[k]; m[k + 1] = tau * c * d[k]; }
+    }
+    return m;
+  }
+  // value and slope of the curve at time t, inside the segment that starts at reading k
+  function seg(b, m, k, t) {
+    var a = b[k], c = b[k + 1], h = c.t - a.t, s = (t - a.t) / h, s2 = s * s, s3 = s2 * s;
+    return {
+      v: (2 * s3 - 3 * s2 + 1) * a.v + (s3 - 2 * s2 + s) * h * m[k] + (-2 * s3 + 3 * s2) * c.v + (s3 - s2) * h * m[k + 1],
+      d: ((6 * s2 - 6 * s) * a.v + (3 * s2 - 4 * s + 1) * h * m[k] + (-6 * s2 + 6 * s) * c.v + (3 * s2 - 2 * s) * h * m[k + 1]) / h
+    };
+  }
+  function valueAt(b, t, m) {
+    if (!b.length) return null;
+    if (t <= b[0].t) return b[0].v;
+    if (t >= b[b.length - 1].t) return b[b.length - 1].v;
+    var lo = 0, hi = b.length - 1;
+    while (hi - lo > 1) { var mid = (lo + hi) >> 1; if (b[mid].t <= t) lo = mid; else hi = mid; }
+    if (m) return seg(b, m, lo, t).v;
+    var a = b[lo], c = b[hi];
+    return a.v + (c.v - a.v) * ((t - a.t) / (c.t - a.t));
+  }
+  function visibleExtent(b, dc, win) {
+    var t0 = dc - win, min = Infinity, max = -Infinity;
+    [valueAt(b, t0), valueAt(b, dc)].forEach(function (v) { if (v !== null) { min = Math.min(min, v); max = Math.max(max, v); } });
+    for (var i = 0; i < b.length; i++) {
+      var p = b[i];
+      if (p.t < t0) continue;
+      if (p.t > dc) break;
+      if (p.v < min) min = p.v;
+      if (p.v > max) max = p.v;
+    }
+    return { min: min, max: max };
+  }
+  function buildFrame(b, dc, win, dom, g, m) {
+    var t0 = dc - win, span = dom.hi - dom.lo || 1, n = b.length;
+    var sx = function (t) { return g.l + ((t - t0) / win) * g.iw; };
+    var sy = function (v) { return g.t + g.ih - ((v - dom.lo) / span) * g.ih; };
+    var P = function (t, v) { return sx(t).toFixed(1) + " " + sy(v).toFixed(1); };
+    var i = 0;
+    while (i < n - 1 && b[i + 1].t < t0) i++;
+    var jl = i;
+    while (jl < n - 1 && b[jl + 1].t <= dc) jl++;
+    // each reading-to-reading step is one cubic Bezier; its handles come from the monotone slopes
+    var d = "M" + P(b[i].t, b[i].v), k, h;
+    for (k = i; k < jl; k++) {
+      h = b[k + 1].t - b[k].t;
+      d += "C" + P(b[k].t + h / 3, b[k].v + m[k] * h / 3) + " " + P(b[k + 1].t - h / 3, b[k + 1].v - m[k + 1] * h / 3) + " " + P(b[k + 1].t, b[k + 1].v);
+    }
+    var end = { t: b[jl].t, v: b[jl].v };
+    if (b[jl].t < dc) {
+      if (jl < n - 1) {
+        // the part of the next step already on screen: the same curve, cut at "now"
+        h = dc - b[jl].t;
+        var e = seg(b, m, jl, dc);
+        d += "C" + P(b[jl].t + h / 3, b[jl].v + m[jl] * h / 3) + " " + P(dc - h / 3, e.v - e.d * h / 3) + " " + P(dc, e.v);
+        end = { t: dc, v: e.v };
+      } else {
+        d += "L" + P(dc, b[jl].v);
+        end = { t: dc, v: b[jl].v };
+      }
+    }
+    if (d.indexOf("C") < 0 && d.indexOf("L") < 0) return null;
+    var base = g.t + g.ih;
+    return { line: d, area: d + "L" + sx(end.t).toFixed(1) + " " + base + "L" + sx(b[i].t).toFixed(1) + " " + base + "Z",
+      head: { x: sx(end.t), y: sy(end.v) }, tStart: t0 };
+  }
+  var geom = function () { return { l: M.l, t: M.t, iw: Math.max(10, state.w - M.l - M.r), ih: Math.max(10, state.h - M.t - M.b) }; };
+
+  /* ---------- static parts: grid, tick slots, x labels (redrawn on resize) ---------- */
+  var tickEls = [];
+  function layout() {
+    var g = geom(), w = state.w, h = state.h;
+    el.svg.setAttribute("width", w); el.svg.setAttribute("height", h);
+    el.clip.setAttribute("x", g.l); el.clip.setAttribute("y", 0); el.clip.setAttribute("width", g.iw + M.r); el.clip.setAttribute("height", h);
+    el.hit.setAttribute("x", g.l); el.hit.setAttribute("y", g.t); el.hit.setAttribute("width", g.iw); el.hit.setAttribute("height", g.ih);
+    el.cross.setAttribute("y1", g.t); el.cross.setAttribute("y2", g.t + g.ih);
+    el.grid.textContent = ""; el.xl.textContent = ""; tickEls = [];
+    for (var i = 0; i < 3; i++) {
+      var gy = g.t + (g.ih / 2) * i;
+      var ln = document.createElementNS(NS, "line");
+      ln.setAttribute("x1", g.l); ln.setAttribute("x2", w - M.r); ln.setAttribute("y1", gy); ln.setAttribute("y2", gy);
+      var tx = document.createElementNS(NS, "text");
+      tx.setAttribute("class", "tick"); tx.setAttribute("x", g.l - 8); tx.setAttribute("y", gy);
+      tx.setAttribute("text-anchor", "end"); tx.setAttribute("dominant-baseline", "middle");
+      el.grid.appendChild(ln); el.grid.appendChild(tx); tickEls.push(tx);
+    }
+    [0, .5, 1].forEach(function (p, i) {
+      var tx = document.createElementNS(NS, "text");
+      tx.setAttribute("class", "tick"); tx.setAttribute("x", g.l + g.iw * p); tx.setAttribute("y", h - 6);
+      tx.setAttribute("text-anchor", i === 0 ? "start" : i === 2 ? "end" : "middle");
+      tx.textContent = i === 2 ? "now" : "−" + Math.round((WIN / 1000) * (1 - p)) + "s";
+      el.xl.appendChild(tx);
+    });
+    state.dirty = true;
+  }
+  new ResizeObserver(function (entries) {
+    var w = Math.round(entries[0].contentRect.width);
+    if (w && w !== state.w) { state.w = w; layout(); }
+  }).observe(el.wrap);
+
+  /* ---------- the readout, the table view and the screen-reader line ---------- */
+  function readout() {
+    el.now.textContent = state.latest === null ? "—" : fmt(state.latest);
+    if (state.latest !== null && state.first) {
+      var d = ((state.latest - state.first) / Math.abs(state.first)) * 100;
+      el.delta.innerHTML = "<b>" + (d >= 0 ? "▲ " : "▼ ") + Math.abs(d).toFixed(1) + "%</b> over the last " + WIN / 1000 + "s";
+    }
+    el.svg.setAttribute("aria-label", "Live chart of the last " + WIN / 1000 + " seconds" + (state.latest !== null ? ", now " + fmt(state.latest) + " " + UNIT : ""));
+    if (el.table.open) rows();
+  }
+  function rows() {
+    var b = state.buf, end = Date.now(), html = "";
+    for (var i = b.length - 1; i >= Math.max(0, b.length - 10); i--) {
+      var ago = Math.max(0, (end - b[i].t) / 1000);
+      html += "<tr><td>" + (ago < 1 ? "now" : Math.round(ago) + "s ago") + "</td><td>" + fmt(b[i].v) + " " + UNIT + "</td></tr>";
+    }
+    el.rows.innerHTML = html;
+  }
+  el.table.addEventListener("toggle", function () { if (el.table.open) rows(); });
+
+  function syncPaused() {
+    var p = paused();
+    el.wrap.dataset.live = p ? "0" : "1";
+    el.pause.dataset.state = state.manual ? "paused" : "live";
+    el.pause.querySelector("span").textContent = p ? "Paused" : "Live";
+    el.pause.setAttribute("aria-pressed", String(state.manual));
+    el.pause.setAttribute("aria-label", state.manual ? "Resume live updates" : "Pause live updates");
+    el.sr.textContent = p ? "Live updates paused" : "";
+    state.dirty = true;
+  }
+
+  /* ---------- feed ---------- */
+  function push(value, time) {
+    if (!Number.isFinite(value)) return;
+    var b = state.buf, t = time == null ? Date.now() : time;
+    if (b.length && t <= b[b.length - 1].t) t = b[b.length - 1].t + 1;
+    b.push({ t: t, v: value });
+    if (b.length > 6000) b.splice(0, b.length - 6000);
+    state.latest = value;
+    if (state.first === null) state.first = value;
+    state.dirty = true;
+    readout();
+  }
+  // shortcut: a made-up random walk stands in for the real feed; swap in a WebSocket or poll to go live.
+  var v = 420;
+  var next = function () { v += (Math.random() - .5) * 26 + (420 - v) * .08 + (Math.random() < .04 ? (Math.random() - .3) * 90 : 0); return Math.max(40, v); };
+  var seed = [];
+  for (var s = 0; s < 61; s++) seed.push(next());
+  var end = Date.now();
+  state.buf = seed.map(function (x, i) { return { t: end - (seed.length - 1 - i) * INTERVAL, v: x }; });
+  state.first = seed[0]; state.latest = seed[seed.length - 1];
+  readout();
+  setInterval(function () { push(next()); }, INTERVAL);
+
+  /* ---------- pointer: hover or touch pauses and scrubs ---------- */
+  function pointer(e) {
+    var box = el.svg.getBoundingClientRect();
+    state.hoverX = e.clientX - box.left;
+    if (!state.hover) { state.hover = true; el.wrap.dataset.hover = "1"; syncPaused(); }
+    state.dirty = true;
+  }
+  function clearHover() {
+    state.hoverX = null; state.hover = false;
+    el.wrap.dataset.hover = "0"; el.tip.hidden = true; lastScrub = "";
+    syncPaused();
+  }
+  el.hit.addEventListener("pointermove", pointer);
+  el.hit.addEventListener("pointerdown", pointer);
+  el.hit.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") clearHover(); });
+  document.addEventListener("pointerdown", function (e) { if (state.hover && !el.wrap.contains(e.target)) clearHover(); });
+  el.pause.addEventListener("click", function () { state.manual = !state.manual; syncPaused(); });
+
+  /* ---------- the loop: draws straight into the SVG at 60 fps ---------- */
+  var lastScrub = "";
+  var dom = { lo: 0, hi: 1, init: false };
+  var dc = Date.now() - state.delay, lastLabels = 0;
+
+  function draw(dt, now) {
+    var b = state.buf, g = geom();
+    if (b.length < 2) return;
+    var ext = visibleExtent(b, dc, WIN);
+    var pad = (ext.max - ext.min) * .16 || Math.max(1, Math.abs(ext.max) * .05);
+    var lo = ext.min - pad, hi = ext.max + pad;
+    if (!dom.init || state.reduce) { dom.lo = lo; dom.hi = hi; dom.init = true; }
+    else { var k = 1 - Math.exp((-dt / 1000) * 5); dom.lo += (lo - dom.lo) * k; dom.hi += (hi - dom.hi) * k; }
+
+    var m = slopes(b);
+    var f = buildFrame(b, dc, WIN, dom, g, m);
+    if (!f) return;
+    el.line.setAttribute("d", f.line);
+    el.area.setAttribute("d", f.area);
+    el.head.setAttribute("cx", f.head.x); el.head.setAttribute("cy", f.head.y);
+    el.halo.setAttribute("cx", f.head.x); el.halo.setAttribute("cy", f.head.y);
+
+    if (now - lastLabels > 200 || state.dirty) {
+      lastLabels = now;
+      for (var i = 0; i < tickEls.length; i++) tickEls[i].textContent = fmt(dom.hi - ((dom.hi - dom.lo) * i) / 2);
+    }
+
+    if (state.hoverX !== null) {
+      var x = clamp(state.hoverX, g.l, g.l + g.iw);
+      var t = f.tStart + ((x - g.l) / g.iw) * WIN;
+      var val = valueAt(b, t, m);
+      if (val === null) return;
+      var y = g.t + g.ih - ((val - dom.lo) / (dom.hi - dom.lo || 1)) * g.ih;
+      el.cross.setAttribute("x1", x); el.cross.setAttribute("x2", x);
+      el.dot.setAttribute("cx", x); el.dot.setAttribute("cy", y);
+      var ago = Math.max(0, (dc - t) / 1000);
+      var key = Math.round(x) + "|" + val.toFixed(2) + "|" + ago.toFixed(1);
+      if (key !== lastScrub) {
+        lastScrub = key;
+        el.tipV.innerHTML = fmt(val) + "<span>" + UNIT + "</span>";
+        el.tipA.textContent = ago < .5 ? "now" : ago.toFixed(1) + "s ago";
+        el.tip.hidden = false;
+        var tw = el.tip.offsetWidth, th = el.tip.offsetHeight;
+        var left = clamp(x - tw / 2, 0, state.w - tw), top = y - th - 14;
+        if (top < 0) top = y + 14;
+        el.tip.style.transform = "translate(" + Math.round(left) + "px," + Math.round(top) + "px)";
+      }
+    }
+  }
+
+  var raf = 0, last = 0, visible = true;
+  function frame(now) {
+    raf = requestAnimationFrame(frame);
+    var dt = Math.min(now - last, 100);
+    last = now;
+    var b = state.buf;
+    if (state.reduce) {
+      if (!state.dirty) return;
+      if (!paused() && b.length) dc = b[b.length - 1].t;
+    } else if (!paused()) {
+      var target = Date.now() - state.delay;
+      // resume smoothly: run a little faster until caught up with live
+      dc += dt * (1 + clamp((target - dc) / 2000, 0, 1.5));
+      if (dc > target) dc = target;
+      if (target - dc > WIN) dc = target;
+    }
+    var keep = dc - WIN - 5000;
+    while (b.length > 2 && b[1].t < keep) b.shift();
+    draw(dt, now);
+    state.dirty = false;
+  }
+  var shouldRun = function () { return visible && !document.hidden; };
+  function start() { if (raf || !shouldRun()) return; last = performance.now(); raf = requestAnimationFrame(frame); }
+  function stop() { cancelAnimationFrame(raf); raf = 0; }
+  function sync() { if (shouldRun()) start(); else stop(); }
+  new IntersectionObserver(function (es) { visible = es[0].isIntersecting; sync(); }).observe(el.wrap);
+  document.addEventListener("visibilitychange", sync);
+
+  state.w = Math.round(el.wrap.getBoundingClientRect().width) || 640;
+  layout();
+  syncPaused();
+  start();
+
+  /* ======================= the still chart ======================= */
+  var SP = { t: 52, r: 14, b: 26, l: 58 }, SN = 72, SH = 280, TIP_W = 136;
+  var DAY = 864e5, SEND = Date.UTC(2026, 9, 13);
+  function rng(seed) {
+    return function () {
+      seed = (seed + 0x6d2b79f5) | 0;
+      var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function makeSeries(n, seed, start0, drift, vol) {
+    var r = rng(seed), val = start0, out = [];
+    for (var i = 0; i < n; i++) {
+      val += drift + (r() - .5) * vol + Math.sin(i / (n / 6)) * vol * .15;
+      val = Math.max(val, start0 * .4);
+      out.push({ date: SEND - (n - 1 - i) * DAY, value: Math.round(val) });
+    }
+    return out;
+  }
+  var SDATA = { "7D": makeSeries(7, 11, 11800, 180, 900), "30D": makeSeries(30, 7, 9200, 95, 1100), "1Y": makeSeries(365, 3, 4200, 28, 700) };
+  var RANGE_NAME = { "7D": "7 days", "30D": "30 days", "1Y": "year" };
+
+  function niceScale(min, max, count) {
+    count = count || 4;
+    var raw = ((max - min) || 1) / (count - 1), mag = Math.pow(10, Math.floor(Math.log10(raw))), n = raw / mag;
+    var step = (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * mag;
+    var lo = Math.floor(min / step) * step, hi = Math.ceil(max / step) * step, ticks = [];
+    for (var x = lo; x <= hi + step / 2; x += step) ticks.push(x);
+    return { lo: lo, hi: hi, ticks: ticks };
+  }
+  // every range is resampled on the monotone curve to SN points, 0..1 inside its own nice scale, so ranges morph point for point
+  var model = {};
+  Object.keys(SDATA).forEach(function (key) {
+    var pts = SDATA[key], vals = pts.map(function (p) { return p.value; });
+    var ns = niceScale(Math.min.apply(null, vals), Math.max.apply(null, vals));
+    var b = vals.map(function (x, i) { return { t: i, v: x }; }), m = slopes(b), ny = new Float64Array(SN);
+    for (var k = 0; k < SN; k++) ny[k] = (valueAt(b, (k / (SN - 1)) * (vals.length - 1), m) - ns.lo) / (ns.hi - ns.lo);
+    model[key] = { pts: pts, ny: ny, lo: ns.lo, hi: ns.hi, ticks: ns.ticks };
+  });
+
+  var fmtFull = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+  var fmtCompact = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", notation: "compact", maximumFractionDigits: 1 });
+  var fmtTip = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+  function axisFmt(len, narrow) {
+    return new Intl.DateTimeFormat("en-US", len <= 10 ? { weekday: "short", timeZone: "UTC" } : narrow ? { month: "numeric", day: "numeric", timeZone: "UTC" }
+      : len <= 60 ? { month: "short", day: "numeric", timeZone: "UTC" } : { month: "short", timeZone: "UTC" });
+  }
+  // our one curve, cubic-bezier(.22,1,.36,1)
+  var ease = (function (x1, y1, x2, y2) {
+    var cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx, cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
+    return function (x) {
+      var t = x;
+      for (var i = 0; i < 8; i++) {
+        var xt = ((ax * t + bx) * t + cx) * t - x, dx = (3 * ax * t + 2 * bx) * t + cx;
+        if (Math.abs(xt) < 1e-5 || !dx) break;
+        t = clamp(t - xt / dx, 0, 1);
+      }
+      return ((ay * t + by) * t + cy) * t;
+    };
+  })(.22, 1, .36, 1);
+  var speed = function () { var l = document.documentElement.dataset.motion; return l === "off" ? 0 : l === "calm" ? .5 : 1; };
+
+  var se = { wrap: $("sWrap"), svg: $("ssvg"), grid: $("sGrid"), area: $("sArea"), line: $("sLine"), lead: $("sLead"), cross: $("sCross"), dot: $("sDot"),
+    hit: $("sHit"), clip: $("sClipRect"), tip: $("sTip"), tipD: $("sTipD"), tipV: $("sTipV"), now: $("sNow"), delta: $("sDelta"), range: $("sRange"),
+    mark: $("sMark"), name: $("sRangeName"), rows: $("sRows"), table: $("sTableView") };
+  var s = { w: 0, range: "30D", from: model["30D"].ny, to: model["30D"].ny, e: 1, morph: null, r: 0, reveal: null, started: false,
+    hover: null, cx: 0, cxS: 0, raf: 0, last: 0 };
+
+  var sgeom = function () { return { iw: Math.max(1, s.w - SP.l - SP.r), ih: SH - SP.t - SP.b }; };
+  var disp = function (k) { return s.from[k] + (s.to[k] - s.from[k]) * s.e; };
+  function curve() {
+    var g = sgeom(), pts = [];
+    for (var k = 0; k < SN; k++) pts.push({ t: SP.l + (k / (SN - 1)) * g.iw, v: SP.t + (1 - disp(k)) * g.ih });
+    return { pts: pts, m: slopes(pts) };
+  }
+  function pathOf(c) {
+    var p = c.pts, m = c.m, P = function (x, y) { return x.toFixed(2) + " " + y.toFixed(2); }, d = "M" + P(p[0].t, p[0].v);
+    for (var k = 0; k < p.length - 1; k++) {
+      var h = p[k + 1].t - p[k].t;
+      d += "C" + P(p[k].t + h / 3, p[k].v + m[k] * h / 3) + " " + P(p[k + 1].t - h / 3, p[k + 1].v - m[k + 1] * h / 3) + " " + P(p[k + 1].t, p[k + 1].v);
+    }
+    return d;
+  }
+
+  function drawS() {
+    if (!s.w) return;
+    var g = sgeom(), c = curve(), d = pathOf(c), base = SP.t + g.ih;
+    se.line.setAttribute("d", d);
+    se.area.setAttribute("d", d + "L" + (SP.l + g.iw).toFixed(2) + " " + base + "L" + SP.l + " " + base + "Z");
+    se.clip.setAttribute("width", s.r >= .999 ? s.w : SP.l + g.iw * s.r);
+    var lx = SP.l + g.iw * s.r;
+    se.lead.setAttribute("cx", lx);
+    se.lead.setAttribute("cy", valueAt(c.pts, lx, c.m));
+    se.lead.setAttribute("opacity", s.r > .02 && s.r < .96 ? 1 : 0);
+    if (s.hover !== null) {
+      se.cross.setAttribute("x1", s.cxS); se.cross.setAttribute("x2", s.cxS);
+      se.dot.setAttribute("cx", s.cxS); se.dot.setAttribute("cy", valueAt(c.pts, s.cxS, c.m));
+      se.tip.style.transform = "translateX(" + Math.round(clamp(s.cxS - TIP_W / 2, 0, Math.max(0, s.w - TIP_W))) + "px)";
+    }
+  }
+  function stepS(now) {
+    s.raf = 0;
+    var dt = Math.min(now - s.last, 100), busy = false, p;
+    s.last = now;
+    if (s.reveal) {
+      p = clamp((now - s.reveal.start) / s.reveal.dur, 0, 1);
+      s.r = ease(p);
+      if (p < 1) busy = true; else { s.reveal = null; s.r = 1; }
+    }
+    if (s.morph) {
+      p = clamp((now - s.morph.start) / s.morph.dur, 0, 1);
+      s.e = ease(p);
+      if (p < 1) busy = true; else { s.morph = null; s.e = 1; }
+    }
+    if (s.hover !== null) {
+      // the dot glides to the snapped day without overshooting
+      if (!speed()) s.cxS = s.cx; else s.cxS += (s.cx - s.cxS) * (1 - Math.exp((-dt / 1000) * 22));
+      if (Math.abs(s.cx - s.cxS) > .3) busy = true; else s.cxS = s.cx;
+    }
+    drawS();
+    if (busy) kickS();
+  }
+  function kickS() { if (s.raf) return; s.last = performance.now(); s.raf = requestAnimationFrame(stepS); }
+
+  function gridS(fade) {
+    var g = sgeom(), m = model[s.range], len = m.pts.length;
+    var ng = document.createElementNS(NS, "g");
+    ng.setAttribute("class", "gl");
+    var add = function (tag, attrs, text) {
+      var n = document.createElementNS(NS, tag);
+      for (var a in attrs) n.setAttribute(a, attrs[a]);
+      if (text != null) n.textContent = text;
+      ng.appendChild(n);
+    };
+    m.ticks.forEach(function (x) {
+      var y = SP.t + (1 - (x - m.lo) / (m.hi - m.lo)) * g.ih;
+      add("line", { x1: SP.l, x2: s.w - SP.r, y1: y, y2: y });
+      add("text", { "class": "tick", x: SP.l - 10, y: y, "text-anchor": "end", "dominant-baseline": "middle" }, fmtCompact.format(x));
+    });
+    var narrow = s.w < 380, count = narrow ? 3 : s.w < 520 ? 4 : 5, axis = axisFmt(len, narrow), idxs = [];
+    for (var j = 0; j < count; j++) { var ix = Math.round((j / (count - 1)) * (len - 1)); if (idxs.indexOf(ix) < 0) idxs.push(ix); }
+    idxs.forEach(function (ix, j) {
+      add("text", { "class": "tick", x: SP.l + (ix / (len - 1)) * g.iw, y: SH - 6, "text-anchor": j === 0 ? "start" : j === idxs.length - 1 ? "end" : "middle" },
+        axis.format(m.pts[ix].date));
+    });
+    if (fade && speed()) {
+      Array.prototype.forEach.call(se.grid.children, function (old) { old.style.opacity = 0; setTimeout(function () { old.remove(); }, 260); });
+      ng.style.opacity = 0;
+      se.grid.appendChild(ng);
+      ng.getBoundingClientRect();
+      ng.style.opacity = 1;
+    } else {
+      se.grid.textContent = "";
+      se.grid.appendChild(ng);
+    }
+  }
+
+  function headerS() {
+    var m = model[s.range], len = m.pts.length, shown = m.pts[s.hover === null ? len - 1 : s.hover];
+    var dl = (shown.value - m.pts[0].value) / m.pts[0].value;
+    se.now.textContent = fmtFull.format(shown.value);
+    se.delta.innerHTML = "<b>" + (dl >= 0 ? "▲ " : "▼ ") + Math.abs(dl * 100).toFixed(1) + "%</b> " +
+      (s.hover !== null ? "by " + fmtTip.format(shown.date) : "over the last " + RANGE_NAME[s.range]);
+  }
+  function rowsS() {
+    var pts = model[s.range].pts, html = "";
+    // a year has 365 days: the table shows the first day of each month instead
+    var pick = pts.length > 40 ? pts.filter(function (p) { return new Date(p.date).getUTCDate() === 1; }) : pts;
+    pick.forEach(function (p) { html += "<tr><td>" + fmtTip.format(p.date) + "</td><td>" + fmtFull.format(p.value) + "</td></tr>"; });
+    se.rows.innerHTML = html;
+  }
+  se.table.addEventListener("toggle", function () { if (se.table.open) rowsS(); });
+  function labelS() {
+    var m = model[s.range], len = m.pts.length;
+    se.name.textContent = RANGE_NAME[s.range] === "year" ? "1 year" : RANGE_NAME[s.range];
+    se.svg.setAttribute("aria-label", "Revenue over the last " + RANGE_NAME[s.range] + ": from " + fmtFull.format(m.pts[0].value) + " to " +
+      fmtFull.format(m.pts[len - 1].value) + ". Use the left and right arrow keys to read each day.");
+  }
+  function tabsS() {
+    var on = se.range.querySelector('[data-r="' + s.range + '"]');
+    se.range.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b === on)); });
+    se.mark.style.transform = "translateX(" + (on.offsetLeft - 3) + "px)";
+  }
+
+  function changeRange(next) {
+    if (next === s.range || !model[next]) return;
+    var cur = new Float64Array(SN);
+    for (var k = 0; k < SN; k++) cur[k] = disp(k); // start from what is on screen, so a second click mid-morph stays smooth
+    s.from = cur; s.to = model[next].ny; s.range = next;
+    if (speed()) { s.e = 0; s.morph = { start: performance.now(), dur: 550 * speed() }; } else { s.e = 1; s.morph = null; }
+    clearS();
+    gridS(true); headerS(); tabsS(); labelS();
+    if (se.table.open) rowsS();
+    kickS();
+  }
+  se.range.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("button[data-r]");
+    if (b) changeRange(b.dataset.r);
+  });
+
+  function moveTo(idx) {
+    var m = model[s.range], len = m.pts.length, g = sgeom();
+    var target = SP.l + (len > 1 ? idx / (len - 1) : .5) * g.iw;
+    s.cx = target;
+    if (s.hover === null) s.cxS = target; // first hover: appear in place, don't sweep in
+    s.hover = idx;
+    se.wrap.dataset.hover = "1";
+    se.tipD.textContent = fmtTip.format(m.pts[idx].date);
+    se.tipV.textContent = fmtFull.format(m.pts[idx].value);
+    headerS();
+    kickS();
+  }
+  function clearS() {
+    if (s.hover === null) return;
+    s.hover = null;
+    se.wrap.dataset.hover = "0";
+    headerS();
+  }
+  function scrub(e) {
+    var box = se.svg.getBoundingClientRect(), len = model[s.range].pts.length;
+    var frac = clamp((e.clientX - box.left - SP.l) / sgeom().iw, 0, 1);
+    moveTo(Math.round(frac * (len - 1)));
+  }
+  se.hit.addEventListener("pointermove", scrub);
+  se.hit.addEventListener("pointerdown", scrub);
+  se.hit.addEventListener("pointerleave", clearS);
+  se.svg.addEventListener("keydown", function (e) {
+    var len = model[s.range].pts.length;
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      e.preventDefault();
+      moveTo(clamp((s.hover === null ? len - 1 : s.hover) + (e.key === "ArrowRight" ? 1 : -1), 0, len - 1));
+    } else if (e.key === "Escape") clearS();
+  });
+  se.svg.addEventListener("blur", clearS);
+
+  function sizeS(w) {
+    s.w = w;
+    se.svg.setAttribute("width", w); se.svg.setAttribute("height", SH);
+    se.hit.setAttribute("width", w); se.hit.setAttribute("height", SH);
+    se.clip.setAttribute("height", SH);
+    se.cross.setAttribute("y1", SP.t - 6); se.cross.setAttribute("y2", SH - SP.b);
+    if (s.hover !== null) { var keep = s.hover; s.hover = null; moveTo(keep); }
+    gridS(false); tabsS(); drawS();
+  }
+  new ResizeObserver(function (entries) {
+    var w = Math.round(entries[0].contentRect.width);
+    if (w && w !== s.w) sizeS(w);
+  }).observe(se.wrap);
+  sizeS(Math.round(se.wrap.getBoundingClientRect().width) || 640);
+  headerS(); labelS();
+
+  // the line draws in once, from left to right, when 40% of the chart is on screen
+  function revealS() {
+    if (s.started) return;
+    s.started = true;
+    if (!speed()) { s.r = 1; drawS(); return; }
+    s.reveal = { start: performance.now(), dur: 1100 * speed() };
+    kickS();
+  }
+  var sio = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { revealS(); sio.disconnect(); } }, { threshold: .4 });
+  sio.observe(se.wrap);
+})();
+</script>

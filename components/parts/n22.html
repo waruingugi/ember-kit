@@ -1,0 +1,83 @@
+<!-- part n22 | part | group status | Archive a message and change your mind. | Archive a message and change your mind. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Archive a message and <em>change your mind.</em></h3>
+          <p class="kit-p">Press Archive on a row. A small message appears for five seconds. Press Undo to bring it back.</p>
+          <section class="cs kv4" id="n22">
+  <div class="frame"><div class="fbody">
+    <div class="bx" id="n22-bx">
+      <div class="top"><span class="label">Inbox</span><button type="button" class="b sm q" id="n22-reset">Reset inbox</button></div>
+      <ul class="ls" id="n22-ls">
+        <li data-s="Lunch on Friday?"><div class="rw"><span class="av">WK</span><div class="tt"><b>Lunch on Friday?</b><span>Wanjiru Kamau · Are you free around 1 pm? I booked a table.</span></div><span class="tm">09:41</span><button type="button" class="b sm"><svg class="i s" aria-hidden="true"><use href="#i-archive"></use></svg>Archive</button></div></li>
+        <li data-s="Invoice #1043 paid"><div class="rw"><span class="av">KS</span><div class="tt"><b>Invoice #1043 paid</b><span>Kamau &amp; Sons · We sent KSh 18,000 by PocketPay today.</span></div><span class="tm">08:55</span><button type="button" class="b sm"><svg class="i s" aria-hidden="true"><use href="#i-archive"></use></svg>Archive</button></div></li>
+        <li data-s="Notes from Monday"><div class="rw"><span class="av">BO</span><div class="tt"><b>Notes from Monday</b><span>Brian Otieno · Three things we agreed on, and who does what.</span></div><span class="tm">Yesterday</span><button type="button" class="b sm"><svg class="i s" aria-hidden="true"><use href="#i-archive"></use></svg>Archive</button></div></li>
+        <li data-s="Delivery moved to Thursday"><div class="rw"><span class="av">MC</span><div class="tt"><b>Delivery moved to Thursday</b><span>Mara Couriers · Your parcel will arrive on 5 Nov instead.</span></div><span class="tm">27 Oct</span><button type="button" class="b sm"><svg class="i s" aria-hidden="true"><use href="#i-archive"></use></svg>Archive</button></div></li>
+        <li data-s="Your Mawimbi Mobile bill is ready"><div class="rw"><span class="av">MM</span><div class="tt"><b>Your Mawimbi Mobile bill is ready</b><span>Mawimbi Mobile · This month you owe KSh 2,150.</span></div><span class="tm">26 Oct</span><button type="button" class="b sm"><svg class="i s" aria-hidden="true"><use href="#i-archive"></use></svg>Archive</button></div></li>
+      </ul>
+      <p class="emp" id="n22-emp" hidden="">Inbox is clear. Press Reset inbox to fill it again.</p>
+      <div class="ts" id="n22-ts" role="status" aria-live="polite" hidden="">
+        <span class="tmsg" id="n22-msg"></span>
+        <button type="button" class="b sm" id="n22-undo">Undo</button>
+        <i class="cd" aria-hidden="true"></i>
+      </div>
+    </div>
+  </div></div>
+
+</section>
+        </div>
+<script data-slot="0018">
+(function () {
+  "use strict";
+  var box = document.getElementById("n22"); if (!box) return;
+  var EASE = "cubic-bezier(.22,1,.36,1)";
+  function spd() { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; }
+  function go(el, kf, ms, done) {
+    var s = spd(); if (!s || !el.animate) { if (done) done(); return null; }
+    var a = el.animate(kf, { duration: ms * (s < 1 ? .6 : 1), easing: EASE, fill: "both" });
+    a.onfinish = function () { if (done) done(); a.cancel(); }; return a;
+  }
+  var ls = document.getElementById("n22-ls"), ts = document.getElementById("n22-ts"), msg = document.getElementById("n22-msg"), undo = document.getElementById("n22-undo");
+  var cd = ts.querySelector(".cd"), rows = [].slice.call(ls.children), last = null, count = null, enter = null, leave = null, hov = false;
+  function showToast(text) {
+    if (leave) { leave.cancel(); leave = null; }
+    if (ts.hidden) {
+      msg.textContent = text; ts.hidden = false;
+      var s = spd(); enter = go(ts, [{ opacity: 0, transform: "translateY(" + (12 * s) + "px)" }, { opacity: 1, transform: "none" }], 350);
+    } else { msg.textContent = text; go(msg, [{ opacity: 0 }, { opacity: 1 }], 250); }
+    if (count) count.cancel();
+    count = cd.animate([{ transform: "scaleX(1)" }, { transform: "scaleX(0)" }], { duration: 5000, easing: "linear", fill: "both" });
+    count.onfinish = function () { hideToast(); };
+    if (hov) count.pause();
+  }
+  function hideToast() {
+    if (count) { count.cancel(); count = null; }
+    if (ts.hidden) return;
+    var s = spd();
+    leave = go(ts, [{ opacity: 1, transform: "none" }, { opacity: 0, transform: "translateY(" + (6 * s) + "px)" }], 200, function () { ts.hidden = true; leave = null; });
+  }
+  function pause(p) { hov = p; if (count && count.playState !== "finished") { if (p) count.pause(); else count.play(); } }
+  ts.addEventListener("pointerenter", function () { pause(true); });
+  ts.addEventListener("pointerleave", function () { if (!ts.contains(document.activeElement)) pause(false); });
+  ts.addEventListener("focusin", function () { pause(true); });
+  ts.addEventListener("focusout", function () { if (!ts.matches(":hover")) pause(false); });
+  function remove(li) {
+    var h = li.offsetHeight; li.style.overflow = "hidden";
+    var nx = rows.slice(rows.indexOf(li) + 1).concat(rows.slice(0, rows.indexOf(li))).filter(function (r) { return !r.hidden; })[0];
+    go(li, [{ height: h + "px", opacity: 1 }, { height: "0px", opacity: 0 }], 350, function () { li.hidden = true; empty(); });
+    last = li; showToast("Archived “" + li.dataset.s + "”");
+    if (nx) nx.querySelector(".b").focus(); else undo.focus();
+  }
+  function empty() { document.getElementById("n22-emp").hidden = rows.some(function (r) { return !r.hidden; }); }
+  function restore(li) {
+    li.hidden = false; empty(); var h = li.offsetHeight;
+    go(li, [{ height: "0px", opacity: 0 }, { height: h + "px", opacity: 1 }], 350);
+  }
+  rows.forEach(function (li) { li.querySelector(".b").addEventListener("click", function () { remove(li); }); });
+  undo.addEventListener("click", function () {
+    if (last) { var li = last; last = null; restore(li); li.querySelector(".b").focus(); }
+    hideToast();
+  });
+  document.getElementById("n22-reset").addEventListener("click", function () {
+    rows.forEach(function (li) { if (li.hidden) restore(li); }); last = null; hideToast();
+  });
+})();
+</script>

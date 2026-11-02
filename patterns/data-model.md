@@ -1,4 +1,4 @@
-# The data model (section 10): the ER diagram
+# The data model (showcase section 16): the ER diagram
 
 > Part of the design system. Read `~/.claude/design/DESIGN.md` first; it says when to read this file.
 

@@ -1,0 +1,31 @@
+<!-- part n46 | part | group forms | Filter chips that add up as you tap. | Filter chips that add up as you tap. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Filter chips that <em>add up as you tap.</em></h3>
+          <p class="kit-p">When the list is fixed, show every choice. Tap a chip: it fills, a tick slides in, and the total below counts to the new number.</p>
+          <section class="cs kv4" id="n46">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="fc"><p class="lb" id="n46-l">Shop categories</p>
+      <div class="cs2" role="group" aria-labelledby="n46-l"><button type="button" class="ch" aria-pressed="true" data-n="42"><svg class="tc" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.3 6.5 11l6-6.5"></path></svg>Fruit<span class="n">42</span></button><button type="button" class="ch" aria-pressed="false" data-n="65"><svg class="tc" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.3 6.5 11l6-6.5"></path></svg>Vegetables<span class="n">65</span></button><button type="button" class="ch" aria-pressed="true" data-n="18"><svg class="tc" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.3 6.5 11l6-6.5"></path></svg>Dairy<span class="n">18</span></button><button type="button" class="ch" aria-pressed="false" data-n="23"><svg class="tc" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.3 6.5 11l6-6.5"></path></svg>Bakery<span class="n">23</span></button><button type="button" class="ch" aria-pressed="false" data-n="51"><svg class="tc" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.3 6.5 11l6-6.5"></path></svg>Drinks<span class="n">51</span></button><button type="button" class="ch" aria-pressed="false" data-n="12"><svg class="tc" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.3 6.5 11l6-6.5"></path></svg>Cleaning<span class="n">12</span></button><button type="button" class="ch" aria-pressed="false" data-n="37"><svg class="tc" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.3 6.5 11l6-6.5"></path></svg>Snacks<span class="n">37</span></button><button type="button" class="ch" aria-pressed="false" data-n="9"><svg class="tc" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.3 6.5 11l6-6.5"></path></svg>Meat<span class="n">9</span></button></div>
+      <p class="tot" aria-live="polite"><b>60</b> products in your shop</p></div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0050">
+(function () {
+  "use strict";
+  var box = document.getElementById("n46"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function money(n) { return n.toLocaleString("en-KE"); }
+  function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  function count(el, from, to, fmt, ms) { if (!moving()) { el.textContent = fmt(to); return; } cancelAnimationFrame(el._an); var t0 = performance.now(); (function f(t) { var k = Math.min(1, (t - t0) / (ms || 320)); el.textContent = fmt(Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)))); if (k < 1) el._an = requestAnimationFrame(f); })(t0); }
+  var tot = $(".tot b"), shown = 60;
+  function sum() { return $$(".ch").reduce(function (a, c) { return a + (c.getAttribute("aria-pressed") === "true" ? +c.getAttribute("data-n") : 0); }, 0); }
+  $$(".ch").forEach(function (c) { c.addEventListener("click", function () { c.setAttribute("aria-pressed", String(c.getAttribute("aria-pressed") !== "true")); var to = sum(); count(tot, shown, to, String, 350); shown = to; }); });
+})();
+</script>

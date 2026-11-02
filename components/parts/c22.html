@@ -1,0 +1,54 @@
+<!-- part c22 | part | group status | A payment that says where it is. | A payment that says where it is. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A payment that says <em>where it is.</em></h3>
+          <p class="kit-p">Switch between the three states. While it works, one orange dot goes round the clock.</p>
+          <section class="cs" id="c22">
+    <div class="frame">
+      <div class="fbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Checkout</span></div>
+      <div class="fbody">
+        <div class="ps-tabs"><div class="tabs" id="psTabs" role="group" aria-label="Demo state"></div></div>
+        <div class="ps" id="ps" aria-live="polite"></div>
+      </div>
+    </div>
+</section>
+        </div>
+<script data-slot="0006" data-block="0019">
+  /* ---------------- 22 payment status ---------------- */
+  (function () {
+    var box = $("ps"), T, timer = 0;
+    var AMT = '<div class="amt"><span>Amount</span><b>$77.76</b></div>';
+    var CARD = '<div class="kv"><span>Method</span><span>Card ···· 4242</span></div>';
+    var S = [
+      function () {
+        return '<div class="ps-ic busy">' + ic("clock", "l") + '<span class="ps-orbit" aria-hidden="true"><i></i></span></div><h4>Confirming your payment</h4><p class="d">This takes a few seconds. You can leave this page; we will email you.</p>' + AMT +
+          '<div class="ps-det">' + CARD + '<div class="kv"><span>Merchant</span><span>Corner Studio</span></div><div class="kv"><span>Started</span><span>09:41</span></div></div>';
+      },
+      function () {
+        return '<div class="ps-ic ok"><svg class="i l" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></div><h4>Payment received</h4><p class="d">We sent a receipt to maya@example.com.</p>' + AMT +
+          '<div class="ps-det"><div class="kv"><span>Transaction</span><span><button class="idb" type="button" data-copyid>txn_8Kf2Lq' + ic("copy", "s") + "</button></span></div>" + CARD + '<div class="kv"><span>Paid on</span><span>29 Oct 2026, 09:41</span></div>' +
+          '<div class="ps-items"><div class="kv"><span>Team plan × 3</span><span>$72.00</span></div><div class="kv"><span>Tax</span><span>$5.76</span></div><div class="kv t"><span>Total</span><span>$77.76</span></div></div>' +
+          '<div class="ps-acts"><button class="b" type="button" data-copytext>' + ic("copy", "s") + '<span>Copy as text</span></button><button class="b pri" type="button" data-done>Done</button></div></div>';
+      },
+      function () {
+        return '<div class="ps-ic bad">' + ic("alert", "l") + "</div><h4>Payment didn't go through</h4><p class=\"d\">Your bank turned down the card. Nothing was charged.</p>" + AMT +
+          '<div class="ps-det"><div class="kv"><span>Reason</span><span>Card declined</span></div>' + CARD +
+          '<div class="ps-acts col"><button class="b pri" type="button" data-retry>' + ic("refresh", "s") + 'Try again</button><button class="b" type="button" data-method>' + ic("card", "s") + "Use another card</button></div></div>";
+      }
+    ];
+    function show(i) {
+      clearTimeout(timer);
+      box.innerHTML = S[i]();
+      var icn = box.querySelector(".ps-ic"); if (spd()) icn.classList.add("popin"); else { var p = icn.querySelector("path"); if (p) p.style.animation = "none"; }
+    }
+    T = tabs($("psTabs"), ["Processing", "Succeeded", "Failed"], { active: 1, onSelect: show });
+    box.addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b) return;
+      if (b.hasAttribute("data-retry")) { T.set(0); show(0); timer = setTimeout(function () { T.set(1); show(1); }, 1600); }
+      else if (b.hasAttribute("data-copyid")) copy("txn_8Kf2Lq").then(function (ok) { b.firstChild.textContent = ok ? "Copied" : "txn_8Kf2Lq"; setTimeout(function () { b.firstChild.textContent = "txn_8Kf2Lq"; }, 1400); });
+      else if (b.hasAttribute("data-copytext")) copy("Payment received\nTransaction txn_8Kf2Lq\nTeam plan x 3  $72.00\nTax  $5.76\nTotal  $77.76\nCard ending 4242, 29 Oct 2026 09:41").then(function (ok) { b.lastChild.textContent = ok ? "Copied" : "Copy blocked"; setTimeout(function () { b.lastChild.textContent = "Copy as text"; }, 1500); });
+      else if (b.hasAttribute("data-done")) { b.textContent = "✓ Done"; }
+      else if (b.hasAttribute("data-method")) { b.lastChild.textContent = "Card form would open here"; }
+    });
+    show(1);
+  })();
+</script>
