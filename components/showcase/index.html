@@ -506,12 +506,23 @@ html[data-motion="off"] .b-hero .log i::after { animation: none; transform: scal
 .hl.hl-wide:where(:not(.kit *)) { width: 86%; max-width: 250px; }
 .card-top { display: flex; justify-content: space-between; align-items: center; }
 .code-win { border-radius: 16px; background: var(--plate); border: 1px solid var(--plate-line); box-shadow: var(--shadow-lg); overflow: hidden; color: var(--plate-text); }
-.code-tabs { display: flex; align-items: stretch; gap: 2px; padding: 0 10px 0 14px; height: 46px; border-bottom: 1px solid var(--plate-line); background: var(--plate-raised); overflow-x: auto; scrollbar-width: none; }
+.code-tabs { position: relative; display: flex; align-items: stretch; gap: 2px; padding: 0 10px 0 14px; height: 46px; box-shadow: inset 0 -1px 0 var(--plate-line); background: var(--plate-raised); overflow-x: auto; scrollbar-width: none; }
 .code-tabs .dots:not(.kit *) { align-items: center; margin-right: 12px; }
 .code-tabs .dots i:not(.kit *) { background: rgb(255 255 255 / .14); }
-.tab { position: relative; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; font-family: var(--font-mono); font-size: 12.5px; color: var(--plate-dim); white-space: nowrap; transition: color .2s; }
+.tab { position: relative; z-index: 1; margin-top: 6px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; font-family: var(--font-mono); font-size: 12.5px; color: var(--plate-dim); white-space: nowrap; transition: color .2s; }
 .tab:hover,  .tab[aria-selected="true"] { color: var(--plate-text); }
-.tab[aria-selected="true"]::after { content: ""; position: absolute; left: 10px; right: 10px; bottom: -1px; height: 2px; background: var(--accent); border-radius: 2px; }
+/* The open tab is a sheet of plate joined to the code under it, like an editor tab (pick 2026-11-02: A's look, C's glide).
+   Without the script it sits on the tab itself. With it, one sheet glides between tabs on the snappy spring.
+   Only transform moves: two rounded ends slide and the middle stretches with scaleX. */
+.tab[aria-selected="true"] { background: var(--plate); border-radius: 8px 8px 0 0; box-shadow: inset 1px 1px 0 var(--plate-line), inset -1px 0 0 var(--plate-line); }
+.code-tabs.has-sheet .tab[aria-selected="true"] { background: transparent; box-shadow: none; }
+.code-tabs .tab-sheet { position: absolute; left: 0; top: 6px; bottom: 0; z-index: 0; pointer-events: none; }
+.code-tabs .tab-sheet i { position: absolute; top: 0; bottom: 0; left: 0; background: var(--plate); transition: transform var(--sp-snappy-d) var(--sp-snappy); }
+.code-tabs .tab-sheet .ts-l { width: 8px; border-radius: 8px 0 0 0; box-shadow: inset 1px 1px 0 var(--plate-line); }
+.code-tabs .tab-sheet .ts-m { width: 1px; transform-origin: 0 0; box-shadow: inset 0 1px 0 var(--plate-line); }
+.code-tabs .tab-sheet .ts-r { width: 8px; border-radius: 0 8px 0 0; box-shadow: inset -1px 1px 0 var(--plate-line); }
+.code-tabs .tab-sheet.is-still i, html[data-motion="off"] .code-tabs .tab-sheet i { transition: none; }
+@media (prefers-reduced-motion: reduce) { .code-tabs .tab-sheet i { transition: none; } }
 .tab .st:not(.kit *) { width: 16px; height: 16px; border-radius: 4px; display: grid; place-items: center; font-size: 10px; font-weight: 500; }
 .st-A { color: var(--diff-add); background: rgb(63 185 80 / .14); }
 .st-M { color: var(--diff-mod); background: rgb(210 153 34 / .16); }
@@ -11658,7 +11669,26 @@ hairline({
     });
   });
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.code-win button[role="tab"]'));
-  function selectTab(tab) { tabs.forEach(function (t) { var on = t === tab; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; document.getElementById(t.getAttribute('aria-controls')).classList.toggle('is-active', on); }); }
+  /* The gliding sheet behind the open tab: two ends slide, the middle stretches (transform only). */
+  function placeSheet(bar) {
+    var sheet = bar.querySelector('.tab-sheet'), open = bar.querySelector('[aria-selected="true"]');
+    if (!sheet || !open || !open.offsetWidth) return;
+    var x = open.offsetLeft, w = open.offsetWidth, parts = sheet.children;
+    parts[0].style.transform = 'translateX(' + x + 'px)';
+    parts[1].style.transform = 'translateX(' + (x + 7) + 'px) scaleX(' + Math.max(w - 14, 0) + ')';
+    parts[2].style.transform = 'translateX(' + (x + w - 8) + 'px)';
+  }
+  var tabBars = Array.prototype.slice.call(document.querySelectorAll('.code-tabs[role="tablist"]'));
+  tabBars.forEach(function (bar) {
+    var sheet = document.createElement('span'); sheet.className = 'tab-sheet is-still'; sheet.setAttribute('aria-hidden', 'true');
+    sheet.innerHTML = '<i class="ts-l"></i><i class="ts-m"></i><i class="ts-r"></i>';
+    bar.insertBefore(sheet, bar.firstChild); bar.classList.add('has-sheet'); placeSheet(bar);
+    requestAnimationFrame(function () { requestAnimationFrame(function () { sheet.classList.remove('is-still'); }); });
+  });
+  function placeAllSheets() { tabBars.forEach(placeSheet); }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeAllSheets);
+  window.addEventListener('resize', placeAllSheets);
+  function selectTab(tab) { tabs.forEach(function (t) { var on = t === tab; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; document.getElementById(t.getAttribute('aria-controls')).classList.toggle('is-active', on); }); placeSheet(tab.parentNode); }
   tabs.forEach(function (t, i) {
     t.addEventListener('click', function () { selectTab(t); });
     t.addEventListener('keydown', function (e) { if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return; var nx = tabs[(i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length]; selectTab(nx); nx.focus(); });

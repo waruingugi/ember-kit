@@ -1,5 +1,5 @@
 /* The design tokens. Paste this :root block at the top of every page's <style>.
-   Light is the default. The night theme is the html[data-theme="dark"] block at the end.
+   Light is the default. Every page also ships the night theme: the two blocks at the end.
    Fonts: one Google Fonts link (see components/README.md). */
 :root {
   /* paper and ink */
@@ -67,7 +67,40 @@ body { margin: 0; background: var(--paper); color: var(--ink); font: 400 17px/1.
 ::selection { background: rgb(var(--accent-rgb) / .2); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
 
-/* Night theme: the reader's choice, saved with the motion level. Same jobs, darker paper, brighter orange. */
+/* Night theme. Every page ships it. Same jobs, darker paper, brighter orange.
+   Two blocks with the same values, kept in step:
+   1. the reader's system is dark and they have not picked light;
+   2. the reader picked dark (data-theme="dark"), whatever the system says. */
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) {
+    --paper: #0d1013;
+    --paper-raised: #14181c;
+    --paper-sunk: #090b0d;
+    --canvas: #101317;
+    --ink: #ebeff1;
+    --ink-rgb: 235 239 241;
+    --ink-soft: #c3cbd1;
+    --muted: #8f999f;
+    --dim: #5f686e;
+    --line: rgb(255 255 255 / .09);
+    --line-hi: rgb(255 255 255 / .2);
+    --shadow-sm: 0 1px 0 rgb(255 255 255 / .03) inset, 0 1px 3px rgb(0 0 0 / .4);
+    --shadow-lg: 0 1px 0 rgb(255 255 255 / .04) inset, 0 30px 60px -30px rgb(0 0 0 / .8);
+    --accent: #ff6a2b;
+    --accent-text: #ff8d5e;
+    --accent-rgb: 255 106 43;
+    --plate: #07090b;
+    --plate-raised: #0e1114;
+    --sys-frontend: #22b8d8;
+    --sys-backend: #2bb98a;
+    --sys-database: #9f7aea;
+    --sys-security: #f0577a;
+    --sys-bus: #e8923a;
+    --sys-external: #8a98ab;
+    --hairline-lo: rgba(235, 239, 241, .2);
+    color-scheme: dark;
+  }
+}
 html[data-theme="dark"] {
   --paper: #0d1013;
   --paper-raised: #14181c;

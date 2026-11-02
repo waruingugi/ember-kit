@@ -16,7 +16,6 @@ Don't "fix" these. Tested on a real page (2026-10-21).
 | `tell-glass` / `backdrop-filter` on the sticky sidebar and top bar | Blur only on fixed or sticky bars is allowed. Glass on cards is still banned |
 | `marquee` on `.callout::before` (the `sweep` glint) | A house component (`components.css`). Counts as the allowed glint |
 | Cream / warm paper bans (auteur `CREAM_DEFAULT`) | `--paper #eff2f1` is a cool grey-green; the check does not fire on it |
-| Light-only, no dark mode (taste-skill demands both) | DESIGN.md: light theme only |
 | One ease curve (genjutsu and the old delphi `animate-skill` want `ease-in` exits; Emil's `animate`, `motion-design` and the `gsap-*` skills bring their own curve tables) | DESIGN.md: one curve, `cubic-bezier(.22,1,.36,1)`. Exits use it too, just shorter |
 | Reduced motion "gentler, keep fades" (auteur, genjutsu) | DESIGN.md: reduced motion acts as `off`. Final state, nothing moves |
 | `fade-up` on every section called a tell (frontend-design) | DESIGN.md: `fade-up` on every major block is a house part |

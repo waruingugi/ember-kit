@@ -34,9 +34,13 @@ works there, and the order to do things in.
 
 ## What the page must do
 
-- Set `body`'s background from `--paper`. The page is light only, so set
-  `color-scheme: light` and give every colour a token. Do not add a dark
-  theme without asking (*Ask first* in `DESIGN.md`).
+- Set `body`'s background from `--paper`, and give every colour a token.
+- Ship both themes (*Colours* in `DESIGN.md`). The claude.ai viewer sets
+  `data-theme="light"` or `"dark"` when the reader picks one, and sets
+  nothing when they use their system setting. `tokens.css` covers all three
+  cases, so paste the whole file, both night blocks included.
+- Put a System, Light, Night switch on the page too (*Colours* in
+  `DESIGN.md`), so both looks can be seen from inside the page.
 - Wrap every `localStorage` read and write in `try`/`catch`. It can throw
   in a private window.
 - Keep the page under 16 MB, embedded images included.

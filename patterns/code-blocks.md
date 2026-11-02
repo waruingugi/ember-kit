@@ -24,8 +24,15 @@ the page's own classes.
 
 How it looks:
 - **A tab bar:** three dim dots, then one tab per file with a small status
-  letter (`A` in green for a new file) and its name. The chosen tab is
-  white on the plate. The tabs work with the arrow keys
+  letter (`A` in green for a new file) and its name. The chosen tab is an
+  editor tab: white text on a sheet of plate joined to the code under it
+  (no line between them, a 1 px line on its sides and top, 8 px top
+  corners). When you switch, the sheet glides to the new tab on the snappy
+  spring. Only `transform` moves: two rounded ends slide and the middle
+  stretches with `scaleX` (`placeSheet` in the showcase). With motion `off`
+  it jumps; without the script it sits on the tab. No colour, never an
+  orange underline. Name its classes `tab-sheet`, `ts-l`, `ts-m`, `ts-r`:
+  `.sheet` is taken by the side sheet. The tabs work with the arrow keys
   (`role="tablist"`, `role="tab"`, `aria-selected`, roving `tabindex`).
 - **A file bar** under the tabs: the kind (`New`), the path, then either an
   `Our proposal` pill or the plan section it comes from, then `+n` lines,
@@ -52,7 +59,7 @@ A working copy is section 19, *Code changes*, in `components/showcase/index.html
 `.code-win`):
 - **Tabs** carry a status letter in a small tinted square: `A` new (green),
   `M` edited (amber), `D` deleted (red, and the file name struck through),
-  `R` moved (blue). The chosen tab has a 2 px orange underline.
+  `R` moved (blue). The chosen tab is the gliding editor tab from section 1.
 - **A file bar** gives the kind in words (`New file`, `Edited`, `Deleted`,
   `Moved`), the path (`old → new` for a move, struck through for a
   delete), then `+n −n` and five little blocks that show the size of the
@@ -63,13 +70,13 @@ A working copy is section 19, *Code changes*, in `components/showcase/index.html
   faded. `@@` hunk lines are blue.
 - **Copy** copies the new version of the file. On a deleted file it says
   there is nothing to copy.
-- Switching tabs fades the panel in over 0.45 s (none with motion off).
+- Switching tabs fades the panel in over 0.45 s while the sheet glides (none with motion off).
 - **A diff legend** beside it: the four status letters in 22 px tiles, each
   with one plain sentence ("Added: a new file").
 
 ## 3. The terminal: "type this"
 
-The same plate and tab bar, with one tab named `terminal`.
+The same plate and tab bar, with one tab named `terminal` (the sheet sits on it and never moves).
 - Each command starts with an orange `$ ` (`.prompt`, not selectable, so
   Copy and select give only the command).
 - Long commands break with ` \` and an indent.

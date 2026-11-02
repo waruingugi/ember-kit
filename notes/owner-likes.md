@@ -71,7 +71,8 @@ Reach for these first.
 Geist in diagrams, and a dark theme. The owner said no to those on 2026-10-08,
 to keep the look the existing artifacts already have. Antonio for numbers
 was taken later the same day. So our fonts are the five under *Type* (`DESIGN.md`), and
-the theme stays light only.
+the theme stayed light only until 2026-11-02, when the owner asked for both
+themes on every page (`DESIGN.md`, *Colours*).
 
 **Liked on 2026-10-08, from a plan page:** Hairline's stock phone
 figure (Firebase Cloud Messaging) as the model for an overview: a few

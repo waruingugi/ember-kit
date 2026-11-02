@@ -2,9 +2,9 @@
 name: ember
 slug: ember
 source-url: none
-created: 2026-10-08
-updated: 2026-10-08
-notes: ember-kit look: paper, ink, burnt orange, Fraunces/Inter/JetBrains Mono
+created: 2026-11-02
+updated: 2026-11-02
+notes: ember-kit look: paper, ink, burnt orange, Fraunces/Inter/JetBrains Mono; both themes
 -->
 <!-- A changed copy of Diagram Design's style guide (github.com/cathrynlavery/diagram-design, MIT, (c) 2025 Cathryn Lavery), with this repo's colours and rules. -->
 # Style Guide
@@ -220,6 +220,6 @@ These come from `DESIGN.md` in this repo. They sit on top of everything above.
 - **Right-angle connectors only**, with r 8 elbows. A line that goes back is dashed `5 4`.
 - **Labels sit on an opaque mask** in the canvas colour, 6–10 px clear of the line.
 - **Component colours keep one meaning** in every diagram. Use them only for a small system chip or tag, never as a big fill: cyan `#0891b2` frontend, emerald `#047857` backend, violet `#6d28d9` database, rose `#be123c` security, orange `#c2410c` message bus, slate `#475569` external.
-- **Light only.** Diagrams are drawn light. The dark columns above exist only so the schema is complete.
+- **Both themes.** Every diagram ships light and night, like every page (`DESIGN.md`, *Colours*). Use the light column by default and the dark column when the page is in night mode (`prefers-color-scheme: dark` with no theme picked, or `data-theme="dark"`). Inline SVG takes its colours from the page's tokens so it switches by itself. (Changed 2026-11-02; diagrams were light only before.)
 - **Every SVG** has `role="img"`, a `<title>` first, then a `<desc>`.
 - **Line draw-in:** solid lines may use `pathLength="1"`. Dashed lines never do, because their dashes turn solid. Fade them in instead.

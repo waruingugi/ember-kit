@@ -105,7 +105,26 @@
     });
   });
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.code-win button[role="tab"]'));
-  function selectTab(tab) { tabs.forEach(function (t) { var on = t === tab; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; document.getElementById(t.getAttribute('aria-controls')).classList.toggle('is-active', on); }); }
+  /* The gliding sheet behind the open tab: two ends slide, the middle stretches (transform only). */
+  function placeSheet(bar) {
+    var sheet = bar.querySelector('.tab-sheet'), open = bar.querySelector('[aria-selected="true"]');
+    if (!sheet || !open || !open.offsetWidth) return;
+    var x = open.offsetLeft, w = open.offsetWidth, parts = sheet.children;
+    parts[0].style.transform = 'translateX(' + x + 'px)';
+    parts[1].style.transform = 'translateX(' + (x + 7) + 'px) scaleX(' + Math.max(w - 14, 0) + ')';
+    parts[2].style.transform = 'translateX(' + (x + w - 8) + 'px)';
+  }
+  var tabBars = Array.prototype.slice.call(document.querySelectorAll('.code-tabs[role="tablist"]'));
+  tabBars.forEach(function (bar) {
+    var sheet = document.createElement('span'); sheet.className = 'tab-sheet is-still'; sheet.setAttribute('aria-hidden', 'true');
+    sheet.innerHTML = '<i class="ts-l"></i><i class="ts-m"></i><i class="ts-r"></i>';
+    bar.insertBefore(sheet, bar.firstChild); bar.classList.add('has-sheet'); placeSheet(bar);
+    requestAnimationFrame(function () { requestAnimationFrame(function () { sheet.classList.remove('is-still'); }); });
+  });
+  function placeAllSheets() { tabBars.forEach(placeSheet); }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeAllSheets);
+  window.addEventListener('resize', placeAllSheets);
+  function selectTab(tab) { tabs.forEach(function (t) { var on = t === tab; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; document.getElementById(t.getAttribute('aria-controls')).classList.toggle('is-active', on); }); placeSheet(tab.parentNode); }
   tabs.forEach(function (t, i) {
     t.addEventListener('click', function () { selectTab(t); });
     t.addEventListener('keydown', function (e) { if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return; var nx = tabs[(i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length]; selectTab(nx); nx.focus(); });

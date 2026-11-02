@@ -61,7 +61,7 @@ For a long source document (PDF, plan): first extract one fact per line with its
 
 ## Colours
 
-Light is the default; a **night theme** is official (`html[data-theme="dark"]` in `components/tokens.css`, from the old overview: paper `#0d1013`, orange `#ff6a2b`). Offer a theme switch on showcase and explainer pages and save it with the motion level. `body` background is always `var(--paper)`. All tokens, including plate, syntax, diff and Hairline colours: `components/tokens.css`.
+**Every page ships both themes: light and night.** Never make a light-only page. Light is the default; the **night theme** is the other half (`components/tokens.css`, from the old overview: paper `#0d1013`, orange `#ff6a2b`). The page follows the reader's own setting (`prefers-color-scheme`) until they pick one, and a picked theme (`data-theme="light"` or `"dark"`) always wins. `tokens.css` does both, so paste all of it. Every colour comes from a token, so nothing stays light at night; a literal colour is allowed only on the dark plate. Every page and every claude.ai artifact has its own theme switch (System, Light, Night) in its top line, so the owner can see both looks without leaving the page. Save the pick in `localStorage` (`ember-theme-v1`, inside `try`/`catch`); System hands control back to the viewer. Code, terminals and the end card stay on the dark plate in both themes. `body` background is always `var(--paper)`. All tokens, including plate, syntax, diff and Hairline colours: `components/tokens.css`.
 
 | Token | Value | Use |
 |---|---|---|
@@ -229,7 +229,7 @@ Each tool has one job. Never draw boxes and arrows as plain HTML.
 ## Known traps
 
 Bugs hit while building pages in this style. Check for them.
-- **Class clashes with older CSS.** Older stylesheets define `.skip` (skip link), `.later`, `.end` (dark end card), `.done`, `.t`, `.k`, `.stat`. Never reuse them for new parts; scope or rename first.
+- **Class clashes with older CSS.** Older stylesheets define `.skip` (skip link), `.later`, `.end` (dark end card), `.done`, `.t`, `.k`, `.stat`, and the showcase has `.sheet` (the side sheet, fixed to the screen edge). Never reuse them for new parts; scope or rename first.
 - **Old parts and v4 parts on one page.** The older parts (`c01`–`c31`) and `components.css` style plain class names (`.sb`, `.pill`, `.seg`, `.wrap`, `.badge`, `.pop`, `.cnt`, `.row`, `.dot`, `.chev`, `.nm`) for the whole page, and they leak into v4 parts that reuse the same names. Give every v4 section the class `kv4`, and write each older part's rule as `X:where(:not(.kv4 *))`, as the showcase does. Keep `.frame`, `.fbody` and `.lead` shared. Then open every v4 part and use it once.
 - **Undefined layout classes.** Older CSS has no `.bento`/`.c4`–`.c12`; add them from `components/components.css` before using them.
 - **Grid overflow.** Long code lines stretch grid tracks. Give grid children `min-width: 0` and single-column grids `minmax(0,1fr)`.
@@ -253,6 +253,7 @@ Bugs hit while building pages in this style. Check for them.
 
 Every line, before an artifact goes online:
 - [ ] *Ask first* settled: theme, copied-code differences, look changes.
+- [ ] Both themes: the page reads well in light and in night, with the system set to dark and nothing picked, and with each theme picked by hand.
 - [ ] No sideways scroll at 1440×900 and 390×844 (`document.documentElement.scrollWidth === innerWidth`).
 - [ ] Sidebar collapses by button and `[`, remembers it, becomes a drawer on phones.
 - [ ] Motion runs where it has a job. With motion `off` and with reduced motion, everything is visible and nothing moves.
