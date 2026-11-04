@@ -2326,7 +2326,7 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
 .kit #n29 .st { grid-area: 1 / 1; display: flex; align-items: center; justify-content: center; gap: 6px; opacity: 0; transform: translateY(14px) scale(.9); transition: opacity .18s var(--ease-out), transform var(--sp-bouncy-d) var(--sp-bouncy); }
 .kit #n29 .st.on { opacity: 1; transform: none; }
 .kit #n29 .st.out { transform: translateY(-14px) scale(.9); }
-.kit #n29 .st .i { stroke-width: 2.4; }
+.kit #n29 .st .i { stroke-width: 3; }
 .kit #n29 .st i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: n29-dot .9s var(--ease-in-out) infinite; }
 .kit #n29 .st i:nth-child(2) { animation-delay: .12s; }
 .kit #n29 .st i:nth-child(3) { animation-delay: .24s; }
@@ -2862,7 +2862,7 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
 
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
     <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
@@ -15883,8 +15883,9 @@ hairline({
   var gy = L.lively() ? 18 : 8;
   gsap.utils.toArray('.goal[data-reveal]').forEach(function (goal) {
     gsap.set(goal, { autoAlpha: 0, y: gy });
-    function show() { gsap.to(goal, { autoAlpha: 1, y: 0, duration: 0.9, ease: EASE, overwrite: true }); }
-    function hide(y) { gsap.to(goal, { autoAlpha: 0, y: y, duration: 0.6, ease: 'power2.out', overwrite: true }); }
+    /* Ease in and out, slower than other reveals, so each row settles in calmly instead of snapping. */
+    function show() { gsap.to(goal, { autoAlpha: 1, y: 0, duration: 1.4, ease: 'power2.inOut', overwrite: true }); }
+    function hide(y) { gsap.to(goal, { autoAlpha: 0, y: y, duration: 1, ease: 'power2.inOut', overwrite: true }); }
     ScrollTrigger.create({ trigger: goal, start: 'top 92%', end: 'bottom top+=72',
       onEnter: show, onEnterBack: show,
       onLeave: function () { hide(-gy); }, onLeaveBack: function () { hide(gy); } });

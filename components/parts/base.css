@@ -2200,7 +2200,7 @@ details { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px
 /*@1930*/ .kit #n29 .st { grid-area: 1 / 1; display: flex; align-items: center; justify-content: center; gap: 6px; opacity: 0; transform: translateY(14px) scale(.9); transition: opacity .18s var(--ease-out), transform var(--sp-bouncy-d) var(--sp-bouncy); }
 /*@1931*/ .kit #n29 .st.on { opacity: 1; transform: none; }
 /*@1932*/ .kit #n29 .st.out { transform: translateY(-14px) scale(.9); }
-/*@1933*/ .kit #n29 .st .i { stroke-width: 2.4; }
+/*@1933*/ .kit #n29 .st .i { stroke-width: 3; }
 /*@1934*/ .kit #n29 .st i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: n29-dot .9s var(--ease-in-out) infinite; }
 /*@1935*/ .kit #n29 .st i:nth-child(2) { animation-delay: .12s; }
 /*@1936*/ .kit #n29 .st i:nth-child(3) { animation-delay: .24s; }
