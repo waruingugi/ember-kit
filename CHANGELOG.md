@@ -2,7 +2,7 @@
 
 Newest first. One line per change, with the date.
 
-- 2026-11-04: Owner's review. Goal list rows (section 11) came and went too fast: they arrived on `expo.out` in .9 s and left in .6 s. Both now ease in and out (`power2.inOut`), 1.4 s in and 1 s out, so each row settles calmly. `DESIGN.md` *Complete at rest* updated. Checked in Chromium, no console errors.
+- 2026-11-04: Owner's review. Goal list rows (section 11) came and went too fast: they arrived on `expo.out` in .9 s and left in .6 s. Both now ease in and out (`power2.inOut`), 1.4 s in and 1 s out, so each row settles calmly. `DESIGN.md` *Complete at rest* updated. The Paid tick in `n29` still looked sharp to the owner: it is now stroke 3, and the `i-check` icon carries its own round ends and corner, so no browser can drop them. Checked in Chromium, no console errors.
 
 - 2026-11-04: Owner's review. The order card behind side sheet `n41` shook on open: focus went to the × while the sheet was still off the edge, so the clipped box scrolled 312 px and slid back. Both `focus()` calls now pass `preventScroll` (new trap in `DESIGN.md`). The sheet's scrim is now darker and greys the stage out (`rgb(8 10 12 / .45)` plus `grayscale(1)`), in both themes, so the sheet is the focus. The Paid tick in `n29` is 2.4 px, so its round ends show. `components/parts/` rebuilt; `singles.mjs` passes for n41 and n29; checked in Chromium, light and night, no console errors.
 
