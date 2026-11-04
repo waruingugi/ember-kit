@@ -31,7 +31,7 @@
   function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
   function count(el, from, to, fmt, ms) { if (!moving()) { el.textContent = fmt(to); return; } cancelAnimationFrame(el._an); var t0 = performance.now(); (function f(t) { var k = Math.min(1, (t - t0) / (ms || 320)); el.textContent = fmt(Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)))); if (k < 1) el._an = requestAnimationFrame(f); })(t0); }
   var op = $("[data-open]"), sh = $(".sh"), sc = $(".scrim"), note = $(".note");
-  function set(on) { sh.classList.toggle("on", on); sc.classList.toggle("on", on); sh.inert = !on; op.setAttribute("aria-expanded", String(on)); if (on) setTimeout(function () { $("[data-close]", sh).focus(); }, 60); else op.focus(); }
+  function set(on) { sh.classList.toggle("on", on); sc.classList.toggle("on", on); sh.inert = !on; op.setAttribute("aria-expanded", String(on)); if (on) setTimeout(function () { $("[data-close]", sh).focus({ preventScroll: true }); }, 60); else op.focus({ preventScroll: true }); }
   op.addEventListener("click", function () { set(true); });
   $("[data-close]", sh).addEventListener("click", function () { set(false); });
   sc.addEventListener("click", function () { set(false); });

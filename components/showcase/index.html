@@ -2326,6 +2326,7 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
 .kit #n29 .st { grid-area: 1 / 1; display: flex; align-items: center; justify-content: center; gap: 6px; opacity: 0; transform: translateY(14px) scale(.9); transition: opacity .18s var(--ease-out), transform var(--sp-bouncy-d) var(--sp-bouncy); }
 .kit #n29 .st.on { opacity: 1; transform: none; }
 .kit #n29 .st.out { transform: translateY(-14px) scale(.9); }
+.kit #n29 .st .i { stroke-width: 2.4; }
 .kit #n29 .st i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: n29-dot .9s var(--ease-in-out) infinite; }
 .kit #n29 .st i:nth-child(2) { animation-delay: .12s; }
 .kit #n29 .st i:nth-child(3) { animation-delay: .24s; }
@@ -2563,7 +2564,7 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
 .kit #n41 .row { width: min(100%, 320px); display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper-raised); text-align: left; }
 .kit #n41 .row b, .kit #n41 .row small { display: block; }
 .kit #n41 .row small { font-size: 13px; color: var(--muted); }
-.kit #n41 .scrim { position: absolute; inset: 0; z-index: 5; background: rgb(var(--ink-rgb) / .28); opacity: 0; visibility: hidden; transition: opacity .25s var(--ease-out), visibility 0s linear .25s; }
+.kit #n41 .scrim { position: absolute; inset: 0; z-index: 5; background: rgb(8 10 12 / .45); -webkit-backdrop-filter: grayscale(1); backdrop-filter: grayscale(1); opacity: 0; visibility: hidden; transition: opacity .25s var(--ease-out), visibility 0s linear .25s; }
 .kit #n41 .scrim.on { opacity: 1; visibility: visible; transition: opacity .25s var(--ease-out), visibility 0s; }
 .kit #n41 .sh { position: absolute; z-index: 6; top: 0; right: 0; bottom: 0; width: min(300px, 88%); box-sizing: border-box; padding: 18px; display: flex; flex-direction: column; gap: 14px; text-align: left; background: var(--paper-raised); border-left: 1px solid var(--line); box-shadow: var(--shadow-lg); transform: translateX(104%); visibility: hidden; transition: transform .25s var(--ease-out), visibility 0s linear .25s; }
 .kit #n41 .sh.on { transform: none; visibility: visible; transition: transform .45s var(--ease-out), visibility 0s; }
@@ -16390,7 +16391,7 @@ hairline({
   function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
   function count(el, from, to, fmt, ms) { if (!moving()) { el.textContent = fmt(to); return; } cancelAnimationFrame(el._an); var t0 = performance.now(); (function f(t) { var k = Math.min(1, (t - t0) / (ms || 320)); el.textContent = fmt(Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)))); if (k < 1) el._an = requestAnimationFrame(f); })(t0); }
   var op = $("[data-open]"), sh = $(".sh"), sc = $(".scrim"), note = $(".note");
-  function set(on) { sh.classList.toggle("on", on); sc.classList.toggle("on", on); sh.inert = !on; op.setAttribute("aria-expanded", String(on)); if (on) setTimeout(function () { $("[data-close]", sh).focus(); }, 60); else op.focus(); }
+  function set(on) { sh.classList.toggle("on", on); sc.classList.toggle("on", on); sh.inert = !on; op.setAttribute("aria-expanded", String(on)); if (on) setTimeout(function () { $("[data-close]", sh).focus({ preventScroll: true }); }, 60); else op.focus({ preventScroll: true }); }
   op.addEventListener("click", function () { set(true); });
   $("[data-close]", sh).addEventListener("click", function () { set(false); });
   sc.addEventListener("click", function () { set(false); });

@@ -231,6 +231,7 @@ Each tool has one job. Never draw boxes and arrows as plain HTML.
 ## Known traps
 
 Bugs hit while building pages in this style. Check for them.
+- **Focus that shakes the page.** Moving focus to something still sliding in (a sheet at `translateX(104%)` in a clipped box) makes the browser scroll the box to show it. Everything else in the box jumps sideways, then slides back, so it looks like it shakes. Always call `focus({ preventScroll: true })` in sheets, drawers and dialogs.
 - **Class clashes with older CSS.** Older stylesheets define `.skip` (skip link), `.later`, `.end` (dark end card), `.done`, `.t`, `.k`, `.stat`, and the showcase has `.sheet` (the side sheet, fixed to the screen edge). Never reuse them for new parts; scope or rename first.
 - **Old parts and v4 parts on one page.** The older parts (`c01`–`c31`) and `components.css` style plain class names (`.st`, `.sb`, `.pill`, `.seg`, `.wrap`, `.badge`, `.pop`, `.cnt`, `.row`, `.dot`, `.chev`, `.nm`) for the whole page, and they leak into v4 parts that reuse the same names. Give every v4 section the class `kv4`, and write each older part's rule as `X:where(:not(.kv4 *))`, as the showcase does. Keep `.frame`, `.fbody` and `.lead` shared. Then open every v4 part and use it once.
 - **Undefined layout classes.** Older CSS has no `.bento`/`.c4`–`.c12`; add them from `components/components.css` before using them.
