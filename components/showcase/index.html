@@ -15883,8 +15883,9 @@ hairline({
   var gy = L.lively() ? 18 : 8;
   gsap.utils.toArray('.goal[data-reveal]').forEach(function (goal) {
     gsap.set(goal, { autoAlpha: 0, y: gy });
-    function show() { gsap.to(goal, { autoAlpha: 1, y: 0, duration: 0.9, ease: EASE, overwrite: true }); }
-    function hide(y) { gsap.to(goal, { autoAlpha: 0, y: y, duration: 0.6, ease: 'power2.out', overwrite: true }); }
+    /* Ease in and out, slower than other reveals, so each row settles in calmly instead of snapping. */
+    function show() { gsap.to(goal, { autoAlpha: 1, y: 0, duration: 1.4, ease: 'power2.inOut', overwrite: true }); }
+    function hide(y) { gsap.to(goal, { autoAlpha: 0, y: y, duration: 1, ease: 'power2.inOut', overwrite: true }); }
     ScrollTrigger.create({ trigger: goal, start: 'top 92%', end: 'bottom top+=72',
       onEnter: show, onEnterBack: show,
       onLeave: function () { hide(-gy); }, onLeaveBack: function () { hide(gy); } });
