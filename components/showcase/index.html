@@ -3703,11 +3703,11 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
 .kit #n79 .er { display: flex; gap: 6px; align-items: center; margin: 0; font-size: 13px; color: var(--accent-text); }
 .kit #n79 .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 @container (max-width: 380px) { .kit #n79 .two { grid-template-columns: minmax(0, 1fr); } }
-.kit #n79 .rv { display: grid; margin: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--paper-raised); }
-.kit #n79 .rv div { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 10fr) auto; align-items: center; gap: 8px; padding: 6px 6px 6px 12px; border-top: 1px solid var(--line); font-size: 13.5px; }
-.kit #n79 .rv div:first-child { border-top: 0; }
-.kit #n79 .rv dt { color: var(--muted); }
-.kit #n79 .rv dd { min-width: 0; margin: 0; color: var(--ink); overflow-wrap: anywhere; }
+.kit #n79 dl.rv { display: grid; margin: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--paper-raised); }
+.kit #n79 dl.rv div { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 10fr) auto; align-items: center; gap: 8px; padding: 6px 6px 6px 12px; border-top: 1px solid var(--line); font-size: 13.5px; }
+.kit #n79 dl.rv div:first-child { border-top: 0; }
+.kit #n79 dl.rv dt { color: var(--muted); }
+.kit #n79 dl.rv dd { min-width: 0; margin: 0; color: var(--ink); overflow-wrap: anywhere; }
 .kit #n79 .fin { display: grid; justify-items: center; gap: 8px; padding: 10px 0 4px; text-align: center; }
 .kit #n79 .fin .big { width: 40px; height: 40px; }
 .kit #n79 .fin .big circle { fill: var(--accent); transform-origin: center; transform-box: fill-box; animation: n79-pop .3s var(--sp-bouncy) both; }
@@ -3884,6 +3884,9 @@ html[data-motion="off"] .kit #n79 .fin .big path { stroke-dashoffset: 0; }
 .kit #n83 .st b { font: 400 15px/1.18 var(--font-num); font-variant-numeric: tabular-nums; color: var(--ink); }
 .kit #n83 .ls { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .kit #n83 .ls.sorting { user-select: none; -webkit-user-select: none; }
+.kit #n83 .ls { position: relative; }
+.kit #n83 .ls::before { content: ""; position: absolute; left: 0; right: 0; top: var(--gy, 0); height: var(--gh, 0); box-sizing: border-box; border: 1.5px dashed var(--line-hi); border-radius: 12px; background: rgb(var(--ink-rgb) / .025); opacity: 0; pointer-events: none; transition: top var(--sp-snappy-d) var(--sp-snappy), opacity .15s var(--ease-out); }
+.kit #n83 .ls.sorting::before { opacity: 1; }
 .kit #n83 .r { position: relative; z-index: 1; }
 .kit #n83 .r.lift, .kit #n83 .r.drag { z-index: 3; }
 .kit #n83 .ri { position: relative; display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 0 4px 0 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper-raised); box-shadow: var(--shadow-sm); transition: transform var(--sp-snappy-d) var(--sp-snappy), border-color .2s var(--ease-out); }
@@ -21794,13 +21797,13 @@ window.emberGrid = (function () {
     try { g.setPointerCapture(e.pointerId); } catch (x) {}
     T0 = list.firstElementChild.offsetTop;
     drag = { r: r, y0: e.clientY, top0: r.offsetTop, step: rs.length > 1 ? rs[1].offsetTop - rs[0].offsetTop : r.offsetHeight, ly: e.clientY, lt: performance.now(), from: rs.indexOf(r), tt: 0 };
-    r.classList.add("drag"); lift(r, true); list.classList.add("sorting");
+    r.classList.add("drag"); lift(r, true); list.style.setProperty("--gh", r.offsetHeight + "px"); list.style.setProperty("--gy", r.offsetTop + "px"); list.classList.add("sorting");
   });
   list.addEventListener("pointermove", function (e) {
     if (!drag) return; var r = drag.r, n = rows().length;
     var vt = drag.top0 + e.clientY - drag.y0, lo = T0, hi = T0 + (n - 1) * drag.step;
     var cv = vt < lo ? lo - Math.pow(lo - vt, .75) : vt > hi ? hi + Math.pow(vt - hi, .75) : vt;
-    moveTo(r, Math.round((cv - T0) / drag.step));
+    moveTo(r, Math.round((cv - T0) / drag.step)); list.style.setProperty("--gy", r.offsetTop + "px");
     r.style.transform = "translateY(" + (cv - r.offsetTop).toFixed(1) + "px)";
     var now = performance.now(), v = (e.clientY - drag.ly) / Math.max(8, now - drag.lt); drag.ly = e.clientY; drag.lt = now;
     r.style.setProperty("--tilt", Math.max(-2.5, Math.min(2.5, v * 2.2)).toFixed(2) + "deg");
