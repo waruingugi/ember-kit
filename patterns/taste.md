@@ -70,7 +70,7 @@ Find the job, use the part. When an older part does the same job, the Taste Lab 
 | Read short news after an action | `n78` plain toast column | `c21` | Round 4: picked A |
 | Fill a form in steps | `n79` stepper, current step filled orange, no ring | `c10` | Round 4: picked D |
 | See twelve weeks of daily numbers | `n82` heatmap that recolours in a sweep | a bar chart | Round 4: picked D |
-| Put things in order | `n83` list you sort, the times roll | `c19` | Round 4: picked D |
+| Put things in order | `n83` list you sort, the times roll, or `n89` the plain one with a dashed gap (see section 5) | `c19` | Round 4: kept D and A; the dashed landing gap added to D |
 | Track one order | `n84` timeline where steps arrive in turn | `c24` | Round 4: picked B |
 | See space or credit used against a limit | `n52` usage meter: point at a part and the number rolls to it | `n47` | Round 3: picked B |
 | Read three key numbers for a period | `n53`, `n54` or `n55` metric cards (see section 5) | `n06` | Round 3: kept B, C and D |
@@ -100,6 +100,7 @@ Keeping several versions means "use the one that fits the page". The owner left 
 | Setup tasks | C and A | **C** (`n80`) one task at a time, for a first run. **A** (`n81`) a plain list, when people want to see every task at once. |
 | Empty states | B and D | **B** (`n85`) when one place has several empty states. **D** (`n86`) for an empty list that just finished loading. |
 | Stats band | A and D | **A** (`n87`) for a quiet page head. **D** (`n88`) when each number has a goal. |
+| Reorderable list | D and A | **D** (`n83`) when each step has a time that depends on the order. **A** (`n89`) for any short list with nothing to recount. Both show a dashed outline where the row lands. |
 | Metric cards | B, C and D | **B** (`n53`) three tiles when the three numbers matter the same and there is room. **C** (`n54`) one card with three rows in a narrow column or a side panel. **D** (`n55`) when one number matters most and its trend helps. |
 | Number fields | B, C and D | **B** (`n56`) a small count with steppers and a hard limit. **C** (`n57`) a money amount, with quick-add chips. **D** (`n58`) counts inside a short cart, the total on the pay button. |
 | Morphing buttons | A to D | **B** (`n60`) a remove or delete that needs a yes, in place. **A** (`n61`) copy a link or code. **C** (`n62`) three or four actions where space is tight. **D** (`n63`) one payment with nothing else to say on the button; `n29` when the words should roll. |

@@ -28,6 +28,8 @@
   var box = document.getElementById("n39"); if (!box) return;
   var root = document.documentElement;
   function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
   function $(s, el) { return (el || box).querySelector(s); }
   function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
   var TICK = '<svg class="tk" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"/><path d="M6.6 11.4 9.6 14.3l5.8-6.4"/></svg>';
@@ -48,7 +50,19 @@
     var f = $$("button, input", dlg).filter(function (x) { return x.tabIndex >= 0 && x.offsetParent !== null; }), a = f[0], z = f[f.length - 1];
     if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
   });
-  function pick(r, f) { rs.forEach(function (x) { x.setAttribute("aria-checked", String(x === r)); x.tabIndex = x === r ? 0 : -1; }); if (f) r.focus(); }
+  /* one marker slides under the pick; its leading edge goes first, so it stretches, then settles */
+  var seg = rs[0].parentNode, th = document.createElement("i"); th.className = "th"; th.setAttribute("aria-hidden", "true"); seg.insertBefore(th, seg.firstChild);
+  function place(r, go) {
+    var x1 = r.offsetLeft, w1 = r.offsetWidth, x0 = th._x, w0 = th._w;
+    th.style.transform = "translateX(" + x1 + "px)"; th.style.width = w1 + "px"; th._x = x1; th._w = w1;
+    if (!go || !moving() || x0 == null || (x0 === x1 && w0 === w1)) return;
+    var lo = Math.min(x0, x1), span = Math.max(x0 + w0, x1 + w1) - lo;
+    if (th._a) th._a.cancel();
+    th._a = th.animate([{ transform: "translateX(" + x0 + "px)", width: w0 + "px" }, { transform: "translateX(" + lo + "px)", width: span + "px", offset: .4 }, { transform: "translateX(" + x1 + "px)", width: w1 + "px" }], { duration: 460, easing: sp("snappy") });
+  }
+  function pick(r, f) { rs.forEach(function (x) { x.setAttribute("aria-checked", String(x === r)); x.tabIndex = x === r ? 0 : -1; }); place(r, true); if (f) r.focus(); }
+  function placeNow() { place(rs.filter(function (x) { return x.getAttribute("aria-checked") === "true"; })[0] || rs[0]); }
+  placeNow(); tr.addEventListener("click", placeNow); window.addEventListener("resize", placeNow);
   rs.forEach(function (r, i) {
     r.addEventListener("click", function () { pick(r); });
     r.addEventListener("keydown", function (e) { var d = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0; if (d) { e.preventDefault(); pick(rs[(i + d + rs.length) % rs.length], true); } });

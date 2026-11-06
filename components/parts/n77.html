@@ -88,11 +88,13 @@
     cur = i;
     if (!again) { var cd = cards[i]; dA.innerHTML = $(".a", cd).innerHTML; dM.innerHTML = $(".m", cd).innerHTML; body.innerHTML = bodyHtml(O[i]); wire(O[i], cd); det.setAttribute("aria-label", "Order " + O[i].id + " for " + O[i].nm); }
     det.hidden = false; measure(); draw();
-    cards[i].setAttribute("aria-expanded", "true"); st = "open"; D = 560; to(1);
+    cards[i].setAttribute("aria-expanded", "true"); st = "open"; xc.classList.add("on"); D = 560; to(1);
     xb.focus({ preventScroll: true });
   }
-  function close() { if (st !== "open") return; st = "closing"; D = 420; cards[cur].focus({ preventScroll: true }); to(0); }
+  function close() { if (st !== "open") return; st = "closing"; xc.classList.remove("on"); D = 420; cards[cur].focus({ preventScroll: true }); to(0); }
   cards.forEach(function (cd, i) { cd.addEventListener("click", function () { open(i); }); });
+  /* a press anywhere outside the open card folds it back */
+  document.addEventListener("pointerdown", function (e) { if (st === "open" && !det.contains(e.target) && !(e.target.closest && e.target.closest("#n77 .cd"))) close(); });
   xb.addEventListener("click", close);
   xc.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && st === "open") { e.stopPropagation(); close(); return; }

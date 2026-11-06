@@ -1,0 +1,189 @@
+<!-- part n89 | part | group tables | A dashed gap shows where it lands. | A dashed gap shows where it lands. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A dashed gap shows <em>where it lands.</em></h3>
+          <p class="kit-p">The plain list you sort. Drag a stop by its grip, or press Space on the grip and use the arrows. A dashed outline shows where it will land.</p>
+          <section class="cs kv4" id="n89">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="ro">
+      <div class="top"><div><p class="tt">Otieno's stops today</p><p class="st">Drag a grip to change the order.</p></div></div>
+      <ol class="ls" aria-label="Delivery stops, in order"></ol>
+      <p class="sr-only" id="n89-hint">Press Space to pick it up. Up and down arrows move it. Space drops it. Escape puts it back.</p>
+      <p class="sr-only" aria-live="assertive"></p>
+    </div>
+  </div></div></div>
+</section>
+        </div>
+<script data-slot="0089">
+(function () {
+  "use strict";
+  var box = document.getElementById("n89"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  /* The odometer, copied from house part n07: each digit is a drum that turns the way the number moved. */
+  function roll(el, o) {
+    var api = { value: o.value }, slots = {}, order = [], raf = 0, last = 0, built = false;
+    var vis = document.createElement("span"), sr = document.createElement("span");
+    vis.className = "rv"; vis.setAttribute("aria-hidden", "true"); sr.className = "sr-only";
+    el.textContent = ""; el.appendChild(vis); el.appendChild(sr);
+    function md(a) { return ((a % 10) + 10) % 10; }
+    /* keys: d<place> digit (d0 = ones), s<place> separator, p<i> before the digits, x<i> after; rank keeps the order */
+    function rank(k) { var c = k.charAt(0), i = parseInt(k.slice(1), 10); return c === "p" ? i : c === "d" ? 1000 - 2 * i : c === "s" ? 1001 - 2 * i : 3000 + i; }
+    function parse(s) {
+      var tot = (s.match(/[0-9]/g) || []).length, seen = 0, p = 0, x = 0, out = [];
+      for (var i = 0; i < s.length; i++) {
+        var ch = s.charAt(i);
+        if (ch >= "0" && ch <= "9") { seen++; out.push({ k: "d" + (tot - seen), d: +ch }); }
+        else out.push({ k: (seen === 0 ? "p" + p++ : seen === tot ? "x" + x++ : "s" + (tot - seen)) + ch, ch: ch });
+      }
+      return out;
+    }
+    function mk(t) {
+      var e = document.createElement("span"), s = { k: t.k, el: e, r: rank(t.k) };
+      if (t.d != null) {
+        var st = document.createElement("span"), i, h = "";
+        for (i = 0; i < 11; i++) h += "<span>" + (i % 10) + "</span>";
+        e.className = "dg"; st.className = "st7"; st.innerHTML = h; e.appendChild(st);
+        s.st = st; s.x = s.T = s.g = s.f = s.v = s.at = 0;
+      } else { e.className = "cm"; e.textContent = t.ch; }
+      return s;
+    }
+    /* the soft spring: as long as --sp-soft-d, a little overshoot; calm settles on a shorter spring with none */
+    function cfg() { var d = (parseFloat(getComputedStyle(box).getPropertyValue("--sp-soft-d")) || .67) * 1000, calm = lv() === "calm", z = calm ? 1 : .86, D = calm ? d * .6 : d; return { Z: z, W: 4.6 / (z * D / 1000) }; }
+    function draw(s) { s.st.style.transform = "translateY(" + (-md(s.x) * 100 / 11).toFixed(3) + "%)"; }
+    function tick(t) {
+      var c = cfg(), dt = Math.min(.032, Math.max(.001, (t - last) / 1000)), busy = false; last = t;
+      order.forEach(function (s) {
+        if (!s.st) return;
+        if (s.at && t >= s.at) { s.at = 0; s.T = s.g; }
+        if (s.at) busy = true;
+        else if (s.x !== s.T || s.v) {
+          s.v += (-c.W * c.W * (s.x - s.T) - 2 * c.Z * c.W * s.v) * dt; s.x += s.v * dt;
+          if (Math.abs(s.x - s.T) < .003 && Math.abs(s.v) < .05) { s.x = s.T; s.v = 0; } else busy = true;
+        }
+        if (s.x === s.T && !s.at) { var w = s.T - md(s.T); if (w) { s.x -= w; s.T -= w; s.g -= w; } } /* settled: wind back into 0–9 */
+        draw(s);
+      });
+      raf = busy ? requestAnimationFrame(tick) : 0;
+    }
+    function wid(e) { return e.getBoundingClientRect().width; }
+    function kill(s) { if (s.wa) s.wa.cancel(); s.el.remove(); var i = order.indexOf(s); if (i >= 0) order.splice(i, 1); if (slots[s.k] === s) delete slots[s.k]; }
+    function leave(s, mv) {
+      s.gone = true; if (!mv) { kill(s); return; }
+      var w = wid(s.el); if (s.wa) s.wa.cancel();
+      s.wa = s.el.animate([{ width: w + "px", opacity: 1 }, { opacity: 0, offset: .55 }, { width: "0px", opacity: 0 }], { duration: 420, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
+      s.wa.onfinish = function () { if (s.gone) kill(s); };
+    }
+    function grow(s, w0) { var w1 = wid(s.el); if (w1 - w0 > .5) s.wa = s.el.animate([{ width: w0 + "px", opacity: w0 / w1 }, { opacity: w0 / w1, offset: .3 }, { width: w1 + "px", opacity: 1 }], { duration: 460, easing: "cubic-bezier(.22,1,.36,1)" }); }
+    api.set = function (v, instant) {
+      var old = api.value, dir = v >= old ? 1 : -1, str = o.fmt(v), toks = parse(str), now = performance.now(), mv = built && moving() && !instant, keep = {}, rk = 0, j, s;
+      api.value = v; sr.textContent = o.say ? o.say(str) : str;
+      toks.forEach(function (t) {
+        var s = slots[t.k]; keep[t.k] = 1;
+        if (!s) {
+          s = slots[t.k] = mk(t);
+          var nx = null; for (var i = 0; i < order.length; i++) if (order[i].r > s.r) { nx = order[i]; break; }
+          vis.insertBefore(s.el, nx ? nx.el : null); order.splice(nx ? order.indexOf(nx) : order.length, 0, s);
+          if (mv) { s.el.style.width = "0px"; s.enter = true; }
+        } else if (s.gone) { s.gone = false; var w0 = wid(s.el); if (s.wa) s.wa.cancel(); s.wa = null; if (mv) grow(s, w0); }
+      });
+      order.slice().forEach(function (s) { /* a digit that leaves rolls on to 0 the way the number went, then folds away */
+        if (keep[s.k] || s.gone) return;
+        if (s.st) { var c0 = md(s.g); if (c0) { s.g += dir > 0 ? md(-c0) : -c0; if (mv) { s.at = 0; s.T = s.g; } } }
+        leave(s, mv);
+      });
+      order.forEach(function (s) { if (s.enter) { s.enter = false; s.el.style.width = ""; grow(s, 0); } });
+      for (j = toks.length - 1; j >= 0; j--) { /* right to left, so the ones turn first */
+        var t = toks[j]; if (t.d == null) continue; s = slots[t.k];
+        var cd = md(s.g); if (cd === t.d) continue;
+        var g = s.g + (dir > 0 ? md(t.d - cd) : -md(cd - t.d));
+        if (!mv) { s.x = s.T = s.g = g; s.v = s.at = 0; draw(s); continue; }
+        s.g = g; var dl = 30 * rk++;
+        if (dl > 0) s.at = now + dl; else { s.at = 0; s.T = g; }
+      }
+      if (!mv) {
+        order.forEach(function (s) { if (s.st) { s.x = s.T = s.g; s.v = s.at = 0; draw(s); } });
+        if (built && old !== v && !instant) vis.animate([{ opacity: .3 }, { opacity: 1 }], { duration: 180, easing: "ease-out" });
+      } else if (!raf) { last = now; raf = requestAnimationFrame(tick); }
+    };
+    api.set(api.value, true); built = true;
+    return api;
+  }
+
+  /* made-up stops */
+  var S = [["Wanjiku Kamau", "Westlands", "3 bags", [0.6, 0.4]], ["Grace Njeri", "Karen", "2 bags", [-3.8, -11]], ["Brian Ochieng", "Kilimani", "1 bag", [2.2, -2.1]], ["Peter Mwangi", "Upper Hill", "4 bags", [3.4, -3.6]], ["Amina Hassan", "Lavington", "2 bags", [-1.6, -2.4]]];
+  var GRIP = '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="5.5" cy="3.5" r="1.4"/><circle cx="10.5" cy="3.5" r="1.4"/><circle cx="5.5" cy="8" r="1.4"/><circle cx="10.5" cy="8" r="1.4"/><circle cx="5.5" cy="12.5" r="1.4"/><circle cx="10.5" cy="12.5" r="1.4"/></svg>';
+  var list = $(".ls"), say = $("[aria-live]"), st = $(".st");
+  var OK = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.8 8.3 6.7 11 12.2 5"/></svg>';
+  function saved() { st.innerHTML = '<span class="ok">' + OK + "New order saved.</span>"; if (moving()) st.animate([{ opacity: 0, transform: "translateY(4px)" }, { opacity: 1, transform: "none" }], { duration: 220, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  list.innerHTML = S.map(function (s, k) {
+    return '<li class="r" data-k="' + k + '"><div class="ri"><span class="n" aria-hidden="true"></span><span class="bd"><b>' + s[0] + "</b><small>" + s[1] + " · " + s[2] + '</small></span><button class="gr" type="button" aria-pressed="false" aria-describedby="n89-hint">' + GRIP + "</button></div></li>";
+  }).join("");
+  function rows() { return $$(".r", list); }
+  function name(li) { return S[+li.getAttribute("data-k")][0]; }
+  rows().forEach(function (li) { li._n = roll($(".n", li), { value: 1, fmt: String }); });
+  function sync(inst) {
+    var rs = rows();
+    rs.forEach(function (li, k) { li._n.set(k + 1, inst); $(".gr", li).setAttribute("aria-label", "Move " + name(li) + ", stop " + (k + 1) + " of " + rs.length); });
+  }
+  sync(true);
+  /* FLIP: rows glide from where they were to where the change put them */
+  function flip(els, change, ease, dur) {
+    var a = els.map(function (e) { return e.getBoundingClientRect().top; }); change();
+    if (!moving()) return;
+    els.forEach(function (e, i) { var dy = a[i] - e.getBoundingClientRect().top; if (Math.abs(dy) < .5) return; if (e._fl) e._fl.cancel(); e._fl = e.animate([{ transform: "translateY(" + dy + "px)" }, { transform: "none" }], { duration: dur || 220, easing: ease || "cubic-bezier(.22,1,.36,1)" }); });
+  }
+  function step(r, d) { if (d > 0) { var nx = r.nextElementSibling; if (nx) list.insertBefore(nx, r); } else { var pv = r.previousElementSibling; if (pv) list.insertBefore(pv, r.nextElementSibling); } }
+  function others(r) { return rows().filter(function (x) { return x !== r; }); }
+  /* the neighbours move around r, so r keeps its focus and its pointer capture */
+  function moveTo(r, j, self) {
+    var rs = rows(), i = rs.indexOf(r); j = Math.max(0, Math.min(rs.length - 1, j)); if (i === j) return false;
+    flip(self ? rs : others(r), function () { while (i !== j) { step(r, j > i ? 1 : -1); i += j > i ? 1 : -1; } });
+    sync(); return true;
+  }
+  function where(r) { return name(r) + ", stop " + (rows().indexOf(r) + 1) + " of " + rows().length + "."; }
+  function lift(r, on) { r.classList.toggle("lift", on); }
+  /* pointer drag on the grip, with a rubber band past the ends */
+  var drag = null, grab = null, grab0 = 0, T0 = 0;
+  list.addEventListener("pointerdown", function (e) {
+    var g = e.target.closest && e.target.closest(".gr"); if (!g || e.button > 0) return;
+    e.preventDefault(); var r = g.closest(".r"), rs = rows();
+    if (grab) drop(false);
+    if (r._fl) r._fl.cancel(); if (r._dr) r._dr.cancel();
+    try { g.setPointerCapture(e.pointerId); } catch (x) {}
+    T0 = list.firstElementChild.offsetTop;
+    drag = { r: r, y0: e.clientY, top0: r.offsetTop, step: rs.length > 1 ? rs[1].offsetTop - rs[0].offsetTop : r.offsetHeight, from: rs.indexOf(r) };
+    r.classList.add("drag"); lift(r, true); list.style.setProperty("--gh", r.offsetHeight + "px"); list.style.setProperty("--gy", r.offsetTop + "px"); list.classList.add("sorting");
+  });
+  list.addEventListener("pointermove", function (e) {
+    if (!drag) return; var r = drag.r, n = rows().length;
+    var vt = drag.top0 + e.clientY - drag.y0, lo = T0, hi = T0 + (n - 1) * drag.step;
+    var cv = vt < lo ? lo - Math.pow(lo - vt, .75) : vt > hi ? hi + Math.pow(vt - hi, .75) : vt;
+    moveTo(r, Math.round((cv - T0) / drag.step)); list.style.setProperty("--gy", r.offsetTop + "px");
+    r.style.transform = "translateY(" + (cv - r.offsetTop).toFixed(1) + "px)";
+  });
+  function end() {
+    if (!drag) return; var d = drag, r = d.r; drag = null;
+    var off = r.style.transform; r.style.transform = ""; r.classList.remove("drag"); lift(r, false); list.classList.remove("sorting");
+    if (moving() && off) { r._dr = r.animate([{ transform: off }, { transform: "none" }], { duration: 220, easing: "cubic-bezier(.22,1,.36,1)" }); r._dr.onfinish = function () { r._dr = null; }; }
+    if (rows().indexOf(r) !== d.from) { say.textContent = name(r) + " moved to " + where(r).replace(name(r) + ", ", ""); saved(); }
+  }
+  list.addEventListener("pointerup", end); list.addEventListener("pointercancel", end); list.addEventListener("lostpointercapture", end);
+  /* keyboard: Space picks up, arrows move, Space drops, Escape puts it back */
+  function pick(r) { grab = r; grab0 = rows().indexOf(r); $(".gr", r).setAttribute("aria-pressed", "true"); lift(r, true); say.textContent = "Picked up " + where(r) + " Up and down arrows move it. Space drops it. Escape puts it back."; }
+  function release() { var r = grab; grab = null; if (r) { $(".gr", r).setAttribute("aria-pressed", "false"); lift(r, false); } return r; }
+  function drop(talk) { var r = release(); if (r && talk) say.textContent = "Dropped " + where(r); if (r && rows().indexOf(r) !== grab0) saved(); }
+  list.addEventListener("keydown", function (e) {
+    var g = e.target.closest && e.target.closest(".gr"); if (!g) return; var r = g.closest(".r"), k = e.key;
+    if (k === " " || k === "Enter") { e.preventDefault(); if (grab === r) drop(true); else { if (grab) drop(false); pick(r); } return; }
+    if (grab !== r) return;
+    var to = { ArrowUp: -1, ArrowDown: 1, Home: -99, End: 99 }[k];
+    if (to) { e.preventDefault(); if (moveTo(r, rows().indexOf(r) + to, true)) say.textContent = where(r); }
+    else if (k === "Escape") { e.preventDefault(); e.stopPropagation(); moveTo(r, grab0, true); release(); say.textContent = "Put back. " + where(r); }
+  });
+  list.addEventListener("focusout", function (e) { if (grab && !grab.contains(e.relatedTarget)) drop(true); });
+})();
+</script>

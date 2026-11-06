@@ -161,13 +161,13 @@
     try { g.setPointerCapture(e.pointerId); } catch (x) {}
     T0 = list.firstElementChild.offsetTop;
     drag = { r: r, y0: e.clientY, top0: r.offsetTop, step: rs.length > 1 ? rs[1].offsetTop - rs[0].offsetTop : r.offsetHeight, ly: e.clientY, lt: performance.now(), from: rs.indexOf(r), tt: 0 };
-    r.classList.add("drag"); lift(r, true); list.classList.add("sorting");
+    r.classList.add("drag"); lift(r, true); list.style.setProperty("--gh", r.offsetHeight + "px"); list.style.setProperty("--gy", r.offsetTop + "px"); list.classList.add("sorting");
   });
   list.addEventListener("pointermove", function (e) {
     if (!drag) return; var r = drag.r, n = rows().length;
     var vt = drag.top0 + e.clientY - drag.y0, lo = T0, hi = T0 + (n - 1) * drag.step;
     var cv = vt < lo ? lo - Math.pow(lo - vt, .75) : vt > hi ? hi + Math.pow(vt - hi, .75) : vt;
-    moveTo(r, Math.round((cv - T0) / drag.step));
+    moveTo(r, Math.round((cv - T0) / drag.step)); list.style.setProperty("--gy", r.offsetTop + "px");
     r.style.transform = "translateY(" + (cv - r.offsetTop).toFixed(1) + "px)";
     var now = performance.now(), v = (e.clientY - drag.ly) / Math.max(8, now - drag.lt); drag.ly = e.clientY; drag.lt = now;
     r.style.setProperty("--tilt", Math.max(-2.5, Math.min(2.5, v * 2.2)).toFixed(2) + "deg");

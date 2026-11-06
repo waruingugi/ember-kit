@@ -286,6 +286,16 @@
   "js": 1
  },
  {
+  "id": "n89",
+  "kind": "part",
+  "group": "tables",
+  "name": "A dashed gap shows where it lands.",
+  "heading": "A dashed gap shows where it lands.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
   "id": "c20",
   "kind": "part",
   "group": "tables",

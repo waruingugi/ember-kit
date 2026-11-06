@@ -45,9 +45,9 @@
       li.querySelector(".up-bar i").style.transform = "scaleX(" + (f.s === "error" && f.big ? 0 : f.p) + ")";
       var st = li.querySelector(".up-st"), acts = li.querySelector(".up-acts");
       if (f.s === "uploading") st.textContent = "Uploading · " + Math.round(f.p * 100) + "%";
-      else if (f.s === "complete") st.textContent = "✓ Uploaded";
+      else if (f.s === "complete") st.innerHTML = '<svg class="up-tk" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8"/><path d="M4.6 8.3 7 10.6l4.4-4.9"/></svg>Uploaded';
       else st.textContent = f.big ? "Too big · the limit is 25 MB" : "Failed at " + Math.round(f.p * 100) + "% · connection lost";
-      acts.innerHTML = (f.s === "error" && !f.big ? '<button class="ib" type="button" data-retry aria-label="Retry ' + esc(f.name) + '">' + ic("rot") + "</button>" : "") +
+      acts.innerHTML = (f.s === "error" && !f.big ? '<button class="b sm up-retry" type="button" data-retry aria-label="Retry ' + esc(f.name) + '">' + ic("rot") + "Retry</button>" : "") +
         '<button class="ib" type="button" data-rm aria-label="Remove ' + esc(f.name) + '">' + ic("x") + "</button>";
       head_();
     }
