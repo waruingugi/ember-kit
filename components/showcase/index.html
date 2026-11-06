@@ -2333,6 +2333,12 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
 .kv4 .spk-p p { position: relative; margin: 0; max-width: 52ch; font-size: 15px; line-height: 1.5; color: var(--ink-soft); }
 .kv4 .spk-v { position: relative; margin-top: 4px; align-self: flex-start; padding: 4px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); font: 500 12.5px/1.3 var(--font-mono); font-variant-numeric: tabular-nums; }
 .kv4 .spk-cover .spk-p { border-radius: 22px 22px 14px 14px; box-shadow: 0 -10px 24px -14px rgb(var(--ink-rgb) / .28); }
+.kv4 .spk-cover .spk-p, .kv4 .spk-cover .spk-p:nth-child(even) { height: 208px; justify-content: flex-start; padding-top: 34px; border-color: var(--line); background: var(--paper-raised); }
+.kv4 .spk-cover .spk-p::before { content: ""; position: absolute; left: 22px; right: 22px; top: 18px; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--accent) var(--p, 25%), rgb(var(--ink-rgb) / .1) var(--p, 25%)); }
+.kv4 .spk-cover .spk-p:nth-child(2) { --p: 50%; } .kv4 .spk-cover .spk-p:nth-child(3) { --p: 75%; } .kv4 .spk-cover .spk-p:nth-child(4) { --p: 100%; }
+.kv4 .spk-cover .spk-gh { top: 30px; font-size: clamp(52px, 6vw, 68px); -webkit-text-stroke-color: var(--line); }
+.kv4 .spk-cover .spk-lb { color: var(--muted); }
+.kv4 .spk-cover .spk-v { margin-top: auto; background: var(--paper-sunk); border-color: transparent; }
 .kv4 .spk-deck .spk-p:nth-child(2), .kv4 .spk-settle .spk-p:nth-child(2) { top: 90px; }
 .kv4 .spk-deck .spk-p:nth-child(3), .kv4 .spk-settle .spk-p:nth-child(3) { top: 104px; }
 .kv4 .spk-deck .spk-p:nth-child(4), .kv4 .spk-settle .spk-p:nth-child(4) { top: 118px; }
@@ -3625,6 +3631,8 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
 /* n77 */
 .kit #n77 .stage { display: block; height: 400px; min-height: 0; padding-block: 0; }
 .kit #n77 .xc { position: relative; width: min(100%, 460px); height: 100%; margin: 0 auto; text-align: left; }
+.kit #n77 .cap, .kit #n77 .ls { transition: opacity .2s var(--ease-out); }
+.kit #n77 .xc.on .cap, .kit #n77 .xc.on .ls { opacity: 0; }
 .kit #n77 .cap { margin: 2px 0 10px; font: 500 11px/1.3 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .kit #n77 .ls { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .kit #n77 .cd { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper-raised); box-shadow: var(--shadow-sm); font: inherit; color: var(--ink); text-align: left; cursor: pointer; transition: transform .45s var(--ease-out), border-color .2s var(--ease-out); }
@@ -21114,11 +21122,13 @@ window.emberGrid = (function () {
     cur = i;
     if (!again) { var cd = cards[i]; dA.innerHTML = $(".a", cd).innerHTML; dM.innerHTML = $(".m", cd).innerHTML; body.innerHTML = bodyHtml(O[i]); wire(O[i], cd); det.setAttribute("aria-label", "Order " + O[i].id + " for " + O[i].nm); }
     det.hidden = false; measure(); draw();
-    cards[i].setAttribute("aria-expanded", "true"); st = "open"; D = 560; to(1);
+    cards[i].setAttribute("aria-expanded", "true"); st = "open"; xc.classList.add("on"); D = 560; to(1);
     xb.focus({ preventScroll: true });
   }
-  function close() { if (st !== "open") return; st = "closing"; D = 420; cards[cur].focus({ preventScroll: true }); to(0); }
+  function close() { if (st !== "open") return; st = "closing"; xc.classList.remove("on"); D = 420; cards[cur].focus({ preventScroll: true }); to(0); }
   cards.forEach(function (cd, i) { cd.addEventListener("click", function () { open(i); }); });
+  /* a press anywhere outside the open card folds it back */
+  document.addEventListener("pointerdown", function (e) { if (st === "open" && !det.contains(e.target) && !(e.target.closest && e.target.closest("#n77 .cd"))) close(); });
   xb.addEventListener("click", close);
   xc.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && st === "open") { e.stopPropagation(); close(); return; }
