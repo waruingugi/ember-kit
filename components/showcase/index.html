@@ -2517,11 +2517,10 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
 .kit #n37 .cb[aria-checked="mixed"]::after { content: ""; position: absolute; width: 8px; height: 2px; border-radius: 2px; background: #fff; }
 .kit #n37 .ft { min-height: 1.4em; margin: 8px 2px 0; font-size: 13px; color: var(--muted); }
 .kit #n37 .empty td { padding: 18px 12px; color: var(--muted); }
-.kit #n37 .tray { position: absolute; left: 50%; bottom: 4px; z-index: 6; display: flex; align-items: center; gap: 8px; padding: 8px 8px 8px 14px; border-radius: 12px; background: var(--ink); color: var(--paper); box-shadow: var(--shadow-lg); font-size: 13.5px; white-space: nowrap; opacity: 0; visibility: hidden; transform: translate(-50%, 120%); transition: transform .25s var(--ease-out), opacity .2s var(--ease-out), visibility 0s linear .25s; }
+.kit #n37 .tray { position: absolute; left: 50%; bottom: 4px; z-index: 6; display: flex; align-items: center; gap: 6px; padding: 6px 6px 6px 14px; border: 1px solid var(--line-hi); border-radius: 12px; background: var(--paper-raised); color: var(--ink); box-shadow: var(--shadow-lg); font-size: 13.5px; white-space: nowrap; opacity: 0; visibility: hidden; transform: translate(-50%, 120%); transition: transform .25s var(--ease-out), opacity .2s var(--ease-out), visibility 0s linear .25s; }
 .kit #n37 .tray.on { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition: transform var(--sp-snappy-d) var(--sp-snappy), opacity .2s var(--ease-out), visibility 0s; }
-.kit #n37 .tray .b { border-color: color-mix(in srgb, var(--paper) 28%, transparent); background: transparent; color: var(--paper); }
-.kit #n37 .tray .b:hover { background: color-mix(in srgb, var(--paper) 10%, transparent); }
-.kit #n37 .tray .cx { width: 32px; padding: 0; border-color: transparent; }
+.kit #n37 #n37-bn { margin-right: 6px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.kit #n37 .tray .cx { width: 32px; padding: 0; }
 
 .kit #n38 .crd { width: 100%; max-width: 400px; box-sizing: border-box; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--paper-raised); box-shadow: var(--shadow-sm); text-align: left; }
 .kit #n38 .hd { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
@@ -3445,9 +3444,9 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
 .kit #n73 .d.in { color: var(--ink); }
 .kit #n73 .d.end { color: var(--paper); }
 .kit #n73 .p.prev .d.endb { color: var(--ink); }
-.kit #n73 .end { position: absolute; z-index: 0; left: 0; top: 0; width: var(--cs); height: var(--cs); border-radius: 9px; background: var(--ink); opacity: 0; pointer-events: none; transition: transform var(--sp-snappy-d) var(--sp-snappy), opacity .15s var(--ease-out); }
-.kit #n73 .end.on { opacity: 1; }
-.kit #n73 .p.prev .end[data-e="b"] { background: transparent; box-shadow: inset 0 0 0 1.5px var(--ink); }
+.kit #n73 i.end { position: absolute; z-index: 0; left: 0; top: 0; width: var(--cs); height: var(--cs); border-radius: 9px; background: var(--ink); opacity: 0; pointer-events: none; transition: transform var(--sp-snappy-d) var(--sp-snappy), opacity .15s var(--ease-out); }
+.kit #n73 i.end.on { opacity: 1; }
+.kit #n73 .p.prev i.end[data-e="b"] { background: transparent; box-shadow: inset 0 0 0 1.5px var(--ink); }
 .kit #n73 .ft { grid-area: ft; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; padding-top: 10px; border-top: 1px solid var(--line); }
 .kit #n73 .dl { flex: 1 1 160px; min-width: 0; margin: 0; font-size: 13.5px; font-weight: 500; color: var(--ink); white-space: nowrap; }
 .kit #n73 .btns { display: flex; gap: 6px; margin-left: auto; }
@@ -4726,7 +4725,7 @@ html[data-motion="off"] .kit #n86 .sk i::after { opacity: 0; }
       <div class="top"><div class="srch"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg><input class="in" id="n37-q" type="search" placeholder="Search name, number or status" aria-label="Search invoices"></div></div>
       <div class="scw"><table><thead><tr><th class="ckc"><button class="cb" type="button" role="checkbox" aria-checked="false" aria-label="Pick all invoices" id="n37-all"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.8 8.3 6.7 11 12.2 5"/></svg></button></th><th data-k="0" aria-sort="none"><button class="sb" type="button">Invoice<svg class="i s" aria-hidden="true"><use href="#i-cd"/></svg></button></th><th data-k="1" aria-sort="none"><button class="sb" type="button">Customer<svg class="i s" aria-hidden="true"><use href="#i-cd"/></svg></button></th><th data-k="2" aria-sort="none" class="r"><button class="sb" type="button">Amount (KSh)<svg class="i s" aria-hidden="true"><use href="#i-cd"/></svg></button></th><th data-k="3" aria-sort="none"><button class="sb" type="button">Status<svg class="i s" aria-hidden="true"><use href="#i-cd"/></svg></button></th><th data-k="4" aria-sort="descending"><button class="sb" type="button">Date<svg class="i s" aria-hidden="true"><use href="#i-cd"/></svg></button></th></tr></thead><tbody id="n37-body"></tbody></table></div>
       <p class="ft" id="n37-foot" aria-live="polite"></p>
-      <div class="tray" id="n37-bar" aria-hidden="true"><span id="n37-bn"></span><button class="b sm" type="button" tabindex="-1" data-bx="Reminders sent by SMS.">Send reminders</button><button class="b sm" type="button" tabindex="-1" data-bx="Marked as paid.">Mark paid</button><button class="b sm q cx" type="button" tabindex="-1" aria-label="Clear picks" data-bc><svg class="i" aria-hidden="true"><use href="#i-x"/></svg></button></div>
+      <div class="tray" id="n37-bar" aria-hidden="true"><span id="n37-bn"></span><button class="b sm pri" type="button" tabindex="-1" data-bx="Reminders sent by SMS.">Send reminders</button><button class="b sm" type="button" tabindex="-1" data-bx="Marked as paid.">Mark paid</button><button class="b sm q cx" type="button" tabindex="-1" aria-label="Clear picks" data-bc><svg class="i" aria-hidden="true"><use href="#i-x"/></svg></button></div>
     </div>
   </div></div>
 
