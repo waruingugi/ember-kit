@@ -1,0 +1,177 @@
+<!-- part n99 | part | group forms | A choice with a price should show what each one gets you. | A choice with a price should show what each one gets you. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A choice with a price should <em>show what each one gets you.</em></h3>
+          <p class="kit-p">Click Daily, then Monthly, then press the arrow keys fast. One orange ring stretches to the card you pick, and the price and the cost for each GB roll. Unlimited says why you can't pick it yet.</p>
+          <section class="cs kv4" id="n99">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="rcw">
+      <p class="rl" id="n99-l">Data bundle for 0712 345 678</p>
+      <div class="rg" role="radiogroup" aria-labelledby="n99-l"><svg class="rring" aria-hidden="true"><rect rx="11.5"></rect></svg>
+        <label class="rcd"><input type="radio" name="n99-b" value="0"><span class="rdt" aria-hidden="true"></span><span class="rnm">Daily</span><span class="rpr">KES 99</span><span class="rds">1 GB. Lasts 24 hours.</span></label>
+        <label class="rcd"><input type="radio" name="n99-b" value="1" checked=""><span class="rdt" aria-hidden="true"></span><span class="rnm">Weekly</span><span class="rpr">KES 499</span><span class="rds">6 GB. Lasts 7 days.</span></label>
+        <label class="rcd"><input type="radio" name="n99-b" value="2"><span class="rdt" aria-hidden="true"></span><span class="rnm">Monthly</span><span class="rpr">KES 1,999</span><span class="rds">25 GB. Lasts 30 days.</span></label>
+        <label class="rcd"><input type="radio" name="n99-b" value="3" disabled=""><span class="rdt" aria-hidden="true"></span><span class="rnm">Unlimited</span><span class="rpr">KES 4,999</span><span class="rds">No cap. Lasts 30 days.</span><span class="rlk"><svg class="i" viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="7" width="9" height="6.5" rx="1.6"></rect><path d="M5.5 7V5.3a2.5 2.5 0 0 1 5 0V7"></path></svg>Not on your SIM yet. A Mawimbi Mobile shop can switch it.</span></label>
+      </div>
+      <div class="rsm"><div class="rsi"><p class="rbg"><span class="rpv">KES 499</span><small>today</small></p><p class="rgb"><b class="rgv">KES 83</b> a GB</p><p class="rms">Renews every Thursday.</p></div></div>
+      <p class="sr-only" aria-live="polite" data-live=""></p>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0099">
+(function () {
+  "use strict";
+  var box = document.getElementById("n99"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function money(n) { return n.toLocaleString("en-KE"); }
+  function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  function dur(n) { return (parseFloat(getComputedStyle(root).getPropertyValue("--sp-" + n + "-d")) || .37) * 1000; }
+  /* The odometer, copied from house part n07: each digit is a drum that turns the way the number moved. */
+  function roll(el, o) {
+    var api = { value: o.value }, slots = {}, order = [], raf = 0, last = 0, built = false;
+    var vis = document.createElement("span"), sr = document.createElement("span");
+    vis.className = "rv"; vis.setAttribute("aria-hidden", "true"); sr.className = "sr-only";
+    el.textContent = ""; el.appendChild(vis); el.appendChild(sr);
+    function md(a) { return ((a % 10) + 10) % 10; }
+    function rank(k) { var c = k.charAt(0), i = parseInt(k.slice(1), 10); return c === "p" ? i : c === "d" ? 1000 - 2 * i : c === "s" ? 1001 - 2 * i : 3000 + i; }
+    function parse(s) {
+      var tot = (s.match(/[0-9]/g) || []).length, seen = 0, p = 0, x = 0, out = [];
+      for (var i = 0; i < s.length; i++) {
+        var ch = s.charAt(i);
+        if (ch >= "0" && ch <= "9") { seen++; out.push({ k: "d" + (tot - seen), d: +ch }); }
+        else out.push({ k: (seen === 0 ? "p" + p++ : seen === tot ? "x" + x++ : "s" + (tot - seen)) + ch, ch: ch });
+      }
+      return out;
+    }
+    function mk(t) {
+      var e = document.createElement("span"), s = { k: t.k, el: e, r: rank(t.k) };
+      if (t.d != null) {
+        var st = document.createElement("span"), i, h = "";
+        for (i = 0; i < 11; i++) h += "<span>" + (i % 10) + "</span>";
+        e.className = "dg"; st.className = "st7"; st.innerHTML = h; e.appendChild(st);
+        s.st = st; s.x = s.T = s.g = s.f = s.v = s.at = 0;
+      } else { e.className = "cm"; e.textContent = t.ch; }
+      return s;
+    }
+    function cfg() { var d = (parseFloat(getComputedStyle(box).getPropertyValue("--sp-soft-d")) || .67) * 1000, calm = lv() === "calm", z = calm ? 1 : .86, D = calm ? d * .6 : d; return { Z: z, W: 4.6 / (z * D / 1000) }; }
+    function draw(s) { s.st.style.transform = "translateY(" + (-md(s.x) * 100 / 11).toFixed(3) + "%)"; }
+    function tick(t) {
+      var c = cfg(), dt = Math.min(.032, Math.max(.001, (t - last) / 1000)), busy = false; last = t;
+      order.forEach(function (s) {
+        if (!s.st) return;
+        if (s.at && t >= s.at) { s.at = 0; s.T = s.g; }
+        if (s.at) busy = true;
+        else if (s.x !== s.T || s.v) {
+          s.v += (-c.W * c.W * (s.x - s.T) - 2 * c.Z * c.W * s.v) * dt; s.x += s.v * dt;
+          if (Math.abs(s.x - s.T) < .003 && Math.abs(s.v) < .05) { s.x = s.T; s.v = 0; } else busy = true;
+        }
+        if (s.x === s.T && !s.at) { var w = s.T - md(s.T); if (w) { s.x -= w; s.T -= w; s.g -= w; } }
+        draw(s);
+      });
+      raf = busy ? requestAnimationFrame(tick) : 0;
+    }
+    function wid(e) { return e.getBoundingClientRect().width; }
+    function kill(s) { if (s.wa) s.wa.cancel(); s.el.remove(); var i = order.indexOf(s); if (i >= 0) order.splice(i, 1); if (slots[s.k] === s) delete slots[s.k]; }
+    function leave(s, mv) {
+      s.gone = true; if (!mv) { kill(s); return; }
+      var w = wid(s.el); if (s.wa) s.wa.cancel();
+      s.wa = s.el.animate([{ width: w + "px", opacity: 1 }, { opacity: 0, offset: .55 }, { width: "0px", opacity: 0 }], { duration: 420, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
+      s.wa.onfinish = function () { if (s.gone) kill(s); };
+    }
+    function grow(s, w0) { var w1 = wid(s.el); if (w1 - w0 > .5) s.wa = s.el.animate([{ width: w0 + "px", opacity: w0 / w1 }, { opacity: w0 / w1, offset: .3 }, { width: w1 + "px", opacity: 1 }], { duration: 460, easing: "cubic-bezier(.22,1,.36,1)" }); }
+    api.set = function (v, instant) {
+      var old = api.value, dir = v >= old ? 1 : -1, str = o.fmt(v), toks = parse(str), now = performance.now(), mv = built && moving() && !instant, keep = {}, rk = 0, j, s;
+      api.value = v; sr.textContent = o.say ? o.say(str) : str;
+      toks.forEach(function (t) {
+        var s = slots[t.k]; keep[t.k] = 1;
+        if (!s) {
+          s = slots[t.k] = mk(t);
+          var nx = null; for (var i = 0; i < order.length; i++) if (order[i].r > s.r) { nx = order[i]; break; }
+          vis.insertBefore(s.el, nx ? nx.el : null); order.splice(nx ? order.indexOf(nx) : order.length, 0, s);
+          if (mv) { s.el.style.width = "0px"; s.enter = true; }
+        } else if (s.gone) { s.gone = false; var w0 = wid(s.el); if (s.wa) s.wa.cancel(); s.wa = null; if (mv) grow(s, w0); }
+      });
+      order.slice().forEach(function (s) {
+        if (keep[s.k] || s.gone) return;
+        if (s.st) { var c0 = md(s.g); if (c0) { s.g += dir > 0 ? md(-c0) : -c0; if (mv) { s.at = 0; s.T = s.g; } } }
+        leave(s, mv);
+      });
+      order.forEach(function (s) { if (s.enter) { s.enter = false; s.el.style.width = ""; grow(s, 0); } });
+      for (j = toks.length - 1; j >= 0; j--) {
+        var t = toks[j]; if (t.d == null) continue; s = slots[t.k];
+        var cd = md(s.g); if (cd === t.d) continue;
+        var g = s.g + (dir > 0 ? md(t.d - cd) : -md(cd - t.d));
+        if (!mv) { s.x = s.T = s.g = g; s.v = s.at = 0; draw(s); continue; }
+        s.g = g; var dl = 30 * rk++;
+        if (dl > 0) s.at = now + dl; else { s.at = 0; s.T = g; }
+      }
+      if (!mv) {
+        order.forEach(function (s) { if (s.st) { s.x = s.T = s.g; s.v = s.at = 0; draw(s); } });
+        if (built && old !== v && !instant) vis.animate([{ opacity: .3 }, { opacity: 1 }], { duration: 180, easing: "ease-out" });
+      } else if (!raf) { last = now; raf = requestAnimationFrame(tick); }
+    };
+    api.set(api.value, true); built = true;
+    return api;
+  }
+  function line(el) {   /* a line that rolls: the old words lift out, the new ones rise in from the side the pick moved */
+    var cur = document.createElement("span"); cur.textContent = el.textContent; el.textContent = ""; el.appendChild(cur);
+    return { set: function (txt, dir) {
+      if (cur.textContent === txt) return; var old = cur; cur = document.createElement("span"); cur.textContent = txt; el.appendChild(cur);
+      if (!moving()) { old.remove(); return; }
+      var y = dir < 0 ? -1 : 1, a = { duration: 440, easing: "cubic-bezier(.22,1,.36,1)" };
+      old.animate([{ transform: "none", opacity: 1 }, { transform: "translateY(" + (-y * 80) + "%)", opacity: 0 }], a).onfinish = function () { old.remove(); };
+      cur.animate([{ transform: "translateY(" + (y * 80) + "%)", opacity: 0 }, { transform: "none", opacity: 1 }], a);
+    } };
+  }
+
+  /* Taste Lab round 4, part 22 B. One orange ring moves from card to card. Each edge rides its own spring that keeps
+     its speed: the edge on the side it moves toward leads (snappy, a little bounce), the back edge catches up (soft),
+     so the ring stretches as it goes and takes the new card's size. Motion off: the ring jumps. */
+  var P = [
+    { n: "Daily", p: 99, gb: 1, m: "Renews tomorrow at 9:00 am." },
+    { n: "Weekly", p: 499, gb: 6, m: "Renews every Thursday." },
+    { n: "Monthly", p: 1999, gb: 25, m: "Renews on 5 December. The best price for each GB." },
+    { n: "Unlimited", p: 4999 }
+  ];
+  var g = $(".rg"), cards = $$(".rcd"), ins = $$(".rcd input"), rect = $(".rring rect"), sumEl = $(".rsm"), live = $("[data-live]"), cur = 1;
+  function kes(n) { return "KES " + money(n); }
+  var price = roll($(".rpv"), { value: P[cur].p, fmt: kes }), per = roll($(".rgv"), { value: Math.round(P[cur].p / P[cur].gb), fmt: kes }), msg = line($(".rms"));
+  var E = [0, 1, 2, 3].map(function () { return { x: 0, v: 0, T: 0, d: 420, z: 1 }; }), raf = 0, lt = 0;
+  function paint() {
+    rect.setAttribute("x", E[0].x.toFixed(2)); rect.setAttribute("y", E[1].x.toFixed(2));
+    rect.setAttribute("width", Math.max(0, E[2].x - E[0].x).toFixed(2)); rect.setAttribute("height", Math.max(0, E[3].x - E[1].x).toFixed(2));
+  }
+  function tick(t) {
+    var dt = Math.min(.032, Math.max(.001, (t - lt) / 1000)), busy = false, calm = lv() === "calm"; lt = t;
+    E.forEach(function (e) {
+      if (e.x === e.T && !e.v) return; var z = calm ? 1 : e.z, W = 4.6 / (z * e.d * (calm ? .6 : 1) / 1000);
+      e.v += (-W * W * (e.x - e.T) - 2 * z * W * e.v) * dt; e.x += e.v * dt;
+      if (Math.abs(e.x - e.T) < .05 && Math.abs(e.v) < 1) { e.x = e.T; e.v = 0; } else busy = true;
+    });
+    paint(); raf = busy ? requestAnimationFrame(tick) : 0;
+  }
+  function ringTo(jump) {
+    var c = cards[cur], to = [c.offsetLeft + .75, c.offsetTop + .75, c.offsetLeft + c.offsetWidth - .75, c.offsetTop + c.offsetHeight - .75];
+    if (jump || !moving()) { cancelAnimationFrame(raf); raf = 0; E.forEach(function (e, i) { e.x = e.T = to[i]; e.v = 0; }); paint(); return; }
+    var mx = (to[0] + to[2] - E[0].x - E[2].x) / 2, my = (to[1] + to[3] - E[1].x - E[3].x) / 2, F = dur("snappy") * .62, S = dur("soft") * .78, M = (F + S) / 2;
+    function set(i, front, back) { E[i].d = front ? F : back ? S : M; E[i].z = front ? .78 : 1; }
+    set(0, mx < -.5, mx > .5); set(2, mx > .5, mx < -.5); set(1, my < -.5, my > .5); set(3, my > .5, my < -.5);
+    E.forEach(function (e, i) { e.T = to[i]; }); if (!raf) { lt = performance.now(); raf = requestAnimationFrame(tick); }
+  }
+  ins.forEach(function (x, i) {
+    x.addEventListener("change", function () {
+      var dir = i > cur ? 1 : -1, h0 = sumEl.offsetHeight, b = P[i]; cur = i; ringTo(false);
+      price.set(b.p); per.set(Math.round(b.p / b.gb)); msg.set(b.m, dir); glide(sumEl, h0);
+      live.textContent = b.n + ", " + kes(b.p) + ". " + b.m;
+    });
+  });
+  ringTo(true);
+  if (window.ResizeObserver) new ResizeObserver(function () { if (!raf) ringTo(true); }).observe(g);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { ringTo(true); });
+})();
+</script>

@@ -1,0 +1,216 @@
+<!-- part n96 | part | group forms | One tap can answer a note without a reply. | One tap can answer a note without a reply. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">One tap can <em>answer a note</em> without a reply.</h3>
+          <p class="kit-p">Tap Agree fast three times. Then press the smiley: point at each reaction, or arrow along, to read its name, and pick Got it. Tap it again to take it back.</p>
+          <section class="cs kv4" id="n96">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="rx">
+      <div class="rxc">
+        <div class="nt"><span class="av" aria-hidden="true">WK</span><div><p class="who"><b>Wanjiku Kamau</b><span>2 min ago</span></p><p class="txt">Delivery moved to 4 pm. The gate code is 2580.</p></div></div>
+        <div class="bar" role="group" aria-label="Reactions"><button class="add" type="button" aria-label="Add reaction" aria-haspopup="true" aria-expanded="false" aria-controls="n96-pk"><svg class="i" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13.5a5.5 5.5 0 1 1 5.5-5.5M5.6 9.3a2.8 2.8 0 0 0 4.4.5M6 6.4h.01M10 6.4h.01M12.5 10.5v3M11 12h3"></path></svg></button></div>
+        <div class="pk" id="n96-pk" role="toolbar" aria-label="Pick a reaction">
+          <span class="phl" aria-hidden="true"></span><button class="op" type="button" data-o="agree" aria-label="Agree" tabindex="-1"><span class="oi"></span><em class="tip" aria-hidden="true">Agree</em></button><button class="op" type="button" data-o="thanks" aria-label="Thanks" tabindex="-1"><span class="oi"></span><em class="tip" aria-hidden="true">Thanks</em></button><button class="op" type="button" data-o="funny" aria-label="Funny" tabindex="-1"><span class="oi"></span><em class="tip" aria-hidden="true">Funny</em></button><button class="op" type="button" data-o="seen" aria-label="Seen" tabindex="-1"><span class="oi"></span><em class="tip" aria-hidden="true">Seen</em></button><button class="op" type="button" data-o="nice" aria-label="Nice" tabindex="-1"><span class="oi"></span><em class="tip" aria-hidden="true">Nice</em></button><button class="op" type="button" data-o="gotit" aria-label="Got it" tabindex="-1"><span class="oi"></span><em class="tip" aria-hidden="true">Got it</em></button>
+        </div>
+      </div>
+      <p class="sr-only" role="status" data-live=""></p>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0096">
+(function () {
+  "use strict";
+  var box = document.getElementById("n96"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function dur(n) { return (parseFloat(getComputedStyle(root).getPropertyValue("--sp-" + n + "-d")) || .37) * 1000; }
+  /* The odometer, copied from house part n07: each digit is a drum that turns the way the number moved. */
+  function roll(el, o) {
+    var api = { value: o.value }, slots = {}, order = [], raf = 0, last = 0, built = false;
+    var vis = document.createElement("span"), sr = document.createElement("span");
+    vis.className = "rv"; vis.setAttribute("aria-hidden", "true"); sr.className = "sr-only";
+    el.textContent = ""; el.appendChild(vis); el.appendChild(sr);
+    function md(a) { return ((a % 10) + 10) % 10; }
+    function rank(k) { var c = k.charAt(0), i = parseInt(k.slice(1), 10); return c === "p" ? i : c === "d" ? 1000 - 2 * i : c === "s" ? 1001 - 2 * i : 3000 + i; }
+    function parse(s) {
+      var tot = (s.match(/[0-9]/g) || []).length, seen = 0, p = 0, x = 0, out = [];
+      for (var i = 0; i < s.length; i++) {
+        var ch = s.charAt(i);
+        if (ch >= "0" && ch <= "9") { seen++; out.push({ k: "d" + (tot - seen), d: +ch }); }
+        else out.push({ k: (seen === 0 ? "p" + p++ : seen === tot ? "x" + x++ : "s" + (tot - seen)) + ch, ch: ch });
+      }
+      return out;
+    }
+    function mk(t) {
+      var e = document.createElement("span"), s = { k: t.k, el: e, r: rank(t.k) };
+      if (t.d != null) {
+        var st = document.createElement("span"), i, h = "";
+        for (i = 0; i < 11; i++) h += "<span>" + (i % 10) + "</span>";
+        e.className = "dg"; st.className = "st7"; st.innerHTML = h; e.appendChild(st);
+        s.st = st; s.x = s.T = s.g = s.f = s.v = s.at = 0;
+      } else { e.className = "cm"; e.textContent = t.ch; }
+      return s;
+    }
+    function cfg() { var d = (parseFloat(getComputedStyle(box).getPropertyValue("--sp-soft-d")) || .67) * 1000, calm = lv() === "calm", z = calm ? 1 : .86, D = calm ? d * .6 : d; return { Z: z, W: 4.6 / (z * D / 1000) }; }
+    function draw(s) { s.st.style.transform = "translateY(" + (-md(s.x) * 100 / 11).toFixed(3) + "%)"; }
+    function tick(t) {
+      var c = cfg(), dt = Math.min(.032, Math.max(.001, (t - last) / 1000)), busy = false; last = t;
+      order.forEach(function (s) {
+        if (!s.st) return;
+        if (s.at && t >= s.at) { s.at = 0; s.T = s.g; }
+        if (s.at) busy = true;
+        else if (s.x !== s.T || s.v) {
+          s.v += (-c.W * c.W * (s.x - s.T) - 2 * c.Z * c.W * s.v) * dt; s.x += s.v * dt;
+          if (Math.abs(s.x - s.T) < .003 && Math.abs(s.v) < .05) { s.x = s.T; s.v = 0; } else busy = true;
+        }
+        if (s.x === s.T && !s.at) { var w = s.T - md(s.T); if (w) { s.x -= w; s.T -= w; s.g -= w; } }
+        draw(s);
+      });
+      raf = busy ? requestAnimationFrame(tick) : 0;
+    }
+    function wid(e) { return e.getBoundingClientRect().width; }
+    function kill(s) { if (s.wa) s.wa.cancel(); s.el.remove(); var i = order.indexOf(s); if (i >= 0) order.splice(i, 1); if (slots[s.k] === s) delete slots[s.k]; }
+    function leave(s, mv) {
+      s.gone = true; if (!mv) { kill(s); return; }
+      var w = wid(s.el); if (s.wa) s.wa.cancel();
+      s.wa = s.el.animate([{ width: w + "px", opacity: 1 }, { opacity: 0, offset: .55 }, { width: "0px", opacity: 0 }], { duration: 420, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
+      s.wa.onfinish = function () { if (s.gone) kill(s); };
+    }
+    function grow(s, w0) { var w1 = wid(s.el); if (w1 - w0 > .5) s.wa = s.el.animate([{ width: w0 + "px", opacity: w0 / w1 }, { opacity: w0 / w1, offset: .3 }, { width: w1 + "px", opacity: 1 }], { duration: 460, easing: "cubic-bezier(.22,1,.36,1)" }); }
+    api.set = function (v, instant) {
+      var old = api.value, dir = v >= old ? 1 : -1, str = o.fmt(v), toks = parse(str), now = performance.now(), mv = built && moving() && !instant, keep = {}, rk = 0, j, s;
+      api.value = v; sr.textContent = o.say ? o.say(str) : str;
+      toks.forEach(function (t) {
+        var s = slots[t.k]; keep[t.k] = 1;
+        if (!s) {
+          s = slots[t.k] = mk(t);
+          var nx = null; for (var i = 0; i < order.length; i++) if (order[i].r > s.r) { nx = order[i]; break; }
+          vis.insertBefore(s.el, nx ? nx.el : null); order.splice(nx ? order.indexOf(nx) : order.length, 0, s);
+          if (mv) { s.el.style.width = "0px"; s.enter = true; }
+        } else if (s.gone) { s.gone = false; var w0 = wid(s.el); if (s.wa) s.wa.cancel(); s.wa = null; if (mv) grow(s, w0); }
+      });
+      order.slice().forEach(function (s) {
+        if (keep[s.k] || s.gone) return;
+        if (s.st) { var c0 = md(s.g); if (c0) { s.g += dir > 0 ? md(-c0) : -c0; if (mv) { s.at = 0; s.T = s.g; } } }
+        leave(s, mv);
+      });
+      order.forEach(function (s) { if (s.enter) { s.enter = false; s.el.style.width = ""; grow(s, 0); } });
+      for (j = toks.length - 1; j >= 0; j--) {
+        var t = toks[j]; if (t.d == null) continue; s = slots[t.k];
+        var cd = md(s.g); if (cd === t.d) continue;
+        var g = s.g + (dir > 0 ? md(t.d - cd) : -md(cd - t.d));
+        if (!mv) { s.x = s.T = s.g = g; s.v = s.at = 0; draw(s); continue; }
+        s.g = g; var dl = 30 * rk++;
+        if (dl > 0) s.at = now + dl; else { s.at = 0; s.T = g; }
+      }
+      if (!mv) {
+        order.forEach(function (s) { if (s.st) { s.x = s.T = s.g; s.v = s.at = 0; draw(s); } });
+        if (built && old !== v && !instant) vis.animate([{ opacity: .3 }, { opacity: 1 }], { duration: 180, easing: "ease-out" });
+      } else if (!raf) { last = now; raf = requestAnimationFrame(tick); }
+    };
+    api.set(api.value, true); built = true;
+    return api;
+  }
+
+  /* Taste Lab round 4, part 13: B's chips and add button that grows into a picker, with C's row of icons inside it.
+     Each icon names itself in a tooltip on hover, keyboard focus, or while a finger presses it. */
+  function sv(d) { return '<svg class="i" viewBox="0 0 16 16" aria-hidden="true"><path d="' + d + '"/></svg>'; }
+  var RX = {
+    agree: ["Agree", sv("M5 7v6.3H2.8V7zM5 7l2.5-4.4c1 0 1.7.8 1.5 1.8L8.6 6.5h3.6c.8 0 1.3.7 1.2 1.4l-.9 4.4c-.1.6-.6 1-1.2 1H5")],
+    thanks: ["Thanks", sv("M8 13.2S2.5 10 2.5 6.1A2.9 2.9 0 0 1 8 4.6a2.9 2.9 0 0 1 5.5 1.5C13.5 10 8 13.2 8 13.2z")],
+    funny: ["Funny", sv("M8 13.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM5.6 9.3a2.8 2.8 0 0 0 4.8 0M6 6.4h.01M10 6.4h.01")],
+    seen: ["Seen", sv("M1.8 8S4 3.8 8 3.8 14.2 8 14.2 8 12 12.2 8 12.2 1.8 8 1.8 8zM8 9.8a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6z")],
+    nice: ["Nice", sv("M8 2.5v2.2M8 11.3v2.2M2.5 8h2.2M11.3 8h2.2M4.1 4.1l1.5 1.5M10.4 10.4l1.5 1.5M4.1 11.9l1.5-1.5M10.4 5.6l1.5-1.5")],
+    gotit: ["Got it", '<svg class="gt" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"/><path d="M6.6 11.4 9.6 14.3l5.8-6.4"/></svg>']
+  };
+  var rx = $(".rx"), bar = $(".bar"), add = $(".add"), pk = $(".pk"), phl = $(".phl"), os = $$(".op", pk), live = $("[data-live]"), C = {}, isOpen = false, at = 0;
+  os.forEach(function (o) { $(".oi", o).innerHTML = RX[o.getAttribute("data-o")][1]; });
+  function say(t) { clearTimeout(live._t); live.textContent = ""; live._t = setTimeout(function () { live.textContent = t; }, 40); }
+  function label(c) { return RX[c.k][0] + ", " + c.n + (c.n === 1 ? " reaction" : " reactions") + (c.mine ? ", including yours" : ""); }
+  function paint(c) { c.el.setAttribute("aria-pressed", String(c.mine)); c.el.setAttribute("aria-label", label(c)); }
+  /* the icon's kick is a small spring (k 430, c 15), so fast taps stack */
+  function kick(c) {
+    if (!moving()) return; c.kv += 7; if (c.kr) return; var lt = performance.now();
+    (function f(t) {
+      var dt = Math.min(.032, Math.max(0, (t - lt) / 1000)); lt = t; c.kv += (-430 * (c.kx - 1) - 15 * c.kv) * dt; c.kx += c.kv * dt;
+      if (dt && Math.abs(c.kx - 1) < .002 && Math.abs(c.kv) < .02) { c.kx = 1; c.kv = 0; c.kr = 0; c.ic.style.transform = ""; return; }
+      c.ic.style.transform = "scale(" + c.kx.toFixed(3) + ")"; c.kr = requestAnimationFrame(f);
+    })(lt);
+  }
+  /* chips glide to their new places on the snappy spring after one comes or goes */
+  function flip(change) {
+    var els = $$(".cp, .add", bar), a = els.map(function (e) { return e.getBoundingClientRect(); }); change();
+    if (!moving()) return;
+    els.forEach(function (e, i) {
+      if (!e.isConnected) return; var b = e.getBoundingClientRect(), dx = a[i].left - b.left, dy = a[i].top - b.top;
+      if (Math.abs(dx) < .5 && Math.abs(dy) < .5) return;
+      e.animate([{ transform: "translate(" + dx + "px," + dy + "px)" }, { transform: "translate(0,0)" }], { duration: dur("snappy"), easing: sp("snappy"), composite: "add" });
+    });
+  }
+  function make(k, n, mine) {
+    var b = document.createElement("button"); b.type = "button"; b.className = "cp";
+    b.innerHTML = '<span class="ci">' + RX[k][1] + '</span><span class="ct"></span>';
+    var c = C[k] = { k: k, n: n, mine: !!mine, el: b, ic: $(".ci", b), kx: 1, kv: 0, kr: 0 };
+    c.num = roll($(".ct", b), { value: n, fmt: String });
+    b.addEventListener("click", function () { if (C[k] !== c) return; var on = !c.mine; bump(k, on ? 1 : -1, on); say(on ? "You reacted " + RX[k][0] + "." : "Your " + RX[k][0] + " is removed."); });
+    paint(c); return c;
+  }
+  function bump(k, d, mine) {
+    var c = C[k];
+    if (!c) flip(function () {
+      c = make(k, 0, false); bar.insertBefore(c.el, add);
+      if (moving()) c.el.animate([{ transform: "scale(.6)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: dur("snappy"), easing: sp("snappy") });
+    });
+    c.n = Math.max(0, c.n + d); if (mine != null) c.mine = mine; c.num.set(c.n); paint(c); if (d > 0) kick(c);
+    if (c.n === 0) {   /* the last one gone: the chip shrinks away and the rest close up */
+      var f = document.activeElement === c.el; delete C[k]; c.el.style.pointerEvents = "none";
+      var gone = function () { flip(function () { c.el.remove(); }); if (f) add.focus({ preventScroll: true }); };
+      if (moving()) c.el.animate([{ transform: "none", opacity: 1 }, { transform: "scale(.6)", opacity: 0 }], { duration: 160, easing: "ease-in", fill: "forwards" }).onfinish = gone; else gone();
+    }
+  }
+  [["agree", 3, false], ["thanks", 2, true]].forEach(function (r) { bar.insertBefore(make(r[0], r[1], r[2]).el, add); });
+
+  /* the picker: one highlight glides to the icon you point at, focus or press, and its name shows above it */
+  function hot(o) {
+    os.forEach(function (x) { x.classList.toggle("hot", x === o); });
+    if (!o) { phl.classList.remove("is-on"); return; }
+    var first = !phl.classList.contains("is-on"); if (first) phl.style.transition = "none";
+    phl.style.transform = "translate(" + o.offsetLeft + "px," + o.offsetTop + "px)"; phl.classList.add("is-on");
+    if (first) { void phl.offsetWidth; phl.style.transition = ""; }
+  }
+  function setOpen(v, back) {
+    if (v === isOpen) return; isOpen = v; rx.classList.toggle("is-open", v); add.setAttribute("aria-expanded", String(v));
+    if (v) {
+      pk.style.transformOrigin = Math.max(10, add.offsetLeft - pk.offsetLeft + 15) + "px 0";
+      os.forEach(function (o, i) { o.tabIndex = i === at ? 0 : -1; }); os[at].focus({ preventScroll: true });
+    } else { hot(null); os.forEach(function (o) { o.tabIndex = -1; }); if (back) add.focus({ preventScroll: true }); }
+  }
+  function pick(k) {
+    var c = C[k];
+    if (c && c.mine) { kick(c); say("You already reacted " + RX[k][0] + "."); }
+    else { bump(k, 1, true); say("You reacted " + RX[k][0] + "."); }
+    setOpen(false, true);
+  }
+  add.addEventListener("click", function () { setOpen(!isOpen, true); });
+  os.forEach(function (o, i) {
+    o.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") hot(o); });
+    o.addEventListener("pointerdown", function (e) { if (e.pointerType !== "mouse") hot(o); });
+    o.addEventListener("focus", function () { at = i; os.forEach(function (x, j) { x.tabIndex = j === i ? 0 : -1; }); if (o.matches(":focus-visible")) hot(o); });
+    o.addEventListener("click", function () { pick(o.getAttribute("data-o")); });
+  });
+  pk.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") hot(document.activeElement && pk.contains(document.activeElement) && document.activeElement.matches(":focus-visible") ? document.activeElement : null); });
+  pk.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+  pk.addEventListener("keydown", function (e) {
+    var i = os.indexOf(document.activeElement), n = os.length, j = { ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1, ArrowUp: i - 1, Home: 0, End: n - 1 }[e.key];
+    if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); setOpen(false, true); return; }
+    if (e.key === "Tab") { setOpen(false); return; }
+    if (j == null || i < 0) return; e.preventDefault(); os[(j + n) % n].focus({ preventScroll: true });
+  });
+  document.addEventListener("pointerdown", function (e) { if (isOpen && !pk.contains(e.target) && !add.contains(e.target)) setOpen(false); });
+})();
+</script>

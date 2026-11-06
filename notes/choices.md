@@ -10,6 +10,17 @@ Taste Lab r1 winners are house parts `n29`–`n39` (`CHANGELOG.md`, 2026-11-01).
 
 | Date | Part | Options shown | Picked | Why (the owner's words) | Sources |
 |---|---|---|---|---|---|
+| 2026-11-06 | Taste Lab r4: 23 Segmented control | see the lab | D, already house part `n71` | Picked D | Arc segmented-control |
+| 2026-11-06 | Taste Lab r4: 22 Radio cards | see the lab | B, one ring that stretches to your pick (`n99`) | B by default; the owner's pick note was lost before it saved | Arc radio-cards |
+| 2026-11-06 | Taste Lab r4: 20 Mention input | see the lab | B, the list pops up at the caret (`n98`) | B by default; the owner's pick note was lost before it saved | Arc mention-input |
+| 2026-11-06 | Taste Lab r4: 17 Inline edit | see the lab | B, the text rolls to its new words (`n97`) | B by default; the owner's pick note was lost before it saved | Arc inline-edit |
+| 2026-11-06 | Taste Lab r4: 13 Reactions | see the lab | A mix: B's look and add button, C's picker icons with tooltips (`n96`) | "have an icon to open like B, once it opens show icons like in C with tooltip but the design should be like for B (B has better UI/UX)" | Arc reactions |
+| 2026-11-06 | Taste Lab r4: 09 Copy button | see the lab | C, the code block shows what it copied (`n95`); now the copy on every code block | "copy code block uses 09 C" | Arc copy-button |
+| 2026-11-06 | Taste Lab r4: 08 Expanding button group | see the lab | B, opens from the left with well-curved corners; replaces the old `n62` | "B should be used"; "Replace" | Arc expanding-button-group |
+| 2026-11-06 | Taste Lab r4: 05 Fixed from round 3 | see the lab | B too, "KES 60 × 3 = KES 180", already in `n58` | Also show B | house n58 |
+| 2026-11-06 | Taste Lab r4: 04 Sliders, more | see the lab | C and D kept (`n93`, `n94`) | "The handle should be small and orange, and still easy to grab" | Arc slider, house n44 |
+| 2026-11-06 | Taste Lab r4: 02 Sparkline, more | see the lab | C and D kept (`n91`, `n92`) | Keep C and D | Arc sparkline |
+| 2026-11-06 | Taste Lab r4: 01 Donut, more | see the lab | A, the full ring with rows that fade (`n90`) | Picked A | Arc donut-chart, house n03 |
 | 2026-11-05 | Taste Lab r4: 36 Stats band | see the lab | A and D kept | "Keep A and D" | Arc stats-band |
 | 2026-11-05 | Taste Lab r4: 35 Empty states | see the lab | B and D kept | "Keep B and D" | Arc empty-states |
 | 2026-11-05 | Taste Lab r4: 34 Timeline | see the lab | B, steps arrive in turn and the line follows | Picked B | Arc timeline, house c24 |

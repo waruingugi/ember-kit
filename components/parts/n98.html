@@ -1,0 +1,134 @@
+<!-- part n98 | part | group forms | A mention should become one piece the moment you pick a name. | A mention should become one piece the moment you pick a name. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A mention should <em>become one piece</em> the moment you pick a name.</h3>
+          <p class="kit-p">Type "Can @ki" and press Enter: the list pops up right at your caret, and Brian Kiprop's name lands as one piece. Then press Backspace twice. Enter sends the note.</p>
+          <section class="cs kv4" id="n98">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="mn">
+      <div class="mc">
+        <p class="cap">Order #4822 · Njeri Kamau · <span>KES 1,350</span></p>
+        <div class="msh"><div class="med" id="n98-ed" contenteditable="true" role="combobox" aria-multiline="true" aria-haspopup="listbox" aria-expanded="false" aria-controls="n98-lb" aria-autocomplete="list" aria-label="Note for the team" data-ph="Write a note. Type @ to tell someone."></div><button class="msnd" type="button" aria-label="Send note"><svg class="i" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.6 8 13.4 2.8l-3 10.7-2.8-4.4zM7.6 9.1l5.8-6.3"></path></svg></button></div>
+        <div class="mpp"><div class="mph"><div class="mlw"><span class="mhl" aria-hidden="true"></span><ul class="mlb" role="listbox" id="n98-lb" aria-label="Team"></ul></div></div></div>
+        <ul class="mfd" aria-label="Notes"><li class="mpo"><span class="mav" aria-hidden="true">OO</span><div><b>Otieno Ouma</b> <span class="mtm">9:42 am</span><p>Rider is at the gate. Who has change for KES 5,000?</p></div></li></ul>
+      </div>
+      <p class="mnt" aria-live="polite">Enter sends. Shift and Enter makes a new line.</p>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0098">
+(function () {
+  "use strict";
+  var box = document.getElementById("n98"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  /* Taste Lab round 4, part 20 B. Type @ and a small list of the team pops out from that very spot. More letters
+     shrink it, and one highlight glides between the names. The name you pick lands as one piece: one Backspace takes it all. */
+  var P = [["Amina Wanjiru", "Shop owner", "AW", "u1"], ["Brian Kiprop", "Stock", "BK", "u2"], ["Wanjiru Mwangi", "Front counter", "WM", "u3"], ["Otieno Ouma", "Deliveries", "OO", "u4"], ["Njeri Kamau", "Accounts", "NK", "u5"], ["Kevin Mutua", "Deliveries", "KM", "u6"], ["Achieng Odhiambo", "Stock", "AO", "u7"]];
+  var mn = $(".mn"), ed = $(".med"), pop = $(".mpp"), list = $(".mlb"), hl = $(".mhl"), ph = $(".mph"), shell = $(".msh"), anchor = $(".mc"), feed = $(".mfd"), note = $(".mnt");
+  var trig = null, act = -1, rows = [], shown = [], dismissed = null, lastH = shell.offsetHeight, isOpen = false, id = ed.id;
+  function say(t) { note.textContent = t; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function markQ(s, q) { if (!q) return esc(s); var i = s.toLowerCase().indexOf(q.toLowerCase()); return i < 0 ? esc(s) : esc(s.slice(0, i)) + "<mark>" + esc(s.slice(i, i + q.length)) + "</mark>" + esc(s.slice(i + q.length)); }
+  function shake(el) { if (moving()) el.animate([{ transform: "none" }, { transform: "translateX(-5px)" }, { transform: "translateX(4px)" }, { transform: "translateX(-2px)" }, { transform: "none" }], { duration: 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  /* the @ and the letters after it, if the caret sits right after them */
+  function ctx() {
+    var sel = getSelection(); if (!sel.rangeCount || !sel.isCollapsed) return null; var n = sel.anchorNode, off = sel.anchorOffset;
+    if (!n || n.nodeType !== 3 || !ed.contains(n)) return null; var s = n.data.slice(0, off);
+    for (var i = s.length - 1; i >= 0 && i >= s.length - 18; i--) {
+      var ch = s.charAt(i);
+      if (ch === "@") { var pre = i ? s.charAt(i - 1) : ""; if (pre && !/[\s( ]/.test(pre)) return null; var q = s.slice(i + 1); return /^[A-Za-z]*$/.test(q) ? { node: n, at: i, end: off, q: q } : null; }
+      if (/[\s ]/.test(ch)) return null;
+    }
+    return null;
+  }
+  function match(q) { q = q.toLowerCase(); return P.filter(function (it) { return !q || it[0].toLowerCase().split(/\s+/).some(function (w) { return w.indexOf(q) === 0; }); }).slice(0, 5); }
+  function place(c) {
+    var r = document.createRange(); r.setStart(c.node, c.at); r.setEnd(c.node, c.at + 1); var b = r.getBoundingClientRect(), a = anchor.getBoundingClientRect();
+    var x = b.left - a.left - 12, mx = anchor.clientWidth - pop.offsetWidth - 6, px = Math.max(6, Math.min(mx, x));
+    pop.style.left = px + "px"; pop.style.top = (b.bottom - a.top + 8) + "px"; pop.style.transformOrigin = (b.left - a.left - px + 6) + "px 0";
+  }
+  function hlTo(el, jump) {
+    if (!el) { hl.classList.remove("is-on"); return; }
+    var j = jump || !hl.classList.contains("is-on") || !moving(); if (j) hl.style.transition = "none";
+    hl.style.height = el.offsetHeight + "px"; hl.style.transform = "translateY(" + el.offsetTop + "px)"; hl.classList.add("is-on");
+    if (j) { void hl.offsetWidth; hl.style.transition = ""; }
+  }
+  function close() { if (!isOpen) return; isOpen = false; trig = null; mn.classList.remove("is-open"); ed.setAttribute("aria-expanded", "false"); ed.removeAttribute("aria-activedescendant"); }
+  function mark(i, jump) {
+    if (!rows.length) { act = -1; hlTo(null); ed.removeAttribute("aria-activedescendant"); return; }
+    act = (i + rows.length) % rows.length;
+    rows.forEach(function (r, j) { r.setAttribute("aria-selected", String(j === act)); });
+    ed.setAttribute("aria-activedescendant", rows[act].id); hlTo(rows[act], jump);
+  }
+  function update() {
+    var c = ctx();
+    if (!c || (dismissed && dismissed.node === c.node && dismissed.at === c.at)) { close(); return; }
+    dismissed = null; var m = match(c.q), h0 = ph.offsetHeight, was = isOpen; trig = c; shown = m;
+    list.innerHTML = m.length ? m.map(function (it, i) { return '<li role="option" aria-selected="false" id="' + id + "-o" + i + '" class="mo"><span class="mav" aria-hidden="true">' + it[2] + '</span><span class="ml"><b>' + markQ(it[0], c.q) + "</b><small>" + esc(it[1]) + "</small></span></li>"; }).join("") : '<li class="mnone" role="presentation">No one called “' + esc(c.q) + "” on your team.</li>";
+    rows = $$('[role="option"]', list);
+    if (!was || pop._n !== c.node || pop._a !== c.at) { pop._n = c.node; pop._a = c.at; place(c); }
+    if (!was) { isOpen = true; mn.classList.add("is-open"); ed.setAttribute("aria-expanded", "true"); }
+    mark(0, !was); if (was) glide(ph, h0);
+  }
+  /* the field grows a line at a time; the box glides to its new height */
+  function grow() {
+    if (!ed.textContent.replace(/ /g, " ").trim() && !$(".mt", ed) && ed.innerHTML) ed.innerHTML = "";
+    if (shell._gl) { shell._gl.cancel(); shell._gl = null; } var h1 = shell.offsetHeight;
+    if (h1 !== lastH) { var h0 = lastH; lastH = h1; glide(shell, h0); }
+  }
+  function caretAt(node, off) { var r = document.createRange(); r.setStart(node, off); r.collapse(true); var sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); }
+  function pick(i) {
+    var it = shown[i], c = trig; if (!it || !c) return;
+    var r = document.createRange(); r.setStart(c.node, c.at); r.setEnd(c.node, c.end); r.deleteContents();
+    var t = document.createElement("span"); t.className = "mt"; t.contentEditable = "false"; t.setAttribute("data-id", it[3]); t.textContent = "@" + it[0];
+    var gap = document.createTextNode(" "); r.insertNode(gap); r.insertNode(t); caretAt(gap, 1);
+    if (moving()) { t.classList.add("fresh"); setTimeout(function () { t.classList.remove("fresh"); }, 600); }
+    close(); grow(); say(it[0] + " will be told when you send.");
+  }
+  function prevTok() {
+    var sel = getSelection(); if (!sel.rangeCount || !sel.isCollapsed) return null; var n = sel.anchorNode, off = sel.anchorOffset, prev = null;
+    if (n === ed) prev = ed.childNodes[off - 1]; else if (n.nodeType === 3 && off === 0) prev = n.previousSibling;
+    while (prev && prev.nodeType === 3 && !prev.data) prev = prev.previousSibling;
+    return prev && prev.nodeType === 1 && prev.classList.contains("mt") ? prev : null;
+  }
+  function removeTok(t) { var par = t.parentNode, idx = [].indexOf.call(par.childNodes, t); t.remove(); caretAt(par, Math.min(idx, par.childNodes.length)); grow(); say("Took out " + t.textContent + "."); }
+  function ser(node) { var h = ""; node.childNodes.forEach(function (n) { if (n.nodeType === 3) h += esc(n.data.replace(/ /g, " ")); else if (n.classList && n.classList.contains("mt")) h += '<span class="mt">' + esc(n.textContent) + "</span>"; else if (n.nodeName === "BR") h += "<br>"; else h += "<br>" + ser(n); }); return h; }
+  function names(a) { return a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1]; }
+  function post() {
+    var text = ed.textContent.replace(/ /g, " ").trim();
+    if (!text) { shake(shell); say("Write a note first. Type @ to tell someone."); ed.focus(); return; }
+    var li = document.createElement("li"); li.className = "mpo";
+    li.innerHTML = '<span class="mav" aria-hidden="true">AW</span><div><b>Amina Wanjiru</b> <span class="mtm">now</span><p>' + ser(ed).replace(/^(<br>)+|(<br>)+$/g, "") + "</p></div>";
+    var h0 = feed.offsetHeight; feed.insertBefore(li, feed.firstChild); while (feed.children.length > 2) feed.removeChild(feed.lastChild); glide(feed, h0, 520);
+    if (moving()) li.animate([{ opacity: 0, transform: "translateY(-6px)" }, { opacity: 1, transform: "none" }], { duration: 380, easing: "cubic-bezier(.22,1,.36,1)" });
+    var ppl = []; $$(".mt", ed).forEach(function (t) { var n = t.textContent.slice(1); if (ppl.indexOf(n) < 0) ppl.push(n); });
+    say(ppl.length ? "Sent. " + names(ppl) + " will get a message." : "Sent. You named no one, so no one gets a message.");
+    ed.innerHTML = ""; close(); grow();
+  }
+  ed.addEventListener("keydown", function (e) {
+    var k = e.key;
+    if (isOpen) {
+      if (k === "ArrowDown" || k === "ArrowUp") { e.preventDefault(); if (rows.length) mark(act + (k === "ArrowDown" ? 1 : -1)); return; }
+      if ((k === "Enter" || k === "Tab") && act >= 0) { e.preventDefault(); pick(act); return; }
+      if (k === "Escape") { e.preventDefault(); e.stopPropagation(); dismissed = { node: trig.node, at: trig.at }; close(); return; }
+    }
+    if (k === "Backspace") { var p = prevTok(); if (p) { e.preventDefault(); removeTok(p); } return; }
+    if (k === "Enter") { e.preventDefault(); if (e.shiftKey) document.execCommand("insertLineBreak"); else post(); }
+  });
+  ed.addEventListener("input", function () { update(); grow(); });
+  ed.addEventListener("keyup", function (e) { if (/^(Arrow(Left|Right)|Home|End)$/.test(e.key)) update(); });
+  ed.addEventListener("pointerup", function () { setTimeout(update, 0); });
+  ed.addEventListener("paste", function (e) { e.preventDefault(); document.execCommand("insertText", false, (e.clipboardData || window.clipboardData).getData("text/plain")); });
+  ed.addEventListener("blur", function () { setTimeout(function () { if (document.activeElement !== ed) close(); }, 0); });
+  pop.addEventListener("pointerdown", function (e) { e.preventDefault(); });
+  pop.addEventListener("pointermove", function (e) { var t = e.target.closest && e.target.closest('[role="option"]'); if (t) { var j = rows.indexOf(t); if (j !== act) mark(j); } });
+  pop.addEventListener("click", function (e) { var t = e.target.closest && e.target.closest('[role="option"]'); if (t) pick(rows.indexOf(t)); });
+  $(".msnd").addEventListener("click", post);
+})();
+</script>

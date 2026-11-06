@@ -46,7 +46,10 @@ Find the job, use the part. When an older part does the same job, the Taste Lab 
 | Fill a short form in a window | `n39` modal that settles | a plain fade | Picked B |
 | See details at the side of a page | `n41` side sheet that glides in | a plain sheet | Picked A; on 2026-11-02 the owner dropped the lines arriving in turn and the spring, for one smooth glide each way |
 | Choose one of a few (delivery, plan) | `n43` cards, a springing frame, a box that explains the pick | radio list, segmented pill | Asked for a mix of B, C and D, then picked it |
-| Choose an amount | `n44` slider with marks and a counting number | a plain slider | Picked C |
+| Choose an amount | `n94` or `n93` slider (see section 5); `n44` on a quiet page | a plain slider | Round 2: picked C (`n44`). Round 4: kept C and D; "The handle should be small and orange, and still easy to grab" |
+| Read a total split into parts | `n90` donut: point at a part and the rest step back | `n03` | Round 4: picked A |
+| Read a trend for a period | `n91` or `n92` sparkline cards (see section 5) | `n06` | Round 4: kept C and D |
+| Copy code or a command | `n95` code block that shows what it copied; every code block's copy button does the same | a button that only says Copied | Round 4: picked C; now the copy animation for all code blocks |
 | Add their own tags | `n45` tags that suggest as you type | plain tags | Kept C |
 | Filter by a fixed list | `n46` filter chips that add up | tags | Kept D |
 | Open a short menu of actions | `n32` springy dropdown | a corner fade | Picked B, the default |
@@ -76,7 +79,12 @@ Find the job, use the part. When an older part does the same job, the Taste Lab 
 | Read three key numbers for a period | `n53`, `n54` or `n55` metric cards (see section 5) | `n06` | Round 3: kept B, C and D |
 | Enter a count or an amount | `n56`, `n57` or `n58` number fields (see section 5) | a plain number box | Round 3: kept B, C and D; D with round 4's "KES 60 × 3 = KES 180" fix |
 | Pick one from a list by typing | `n59` combobox whose list resizes | `n09` | Round 3: picked D; round 4 made it 40 px with 9 px corners and 34 px rows |
-| Press a button that changes shape as it works | `n60` to `n63` morphing buttons (see section 5) | a spinner or a plain confirm box | Round 3: kept A to D; B and D with round 4's corner fixes |
+| Press a button that changes shape as it works | `n60`, `n61` and `n63` morphing buttons (see section 5) | a spinner or a plain confirm box | Round 3: kept A to D; B and D with round 4's corner fixes; C (round icons) replaced by `n62` |
+| Three or four actions where space is tight | `n62` icons that open from the left, with well-curved corners | round icons that open (round 3's C) | Round 4: picked B; "Replace" the round 3 part |
+| Answer a note without a reply | `n96` reactions: chips that roll, an add button that grows into a picker with named icons | a reply box | Round 4: B's look with C's icon row and a tooltip on each icon (a mix) |
+| Rename one thing where it sits | `n97` inline edit: the words roll to the new ones and a tick draws in | a separate edit form | Round 4: picked B |
+| Tell someone in a note | `n98` mention input: the list pops up at the caret, a pick becomes one piece | a plain list under the box | Round 4: picked B; "A mention should become one piece the moment you pick a name." |
+| Pick one plan that has a price | `n99` radio cards: one ring stretches to the pick, the price rolls | `n43` | Round 4: picked B; "A choice with a price should show what each one gets you." |
 | Show how long a deal has left | `n64` countdown pill, a button where the line was | a plain timer | Round 4: picked B |
 | Act on one item with three or four buttons | `n65` button group with one gliding highlight | separate buttons | Round 4: picked B |
 | Use tools over a document | `n66` floating tray | a plain toolbar | Round 4: picked B |
@@ -103,7 +111,9 @@ Keeping several versions means "use the one that fits the page". The owner left 
 | Reorderable list | D and A | **D** (`n83`) when each step has a time that depends on the order. **A** (`n89`) for any short list with nothing to recount. Both show a dashed outline where the row lands. |
 | Metric cards | B, C and D | **B** (`n53`) three tiles when the three numbers matter the same and there is room. **C** (`n54`) one card with three rows in a narrow column or a side panel. **D** (`n55`) when one number matters most and its trend helps. |
 | Number fields | B, C and D | **B** (`n56`) a small count with steppers and a hard limit. **C** (`n57`) a money amount, with quick-add chips. **D** (`n58`) counts inside a short cart, the total on the pay button. |
-| Morphing buttons | A to D | **B** (`n60`) a remove or delete that needs a yes, in place. **A** (`n61`) copy a link or code. **C** (`n62`) three or four actions where space is tight. **D** (`n63`) one payment with nothing else to say on the button; `n29` when the words should roll. |
+| Morphing buttons | A, B and D (C replaced) | **B** (`n60`) a remove or delete that needs a yes, in place. **A** (`n61`) copy a link (code uses `n95`). **D** (`n63`) one payment with nothing else to say on the button; `n29` when the words should roll. Round 3's C (round icons) was replaced on 2026-11-06 by round 4's expanding group, still `n62`, for three or four actions where space is tight (section 4). |
+| Sparkline cards | C and D | **C** (`n91`) when people switch periods to compare shapes: the old line stays and fades, so the change is easy to see. **D** (`n92`) when the card must say how the period did against the one before (the chip), on a lively page. On a dense admin page use `n06`. |
+| Sliders | C and D | **D** (`n94`) by default: a real range input with a short orange bar, works the same everywhere. **C** (`n93`) on a lively page where the slider is the main thing (a savings goal), for the stretch at the ends. Both keep a 44 px grab area. `n44` when the page must stay quiet. |
 
 Versions with no house part yet (tabs A to C, tooltips A to C, toasts A to C, dates A to C) are in the Taste Lab source, `tools/taste-lab/` (round 1, `src/b2.mjs`, `src/b3.mjs` and `src/b4.mjs`). Build one with `node build.mjs 1` to see it, then rebuild it as a house part (`tools/taste-lab/README.md`).
 
@@ -124,7 +134,7 @@ These parts came before the Taste Lab. The owner reviewed and approved them on 2
 | `c01` Live line chart | A value that changes as you watch | Default | The owner set the look: one orange curved line, soft fill, quiet axes, hover to pause (`patterns/line-chart.md`) |
 | `c02` Still line chart | A value over days, weeks or a year | Default | The owner set how it loads: draws in once, range buttons reshape the line |
 | `c03` Bar chart | A few groups side by side or stacked | Default | Approved in review |
-| `n03` Donut and gauge | Parts of one total, or progress to a goal | Default | Approved in review. One orange slice is the focus |
+| `n03` Donut and gauge | Parts of one total, or progress to a goal | Default for a gauge; `n90` for a split | Approved in review. One orange slice is the focus |
 | `n06` Stat card | A headline number with its trend | Default | The owner liked the KES stat card: a number that counts up and a sparkline that draws in |
 | `n07` Number roll | A live count that changes | Default | Now the odometer the owner picked in Taste Lab r3 (part 01, B): each digit turns the way the number went, right digit first, on a soft spring. "Replace n07 now" |
 

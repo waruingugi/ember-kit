@@ -1,0 +1,177 @@
+<!-- part n93 | part | group forms | A small orange ring that stretches past the ends. | A small orange ring that stretches past the ends. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A small orange ring that <em>stretches past the ends.</em></h3>
+          <p class="kit-p">Drag the ring, or press anywhere on the track. Each mark lights and pops as the ring passes it. Pull past an end and the track stretches, then snaps back. Arrow keys move 100, Page keys 1,000.</p>
+          <section class="cs kv4" id="n93">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="fs">
+      <div class="fh"><span class="fl" id="n93-l">Save each week</span><span class="fv" aria-hidden="true"><span class="cur">KES</span><span class="nv">1,500</span></span></div>
+      <div class="trk" role="slider" tabindex="0" aria-labelledby="n93-l" aria-describedby="n93-g" aria-valuemin="100" aria-valuemax="5000" aria-valuenow="1500" aria-valuetext="KES 1,500 a week">
+        <div class="rl"><i class="fi"></i></div>
+        <span class="mks" aria-hidden="true"><i data-mk="100" style="left:0%"></i><b data-mk="100" style="left:0%">100</b><i data-mk="1000" style="left:18.367%"></i><b data-mk="1000" style="left:18.367%">1k</b><i data-mk="2000" style="left:38.776%"></i><b data-mk="2000" style="left:38.776%">2k</b><i data-mk="3000" style="left:59.184%"></i><b data-mk="3000" style="left:59.184%">3k</b><i data-mk="4000" style="left:79.592%"></i><b data-mk="4000" style="left:79.592%">4k</b><i data-mk="5000" style="left:100%"></i><b data-mk="5000" style="left:100%">5k</b></span>
+        <span class="th" aria-hidden="true"></span>
+      </div>
+      <p class="fg" id="n93-g">The phone is yours in <b class="wk">16</b> weeks, around <span class="dt">21 February 2027</span>.</p>
+    </div>
+  </div></div></div>
+</section>
+        </div>
+<script data-slot="0093">
+(function () {
+  "use strict";
+  var box = document.getElementById("n93"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function money(n) { return n.toLocaleString("en-KE"); }
+  /* The odometer, copied from house part n07: each digit is a drum that turns the way the number moved. */
+  function roll(el, o) {
+    var api = { value: o.value }, slots = {}, order = [], raf = 0, last = 0, built = false;
+    var vis = document.createElement("span"), sr = document.createElement("span");
+    vis.className = "rv"; vis.setAttribute("aria-hidden", "true"); sr.className = "sr-only";
+    el.textContent = ""; el.appendChild(vis); el.appendChild(sr);
+    function md(a) { return ((a % 10) + 10) % 10; }
+    /* keys: d<place> digit (d0 = ones), s<place> separator, p<i> before the digits, x<i> after; rank keeps the order */
+    function rank(k) { var c = k.charAt(0), i = parseInt(k.slice(1), 10); return c === "p" ? i : c === "d" ? 1000 - 2 * i : c === "s" ? 1001 - 2 * i : 3000 + i; }
+    function parse(s) {
+      var tot = (s.match(/[0-9]/g) || []).length, seen = 0, p = 0, x = 0, out = [];
+      for (var i = 0; i < s.length; i++) {
+        var ch = s.charAt(i);
+        if (ch >= "0" && ch <= "9") { seen++; out.push({ k: "d" + (tot - seen), d: +ch }); }
+        else out.push({ k: (seen === 0 ? "p" + p++ : seen === tot ? "x" + x++ : "s" + (tot - seen)) + ch, ch: ch });
+      }
+      return out;
+    }
+    function mk(t) {
+      var e = document.createElement("span"), s = { k: t.k, el: e, r: rank(t.k) };
+      if (t.d != null) {
+        var st = document.createElement("span"), i, h = "";
+        for (i = 0; i < 11; i++) h += "<span>" + (i % 10) + "</span>";
+        e.className = "dg"; st.className = "st7"; st.innerHTML = h; e.appendChild(st);
+        s.st = st; s.x = s.T = s.g = s.f = s.v = s.at = 0;
+      } else { e.className = "cm"; e.textContent = t.ch; }
+      return s;
+    }
+    /* the soft spring: as long as --sp-soft-d, a little overshoot; calm settles on a shorter spring with none */
+    function cfg() { var d = (parseFloat(getComputedStyle(box).getPropertyValue("--sp-soft-d")) || .67) * 1000, calm = lv() === "calm", z = calm ? 1 : .86, D = calm ? d * .6 : d; return { Z: z, W: 4.6 / (z * D / 1000) }; }
+    function draw(s) { s.st.style.transform = "translateY(" + (-md(s.x) * 100 / 11).toFixed(3) + "%)"; }
+    function tick(t) {
+      var c = cfg(), dt = Math.min(.032, Math.max(.001, (t - last) / 1000)), busy = false; last = t;
+      order.forEach(function (s) {
+        if (!s.st) return;
+        if (s.at && t >= s.at) { s.at = 0; s.T = s.g; }
+        if (s.at) busy = true;
+        else if (s.x !== s.T || s.v) {
+          s.v += (-c.W * c.W * (s.x - s.T) - 2 * c.Z * c.W * s.v) * dt; s.x += s.v * dt;
+          if (Math.abs(s.x - s.T) < .003 && Math.abs(s.v) < .05) { s.x = s.T; s.v = 0; } else busy = true;
+        }
+        if (s.x === s.T && !s.at) { var w = s.T - md(s.T); if (w) { s.x -= w; s.T -= w; s.g -= w; } } /* settled: wind back into 0–9 */
+        draw(s);
+      });
+      raf = busy ? requestAnimationFrame(tick) : 0;
+    }
+    function wid(e) { return e.getBoundingClientRect().width; }
+    function kill(s) { if (s.wa) s.wa.cancel(); s.el.remove(); var i = order.indexOf(s); if (i >= 0) order.splice(i, 1); if (slots[s.k] === s) delete slots[s.k]; }
+    function leave(s, mv) {
+      s.gone = true; if (!mv) { kill(s); return; }
+      var w = wid(s.el); if (s.wa) s.wa.cancel();
+      s.wa = s.el.animate([{ width: w + "px", opacity: 1 }, { opacity: 0, offset: .55 }, { width: "0px", opacity: 0 }], { duration: 420, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
+      s.wa.onfinish = function () { if (s.gone) kill(s); };
+    }
+    function grow(s, w0) { var w1 = wid(s.el); if (w1 - w0 > .5) s.wa = s.el.animate([{ width: w0 + "px", opacity: w0 / w1 }, { opacity: w0 / w1, offset: .3 }, { width: w1 + "px", opacity: 1 }], { duration: 460, easing: "cubic-bezier(.22,1,.36,1)" }); }
+    api.set = function (v, instant) {
+      var old = api.value, dir = v >= old ? 1 : -1, str = o.fmt(v), toks = parse(str), now = performance.now(), mv = built && moving() && !instant, keep = {}, rk = 0, j, s;
+      api.value = v; sr.textContent = o.say ? o.say(str) : str;
+      toks.forEach(function (t) {
+        var s = slots[t.k]; keep[t.k] = 1;
+        if (!s) {
+          s = slots[t.k] = mk(t);
+          var nx = null; for (var i = 0; i < order.length; i++) if (order[i].r > s.r) { nx = order[i]; break; }
+          vis.insertBefore(s.el, nx ? nx.el : null); order.splice(nx ? order.indexOf(nx) : order.length, 0, s);
+          if (mv) { s.el.style.width = "0px"; s.enter = true; }
+        } else if (s.gone) { s.gone = false; var w0 = wid(s.el); if (s.wa) s.wa.cancel(); s.wa = null; if (mv) grow(s, w0); }
+      });
+      order.slice().forEach(function (s) { /* a digit that leaves rolls on to 0 the way the number went, then folds away */
+        if (keep[s.k] || s.gone) return;
+        if (s.st) { var c0 = md(s.g); if (c0) { s.g += dir > 0 ? md(-c0) : -c0; if (mv) { s.at = 0; s.T = s.g; } } }
+        leave(s, mv);
+      });
+      order.forEach(function (s) { if (s.enter) { s.enter = false; s.el.style.width = ""; grow(s, 0); } });
+      for (j = toks.length - 1; j >= 0; j--) { /* right to left, so the ones turn first */
+        var t = toks[j]; if (t.d == null) continue; s = slots[t.k];
+        var cd = md(s.g); if (cd === t.d) continue;
+        var g = s.g + (dir > 0 ? md(t.d - cd) : -md(cd - t.d));
+        if (!mv) { s.x = s.T = s.g = g; s.v = s.at = 0; draw(s); continue; }
+        s.g = g; var dl = 30 * rk++;
+        if (dl > 0) s.at = now + dl; else { s.at = 0; s.T = g; }
+      }
+      if (!mv) {
+        order.forEach(function (s) { if (s.st) { s.x = s.T = s.g; s.v = s.at = 0; draw(s); } });
+        if (built && old !== v && !instant) vis.animate([{ opacity: .3 }, { opacity: 1 }], { duration: 180, easing: "ease-out" });
+      } else if (!raf) { last = now; raf = requestAnimationFrame(tick); }
+    };
+    api.set(api.value, true); built = true;
+    return api;
+  }
+  /* a real spring that keeps its speed when it gets a new target; calm motion takes out the overshoot */
+  function spr(on, o) {
+    var s = { x: 0, v: 0, t: 0 }, raf = 0, last = 0, K = o.k, C = o.c, eps = o.eps || .05, k = K, c = C;
+    function f(now) {
+      var dt = Math.min(.034, (now - last) / 1000), cc = lv() === "calm" ? Math.max(c, 2 * Math.sqrt(k)) : c; last = now;
+      for (var i = 0; i < 4; i++) { s.v += (-k * (s.x - s.t) - cc * s.v) * dt / 4; s.x += s.v * dt / 4; }
+      if (Math.abs(s.x - s.t) < eps && Math.abs(s.v) < eps * 8) { s.x = s.t; s.v = 0; raf = 0; on(); return; }
+      on(); raf = requestAnimationFrame(f);
+    }
+    s.to = function (t, p) { p = p || {}; s.t = t; k = p.k || K; c = p.c || C; if (p.v != null) s.v = p.v; if (!moving()) return s.jump(t); if (!raf) { last = performance.now(); raf = requestAnimationFrame(f); } };
+    s.jump = function (t) { cancelAnimationFrame(raf); raf = 0; s.x = s.t = t; s.v = 0; on(); };
+    return s;
+  }
+
+  /* save KES 100 to 5,000 a week for a KES 24,000 phone */
+  var t = $(".trk"), rail = $(".rl"), fill = $(".fi"), th = $(".th"), mks = $$("[data-mk]"), dt = $(".dt"), MIN = 100, MAX = 5000, val = 0, W = 1, drag = false;
+  var rv = roll($(".fv .nv"), { value: 1500, fmt: money }), rw = roll($(".wk"), { value: 16, fmt: String });
+  function weeks(x) { var w = Math.ceil(24000 / x); return { w: w, d: new Date(2026, 10, 1 + w * 7).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) }; }
+  function px(v) { return (v - MIN) / (MAX - MIN) * W; }
+  /* the ring rides one spring; past an end a second, looser spring stretches the track like rubber */
+  function draw() {
+    var x = pos.x, s = str.x; th.style.transform = "translateX(" + (x + s).toFixed(2) + "px)";
+    rail.style.transformOrigin = s < 0 ? "right" : "left"; rail.style.transform = Math.abs(s) > .05 ? "scaleX(" + (1 + Math.abs(s) / W).toFixed(4) + ")" : "";
+    fill.style.transform = "scaleX(" + Math.max(0, Math.min(1, x / W)).toFixed(4) + ")";
+  }
+  var pos = spr(draw, { k: 420, c: 34, eps: .1 }), str = spr(draw, { k: 380, c: 11, eps: .05 });
+  function setv(v, glide) {
+    v = Math.max(MIN, Math.min(MAX, Math.round(v / 100) * 100));
+    if (v !== val) { var was = val; val = v; if (was && moving()) mks.forEach(function (m) { var k = +m.getAttribute("data-mk"); if ((was < k) !== (v < k) || v === k) { m.classList.add("bump"); clearTimeout(m._t); m._t = setTimeout(function () { m.classList.remove("bump"); }, 260); } }); }
+    mks.forEach(function (m) { m.classList.toggle("lit", val >= +m.getAttribute("data-mk")); });
+    t.setAttribute("aria-valuenow", val); t.setAttribute("aria-valuetext", "KES " + money(val) + " a week");
+    var w = weeks(val); rv.set(val); rw.set(w.w); dt.textContent = w.d;
+    if (glide) pos.to(px(val)); else pos.to(px(val), { k: 1400, c: 75 });
+  }
+  function measure() { W = t.clientWidth || 1; pos.jump(px(val)); }
+  function rub(o) { return Math.sign(o) * 22 * (1 - Math.exp(-Math.abs(o) / 70)); }
+  function fromX(cx) {
+    var r = t.getBoundingClientRect(), raw = (cx - r.left) / W;
+    if (raw < 0) str.jump(rub(raw * W)); else if (raw > 1) str.jump(rub((raw - 1) * W)); else if (str.x) str.jump(0);
+    var v = MIN + Math.max(0, Math.min(1, raw)) * (MAX - MIN), near = Math.round(v / 1000) * 1000; if (near >= 1000 && Math.abs(v - near) < 90) v = near; /* clicks softly into each 1,000 */
+    return v;
+  }
+  t.addEventListener("pointerdown", function (e) { if (e.button) return; t.setPointerCapture(e.pointerId); t.classList.add("drag"); drag = true; setv(fromX(e.clientX), true); });
+  t.addEventListener("pointermove", function (e) { if (drag) setv(fromX(e.clientX), false); });
+  function up() { if (!drag) return; drag = false; t.classList.remove("drag"); str.to(0); }
+  t.addEventListener("pointerup", up); t.addEventListener("pointercancel", up);
+  t.addEventListener("keydown", function (e) {
+    var m = { ArrowRight: 100, ArrowUp: 100, ArrowLeft: -100, ArrowDown: -100, PageUp: 1000, PageDown: -1000 }, v, d;
+    if (e.key in m) { d = m[e.key] > 0 ? 1 : -1; v = val + m[e.key] * (e.shiftKey && e.key.indexOf("Arrow") === 0 ? 10 : 1); }
+    else if (e.key === "Home" || e.key === "End") { d = e.key === "Home" ? -1 : 1; v = d < 0 ? MIN : MAX; }
+    else return;
+    e.preventDefault();
+    if ((v > MAX && val === MAX) || (v < MIN && val === MIN)) { str.to(0, { v: d * 260 }); return; } /* at an end: a small kick that stretches the track */
+    setv(v, true);
+  });
+  setv(1500, true);
+  if ("ResizeObserver" in window) new ResizeObserver(measure).observe(t);
+  measure();
+})();
+</script>

@@ -48,6 +48,12 @@ How it looks:
 - **Copy** copies the lines' text without the numbers, then shows a toast
   ("Copied create-order.http"). Call `navigator.clipboard.writeText` inside
   the click, and fall back to selecting the text if it is refused.
+- **How Copy looks** (house part `n95`, the copy animation for every code
+  block): the copy icon turns into the house tick (orange circle, the tick
+  draws in), the word rises from Copy to Copied in a box that keeps its
+  width, and a soft orange light sweeps along each copied line, one after
+  the other. Back after 1.8 s. With motion off the lines light once and
+  the words swap. Copy the markup and script from section 19.
 - Lines never wrap. A long line scrolls inside the block, never the page.
   Font: JetBrains Mono 13.5 px, line height 1.75.
 - Keep a sample short: about 20 lines. Show the part the text talks about,

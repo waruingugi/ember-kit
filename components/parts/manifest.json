@@ -96,6 +96,26 @@
   "js": 1
  },
  {
+  "id": "n91",
+  "kind": "part",
+  "group": "charts",
+  "name": "When the period changes, the old line fades where it stood.",
+  "heading": "When the period changes, the old line fades where it stood.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n92",
+  "kind": "part",
+  "group": "charts",
+  "name": "A stat card that says how this period did.",
+  "heading": "A stat card that says how this period did.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
   "id": "n53",
   "kind": "part",
   "group": "charts",
@@ -151,6 +171,16 @@
   "group": "charts",
   "name": "Where the month's money went, in one ring.",
   "heading": "Where the month's money went, in one ring.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n90",
+  "kind": "part",
+  "group": "charts",
+  "name": "Point at one kind, and the rest steps back.",
+  "heading": "Point at one kind, and the rest steps back.",
   "needs": [],
   "css": 0,
   "js": 1
@@ -366,6 +396,16 @@
   "js": 1
  },
  {
+  "id": "n97",
+  "kind": "part",
+  "group": "forms",
+  "name": "Editing a name should happen right where it sits.",
+  "heading": "Editing a name should happen right where it sits.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
   "id": "n56",
   "kind": "part",
   "group": "forms",
@@ -466,11 +506,41 @@
   "js": 1
  },
  {
+  "id": "n99",
+  "kind": "part",
+  "group": "forms",
+  "name": "A choice with a price should show what each one gets you.",
+  "heading": "A choice with a price should show what each one gets you.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
   "id": "n44",
   "kind": "part",
   "group": "forms",
   "name": "Slide, and the number counts to it.",
   "heading": "Slide, and the number counts to it.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n93",
+  "kind": "part",
+  "group": "forms",
+  "name": "A small orange ring that stretches past the ends.",
+  "heading": "A small orange ring that stretches past the ends.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n94",
+  "kind": "part",
+  "group": "forms",
+  "name": "A short orange bar, and the date rolls in.",
+  "heading": "A short orange bar, and the date rolls in.",
   "needs": [],
   "css": 0,
   "js": 1
@@ -496,11 +566,31 @@
   "js": 1
  },
  {
+  "id": "n98",
+  "kind": "part",
+  "group": "forms",
+  "name": "A mention should become one piece the moment you pick a name.",
+  "heading": "A mention should become one piece the moment you pick a name.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
   "id": "n46",
   "kind": "part",
   "group": "forms",
   "name": "Filter chips that add up as you tap.",
   "heading": "Filter chips that add up as you tap.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n96",
+  "kind": "part",
+  "group": "forms",
+  "name": "One tap can answer a note without a reply.",
+  "heading": "One tap can answer a note without a reply.",
   "needs": [],
   "css": 0,
   "js": 1
@@ -606,11 +696,21 @@
   "js": 1
  },
  {
+  "id": "n95",
+  "kind": "part",
+  "group": "forms",
+  "name": "Copy the code and see what went.",
+  "heading": "Copy the code and see what went.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
   "id": "n62",
   "kind": "part",
   "group": "forms",
-  "name": "Round icons that open to show their name.",
-  "heading": "Round icons that open to show their name.",
+  "name": "Small icons can open to say their name.",
+  "heading": "Small icons can open to say their name.",
   "needs": [],
   "css": 0,
   "js": 1

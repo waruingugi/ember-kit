@@ -1,0 +1,232 @@
+<!-- part n90 | part | group charts | Point at one kind, and the rest steps back. | Point at one kind, and the rest steps back. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Point at one kind, and <em>the rest steps back.</em></h3>
+          <p class="kit-p">Point at a slice or a row, or tab to the ring and use the arrow keys. The other slices and rows fade, and a thin line under each row shows its share. Switch the month and the slices reshape from where they are.</p>
+          <section class="cs kv4" id="n90">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="dn">
+      <div class="sw" role="radiogroup" aria-label="Month"><i class="th" aria-hidden="true"></i><button type="button" role="radio" aria-checked="true" tabindex="0">October</button><button type="button" role="radio" aria-checked="false" tabindex="-1">November</button></div>
+      <div class="mn">
+        <div class="fig" tabindex="0" role="group" aria-roledescription="chart" aria-label="PocketPay spending by kind. Arrow keys read each kind.">
+          <svg viewBox="0 0 200 200" aria-hidden="true"><circle class="trk" cx="100" cy="100" r="76"></circle><path data-c="0"></path><path data-c="1"></path><path data-c="2"></path><path data-c="3"></path><path data-c="4"></path></svg>
+          <div class="ctr"><p class="cn">October</p><p class="cv"><span class="cur">KES</span><span class="nv">61,400</span></p><p class="su">spent in all</p></div>
+        </div>
+        <ul class="lg" aria-label="Kinds of spending" data-glide=".lw" data-glide-active=".lw.act">
+          <li><button class="lw" type="button"><i class="sq" data-c="0"></i><span class="nm">Rent</span><span class="am"><span class="cur">KES</span><span class="nv">25,000</span></span><span class="br" aria-hidden="true"><i data-c="0"></i></span></button></li>
+          <li><button class="lw" type="button"><i class="sq" data-c="1"></i><span class="nm">Food</span><span class="am"><span class="cur">KES</span><span class="nv">18,400</span></span><span class="br" aria-hidden="true"><i data-c="1"></i></span></button></li>
+          <li><button class="lw" type="button"><i class="sq" data-c="2"></i><span class="nm">Transport</span><span class="am"><span class="cur">KES</span><span class="nv">9,600</span></span><span class="br" aria-hidden="true"><i data-c="2"></i></span></button></li>
+          <li><button class="lw" type="button"><i class="sq" data-c="3"></i><span class="nm">Fun</span><span class="am"><span class="cur">KES</span><span class="nv">6,100</span></span><span class="br" aria-hidden="true"><i data-c="3"></i></span></button></li>
+          <li><button class="lw" type="button"><i class="sq" data-c="4"></i><span class="nm">Airtime</span><span class="am"><span class="cur">KES</span><span class="nv">2,300</span></span><span class="br" aria-hidden="true"><i data-c="4"></i></span></button></li>
+        </ul>
+      </div>
+      <p class="sr-only say" aria-live="polite"></p>
+    </div>
+  </div></div></div>
+</section>
+        </div>
+<script data-slot="0090">
+(function () {
+  "use strict";
+  var box = document.getElementById("n90"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function money(n) { return n.toLocaleString("en-KE"); }
+  /* The odometer, copied from house part n07: each digit is a drum that turns the way the number moved. */
+  function roll(el, o) {
+    var api = { value: o.value }, slots = {}, order = [], raf = 0, last = 0, built = false;
+    var vis = document.createElement("span"), sr = document.createElement("span");
+    vis.className = "rv"; vis.setAttribute("aria-hidden", "true"); sr.className = "sr-only";
+    el.textContent = ""; el.appendChild(vis); el.appendChild(sr);
+    function md(a) { return ((a % 10) + 10) % 10; }
+    /* keys: d<place> digit (d0 = ones), s<place> separator, p<i> before the digits, x<i> after; rank keeps the order */
+    function rank(k) { var c = k.charAt(0), i = parseInt(k.slice(1), 10); return c === "p" ? i : c === "d" ? 1000 - 2 * i : c === "s" ? 1001 - 2 * i : 3000 + i; }
+    function parse(s) {
+      var tot = (s.match(/[0-9]/g) || []).length, seen = 0, p = 0, x = 0, out = [];
+      for (var i = 0; i < s.length; i++) {
+        var ch = s.charAt(i);
+        if (ch >= "0" && ch <= "9") { seen++; out.push({ k: "d" + (tot - seen), d: +ch }); }
+        else out.push({ k: (seen === 0 ? "p" + p++ : seen === tot ? "x" + x++ : "s" + (tot - seen)) + ch, ch: ch });
+      }
+      return out;
+    }
+    function mk(t) {
+      var e = document.createElement("span"), s = { k: t.k, el: e, r: rank(t.k) };
+      if (t.d != null) {
+        var st = document.createElement("span"), i, h = "";
+        for (i = 0; i < 11; i++) h += "<span>" + (i % 10) + "</span>";
+        e.className = "dg"; st.className = "st7"; st.innerHTML = h; e.appendChild(st);
+        s.st = st; s.x = s.T = s.g = s.f = s.v = s.at = 0;
+      } else { e.className = "cm"; e.textContent = t.ch; }
+      return s;
+    }
+    /* the soft spring: as long as --sp-soft-d, a little overshoot; calm settles on a shorter spring with none */
+    function cfg() { var d = (parseFloat(getComputedStyle(box).getPropertyValue("--sp-soft-d")) || .67) * 1000, calm = lv() === "calm", z = calm ? 1 : .86, D = calm ? d * .6 : d; return { Z: z, W: 4.6 / (z * D / 1000) }; }
+    function draw(s) { s.st.style.transform = "translateY(" + (-md(s.x) * 100 / 11).toFixed(3) + "%)"; }
+    function tick(t) {
+      var c = cfg(), dt = Math.min(.032, Math.max(.001, (t - last) / 1000)), busy = false; last = t;
+      order.forEach(function (s) {
+        if (!s.st) return;
+        if (s.at && t >= s.at) { s.at = 0; s.T = s.g; }
+        if (s.at) busy = true;
+        else if (s.x !== s.T || s.v) {
+          s.v += (-c.W * c.W * (s.x - s.T) - 2 * c.Z * c.W * s.v) * dt; s.x += s.v * dt;
+          if (Math.abs(s.x - s.T) < .003 && Math.abs(s.v) < .05) { s.x = s.T; s.v = 0; } else busy = true;
+        }
+        if (s.x === s.T && !s.at) { var w = s.T - md(s.T); if (w) { s.x -= w; s.T -= w; s.g -= w; } } /* settled: wind back into 0–9 */
+        draw(s);
+      });
+      raf = busy ? requestAnimationFrame(tick) : 0;
+    }
+    function wid(e) { return e.getBoundingClientRect().width; }
+    function kill(s) { if (s.wa) s.wa.cancel(); s.el.remove(); var i = order.indexOf(s); if (i >= 0) order.splice(i, 1); if (slots[s.k] === s) delete slots[s.k]; }
+    function leave(s, mv) {
+      s.gone = true; if (!mv) { kill(s); return; }
+      var w = wid(s.el); if (s.wa) s.wa.cancel();
+      s.wa = s.el.animate([{ width: w + "px", opacity: 1 }, { opacity: 0, offset: .55 }, { width: "0px", opacity: 0 }], { duration: 420, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
+      s.wa.onfinish = function () { if (s.gone) kill(s); };
+    }
+    function grow(s, w0) { var w1 = wid(s.el); if (w1 - w0 > .5) s.wa = s.el.animate([{ width: w0 + "px", opacity: w0 / w1 }, { opacity: w0 / w1, offset: .3 }, { width: w1 + "px", opacity: 1 }], { duration: 460, easing: "cubic-bezier(.22,1,.36,1)" }); }
+    api.set = function (v, instant) {
+      var old = api.value, dir = v >= old ? 1 : -1, str = o.fmt(v), toks = parse(str), now = performance.now(), mv = built && moving() && !instant, keep = {}, rk = 0, j, s;
+      api.value = v; sr.textContent = o.say ? o.say(str) : str;
+      toks.forEach(function (t) {
+        var s = slots[t.k]; keep[t.k] = 1;
+        if (!s) {
+          s = slots[t.k] = mk(t);
+          var nx = null; for (var i = 0; i < order.length; i++) if (order[i].r > s.r) { nx = order[i]; break; }
+          vis.insertBefore(s.el, nx ? nx.el : null); order.splice(nx ? order.indexOf(nx) : order.length, 0, s);
+          if (mv) { s.el.style.width = "0px"; s.enter = true; }
+        } else if (s.gone) { s.gone = false; var w0 = wid(s.el); if (s.wa) s.wa.cancel(); s.wa = null; if (mv) grow(s, w0); }
+      });
+      order.slice().forEach(function (s) { /* a digit that leaves rolls on to 0 the way the number went, then folds away */
+        if (keep[s.k] || s.gone) return;
+        if (s.st) { var c0 = md(s.g); if (c0) { s.g += dir > 0 ? md(-c0) : -c0; if (mv) { s.at = 0; s.T = s.g; } } }
+        leave(s, mv);
+      });
+      order.forEach(function (s) { if (s.enter) { s.enter = false; s.el.style.width = ""; grow(s, 0); } });
+      for (j = toks.length - 1; j >= 0; j--) { /* right to left, so the ones turn first */
+        var t = toks[j]; if (t.d == null) continue; s = slots[t.k];
+        var cd = md(s.g); if (cd === t.d) continue;
+        var g = s.g + (dir > 0 ? md(t.d - cd) : -md(cd - t.d));
+        if (!mv) { s.x = s.T = s.g = g; s.v = s.at = 0; draw(s); continue; }
+        s.g = g; var dl = 30 * rk++;
+        if (dl > 0) s.at = now + dl; else { s.at = 0; s.T = g; }
+      }
+      if (!mv) {
+        order.forEach(function (s) { if (s.st) { s.x = s.T = s.g; s.v = s.at = 0; draw(s); } });
+        if (built && old !== v && !instant) vis.animate([{ opacity: .3 }, { opacity: 1 }], { duration: 180, easing: "ease-out" });
+      } else if (!raf) { last = now; raf = requestAnimationFrame(tick); }
+    };
+    api.set(api.value, true); built = true;
+    return api;
+  }
+  /* our one curve, cubic-bezier(.22,1,.36,1), as a function */
+  function ez(t) {
+    if (t <= 0) return 0; if (t >= 1) return 1;
+    function b(s, p, q) { return 3 * p * s * (1 - s) * (1 - s) + 3 * q * s * s * (1 - s) + s * s * s; }
+    var s = t; for (var i = 0; i < 8; i++) { var x = b(s, .22, .36) - t, d = 3 * .22 * (1 - s) * (1 - s) + 6 * (.36 - .22) * s * (1 - s) + 3 * (1 - .36) * s * s; if (Math.abs(x) < 1e-5 || !d) break; s = Math.max(0, Math.min(1, s - x / d)); }
+    return b(s, 1, 1);
+  }
+  /* springs for a list of numbers: each keeps its speed when the goal moves; calm motion eases on our curve instead */
+  function vec(x0, draw, o) {
+    var n = x0.length, x = x0.slice(), v = x0.map(function () { return 0; }), T = x0.slice(), g = x0.slice(), f = x0.slice(), t0 = v.slice(), at = v.slice(), raf = 0, last = 0, eps = o.eps || 1e-3;
+    function cfg() { var d = o.dur, calm = lv() === "calm", z = o.zeta || .82; return { tw: !!o.ease || calm, D: calm ? d * .6 : d, Z: z, W: 4.6 / (z * d / 1000) }; }
+    function tick(t) {
+      var c = cfg(), dt = Math.min(.032, Math.max(.001, (t - last) / 1000)), busy = false; last = t;
+      for (var i = 0; i < n; i++) {
+        if (at[i] && t >= at[i]) { at[i] = 0; T[i] = g[i]; f[i] = x[i]; t0[i] = t; }
+        if (at[i]) { busy = true; continue; }
+        if (c.tw) { var k = Math.min(1, (t - t0[i]) / c.D); x[i] = k >= 1 ? T[i] : f[i] + (T[i] - f[i]) * ez(k); v[i] = 0; if (k < 1) busy = true; }
+        else if (x[i] !== T[i] || v[i]) { v[i] += (-c.W * c.W * (x[i] - T[i]) - 2 * c.Z * c.W * v[i]) * dt; x[i] += v[i] * dt; if (Math.abs(x[i] - T[i]) < eps && Math.abs(v[i]) < eps * 20) { x[i] = T[i]; v[i] = 0; } else busy = true; }
+      }
+      draw(x); raf = busy ? requestAnimationFrame(tick) : 0;
+    }
+    draw(x);
+    return { goal: g, to: function (tg, so) {
+      so = so || {}; var now = performance.now(), i;
+      if (!moving()) { for (i = 0; i < n; i++) { x[i] = T[i] = g[i] = f[i] = tg[i]; v[i] = at[i] = 0; } draw(x); return; }
+      for (i = 0; i < n; i++) { if (tg[i] === g[i] && !at[i]) continue; g[i] = tg[i]; var dl = so.delay ? so.delay(i) : 0; if (dl > 0) at[i] = now + dl; else { at[i] = 0; T[i] = tg[i]; f[i] = x[i]; t0[i] = now; } }
+      if (!raf) { last = now; raf = requestAnimationFrame(tick); }
+    } };
+  }
+
+  /* made-up PocketPay spending for two months, by kind */
+  var NM = ["Rent", "Food", "Transport", "Fun", "Airtime"], MON = [["October", [25000, 18400, 9600, 6100, 2300]], ["November", [25000, 15200, 12800, 9400, 3100]]];
+  var N = 5, CX = 100, CY = 100, R = 76, TH = 22, PAD = .02, TAU = Math.PI * 2, mi = 0, act = -1, seen = false;
+  var fig = $(".fig"), svg = $("svg", fig), P = $$("path[data-c]", svg), rows = $$(".lw"), bars = $$(".br i"), cn = $(".cn"), su = $(".su"), say = $(".say"), sw = $(".sw"), sbs = $$("button", sw);
+  var val = roll($(".cv .nv"), { value: 0, fmt: money });
+  var rv = rows.map(function (r, i) { return roll($(".nv", r), { value: MON[0][1][i], fmt: money }); });
+  function data() { return MON[mi][1]; }
+  function total() { return data().reduce(function (a, b) { return a + b; }, 0); }
+  function bounds() { var t = total(), s = 0, b = [0]; data().forEach(function (v) { s += v; b.push(s / t); }); return b; }
+  function arcD(a, e) { function p(t) { return (CX + R * Math.sin(t)).toFixed(2) + " " + (CY - R * Math.cos(t)).toFixed(2); } return "M" + p(a) + "A" + R + " " + R + " 0 " + (e - a > Math.PI ? 1 : 0) + " 1 " + p(e); }
+  /* the slice edges ride springs, so a month switch reshapes the ring from where it is */
+  var ring = vec([0, 0, 0, 0, 0, 0], function (x) {
+    for (var i = 0; i < N; i++) { var a = x[i] * TAU + PAD, e = x[i + 1] * TAU - PAD; P[i].setAttribute("d", e - a > .004 ? arcD(a, e) : "M0 0"); }
+  }, { dur: 720, zeta: .8 });
+  function swap(e, txt) { if (e.textContent === txt) return; e.textContent = txt; if (moving()) e.animate([{ opacity: 0, transform: "translateY(3px)" }, { opacity: 1, transform: "none" }], { duration: 200, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  function centre() {
+    if (act < 0) { swap(cn, MON[mi][0]); if (seen) val.set(total()); swap(su, "spent in all"); }
+    else { swap(cn, NM[act]); val.set(data()[act]); swap(su, Math.round(data()[act] / total() * 100) + "% of the month"); }
+  }
+  function barsTo() { var t = total(); bars.forEach(function (b, i) { b.style.transform = "scaleX(" + (data()[i] / t).toFixed(4) + ")"; }); }
+  /* point at one kind: the other slices and rows fade back */
+  function show(i) {
+    if (i === act) return; act = i;
+    P.forEach(function (p, j) { p.classList.toggle("dim", i >= 0 && j !== i); });
+    rows.forEach(function (r, j) { r.classList.toggle("act", j === i); r.classList.toggle("fade", i >= 0 && j !== i); });
+    centre();
+  }
+  function segAt(e) {
+    var r = svg.getBoundingClientRect(), k = 200 / r.width, x = (e.clientX - r.left) * k - CX, y = (e.clientY - r.top) * k - CY, d = Math.sqrt(x * x + y * y);
+    if (d < R - TH / 2 - 10 || d > R + TH / 2 + 14) return -1;
+    var t = Math.atan2(x, -y); if (t < 0) t += TAU;
+    var f = t / TAU, B = bounds();
+    for (var i = 0; i < N; i++) if (f <= B[i + 1]) return i; return -1;
+  }
+  fig.addEventListener("pointermove", function (e) { if (e.pointerType === "mouse") show(segAt(e)); });
+  fig.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") show(-1); });
+  fig.addEventListener("pointerdown", function (e) { if (e.pointerType !== "mouse") show(segAt(e)); });
+  box.addEventListener("pointerdown", function (e) { if (e.pointerType !== "mouse" && !fig.contains(e.target) && !e.target.closest(".lw")) show(-1); });
+  fig.addEventListener("keydown", function (e) {
+    var key = e.key, i = act;
+    if (key === "ArrowRight" || key === "ArrowDown") i = (i + 1) % N;
+    else if (key === "ArrowLeft" || key === "ArrowUp") i = i <= 0 ? N - 1 : i - 1;
+    else if (key === "Home") i = 0; else if (key === "End") i = N - 1;
+    else if (key === "Escape") { show(-1); return; }
+    else return;
+    e.preventDefault(); show(i);
+  });
+  fig.addEventListener("blur", function () { show(-1); });
+  rows.forEach(function (r, i) {
+    r.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") show(i); });
+    r.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse" && document.activeElement !== r) show(-1); });
+    r.addEventListener("focus", function () { show(i); });
+    r.addEventListener("blur", function () { setTimeout(function () { var a = document.activeElement; if (!a || !a.closest || !a.closest(".lw") || !box.contains(a)) show(-1); }, 0); });
+    r.addEventListener("click", function () { show(i); });
+    r.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { show(-1); return; }
+      var j = { ArrowDown: i + 1, ArrowUp: i - 1, Home: 0, End: N - 1 }[e.key]; if (j == null) return; e.preventDefault(); rows[(j + N) % N].focus();
+    });
+  });
+  /* the month switch: one paper marker slides, the slices reshape, every number rolls */
+  function pick(k, focus) {
+    if (focus) sbs[k].focus(); if (k === mi) return; mi = k;
+    sbs.forEach(function (b, j) { b.setAttribute("aria-checked", String(j === k)); b.tabIndex = j === k ? 0 : -1; }); sw.style.setProperty("--i", k);
+    if (seen) { ring.to(bounds()); barsTo(); }
+    rv.forEach(function (r, j) { r.set(data()[j]); }); centre();
+    say.textContent = MON[k][0] + ": KES " + money(total()) + " spent.";
+  }
+  sbs.forEach(function (b, k) {
+    b.addEventListener("click", function () { pick(k); });
+    b.addEventListener("keydown", function (e) { var j = { ArrowRight: k + 1, ArrowDown: k + 1, ArrowLeft: k - 1, ArrowUp: k - 1, Home: 0, End: 1 }[e.key]; if (j == null) return; e.preventDefault(); pick((j + 2) % 2, true); });
+  });
+  /* on first view the slices grow in one after another, the share lines fill and the total rolls up */
+  function arrive() { seen = true; ring.to(bounds(), { delay: function (i) { return i * 70; } }); barsTo(); centre(); }
+  if (moving() && "IntersectionObserver" in window) { var io = new IntersectionObserver(function (es) { if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); arrive(); } }, { threshold: .4 }); io.observe(fig); }
+  else arrive();
+})();
+</script>
