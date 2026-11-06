@@ -60,6 +60,28 @@ Find the job, use the part. When an older part does the same job, the Taste Lab 
 | Wait for content | `n38` skeleton sweep | a spinner | Picked B |
 | Wait for a job with steps | `n47` progress bar that springs and counts | a plain bar | Picked B |
 | Read a warning about the system | `n42` banner that checks again, or drops in when it cannot | `n21` | "C, but if it cannot retry use B" |
+| Type a phone number | `n69` phone field that searches the country list | `n11` | Round 4: picked C |
+| Pick many from a long list | `n70` type in the field, chips wrap | `n46` | Round 4: picked C |
+| Switch between views of the same numbers | `n71` ink marker that stretches, view follows | `n17` | Round 4: picked D |
+| Give a star rating | `n72` stars, then the rating card after a pick | a plain row of stars | Round 4: B, with D's card shown after a pick |
+| Pick a date range for a report | `n73` button that grows into the panel | `n01` | Round 4: picked B; the button must stay in view as it closes |
+| Send a few files | `n74` box that folds into a bar | `c12` | Round 4: picked C; × must start the shrink at once |
+| Open one item from a short list | `n77` card that grows into its details | `c26` | Round 4: picked B |
+| Read short news after an action | `n78` plain toast column | `c21` | Round 4: picked A |
+| Fill a form in steps | `n79` stepper, current step filled orange, no ring | `c10` | Round 4: picked D |
+| See twelve weeks of daily numbers | `n82` heatmap that recolours in a sweep | a bar chart | Round 4: picked D |
+| Put things in order | `n83` list you sort, the times roll | `c19` | Round 4: picked D |
+| Track one order | `n84` timeline where steps arrive in turn | `c24` | Round 4: picked B |
+| See space or credit used against a limit | `n52` usage meter: point at a part and the number rolls to it | `n47` | Round 3: picked B |
+| Read three key numbers for a period | `n53`, `n54` or `n55` metric cards (see section 5) | `n06` | Round 3: kept B, C and D |
+| Enter a count or an amount | `n56`, `n57` or `n58` number fields (see section 5) | a plain number box | Round 3: kept B, C and D; D with round 4's "KES 60 × 3 = KES 180" fix |
+| Pick one from a list by typing | `n59` combobox whose list resizes | `n09` | Round 3: picked D; round 4 made it 40 px with 9 px corners and 34 px rows |
+| Press a button that changes shape as it works | `n60` to `n63` morphing buttons (see section 5) | a spinner or a plain confirm box | Round 3: kept A to D; B and D with round 4's corner fixes |
+| Show how long a deal has left | `n64` countdown pill, a button where the line was | a plain timer | Round 4: picked B |
+| Act on one item with three or four buttons | `n65` button group with one gliding highlight | separate buttons | Round 4: picked B |
+| Use tools over a document | `n66` floating tray | a plain toolbar | Round 4: picked B |
+| Confirm something that can't be undone | `n67` hold to delete | a confirm box alone | Round 4: picked B |
+| Search from a small top bar | `n68` search that grows from its icon | a search box that is always open | Round 4: picked B |
 
 ## 5. When the owner kept several
 
@@ -74,6 +96,13 @@ Keeping several versions means "use the one that fits the page". The owner left 
 | Dropdown | B and F | **B** by default. **F** bloom menu when a few actions sit around one thing. |
 | Alerts | C and B | **C** when the problem can be checked again (a slow payment service). **B** when it cannot (a holiday closing). Both are in `n42`. |
 | Tags | C and D | **C** when people type their own. **D** when the list is fixed. |
+| Breadcrumb | B and C | **B** (`n75`) by default: the middle folds into a "…" menu. **C** (`n76`) on a roomy page, where the path can open in place and wrap. |
+| Setup tasks | C and A | **C** (`n80`) one task at a time, for a first run. **A** (`n81`) a plain list, when people want to see every task at once. |
+| Empty states | B and D | **B** (`n85`) when one place has several empty states. **D** (`n86`) for an empty list that just finished loading. |
+| Stats band | A and D | **A** (`n87`) for a quiet page head. **D** (`n88`) when each number has a goal. |
+| Metric cards | B, C and D | **B** (`n53`) three tiles when the three numbers matter the same and there is room. **C** (`n54`) one card with three rows in a narrow column or a side panel. **D** (`n55`) when one number matters most and its trend helps. |
+| Number fields | B, C and D | **B** (`n56`) a small count with steppers and a hard limit. **C** (`n57`) a money amount, with quick-add chips. **D** (`n58`) counts inside a short cart, the total on the pay button. |
+| Morphing buttons | A to D | **B** (`n60`) a remove or delete that needs a yes, in place. **A** (`n61`) copy a link or code. **C** (`n62`) three or four actions where space is tight. **D** (`n63`) one payment with nothing else to say on the button; `n29` when the words should roll. |
 
 Versions with no house part yet (tabs A to C, tooltips A to C, toasts A to C, dates A to C) are in the Taste Lab source, `tools/taste-lab/` (round 1, `src/b2.mjs`, `src/b3.mjs` and `src/b4.mjs`). Build one with `node build.mjs 1` to see it, then rebuild it as a house part (`tools/taste-lab/README.md`).
 
@@ -96,7 +125,7 @@ These parts came before the Taste Lab. The owner reviewed and approved them on 2
 | `c03` Bar chart | A few groups side by side or stacked | Default | Approved in review |
 | `n03` Donut and gauge | Parts of one total, or progress to a goal | Default | Approved in review. One orange slice is the focus |
 | `n06` Stat card | A headline number with its trend | Default | The owner liked the KES stat card: a number that counts up and a sparkline that draws in |
-| `n07` Number roll | A live count that changes | Default | Approved in review |
+| `n07` Number roll | A live count that changes | Default | Now the odometer the owner picked in Taste Lab r3 (part 01, B): each digit turns the way the number went, right digit first, on a soft spring. "Replace n07 now" |
 
 ### Dates
 

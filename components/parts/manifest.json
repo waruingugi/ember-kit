@@ -76,6 +76,56 @@
   "js": 1
  },
  {
+  "id": "n87",
+  "kind": "part",
+  "group": "charts",
+  "name": "Four numbers, nothing else.",
+  "heading": "Four numbers, nothing else.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n88",
+  "kind": "part",
+  "group": "charts",
+  "name": "One ruled band, a goal under each number.",
+  "heading": "One ruled band, a goal under each number.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n53",
+  "kind": "part",
+  "group": "charts",
+  "name": "Three tiles that roll together.",
+  "heading": "Three tiles that roll together.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n54",
+  "kind": "part",
+  "group": "charts",
+  "name": "Three numbers in one small card.",
+  "heading": "Three numbers in one small card.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n55",
+  "kind": "part",
+  "group": "charts",
+  "name": "Sales that roll up, with a line that reshapes.",
+  "heading": "Sales that roll up, with a line that reshapes.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
   "id": "n07",
   "kind": "part",
   "group": "charts",
@@ -86,11 +136,31 @@
   "js": 1
  },
  {
+  "id": "n64",
+  "kind": "part",
+  "group": "charts",
+  "name": "When the deal ends, the next step is right there.",
+  "heading": "When the deal ends, the next step is right there.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
   "id": "n03",
   "kind": "part",
   "group": "charts",
   "name": "Where the month's money went, in one ring.",
   "heading": "Where the month's money went, in one ring.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n82",
+  "kind": "part",
+  "group": "charts",
+  "name": "Twelve weeks of orders, recoloured in a sweep.",
+  "heading": "Twelve weeks of orders, recoloured in a sweep.",
   "needs": [],
   "css": 0,
   "js": 1
@@ -111,6 +181,16 @@
   "group": "time",
   "name": "Pick your nights, see the price as you go.",
   "heading": "Pick your nights, see the price as you go.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n73",
+  "kind": "part",
+  "group": "time",
+  "name": "The button grows into a calendar, and the dates fly home.",
+  "heading": "The button grows into a calendar, and the dates fly home.",
   "needs": [],
   "css": 0,
   "js": 1
@@ -196,6 +276,16 @@
   "js": 1
  },
  {
+  "id": "n83",
+  "kind": "part",
+  "group": "tables",
+  "name": "Sort the stops, and every time after rolls.",
+  "heading": "Sort the stops, and every time after rolls.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
   "id": "c20",
   "kind": "part",
   "group": "tables",
@@ -236,6 +326,16 @@
   "js": 1
  },
  {
+  "id": "n79",
+  "kind": "part",
+  "group": "forms",
+  "name": "A form in steps, with a dot riding the line.",
+  "heading": "A form in steps, with a dot riding the line.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
   "id": "c11",
   "kind": "part",
   "group": "forms",
@@ -256,11 +356,41 @@
   "js": 1
  },
  {
+  "id": "n56",
+  "kind": "part",
+  "group": "forms",
+  "name": "A number field that pushes back at its limit.",
+  "heading": "A number field that pushes back at its limit.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n57",
+  "kind": "part",
+  "group": "forms",
+  "name": "Top up with one tap per amount.",
+  "heading": "Top up with one tap per amount.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
   "id": "n11",
   "kind": "part",
   "group": "forms",
   "name": "A sign-up form that grades your password.",
   "heading": "A sign-up form that grades your password.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n69",
+  "kind": "part",
+  "group": "forms",
+  "name": "A phone field that finds the country as you type.",
+  "heading": "A phone field that finds the country as you type.",
   "needs": [],
   "css": 0,
   "js": 1
@@ -281,6 +411,16 @@
   "group": "forms",
   "name": "A long list, found by typing.",
   "heading": "A long list, found by typing.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n59",
+  "kind": "part",
+  "group": "forms",
+  "name": "Type an area and the list shrinks to fit.",
+  "heading": "Type an area and the list shrinks to fit.",
   "needs": [],
   "css": 0,
   "js": 1
@@ -326,6 +466,16 @@
   "js": 1
  },
  {
+  "id": "n72",
+  "kind": "part",
+  "group": "forms",
+  "name": "Rate it, then see where you stand.",
+  "heading": "Rate it, then see where you stand.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
   "id": "n45",
   "kind": "part",
   "group": "forms",
@@ -341,6 +491,16 @@
   "group": "forms",
   "name": "Filter chips that add up as you tap.",
   "heading": "Filter chips that add up as you tap.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n70",
+  "kind": "part",
+  "group": "forms",
+  "name": "Type to pick several, and the chips make room.",
+  "heading": "Type to pick several, and the chips make room.",
   "needs": [],
   "css": 0,
   "js": 1
@@ -376,6 +536,16 @@
   "js": 1
  },
  {
+  "id": "n74",
+  "kind": "part",
+  "group": "forms",
+  "name": "Once files are in, the box folds into a slim bar.",
+  "heading": "Once files are in, the box folds into a slim bar.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
   "id": "c13",
   "kind": "part",
   "group": "forms",
@@ -396,6 +566,46 @@
   "js": 1
  },
  {
+  "id": "n65",
+  "kind": "part",
+  "group": "forms",
+  "name": "A row of actions that reads as one shape.",
+  "heading": "A row of actions that reads as one shape.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n60",
+  "kind": "part",
+  "group": "forms",
+  "name": "A remove button that asks in place.",
+  "heading": "A remove button that asks in place.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n61",
+  "kind": "part",
+  "group": "forms",
+  "name": "A copy button that stays the same size.",
+  "heading": "A copy button that stays the same size.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n62",
+  "kind": "part",
+  "group": "forms",
+  "name": "Round icons that open to show their name.",
+  "heading": "Round icons that open to show their name.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
   "id": "c14",
   "kind": "part",
   "group": "forms",
@@ -411,6 +621,36 @@
   "group": "forms",
   "name": "Pay, and see it go through.",
   "heading": "Pay, and see it go through.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n58",
+  "kind": "part",
+  "group": "forms",
+  "name": "A cart whose total rolls in the pay button.",
+  "heading": "A cart whose total rolls in the pay button.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n63",
+  "kind": "part",
+  "group": "forms",
+  "name": "A pay button that folds while it works.",
+  "heading": "A pay button that folds while it works.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n67",
+  "kind": "part",
+  "group": "forms",
+  "name": "For what can’t be undone, hold, don’t tap.",
+  "heading": "For what can’t be undone, hold, don’t tap.",
   "needs": [],
   "css": 0,
   "js": 1
@@ -456,6 +696,16 @@
   "js": 1
  },
  {
+  "id": "n71",
+  "kind": "part",
+  "group": "nav",
+  "name": "A switch whose marker stretches to your pick.",
+  "heading": "A switch whose marker stretches to your pick.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
   "id": "n18",
   "kind": "part",
   "group": "nav",
@@ -486,6 +736,26 @@
   "js": 1
  },
  {
+  "id": "n75",
+  "kind": "part",
+  "group": "nav",
+  "name": "A path that moves with you.",
+  "heading": "A path that moves with you.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n76",
+  "kind": "part",
+  "group": "nav",
+  "name": "Press \"…\" and the path opens right where it is.",
+  "heading": "Press \"…\" and the path opens right where it is.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
   "id": "n12",
   "kind": "part",
   "group": "nav",
@@ -506,11 +776,31 @@
   "js": 1
  },
  {
+  "id": "n68",
+  "kind": "part",
+  "group": "nav",
+  "name": "A search icon that grows into the field.",
+  "heading": "A search icon that grows into the field.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
   "id": "n32",
   "kind": "part",
   "group": "nav",
   "name": "A menu that pops on a spring.",
   "heading": "A menu that pops on a spring.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n66",
+  "kind": "part",
+  "group": "nav",
+  "name": "One highlight that changes size as it moves.",
+  "heading": "One highlight that changes size as it moves.",
   "needs": [],
   "css": 0,
   "js": 1
@@ -636,6 +926,16 @@
   "js": 1
  },
  {
+  "id": "n78",
+  "kind": "part",
+  "group": "status",
+  "name": "Short news in a plain column.",
+  "heading": "Short news in a plain column.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
   "id": "n22",
   "kind": "part",
   "group": "status",
@@ -676,11 +976,61 @@
   "js": 1
  },
  {
+  "id": "n85",
+  "kind": "part",
+  "group": "status",
+  "name": "One drawing that changes shape.",
+  "heading": "One drawing that changes shape.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n86",
+  "kind": "part",
+  "group": "status",
+  "name": "The loading sweep, then a drawing that draws itself.",
+  "heading": "The loading sweep, then a drawing that draws itself.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
   "id": "n47",
   "kind": "part",
   "group": "status",
   "name": "A bar that springs to the end.",
   "heading": "A bar that springs to the end.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n80",
+  "kind": "part",
+  "group": "status",
+  "name": "One task at a time, and done ones become dots.",
+  "heading": "One task at a time, and done ones become dots.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n81",
+  "kind": "part",
+  "group": "status",
+  "name": "A plain list that ticks as you go.",
+  "heading": "A plain list that ticks as you go.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n52",
+  "kind": "part",
+  "group": "status",
+  "name": "A meter that shows what fills the space.",
+  "heading": "A meter that shows what fills the space.",
   "needs": [],
   "css": 0,
   "js": 1
@@ -711,6 +1061,16 @@
   "group": "status",
   "name": "A deploy, step by step.",
   "heading": "A deploy, step by step.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n84",
+  "kind": "part",
+  "group": "status",
+  "name": "An order that shows how far it has got.",
+  "heading": "An order that shows how far it has got.",
   "needs": [],
   "css": 0,
   "js": 1
@@ -791,6 +1151,16 @@
   "group": "cards",
   "name": "Cards that lean toward you.",
   "heading": "Cards that lean toward you.",
+  "needs": [],
+  "css": 0,
+  "js": 1
+ },
+ {
+  "id": "n77",
+  "kind": "part",
+  "group": "cards",
+  "name": "A card that grows into its details.",
+  "heading": "A card that grows into its details.",
   "needs": [],
   "css": 0,
   "js": 1

@@ -1,8 +1,8 @@
-# UI libraries: shadcn/ui, beUI and easyui
+# UI libraries: shadcn/ui, beUI, easyui and Arc
 
 > Part of the design system. Read `~/.claude/design/DESIGN.md` first; it says when to read this file.
 
-Three free libraries of React parts. Check them before you build a part by hand.
+Four free libraries of React parts. Check them before you build a part by hand.
 They give you a part that already works (keyboard, focus, screen readers), or
 an idea for one. They never give the look: `DESIGN.md` does.
 
@@ -11,20 +11,23 @@ an idea for one. They never give the look: `DESIGN.md` does.
 | **shadcn/ui** (https://ui.shadcn.com, `shadcn-ui/ui`, MIT) | Plain, sound parts with no motion: dialogs, menus, selects, forms, tables, tabs, sidebars, toasts. Built on Radix, so the keyboard and screen-reader rules are right. |
 | **beUI** (https://beui.dev, `starc007/ui-components`, MIT, by Saurabh Chauhan) | Parts where motion is the point: toast stacks, docks, bottom sheets, wheel pickers, number tickers, chat and agent parts. Built on Motion. |
 | **easyui** (https://easyui.site, `Surajmaurya1/easyui`, MIT) | Everyday parts with a twist: stat and money cards, charts, payment status, receipt printer, peek cards, folder cards, undo toasts. Built on Framer Motion. 25 of them are already rebuilt in our look (`patterns/interactive-parts.md`, parts `n01` to `n25`): check those first. |
+| **Arc** (https://uiarc.dev, free parts MIT) | The most fluid motion of the four. Look here first when a part must feel alive: numbers that roll like an odometer in the direction they moved, meters and charts that answer on hover, springy sliders (elastic, ruler, scrub), hold to confirm, morphing buttons and selects. Every part's docs say how it moves, how it handles keys, and what reduced motion does. About half the parts are Pro: skip those. Built on Motion. |
 
 ## Order
 
 1. **Our parts first.** `components/parts/` already has the look.
 2. **Then a library.** A plain control or form: shadcn/ui. A part that moves:
-   beUI or easyui. When more than one fits, compare them
+   Arc, beUI or easyui. When more than one fits, compare them
    (`patterns/compare-parts.md`).
 3. **Hand-built last.**
 
 ## Free parts only
 
-Both libraries are free and MIT. Use only beUI's public registry and the
+shadcn/ui, beUI and easyui are free and MIT. Arc's free parts are MIT; its Pro parts are paid. Use only beUI's public registry and the
 `beui` skill. Never use beUI Pro, the `beui-pro` skill or anything that asks
-for a licence key. If a part is not in a public registry, skip it.
+for a licence key. If a part is not in a public registry, skip it. For Arc,
+`https://uiarc.dev/llms.txt` marks every Pro part with "(Pro)": never read,
+rebuild or copy a Pro part, not even from its demo.
 
 ## Where to look (nothing to install)
 
@@ -41,6 +44,16 @@ for a licence key. If a part is not in a public registry, skip it.
 see it working at `https://easyui.site/components/<name>`, and add it with
 `npx shadcn@latest add Surajmaurya1/easyui/<name>`. Its sticky pages are
 already ours, in four kinds (`patterns/interactive-parts.md`, part 28).
+
+**Arc** lists every part, with its docs link and a "(Pro)" mark, in
+`https://uiarc.dev/llms.txt`. One part's docs (when to use it, keys, motion,
+reduced motion): `https://uiarc.dev/components/<slug>/markdown`. A free part's
+source: `https://uiarc.dev/r/<slug>.json` (the code is in `files[].content`).
+See it working at `https://uiarc.dev/components/<slug>`. Its own agent rules
+are in `https://uiarc.dev/r/skills/arc/SKILL.md`: read them for ideas, but
+`DESIGN.md` wins on the look. Taste Lab round 3 tried its best ideas in our look.
+
+**Icons:** never take icons from morfy.design. Its terms forbid giving its designs away as a set or library, and ember-kit is public. Draw our own.
 
 The parts change often, so read the source each time. It is someone else's
 code: read it before you use it.
@@ -171,7 +184,8 @@ and motion `off` holds still.
 When you copy code from a part, put this line at the top of the file:
 `// Based on shadcn/ui <name> (MIT, github.com/shadcn-ui/ui)` or
 `// Based on beUI <slug> (MIT, github.com/starc007/ui-components)` or
-`// Based on easyui <name> (MIT, github.com/Surajmaurya1/easyui)`.
+`// Based on easyui <name> (MIT, github.com/Surajmaurya1/easyui)` or
+`// Based on Arc <slug> (MIT, uiarc.dev)`.
 
 The `shadcn` skill (`npx skills add shadcn/ui` fetches whatever is newest)
 is a copy of `skills/shadcn/` from commit

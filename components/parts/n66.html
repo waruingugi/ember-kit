@@ -1,0 +1,101 @@
+<!-- part n66 | part | group nav | One highlight that changes size as it moves. | One highlight that changes size as it moves. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">One highlight that <em>changes size as it moves.</em></h3>
+          <p class="kit-p">Sweep the pointer along the tray, stop over a line, then press Copy link. The arrow keys move it too.</p>
+          <section class="cs kv4" id="n66">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="fg">
+      <div class="doc" aria-live="polite"><span class="dn">Receipt <b class="n"></b> of 5</span><b class="who">Duka Fresh · KES 1,240</b><span class="more" hidden="">Paid with PocketPay from +254 712 345 678 at 9:14 am.</span></div>
+      <div class="tray" role="toolbar" aria-label="Receipt tools"><span class="hl" aria-hidden="true"></span><button class="fb ic" type="button" data-b="prev" aria-label="Previous receipt"><svg class="i" aria-hidden="true"><use href="#i-cl"></use></svg></button><button class="fb ic" type="button" data-b="next" aria-label="Next receipt" tabindex="-1"><svg class="i" aria-hidden="true"><use href="#i-cr"></use></svg></button><span class="sep" role="separator" aria-orientation="vertical"></span><button class="fb" type="button" data-b="copy" data-name="Copy link" tabindex="-1"><svg class="i" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.8 9.2 9.2 6.8M7.3 4.6l1-1a2.6 2.6 0 0 1 3.7 3.7l-1 1M8.7 11.4l-1 1a2.6 2.6 0 0 1-3.7-3.7l1-1"></path></svg><span class="rs"><span data-k="a" class="on">Copy link</span><span data-k="d" aria-hidden="true">Copied</span><span data-k="f" aria-hidden="true">Failed</span></span></button><span class="sep" role="separator" aria-orientation="vertical"></span><button class="fb ic" type="button" data-b="info" aria-label="Details" aria-pressed="false" tabindex="-1"><svg class="i" aria-hidden="true"><use href="#i-info"></use></svg></button></div>
+      <p class="cap" aria-hidden="true">Point at a button</p>
+      <p class="sr-only" aria-live="polite" data-live=""></p>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0071">
+(function () {
+  "use strict";
+  var box = document.getElementById("n66"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  /* The house odometer, the same as n07. */
+  function roll(el, o) {
+    var api = { value: o.value }, slots = {}, order = [], raf = 0, last = 0, built = false;
+    var vis = document.createElement("span"), sr = document.createElement("span");
+    vis.className = "rv"; vis.setAttribute("aria-hidden", "true"); sr.className = "sr-only";
+    el.textContent = ""; el.appendChild(vis); el.appendChild(sr);
+    function md(a) { return ((a % 10) + 10) % 10; }
+    function rank(k) { var c = k.charAt(0), i = parseInt(k.slice(1), 10); return c === "p" ? i : c === "d" ? 1000 - 2 * i : c === "s" ? 1001 - 2 * i : 3000 + i; }
+    function parse(s) { var tot = (s.match(/[0-9]/g) || []).length, seen = 0, p = 0, x = 0, out = []; for (var i = 0; i < s.length; i++) { var ch = s.charAt(i); if (ch >= "0" && ch <= "9") { seen++; out.push({ k: "d" + (tot - seen), d: +ch }); } else out.push({ k: (seen === 0 ? "p" + p++ : seen === tot ? "x" + x++ : "s" + (tot - seen)) + ch, ch: ch }); } return out; }
+    function mk(t) { var e = document.createElement("span"), s = { k: t.k, el: e, r: rank(t.k) }; if (t.d != null) { var st = document.createElement("span"), i, h = ""; for (i = 0; i < 11; i++) h += "<span>" + (i % 10) + "</span>"; e.className = "dg"; st.className = "st7"; st.innerHTML = h; e.appendChild(st); s.st = st; s.x = s.T = s.g = s.f = s.v = s.at = 0; } else { e.className = "cm"; e.textContent = t.ch; } return s; }
+    function cfg() { var d = (parseFloat(getComputedStyle(box).getPropertyValue("--sp-soft-d")) || .67) * 1000, calm = lv() === "calm", z = calm ? 1 : .86, D = calm ? d * .6 : d; return { Z: z, W: 4.6 / (z * D / 1000) }; }
+    function draw(s) { s.st.style.transform = "translateY(" + (-md(s.x) * 100 / 11).toFixed(3) + "%)"; }
+    function tick(t) { var c = cfg(), dt = Math.min(.032, Math.max(.001, (t - last) / 1000)), busy = false; last = t; order.forEach(function (s) { if (!s.st) return; if (s.at && t >= s.at) { s.at = 0; s.T = s.g; } if (s.at) busy = true; else if (s.x !== s.T || s.v) { s.v += (-c.W * c.W * (s.x - s.T) - 2 * c.Z * c.W * s.v) * dt; s.x += s.v * dt; if (Math.abs(s.x - s.T) < .003 && Math.abs(s.v) < .05) { s.x = s.T; s.v = 0; } else busy = true; } if (s.x === s.T && !s.at) { var w = s.T - md(s.T); if (w) { s.x -= w; s.T -= w; s.g -= w; } } draw(s); }); raf = busy ? requestAnimationFrame(tick) : 0; }
+    function wid(e) { return e.getBoundingClientRect().width; }
+    function kill(s) { if (s.wa) s.wa.cancel(); s.el.remove(); var i = order.indexOf(s); if (i >= 0) order.splice(i, 1); if (slots[s.k] === s) delete slots[s.k]; }
+    function leave(s, mv) { s.gone = true; if (!mv) { kill(s); return; } var w = wid(s.el); if (s.wa) s.wa.cancel(); s.wa = s.el.animate([{ width: w + "px", opacity: 1 }, { opacity: 0, offset: .55 }, { width: "0px", opacity: 0 }], { duration: 420, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" }); s.wa.onfinish = function () { if (s.gone) kill(s); }; }
+    function grow(s, w0) { var w1 = wid(s.el); if (w1 - w0 > .5) s.wa = s.el.animate([{ width: w0 + "px", opacity: w0 / w1 }, { opacity: w0 / w1, offset: .3 }, { width: w1 + "px", opacity: 1 }], { duration: 460, easing: "cubic-bezier(.22,1,.36,1)" }); }
+    api.set = function (v, instant) { var old = api.value, dir = v >= old ? 1 : -1, str = o.fmt(v), toks = parse(str), now = performance.now(), mv = built && moving() && !instant, keep = {}, rk = 0, j, s; api.value = v; sr.textContent = o.say ? o.say(str) : str;
+      toks.forEach(function (t) { var s = slots[t.k]; keep[t.k] = 1; if (!s) { s = slots[t.k] = mk(t); var nx = null; for (var i = 0; i < order.length; i++) if (order[i].r > s.r) { nx = order[i]; break; } vis.insertBefore(s.el, nx ? nx.el : null); order.splice(nx ? order.indexOf(nx) : order.length, 0, s); if (mv) { s.el.style.width = "0px"; s.enter = true; } } else if (s.gone) { s.gone = false; var w0 = wid(s.el); if (s.wa) s.wa.cancel(); s.wa = null; if (mv) grow(s, w0); } });
+      order.slice().forEach(function (s) { if (keep[s.k] || s.gone) return; if (s.st) { var c0 = md(s.g); if (c0) { s.g += dir > 0 ? md(-c0) : -c0; if (mv) { s.at = 0; s.T = s.g; } } } leave(s, mv); });
+      order.forEach(function (s) { if (s.enter) { s.enter = false; s.el.style.width = ""; grow(s, 0); } });
+      for (j = toks.length - 1; j >= 0; j--) { var t = toks[j]; if (t.d == null) continue; s = slots[t.k]; var cd = md(s.g); if (cd === t.d) continue; var g = s.g + (dir > 0 ? md(t.d - cd) : -md(cd - t.d)); if (!mv) { s.x = s.T = s.g = g; s.v = s.at = 0; draw(s); continue; } s.g = g; var dl = 30 * rk++; if (dl > 0) s.at = now + dl; else { s.at = 0; s.T = g; } }
+      if (!mv) { order.forEach(function (s) { if (s.st) { s.x = s.T = s.g; s.v = s.at = 0; draw(s); } }); if (built && old !== v && !instant) vis.animate([{ opacity: .3 }, { opacity: 1 }], { duration: 180, easing: "ease-out" }); } else if (!raf) { last = now; raf = requestAnimationFrame(tick); } };
+    api.set(api.value, true); built = true;
+    return api;
+  }
+  /* A floating tray of receipt tools. One highlight glides between them and a caption line says what each does. */
+  var R = [["Duka Fresh", "KES 1,240", "Paid with PocketPay from +254 712 345 678 at 9:14 am."], ["Mawimbi Mobile", "KES 499", "10 GB bundle, paid with PocketPay at 10:02 am."], ["Duka Fresh", "KES 380", "Paid with PocketPay from +254 712 345 678 at 12:40 pm."], ["PocketPay top-up", "KES 2,000", "Added from a Visa card ending 4821 at 3:15 pm."], ["Duka Fresh", "KES 760", "Paid with PocketPay from +254 712 345 678 at 6:05 pm."]];
+  var tray = $(".tray"), hl = $(".hl"), B = $$(".fb"), who = $(".who"), more = $(".more"), cap = $(".cap"), live = $("[data-live]"), info = $("[data-b=info]"), at = 0, on = -1, ci = -1, rt = 0;
+  var num = roll($(".n"), { value: 1, fmt: String });
+  var NAME = { prev: "Previous receipt", next: "Next receipt", copy: "Copy link", info: "Show details" };
+  var cur = document.createElement("span"); cur.textContent = cap.textContent; cap.textContent = ""; cap.appendChild(cur);
+  function line(txt, dir) {
+    if (cur.textContent === txt) return; var old = cur; cur = document.createElement("span"); cur.textContent = txt; cap.appendChild(cur);
+    if (!moving()) { old.remove(); return; }
+    var y = dir < 0 ? -1 : 1, a = { duration: 360, easing: "cubic-bezier(.22,1,.36,1)" };
+    old.animate([{ transform: "none", opacity: 1 }, { transform: "translateY(" + (-y * 80) + "%)", opacity: 0 }], a).onfinish = function () { old.remove(); };
+    cur.animate([{ transform: "translateY(" + (y * 80) + "%)", opacity: 0 }, { transform: "none", opacity: 1 }], a);
+  }
+  function hlTo(i) {
+    var was = on; on = i;
+    if (i < 0) { hl.classList.remove("on", "down"); line("Point at a button", -1); ci = -1; return; }
+    var r = hl.getBoundingClientRect(), q = B[i].getBoundingClientRect();
+    if (was < 0) hl.style.transition = "none";
+    hl.style.clipPath = "inset(" + (q.top - r.top).toFixed(1) + "px " + (r.right - q.right).toFixed(1) + "px " + (r.bottom - q.bottom).toFixed(1) + "px " + (q.left - r.left).toFixed(1) + "px round 9px)";
+    if (was < 0) { void hl.offsetWidth; hl.style.transition = ""; }
+    hl.classList.add("on"); line(NAME[B[i].getAttribute("data-b")], i >= ci ? 1 : -1); ci = i;
+  }
+  function rest() { var a = document.activeElement; if (B.indexOf(a) >= 0 && a.matches(":focus-visible")) hlTo(B.indexOf(a)); else hlTo(-1); }
+  function swap(el, k) { $$(":scope > span", el).forEach(function (s) { var me = s.getAttribute("data-k") === k, was = s.classList.contains("on"); s.classList.toggle("on", me); s.classList.toggle("out", was && !me); if (me) s.removeAttribute("aria-hidden"); else s.setAttribute("aria-hidden", "true"); }); }
+  function go(i) {
+    if (i < 0 || i >= R.length || i === at) return; at = i; num.set(i + 1);
+    who.textContent = R[i][0] + " · " + R[i][1]; more.textContent = R[i][2];
+    if (moving()) who.animate([{ opacity: 0, transform: "translateY(4px)" }, { opacity: 1, transform: "none" }], { duration: 240, easing: "cubic-bezier(.22,1,.36,1)" });
+    B[0].setAttribute("aria-disabled", String(i === 0)); B[1].setAttribute("aria-disabled", String(i === R.length - 1));
+  }
+  B.forEach(function (b, i) {
+    b.addEventListener("pointerenter", function () { hlTo(i); });
+    b.addEventListener("pointerdown", function () { hl.classList.add("down"); });
+    b.addEventListener("focus", function () { if (b.matches(":focus-visible")) hlTo(i); });
+    b.addEventListener("keydown", function (e) { var j = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: B.length - 1 }[e.key]; if (j == null) return; e.preventDefault(); j = (j + B.length) % B.length; B.forEach(function (x, k) { x.tabIndex = k === j ? 0 : -1; }); B[j].focus(); });
+  });
+  document.addEventListener("pointerup", function () { hl.classList.remove("down"); });
+  tray.addEventListener("pointerleave", rest);
+  tray.addEventListener("focusout", function () { setTimeout(rest, 0); });
+  $("[data-b=prev]").addEventListener("click", function () { go(at - 1); });
+  $("[data-b=next]").addEventListener("click", function () { go(at + 1); });
+  $("[data-b=copy]").addEventListener("click", function () {
+    var rs = $(".rs", this), url = "https://pay.example.com/r/" + (4821 + at);
+    function end(ok) { swap(rs, ok ? "d" : "f"); live.textContent = ok ? "Link to receipt " + (at + 1) + " copied." : "Could not copy the link."; clearTimeout(rt); rt = setTimeout(function () { swap(rs, "a"); }, 1600); }
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(url).then(function () { end(true); }, function () { end(false); }); else end(false);
+  });
+  info.addEventListener("click", function () { var v = info.getAttribute("aria-pressed") !== "true"; info.setAttribute("aria-pressed", String(v)); more.hidden = !v; });
+  B[0].setAttribute("aria-disabled", "true");
+})();
+</script>

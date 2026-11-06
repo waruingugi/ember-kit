@@ -1,0 +1,100 @@
+<!-- part n59 | part | group forms | Type an area and the list shrinks to fit. | Type an area and the list shrinks to fit. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Type an area and the list <em>shrinks to fit.</em></h3>
+          <p class="kit-p">Type “ki”, then delete it slowly. Pick with Enter, and the delivery fee rolls.</p>
+          <section class="cs kv4" id="n59">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="ms">
+      <label class="lb" for="n59-in">Deliver to</label>
+      <div class="wrap">
+        <div class="cbx"><input class="cin" id="n59-in" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="n59-lb" autocomplete="off" value="Kilimani"><span class="fee"></span></div>
+        <div class="pnl"><div class="bx"><ul class="lbx" role="listbox" id="n59-lb" aria-label="Areas"><li class="hl" aria-hidden="true" role="presentation"></li><li role="option" id="n59-o0" aria-selected="false" class="o"><span class="ol">Westlands</span><span class="of">KES 150</span><svg class="i ok" aria-hidden="true"><use href="#i-check"></use></svg></li><li role="option" id="n59-o1" aria-selected="true" class="o"><span class="ol">Kilimani</span><span class="of">KES 150</span><svg class="i ok" aria-hidden="true"><use href="#i-check"></use></svg></li><li role="option" id="n59-o2" aria-selected="false" class="o"><span class="ol">Lavington</span><span class="of">KES 200</span><svg class="i ok" aria-hidden="true"><use href="#i-check"></use></svg></li><li role="option" id="n59-o3" aria-selected="false" class="o"><span class="ol">Kileleshwa</span><span class="of">KES 200</span><svg class="i ok" aria-hidden="true"><use href="#i-check"></use></svg></li><li role="option" id="n59-o4" aria-selected="false" class="o"><span class="ol">Parklands</span><span class="of">KES 180</span><svg class="i ok" aria-hidden="true"><use href="#i-check"></use></svg></li><li role="option" id="n59-o5" aria-selected="false" class="o"><span class="ol">South B</span><span class="of">KES 250</span><svg class="i ok" aria-hidden="true"><use href="#i-check"></use></svg></li><li role="option" id="n59-o6" aria-selected="false" class="o"><span class="ol">Embakasi</span><span class="of">KES 300</span><svg class="i ok" aria-hidden="true"><use href="#i-check"></use></svg></li><li role="option" id="n59-o7" aria-selected="false" class="o"><span class="ol">Karen</span><span class="of">KES 350</span><svg class="i ok" aria-hidden="true"><use href="#i-check"></use></svg></li></ul><p class="none" hidden=""></p></div></div>
+      </div>
+      <p class="out" aria-live="polite"></p>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0064">
+(function () {
+  "use strict";
+  var box = document.getElementById("n59"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function dur(n) { return (parseFloat(getComputedStyle(root).getPropertyValue("--sp-" + n + "-d")) || .4) * 1000; }
+  /* The house odometer, the same as n07. */
+  function roll(el, o) {
+    var api = { value: o.value }, slots = {}, order = [], raf = 0, last = 0, built = false;
+    var vis = document.createElement("span"), sr = document.createElement("span");
+    vis.className = "rv"; vis.setAttribute("aria-hidden", "true"); sr.className = "sr-only";
+    el.textContent = ""; el.appendChild(vis); el.appendChild(sr);
+    function md(a) { return ((a % 10) + 10) % 10; }
+    function rank(k) { var c = k.charAt(0), i = parseInt(k.slice(1), 10); return c === "p" ? i : c === "d" ? 1000 - 2 * i : c === "s" ? 1001 - 2 * i : 3000 + i; }
+    function parse(s) { var tot = (s.match(/[0-9]/g) || []).length, seen = 0, p = 0, x = 0, out = []; for (var i = 0; i < s.length; i++) { var ch = s.charAt(i); if (ch >= "0" && ch <= "9") { seen++; out.push({ k: "d" + (tot - seen), d: +ch }); } else out.push({ k: (seen === 0 ? "p" + p++ : seen === tot ? "x" + x++ : "s" + (tot - seen)) + ch, ch: ch }); } return out; }
+    function mk(t) { var e = document.createElement("span"), s = { k: t.k, el: e, r: rank(t.k) }; if (t.d != null) { var st = document.createElement("span"), i, h = ""; for (i = 0; i < 11; i++) h += "<span>" + (i % 10) + "</span>"; e.className = "dg"; st.className = "st7"; st.innerHTML = h; e.appendChild(st); s.st = st; s.x = s.T = s.g = s.f = s.v = s.at = 0; } else { e.className = "cm"; e.textContent = t.ch; } return s; }
+    function cfg() { var d = (parseFloat(getComputedStyle(box).getPropertyValue("--sp-soft-d")) || .67) * 1000, calm = lv() === "calm", z = calm ? 1 : .86, D = calm ? d * .6 : d; return { Z: z, W: 4.6 / (z * D / 1000) }; }
+    function draw(s) { s.st.style.transform = "translateY(" + (-md(s.x) * 100 / 11).toFixed(3) + "%)"; }
+    function tick(t) { var c = cfg(), dt = Math.min(.032, Math.max(.001, (t - last) / 1000)), busy = false; last = t; order.forEach(function (s) { if (!s.st) return; if (s.at && t >= s.at) { s.at = 0; s.T = s.g; } if (s.at) busy = true; else if (s.x !== s.T || s.v) { s.v += (-c.W * c.W * (s.x - s.T) - 2 * c.Z * c.W * s.v) * dt; s.x += s.v * dt; if (Math.abs(s.x - s.T) < .003 && Math.abs(s.v) < .05) { s.x = s.T; s.v = 0; } else busy = true; } if (s.x === s.T && !s.at) { var w = s.T - md(s.T); if (w) { s.x -= w; s.T -= w; s.g -= w; } } draw(s); }); raf = busy ? requestAnimationFrame(tick) : 0; }
+    function wid(e) { return e.getBoundingClientRect().width; }
+    function kill(s) { if (s.wa) s.wa.cancel(); s.el.remove(); var i = order.indexOf(s); if (i >= 0) order.splice(i, 1); if (slots[s.k] === s) delete slots[s.k]; }
+    function leave(s, mv) { s.gone = true; if (!mv) { kill(s); return; } var w = wid(s.el); if (s.wa) s.wa.cancel(); s.wa = s.el.animate([{ width: w + "px", opacity: 1 }, { opacity: 0, offset: .55 }, { width: "0px", opacity: 0 }], { duration: 420, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" }); s.wa.onfinish = function () { if (s.gone) kill(s); }; }
+    function grow(s, w0) { var w1 = wid(s.el); if (w1 - w0 > .5) s.wa = s.el.animate([{ width: w0 + "px", opacity: w0 / w1 }, { opacity: w0 / w1, offset: .3 }, { width: w1 + "px", opacity: 1 }], { duration: 460, easing: "cubic-bezier(.22,1,.36,1)" }); }
+    api.set = function (v, instant) { var old = api.value, dir = v >= old ? 1 : -1, str = o.fmt(v), toks = parse(str), now = performance.now(), mv = built && moving() && !instant, keep = {}, rk = 0, j, s; api.value = v; sr.textContent = o.say ? o.say(str) : str;
+      toks.forEach(function (t) { var s = slots[t.k]; keep[t.k] = 1; if (!s) { s = slots[t.k] = mk(t); var nx = null; for (var i = 0; i < order.length; i++) if (order[i].r > s.r) { nx = order[i]; break; } vis.insertBefore(s.el, nx ? nx.el : null); order.splice(nx ? order.indexOf(nx) : order.length, 0, s); if (mv) { s.el.style.width = "0px"; s.enter = true; } } else if (s.gone) { s.gone = false; var w0 = wid(s.el); if (s.wa) s.wa.cancel(); s.wa = null; if (mv) grow(s, w0); } });
+      order.slice().forEach(function (s) { if (keep[s.k] || s.gone) return; if (s.st) { var c0 = md(s.g); if (c0) { s.g += dir > 0 ? md(-c0) : -c0; if (mv) { s.at = 0; s.T = s.g; } } } leave(s, mv); });
+      order.forEach(function (s) { if (s.enter) { s.enter = false; s.el.style.width = ""; grow(s, 0); } });
+      for (j = toks.length - 1; j >= 0; j--) { var t = toks[j]; if (t.d == null) continue; s = slots[t.k]; var cd = md(s.g); if (cd === t.d) continue; var g = s.g + (dir > 0 ? md(t.d - cd) : -md(cd - t.d)); if (!mv) { s.x = s.T = s.g = g; s.v = s.at = 0; draw(s); continue; } s.g = g; var dl = 30 * rk++; if (dl > 0) s.at = now + dl; else { s.at = 0; s.T = g; } }
+      if (!mv) { order.forEach(function (s) { if (s.st) { s.x = s.T = s.g; s.v = s.at = 0; draw(s); } }); if (built && old !== v && !instant) vis.animate([{ opacity: .3 }, { opacity: 1 }], { duration: 180, easing: "ease-out" }); } else if (!raf) { last = now; raf = requestAnimationFrame(tick); } };
+    api.set(api.value, true); built = true;
+    return api;
+  }
+  /* Duka Fresh delivery areas. Type to filter; the list glides to its new height and the fee rolls on a pick. */
+  var A = [["Westlands", 150], ["Kilimani", 150], ["Lavington", 200], ["Kileleshwa", 200], ["Parklands", 180], ["South B", 250], ["Embakasi", 300], ["Karen", 350]];
+  var ms = $(".ms"), inp = $(".cin"), wrap = $(".wrap"), list = $(".lbx"), bx = $(".bx"), none = $(".none"), hl = $(".hl"), out = $(".out"), opts = $$(".o"), sel = 1, act = -1, open = false, an = null;
+  var fee = roll($(".fee"), { value: A[1][1], fmt: function (n) { return "KES " + n; } });
+  function shown() { return opts.filter(function (o) { return !o.hidden; }); }
+  function mark(i, jump) {
+    var s = shown(); if (!s.length) { act = -1; hl.style.opacity = 0; inp.removeAttribute("aria-activedescendant"); return; }
+    act = Math.max(0, Math.min(s.length - 1, i)); var el = s[act]; inp.setAttribute("aria-activedescendant", el.id);
+    if (jump) hl.style.transition = "none"; hl.style.opacity = 1; hl.style.transform = "translateY(" + el.offsetTop + "px)"; hl.style.height = el.offsetHeight + "px"; if (jump) { void hl.offsetWidth; hl.style.transition = ""; }
+  }
+  function setOpen(v) { if (v === open) return; open = v; ms.classList.toggle("is-open", v); inp.setAttribute("aria-expanded", String(v)); }
+  function filter(q) {
+    var h0 = bx.offsetHeight, n = 0; q = q.trim().toLowerCase();
+    opts.forEach(function (o, i) {
+      var name = A[i][0], at = name.toLowerCase().indexOf(q), ok = !q || at >= 0, ol = $(".ol", o); o.hidden = !ok; if (ok) n++;
+      ol.textContent = ""; if (q && ok) { var m = document.createElement("mark"); m.textContent = name.slice(at, at + q.length); ol.append(name.slice(0, at), m, name.slice(at + q.length)); } else ol.textContent = name;
+    });
+    none.hidden = n > 0; none.textContent = "No area called “" + q + "”. We deliver to 8 areas.";
+    if (open && moving()) { var h1 = bx.offsetHeight; if (an) an.cancel(); if (h0 !== h1) an = bx.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: dur("soft"), easing: sp("soft") }); }
+    mark(0, true);
+  }
+  function openAll() { filter(""); setOpen(true); mark(shown().indexOf(opts[sel]), true); }
+  function pick(i) {
+    var from = sel; sel = i; opts.forEach(function (o, j) { o.setAttribute("aria-selected", String(j === i)); }); inp.value = A[i][0];
+    inp.classList.remove("rise"); if (moving()) { void inp.offsetWidth; inp.classList.add("rise"); }
+    if (i !== from) fee.set(A[i][1]); setOpen(false);
+    out.textContent = "Delivery to "; var b = document.createElement("b"); b.textContent = A[i][0]; out.append(b, ": KES " + A[i][1] + ".");
+  }
+  function cancel() { setOpen(false); inp.value = A[sel][0]; }
+  inp.addEventListener("focus", function () { setTimeout(function () { inp.select(); }, 0); });
+  inp.addEventListener("click", function () { if (!open) { openAll(); inp.select(); } });
+  inp.addEventListener("input", function () { if (!open) setOpen(true); filter(inp.value); });
+  inp.addEventListener("keydown", function (e) {
+    var s = shown();
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); if (!open) { openAll(); return; } mark(act + (e.key === "ArrowDown" ? 1 : -1)); }
+    else if (e.key === "Enter" && open && act >= 0) { e.preventDefault(); pick(opts.indexOf(s[act])); }
+    else if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); if (open) cancel(); else inp.value = ""; }
+    else if (e.key === "Tab" && open) cancel();
+  });
+  list.addEventListener("pointermove", function (e) { var t = e.target.closest && e.target.closest(".o"); if (t) { var j = shown().indexOf(t); if (j !== act) mark(j); } });
+  list.addEventListener("pointerdown", function (e) { e.preventDefault(); });
+  list.addEventListener("click", function (e) { var t = e.target.closest && e.target.closest(".o"); if (t) pick(opts.indexOf(t)); });
+  document.addEventListener("pointerdown", function (e) { if (open && !wrap.contains(e.target)) cancel(); });
+})();
+</script>

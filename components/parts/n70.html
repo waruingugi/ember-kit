@@ -1,0 +1,100 @@
+<!-- part n70 | part | group forms | Type to pick several, and the chips make room. | Type to pick several, and the chips make room. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Type to pick several, and <em>the chips make room.</em></h3>
+          <p class="kit-p">Duka Fresh picks the areas its riders cover. Type "k", press Enter twice, then Backspace. Chips wrap onto new lines, and each has its own ×.</p>
+          <section class="cs kv4" id="n70">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="ms">
+      <p class="lb" id="n70-l">Delivery areas</p>
+      <div class="fw">
+        <div class="t"><span class="chips"><input class="q" data-k="input" type="text" role="combobox" aria-expanded="false" aria-controls="n70-lb" aria-autocomplete="list" aria-labelledby="n70-l" aria-describedby="n70-sum" placeholder="Type an area" autocomplete="off"></span></div>
+        <div class="pop"><ul class="lbx" id="n70-lb" role="listbox" aria-multiselectable="true" aria-label="Delivery areas" data-glide=".o" data-glide-active=".o.act"></ul></div>
+      </div>
+      <p class="sum" id="n70-sum"><b class="na">2</b> <span class="aw">areas</span> · <b class="no">77</b> orders this week</p>
+      <p class="sr-only" aria-live="polite"></p>
+    </div>
+  </div></div></div>
+</section>
+        </div>
+<script data-slot="0075">
+(function () {
+  "use strict";
+  var box = document.getElementById("n70"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function count(el, from, to, fmt, ms) { if (!moving()) { el.textContent = fmt(to); return; } cancelAnimationFrame(el._an); var t0 = performance.now(); (function f(t) { var k = Math.min(1, (t - t0) / (ms || 320)); el.textContent = fmt(Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)))); if (k < 1) el._an = requestAnimationFrame(f); })(t0); }
+  var A = [["Westlands", 42], ["Kilimani", 35], ["Karen", 18], ["Lavington", 23], ["Parklands", 27], ["South B", 31], ["Ruaka", 12], ["Kileleshwa", 20]];
+  var sel = [0, 1], qv = "", open = false, act = 0;
+  var fw = $(".fw"), t = $(".t"), chips = $(".chips"), q = $(".q"), lb = $(".lbx"), say = $(".sr-only"), na = $(".na"), no = $(".no"), aw = $(".aw");
+  var TK = '<span class="ck"><svg viewBox="0 0 12 12" aria-hidden="true"><path class="tp" d="M2.6 6.3 5 8.6l4.4-4.9"/><path class="dp" d="M3.2 6h5.6"/></svg></span>';
+  lb.innerHTML = '<li class="o all" role="option" id="n70-all" data-v="all" aria-selected="false">' + TK + '<span class="at">Select all</span></li><li class="sep" role="presentation"></li>'
+    + A.map(function (a, i) { return '<li class="o" role="option" id="n70-o' + i + '" data-v="' + i + '" aria-selected="false">' + TK + '<span class="nm">' + a[0] + '</span><span class="n">' + a[1] + '</span></li>'; }).join("")
+    + '<li class="none" role="presentation" hidden></li>';
+  var allEl = $(".all"), sepEl = $(".sep"), noneEl = $(".none"), rows = $$(".o:not(.all)");
+  function has(i) { return sel.indexOf(i) >= 0; }
+  function toggle(i, on) { var k = sel.indexOf(i); if (on == null) on = k < 0; if (on && k < 0) sel.push(i); else if (!on && k >= 0) sel.splice(k, 1); return on; }
+
+  /* chips: kept ones glide to their new place, new ones grow in, gone ones fade where they stood */
+  var chipEl = {};
+  function chip(i) { var e = chipEl[i]; if (!e) { e = chipEl[i] = document.createElement("span"); e.className = "c"; e.setAttribute("data-k", "c" + i); e.innerHTML = "<span>" + A[i][0] + '</span><button class="cx" type="button" tabindex="-1" aria-label="Remove ' + A[i][0] + '" data-rm="' + i + '"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg></button>'; } if (e._ghost) { e.getAnimations().forEach(function (a) { a.cancel(); }); e._ghost = false; e.style.cssText = ""; e.remove(); } return e; }
+  function field(still) {
+    var kids = function () { return [].filter.call(chips.children, function (e) { return !e._ghost; }); }, was = {}, cr, d = parseFloat(sp("snappy-d")) * 1000 || 370;
+    kids().forEach(function (e) { was[e.getAttribute("data-k")] = { el: e, r: e.getBoundingClientRect() }; });
+    var want = sel.map(chip).concat(q);
+    kids().forEach(function (e) { if (want.indexOf(e) < 0) e.remove(); });
+    want.forEach(function (e, j) { if (chips.children[j] !== e) chips.insertBefore(e, chips.children[j] || null); });
+    if (!moving() || still) return;
+    cr = chips.getBoundingClientRect(); var seen = {};
+    kids().forEach(function (e) { var k = e.getAttribute("data-k"), w = was[k], r = e.getBoundingClientRect(); seen[k] = 1;
+      if (w) { var dx = w.r.left - r.left, dy = w.r.top - r.top; if (Math.abs(dx) > .5 || Math.abs(dy) > .5) e.animate([{ transform: "translate(" + dx + "px," + dy + "px)" }, { transform: "none" }], { duration: d, easing: sp("snappy") }); }
+      else e.animate([{ opacity: 0, transform: "scale(.9)" }, { opacity: 1, transform: "none" }], { duration: d, easing: sp("snappy") }); });
+    Object.keys(was).forEach(function (k) { if (seen[k]) return; var w = was[k], g = w.el;
+      g._ghost = true; g.setAttribute("aria-hidden", "true");
+      g.style.cssText = "position:absolute;margin:0;pointer-events:none;left:" + (w.r.left - cr.left) + "px;top:" + (w.r.top - cr.top) + "px;width:" + w.r.width + "px";
+      chips.appendChild(g);
+      g.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "scale(.9)" }], { duration: 200, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" }).onfinish = function () { if (g._ghost) { g.remove(); g._ghost = false; g.style.cssText = ""; g.removeAttribute("aria-hidden"); } }; });
+  }
+  var lastN = 2, lastO = 77;
+  function sum() { var tot = 0; sel.forEach(function (i) { tot += A[i][1]; }); count(na, lastN, sel.length, String); count(no, lastO, tot, String); lastN = sel.length; lastO = tot; aw.textContent = sel.length === 1 ? "area" : "areas"; }
+
+  function vis() { return rows.filter(function (o) { return !o.hidden; }); }
+  function items() { return [allEl].concat(vis()).filter(function (o) { return !o.hidden; }); }
+  function list() {
+    rows.forEach(function (o) { var i = +o.getAttribute("data-v"), nm = A[i][0], k = nm.toLowerCase().indexOf(qv.toLowerCase());
+      o.hidden = !!qv && k < 0; o.setAttribute("aria-selected", String(has(i)));
+      $(".nm", o).innerHTML = qv && k >= 0 ? nm.slice(0, k) + "<b>" + nm.slice(k, k + qv.length) + "</b>" + nm.slice(k + qv.length) : nm; });
+    var v = vis().map(function (o) { return +o.getAttribute("data-v"); }), on = v.filter(has).length;
+    allEl.hidden = sepEl.hidden = !v.length; allEl.setAttribute("aria-selected", String(!!v.length && on === v.length)); allEl.classList.toggle("mixed", on > 0 && on < v.length);
+    $(".at", allEl).textContent = qv ? "Select all " + v.length + (v.length === 1 ? " match" : " matches") : "Select all";
+    noneEl.hidden = v.length > 0; noneEl.textContent = "No area called “" + qv + "”.";
+  }
+  function mark(i) { var its = items(); $$(".o.act").forEach(function (o) { o.classList.remove("act"); }); if (!its.length) { q.removeAttribute("aria-activedescendant"); return; } act = (i + its.length) % its.length; its[act].classList.add("act"); q.setAttribute("aria-activedescendant", its[act].id); its[act].scrollIntoView({ block: "nearest" }); }
+  function speak(i, on) { say.textContent = (i === "all" ? (on ? "All shown areas added. " : "All shown areas removed. ") : A[i][0] + (on ? " added. " : " removed. ")) + sel.length + (sel.length === 1 ? " area." : " areas."); }
+  function render() { list(); field(); sum(); }
+  function pick(li) {
+    var v = li.getAttribute("data-v");
+    if (v === "all") { var vv = vis().map(function (o) { return +o.getAttribute("data-v"); }), allOn = vv.every(has); vv.forEach(function (i) { toggle(i, !allOn); }); render(); speak("all", !allOn); }
+    else { var on = toggle(+v); render(); speak(+v, on); }
+    if (qv) { q.value = qv = ""; list(); mark(Math.max(0, items().indexOf(li))); }
+  }
+  function setOpen(v) { if (v === open) return; open = v; fw.classList.toggle("open", v); q.setAttribute("aria-expanded", String(v)); if (v) { list(); mark(qv ? 1 : 0); } }
+  q.addEventListener("focus", function () { setOpen(true); });
+  q.addEventListener("input", function () { qv = q.value.trim(); setOpen(true); list(); mark(qv && !allEl.hidden ? 1 : 0); });
+  q.addEventListener("keydown", function (e) { var k = e.key;
+    if (k === "ArrowDown" || k === "ArrowUp") { e.preventDefault(); if (!open) setOpen(true); else mark(act + (k === "ArrowDown" ? 1 : -1)); }
+    else if (k === "Enter") { e.preventDefault(); var its = items(); if (open && its[act]) pick(its[act]); }
+    else if (k === "Escape" && open) { e.stopPropagation(); setOpen(false); }
+    else if (k === "Tab") setOpen(false);
+    else if (k === "Backspace" && !q.value && sel.length) { var i = sel[sel.length - 1]; toggle(i, false); render(); speak(i, false); } });
+  t.addEventListener("pointerdown", function (e) { if (e.target === t || e.target === chips) { e.preventDefault(); q.focus(); } });
+  chips.addEventListener("click", function (e) { var b = e.target.closest && e.target.closest("[data-rm]"); if (!b) return; var i = +b.getAttribute("data-rm"); toggle(i, false); render(); speak(i, false); q.focus(); });
+  lb.addEventListener("pointerdown", function (e) { e.preventDefault(); });
+  lb.addEventListener("click", function (e) { var li = e.target.closest && e.target.closest(".o"); if (li) pick(li); });
+  document.addEventListener("pointerdown", function (e) { if (open && !fw.contains(e.target)) setOpen(false); });
+  list(); field(true);
+})();
+</script>

@@ -1,0 +1,106 @@
+<!-- part n57 | part | group forms | Top up with one tap per amount. | Top up with one tap per amount. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Top up with <em>one tap per amount.</em></h3>
+          <p class="kit-p">Press +1,000 until it refuses, or type an amount and press Enter. Each digit rolls the way the amount moved.</p>
+          <section class="cs kv4" id="n57">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="nf">
+      <label class="lb" for="n57-in">Top up PocketPay</label>
+      <div class="nfr mo"><span class="cu">KES</span><span class="cell"><input class="nin" id="n57-in" type="text" inputmode="numeric" autocomplete="off" role="spinbutton" aria-valuemin="10" aria-valuemax="10000" aria-valuenow="1500" value="1500"><span class="disp" aria-hidden="true"></span></span></div>
+      <p class="rg">From KES 10 to KES 10,000</p>
+      <div class="chs" role="group" aria-label="Quick add"><button class="b sm" type="button" data-add="100">+100</button><button class="b sm" type="button" data-add="500">+500</button><button class="b sm" type="button" data-add="1000">+1,000</button></div>
+      <div class="go"><button class="b pri" type="button" data-go="">Top up</button><span class="msg" aria-live="polite"></span></div>
+      <p class="nnote" aria-live="polite"></p>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0062">
+(function () {
+  "use strict";
+  var box = document.getElementById("n57"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function money(n) { return n.toLocaleString("en-KE"); }
+  function dur(n) { return (parseFloat(getComputedStyle(root).getPropertyValue("--sp-" + n + "-d")) || .4) * 1000; }
+  var TK = '<svg class="tk" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"/><path d="M6.6 11.4 9.6 14.3l5.8-6.4"/></svg>';
+  /* The house odometer, the same as n07. */
+  function roll(el, o) {
+    var api = { value: o.value }, slots = {}, order = [], raf = 0, last = 0, built = false;
+    var vis = document.createElement("span"), sr = document.createElement("span");
+    vis.className = "rv"; vis.setAttribute("aria-hidden", "true"); sr.className = "sr-only";
+    el.textContent = ""; el.appendChild(vis); el.appendChild(sr);
+    function md(a) { return ((a % 10) + 10) % 10; }
+    function rank(k) { var c = k.charAt(0), i = parseInt(k.slice(1), 10); return c === "p" ? i : c === "d" ? 1000 - 2 * i : c === "s" ? 1001 - 2 * i : 3000 + i; }
+    function parse(s) { var tot = (s.match(/[0-9]/g) || []).length, seen = 0, p = 0, x = 0, out = []; for (var i = 0; i < s.length; i++) { var ch = s.charAt(i); if (ch >= "0" && ch <= "9") { seen++; out.push({ k: "d" + (tot - seen), d: +ch }); } else out.push({ k: (seen === 0 ? "p" + p++ : seen === tot ? "x" + x++ : "s" + (tot - seen)) + ch, ch: ch }); } return out; }
+    function mk(t) { var e = document.createElement("span"), s = { k: t.k, el: e, r: rank(t.k) }; if (t.d != null) { var st = document.createElement("span"), i, h = ""; for (i = 0; i < 11; i++) h += "<span>" + (i % 10) + "</span>"; e.className = "dg"; st.className = "st7"; st.innerHTML = h; e.appendChild(st); s.st = st; s.x = s.T = s.g = s.f = s.v = s.at = 0; } else { e.className = "cm"; e.textContent = t.ch; } return s; }
+    function cfg() { var d = (parseFloat(getComputedStyle(box).getPropertyValue("--sp-soft-d")) || .67) * 1000, calm = lv() === "calm", z = calm ? 1 : .86, D = calm ? d * .6 : d; return { Z: z, W: 4.6 / (z * D / 1000) }; }
+    function draw(s) { s.st.style.transform = "translateY(" + (-md(s.x) * 100 / 11).toFixed(3) + "%)"; }
+    function tick(t) { var c = cfg(), dt = Math.min(.032, Math.max(.001, (t - last) / 1000)), busy = false; last = t; order.forEach(function (s) { if (!s.st) return; if (s.at && t >= s.at) { s.at = 0; s.T = s.g; } if (s.at) busy = true; else if (s.x !== s.T || s.v) { s.v += (-c.W * c.W * (s.x - s.T) - 2 * c.Z * c.W * s.v) * dt; s.x += s.v * dt; if (Math.abs(s.x - s.T) < .003 && Math.abs(s.v) < .05) { s.x = s.T; s.v = 0; } else busy = true; } if (s.x === s.T && !s.at) { var w = s.T - md(s.T); if (w) { s.x -= w; s.T -= w; s.g -= w; } } draw(s); }); raf = busy ? requestAnimationFrame(tick) : 0; }
+    function wid(e) { return e.getBoundingClientRect().width; }
+    function kill(s) { if (s.wa) s.wa.cancel(); s.el.remove(); var i = order.indexOf(s); if (i >= 0) order.splice(i, 1); if (slots[s.k] === s) delete slots[s.k]; }
+    function leave(s, mv) { s.gone = true; if (!mv) { kill(s); return; } var w = wid(s.el); if (s.wa) s.wa.cancel(); s.wa = s.el.animate([{ width: w + "px", opacity: 1 }, { opacity: 0, offset: .55 }, { width: "0px", opacity: 0 }], { duration: 420, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" }); s.wa.onfinish = function () { if (s.gone) kill(s); }; }
+    function grow(s, w0) { var w1 = wid(s.el); if (w1 - w0 > .5) s.wa = s.el.animate([{ width: w0 + "px", opacity: w0 / w1 }, { opacity: w0 / w1, offset: .3 }, { width: w1 + "px", opacity: 1 }], { duration: 460, easing: "cubic-bezier(.22,1,.36,1)" }); }
+    api.set = function (v, instant) { var old = api.value, dir = v >= old ? 1 : -1, str = o.fmt(v), toks = parse(str), now = performance.now(), mv = built && moving() && !instant, keep = {}, rk = 0, j, s; api.value = v; sr.textContent = o.say ? o.say(str) : str;
+      toks.forEach(function (t) { var s = slots[t.k]; keep[t.k] = 1; if (!s) { s = slots[t.k] = mk(t); var nx = null; for (var i = 0; i < order.length; i++) if (order[i].r > s.r) { nx = order[i]; break; } vis.insertBefore(s.el, nx ? nx.el : null); order.splice(nx ? order.indexOf(nx) : order.length, 0, s); if (mv) { s.el.style.width = "0px"; s.enter = true; } } else if (s.gone) { s.gone = false; var w0 = wid(s.el); if (s.wa) s.wa.cancel(); s.wa = null; if (mv) grow(s, w0); } });
+      order.slice().forEach(function (s) { if (keep[s.k] || s.gone) return; if (s.st) { var c0 = md(s.g); if (c0) { s.g += dir > 0 ? md(-c0) : -c0; if (mv) { s.at = 0; s.T = s.g; } } } leave(s, mv); });
+      order.forEach(function (s) { if (s.enter) { s.enter = false; s.el.style.width = ""; grow(s, 0); } });
+      for (j = toks.length - 1; j >= 0; j--) { var t = toks[j]; if (t.d == null) continue; s = slots[t.k]; var cd = md(s.g); if (cd === t.d) continue; var g = s.g + (dir > 0 ? md(t.d - cd) : -md(cd - t.d)); if (!mv) { s.x = s.T = s.g = g; s.v = s.at = 0; draw(s); continue; } s.g = g; var dl = 30 * rk++; if (dl > 0) s.at = now + dl; else { s.at = 0; s.T = g; } }
+      if (!mv) { order.forEach(function (s) { if (s.st) { s.x = s.T = s.g; s.v = s.at = 0; draw(s); } }); if (built && old !== v && !instant) vis.animate([{ opacity: .3 }, { opacity: 1 }], { duration: 180, easing: "ease-out" }); } else if (!raf) { last = now; raf = requestAnimationFrame(tick); } };
+    api.set(api.value, true); built = true;
+    return api;
+  }
+  /* A spinbutton: a lean and a shake at the limits, typing that cuts straight in. */
+  function nf(wrap, o) {
+    var inp = $(".nin", wrap), disp = $(".disp", wrap), shell = $(".nfr", wrap), note = o.note;
+    var v = o.value, editing = false, strain = 0, sT = 0, fmt = o.fmt || String, r = roll(disp, { value: v, fmt: fmt });
+    function num(s) { var t = String(s).replace(/[^0-9]/g, ""); return t ? parseInt(t, 10) : null; }
+    function sync() { inp.setAttribute("aria-valuenow", v); inp.setAttribute("aria-valuetext", o.text ? o.text(v) : fmt(v)); if (!editing) inp.value = String(v); }
+    function tell(t) { note.textContent = t; note.classList.remove("on"); void note.offsetWidth; note.classList.add("on"); clearTimeout(note._t); note._t = setTimeout(function () { note.classList.remove("on"); }, 2400); }
+    function refuse(dir, btn) {
+      strain = Math.min(strain + 1, 4); clearTimeout(sT); sT = setTimeout(function () { strain = 0; }, 900);
+      if (moving()) {
+        disp.animate([{ transform: "none", easing: "cubic-bezier(.22,1,.36,1)" }, { transform: "translateX(" + dir * (5 + 2.5 * strain) + "px)", offset: .2, easing: sp("bouncy") }, { transform: "none" }], { duration: 120 + dur("bouncy") });
+        if (btn) btn.animate([{ transform: "none" }, { transform: "translateX(-3px)", offset: .2 }, { transform: "translateX(3px)", offset: .45 }, { transform: "translateX(-2px)", offset: .7 }, { transform: "none" }], { duration: 320, easing: "ease-out" });
+      }
+      tell(dir > 0 ? o.maxMsg : o.minMsg); if (o.refuse) o.refuse(dir);
+    }
+    function set(n, btn) {
+      var c = Math.max(o.min, Math.min(o.max, n));
+      if (c === v) { if (c !== n) refuse(n > v ? 1 : -1, btn); return c === n; }
+      var was = v; v = c; sync(); r.set(v); if (o.on) o.on(v, was);
+      if (c !== n) refuse(n > c ? 1 : -1, btn);
+      return c === n;
+    }
+    function commit() {
+      if (!editing) return; editing = false; shell.classList.remove("typing", "over");
+      var n = num(inp.value); if (n == null) { r.set(v, true); sync(); return; }
+      var c = Math.max(o.min, Math.min(o.max, n)), was = v; v = c; sync();
+      if (c !== n) { if (moving()) setTimeout(function () { r.set(c); }, 140); else r.set(c); refuse(n > c ? 1 : -1); }
+      if (o.on && c !== was) o.on(v, was);
+    }
+    inp.addEventListener("keydown", function (e) {
+      var k = e.key, s = o.step, m = { ArrowUp: s, ArrowDown: -s, PageUp: s * 10, PageDown: -s * 10 };
+      if (k in m) { e.preventDefault(); commit(); set(v + m[k] * (e.shiftKey && k.indexOf("Arrow") === 0 ? 10 : 1)); }
+      else if ((k === "Home" || k === "End") && !editing) { e.preventDefault(); set(k === "Home" ? o.min : o.max); }
+      else if (k === "Enter") commit();
+      else if (k === "Escape" && editing) { e.preventDefault(); e.stopPropagation(); editing = false; shell.classList.remove("typing", "over"); r.set(v, true); sync(); }
+    });
+    inp.addEventListener("input", function () { editing = true; shell.classList.add("typing"); var n = num(inp.value); shell.classList.toggle("over", n != null && (n > o.max || n < o.min)); if (n != null) r.set(n, true); });
+    inp.addEventListener("blur", commit);
+    sync();
+    return { get: function () { return v; }, set: set, commit: commit };
+  }
+  /* A PocketPay top-up from KES 10 to KES 10,000. Chips add 100, 500 or 1,000. */
+  var rg = $(".rg"), msg = $(".msg"), rt = 0;
+  var f = nf(box, { value: 1500, min: 10, max: 10000, step: 10, fmt: money, note: $(".nnote"), text: function (n) { return "KES " + money(n); }, maxMsg: "The most you can top up at once is KES 10,000.", minMsg: "The least you can top up is KES 10.",
+    refuse: function () { rg.classList.add("flash"); clearTimeout(rt); rt = setTimeout(function () { rg.classList.remove("flash"); }, 1400); }, on: function () { msg.textContent = ""; } });
+  $$("[data-add]").forEach(function (b) { b.addEventListener("click", function () { f.commit(); f.set(f.get() + +b.getAttribute("data-add"), b); }); });
+  $("[data-go]").addEventListener("click", function () { f.commit(); msg.innerHTML = TK + "KES " + money(f.get()) + " added."; });
+})();
+</script>

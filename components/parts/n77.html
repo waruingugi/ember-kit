@@ -1,0 +1,106 @@
+<!-- part n77 | part | group cards | A card that grows into its details. | A card that grows into its details. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A card that <em>grows into its details.</em></h3>
+          <p class="kit-p">Three orders from today. Open Amina's order, press Mark as delivered, then press Escape. The card grows to fill the box, and folds back into the same card.</p>
+          <section class="cs kv4" id="n77">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="xc">
+      <p class="cap">Today's orders · Duka Fresh</p>
+      <ul class="ls"></ul>
+      <div class="shw"><div class="det" role="dialog" aria-label="Order details" hidden=""><div class="in"><div class="dh"><span class="a da"></span><span class="m dm"></span></div><button class="b q x" type="button" aria-label="Close details"><svg class="i" aria-hidden="true"><use href="#i-x"></use></svg></button><div class="body"></div></div></div></div>
+    </div>
+  </div></div></div>
+</section>
+        </div>
+<script data-slot="0082">
+(function () {
+  "use strict";
+  var box = document.getElementById("n77"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function money(n) { return n.toLocaleString("en-KE"); }
+  var O = [
+    { id: "4821", nm: "Amina Otieno", ini: "AO", ph: "+254 712 345 678", k: 2, t: ["2:14 pm", "2:31 pm"], items: [["Sukuma wiki, 2 bunches", 120], ["Unga, 2 kg", 230], ["Cooking oil, 1 L", 410]] },
+    { id: "4820", nm: "Brian Kiprop", ini: "BK", ph: "+254 733 210 445", k: 1, t: ["2:40 pm"], items: [["Milk, 3 L", 210], ["Bread, 2 loaves", 130], ["Eggs, a tray", 450], ["Sugar, 2 kg", 390]] },
+    { id: "4819", nm: "Wanjiru Mwangi", ini: "WM", ph: "+254 701 998 120", k: 3, t: ["1:05 pm", "1:20 pm", "1:52 pm"], items: [["Tomatoes, 1 kg", 150], ["Avocados, 4", 280]] }
+  ];
+  var ST = ["", "Packing", "Out for delivery", "Delivered"];
+  function tot(o) { return o.items.reduce(function (a, b) { return a + b[1]; }, 0); }
+  function head(o) { return '<span class="a"><span class="av" aria-hidden="true">' + o.ini + '</span><span class="nm"><b>' + o.nm + '</b><small class="cs">' + ST[o.k] + '</small></span></span><span class="m"><b>KES ' + money(tot(o)) + "</b><small>#" + o.id + "</small></span>"; }
+  var xc = $(".xc"), ls = $(".ls"), det = $(".det"), inn = $(".in"), dA = $(".da"), dM = $(".dm"), body = $(".body"), xb = $(".x");
+  ls.innerHTML = O.map(function (o, i) { return '<li><button class="cd" type="button" data-i="' + i + '" aria-expanded="false" aria-label="' + o.nm + ", order " + o.id + ", " + ST[o.k] + '. Open details">' + head(o) + "</button></li>"; }).join("");
+  var cards = $$(".cd");
+  function now() { var d = new Date(), h = d.getHours(), m = d.getMinutes(); return (h % 12 || 12) + ":" + (m < 10 ? "0" : "") + m + " " + (h < 12 ? "am" : "pm"); }
+  function bodyHtml(o, fresh) {
+    var S = ["Paid", "Packed", "Delivered"], TK = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.2 6.3 5.2 8.2 8.8 4.2"/></svg>';
+    var its = o.items.map(function (it) { return "<li><span>" + it[0] + "</span><span>" + money(it[1]) + "</span></li>"; }).join("") + '<li class="tot"><span>Total</span><span>KES ' + money(tot(o)) + "</span></li>";
+    var sps = '<ol class="sps" style="--f:' + Math.min(o.k, 2) / 2 + '">' + S.map(function (s, j) { var cl = j < o.k ? "done" : j === o.k ? "now" : ""; if (j === fresh) cl += " new";
+      return '<li class="' + cl + '"><span class="dot">' + (j < o.k ? TK : "") + "</span><span><b>" + s + "</b>" + (o.t[j] || (j === o.k ? "Next" : "")) + "</span></li>"; }).join("") + "</ol>";
+    var nx = ["", "Mark as packed", "Mark as delivered", "Delivered"][o.k];
+    return '<ul class="its">' + its + "</ul>" + sps + '<div class="acts"><button class="b sm pri" type="button" data-next' + (o.k >= 3 ? " disabled" : "") + ">" + nx + '</button><button class="b sm" type="button" data-call>Call ' + o.nm.split(" ")[0] + '</button></div><p class="nt" aria-live="polite"></p>';
+  }
+  function wire(o, cd) {
+    $("[data-next]", body).addEventListener("click", function () {
+      if (o.k >= 3) return; o.t[o.k] = now(); o.k++;
+      body.innerHTML = bodyHtml(o, o.k - 1); wire(o, cd);
+      [cd, dA].forEach(function (el) { var s = $(".cs", el); if (s) s.textContent = ST[o.k]; });
+      cd.setAttribute("aria-label", o.nm + ", order " + o.id + ", " + ST[o.k] + ". Open details");
+      $(".nt", body).textContent = "Order #" + o.id + (o.k === 3 ? " marked as delivered." : " marked as packed.");
+      var nb = $("[data-next]", body); (nb.disabled ? $("[data-call]", body) : nb).focus({ preventScroll: true });
+    });
+    $("[data-call]", body).addEventListener("click", function () { $(".nt", body).textContent = "Calling " + o.nm + " on " + o.ph + "."; });
+  }
+  /* one soft spring drives the whole move: the clip grows from the card's box to the full box, the name and amount ride along */
+  var x = 0, v = 0, goal = 0, D = 560, Z = .9, raf = 0, last = 0, st = "shut", cur = -1, from = [0, 0, 0, 0], dl = { a: [0, 0], m: [0, 0] };
+  function L(a, b, t) { return a + (b - a) * t; }
+  function q(n) { return Math.max(0, Math.min(1, n)); }
+  function measure() {
+    var xr = xc.getBoundingClientRect(), cd = cards[cur], cr = cd.getBoundingClientRect();
+    from = [cr.top - xr.top, xr.right - cr.right, xr.bottom - cr.bottom, cr.left - xr.left];
+    dA.style.transform = dM.style.transform = "none";
+    var ca = $(".a", cd).getBoundingClientRect(), cm = $(".m", cd).getBoundingClientRect(), da = dA.getBoundingClientRect(), dm = dM.getBoundingClientRect();
+    dl.a = [ca.left - da.left, ca.top - da.top]; dl.m = [cm.right - dm.right, cm.top - dm.top];
+  }
+  function draw() {
+    if (cur < 0) return; var t = x, u = 1 - t, f = q((t - .5) / .42);
+    det.style.clipPath = "inset(" + from.map(function (n) { return L(n, 0, t).toFixed(2) + "px"; }).join(" ") + " round " + L(12, 14, q(t)).toFixed(2) + "px)";
+    dA.style.transform = "translate(" + (dl.a[0] * u).toFixed(2) + "px," + (dl.a[1] * u).toFixed(2) + "px)";
+    dM.style.transform = "translate(" + (dl.m[0] * u).toFixed(2) + "px," + (dl.m[1] * u).toFixed(2) + "px)";
+    body.style.opacity = xb.style.opacity = f; body.style.transform = "translateY(" + ((1 - f) * 8).toFixed(2) + "px)";
+  }
+  function step(t) {
+    var dt = Math.min(.032, Math.max(.001, (t - last) / 1000)), calm = lv() === "calm", z = calm ? 1 : Z, w = 4.6 / (z * (calm ? D * .7 : D) / 1000); last = t;
+    v += (-w * w * (x - goal) - 2 * z * w * v) * dt; x += v * dt;
+    var end = Math.abs(x - goal) < .001 && Math.abs(v) < .01; if (end) { x = goal; v = 0; }
+    if (st === "closing" && x < .002) { x = 0; end = true; }
+    draw(); raf = end ? 0 : requestAnimationFrame(step);
+    if (end && st === "closing") done();
+  }
+  function to(g) { goal = g; if (!moving()) { x = g; v = 0; draw(); if (st === "closing") done(); return; } if (!raf) { last = performance.now(); raf = requestAnimationFrame(step); } }
+  function done() { st = "shut"; det.hidden = true; if (cur >= 0) cards[cur].setAttribute("aria-expanded", "false"); cur = -1; }
+  function open(i) {
+    if (cur === i && st === "open") { close(); return; }
+    var again = st === "closing" && cur === i;
+    if (st === "closing" && !again) { cancelAnimationFrame(raf); raf = 0; x = v = 0; done(); }
+    cur = i;
+    if (!again) { var cd = cards[i]; dA.innerHTML = $(".a", cd).innerHTML; dM.innerHTML = $(".m", cd).innerHTML; body.innerHTML = bodyHtml(O[i]); wire(O[i], cd); det.setAttribute("aria-label", "Order " + O[i].id + " for " + O[i].nm); }
+    det.hidden = false; measure(); draw();
+    cards[i].setAttribute("aria-expanded", "true"); st = "open"; D = 560; to(1);
+    xb.focus({ preventScroll: true });
+  }
+  function close() { if (st !== "open") return; st = "closing"; D = 420; cards[cur].focus({ preventScroll: true }); to(0); }
+  cards.forEach(function (cd, i) { cd.addEventListener("click", function () { open(i); }); });
+  xb.addEventListener("click", close);
+  xc.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && st === "open") { e.stopPropagation(); close(); return; }
+    if (e.key === "Tab" && st === "open" && det.contains(document.activeElement)) { /* keep Tab inside the details */
+      var f = $$("button:not([disabled])", det), a = f[0], z = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+    }
+  });
+  addEventListener("resize", function () { if (cur >= 0) { measure(); draw(); } });
+})();
+</script>

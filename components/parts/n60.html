@@ -1,0 +1,52 @@
+<!-- part n60 | part | group forms | A remove button that asks in place. | A remove button that asks in place. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A remove button that <em>asks in place.</em></h3>
+          <p class="kit-p">Press Remove card. It grows into a question right where you pressed. A double click cannot go straight through.</p>
+          <section class="cs kv4" id="n60">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="cf">
+      <div class="cc"><span class="ci"><svg class="i" aria-hidden="true"><use href="#i-card"></use></svg></span><span><b data-ct="">Visa ending 4821</b><small data-cs="">Expires 08/28. Used for PocketPay top-ups.</small></span></div>
+      <div class="mm" data-at="a"><span class="bgw"><span class="bg"></span></span>
+        <div class="f on" data-f="a"><button class="ask" type="button" data-p="" data-ask=""><svg class="i" aria-hidden="true"><use href="#i-trash"></use></svg>Remove card</button></div>
+        <div class="f" data-f="q"><span class="q" data-p="" style="--i:0">Remove it for good?</span><button class="yes" type="button" data-p="" data-yes="" style="--i:1">Remove</button><button class="no" type="button" data-p="" data-no="" style="--i:2">Keep</button></div>
+        <div class="f" data-f="busy"><span class="spin" data-p=""></span><span data-p="" style="--i:1">Removing…</span></div>
+        <div class="f" data-f="done"><span class="tkw" data-p=""><svg class="tk" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"></circle><path d="M6.6 11.4 9.6 14.3l5.8-6.4"></path></svg></span><span data-p="" style="--i:1">Card removed</span></div>
+      </div>
+      <button class="b sm" type="button" data-back="" hidden="">Add the card back</button>
+      <p class="sr-only" aria-live="polite" data-live=""></p>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0065">
+(function () {
+  "use strict";
+  var box = document.getElementById("n60"); if (!box) return;
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  var TK = '<svg class="tk" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"/><path d="M6.6 11.4 9.6 14.3l5.8-6.4"/></svg>';
+  /* One surface, four faces. The surface springs to each face's width; a fast second click can't confirm (280 ms guard). */
+  var mm = $(".mm"), bg = $(".bg"), cc = $(".cc"), back = $("[data-back]"), live = $("[data-live]"), F = {}, cur = "a", maxW = 0, opened = 0;
+  $$(".f").forEach(function (f) { F[f.getAttribute("data-f")] = f; });
+  function measure() { maxW = Math.max.apply(null, Object.keys(F).map(function (k) { return F[k].offsetWidth; })) + 2; bg.style.width = maxW + "px"; paint(true); }
+  function paint(jump) {
+    var w = F[cur].offsetWidth; mm.classList.toggle("shrink", w < mm.offsetWidth);
+    if (jump) bg.style.transition = "none";
+    bg.style.clipPath = "inset(0 " + (maxW - w) + "px 0 0 round 10px)"; mm.style.width = w + "px";
+    if (jump) { void bg.offsetWidth; bg.style.transition = ""; }
+  }
+  function to(k) { F[cur].classList.remove("on"); cur = k; mm.setAttribute("data-at", k); F[k].classList.add("on"); paint(); }
+  mm.tabIndex = -1;
+  $("[data-ask]").addEventListener("click", function () { to("q"); opened = performance.now(); $("[data-no]").focus(); });
+  $("[data-no]").addEventListener("click", function () { to("a"); $("[data-ask]").focus(); });
+  $("[data-yes]").addEventListener("click", function () {
+    if (performance.now() - opened < 280) return;
+    to("busy"); mm.focus(); live.textContent = "Removing the card.";
+    setTimeout(function () { $(".tkw").innerHTML = TK; to("done"); cc.classList.add("gone"); back.hidden = false; back.focus(); live.textContent = "Card removed."; }, 900);
+  });
+  mm.addEventListener("keydown", function (e) { if (e.key === "Escape" && cur === "q") { e.preventDefault(); to("a"); $("[data-ask]").focus(); } });
+  back.addEventListener("click", function () { to("a"); cc.classList.remove("gone"); back.hidden = true; $("[data-ask]").focus(); live.textContent = "Card added back."; });
+  measure(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+})();
+</script>

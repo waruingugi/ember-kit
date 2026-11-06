@@ -1,0 +1,92 @@
+<!-- part n65 | part | group forms | A row of actions that reads as one shape. | A row of actions that reads as one shape. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A row of actions that <em>reads as one shape.</em></h3>
+          <p class="kit-p">Slide along the bar, press Share, then open the arrow. One highlight glides under the part you point at.</p>
+          <section class="cs kv4" id="n65">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="bg6">
+      <div class="card"><span class="av" aria-hidden="true">AO</span><span><b>Invoice #4821</b><small>Amina Otieno · KES 4,200 · due Friday</small></span></div>
+      <div class="w">
+        <div class="g" role="group" aria-label="Invoice actions"><span class="hl" aria-hidden="true"></span><button class="s" type="button" data-s="edit"><svg class="i" viewBox="0 0 16 16" aria-hidden="true"><path d="M10.6 2.9 13.1 5.4 5.6 12.9l-3 .5.5-3zM9.3 4.2l2.5 2.5"></path></svg><span>Edit</span></button><button class="s" type="button" data-s="dup"><svg class="i" aria-hidden="true"><use href="#i-copy"></use></svg><span>Duplicate</span></button><button class="s" type="button" data-s="share"><svg class="i" aria-hidden="true"><use href="#i-share"></use></svg><span class="rs"><span data-k="a" class="on">Share</span><span data-k="d" aria-hidden="true">Copied</span><span data-k="f" aria-hidden="true">Failed</span></span></button><button class="s ch" type="button" data-s="more" aria-haspopup="menu" aria-expanded="false" aria-controls="n65-m" aria-label="More actions"><svg class="i" aria-hidden="true"><use href="#i-cd"></use></svg></button></div>
+        <div class="pop mn" id="n65-m" role="menu" aria-label="More actions" hidden="" data-glide="button">
+          <button type="button" role="menuitem" tabindex="-1" data-say="Reminder sent to Amina on +254 712 345 678."><svg class="i" aria-hidden="true"><use href="#i-bell"></use></svg>Send reminder</button>
+          <button type="button" role="menuitem" tabindex="-1" data-say="Invoice #4821 marked as paid."><svg class="i" aria-hidden="true"><use href="#i-check"></use></svg>Mark as paid</button>
+          <button type="button" role="menuitem" tabindex="-1" data-say="Invoice #4821 moved to the archive."><svg class="i" aria-hidden="true"><use href="#i-archive"></use></svg>Archive</button>
+          <hr>
+          <button class="warn" type="button" role="menuitem" tabindex="-1" data-say="Invoice #4821 deleted. It stays in the bin for 30 days."><svg class="i" aria-hidden="true"><use href="#i-trash"></use></svg>Delete invoice</button>
+        </div>
+      </div>
+      <p class="msg" aria-live="polite">Nothing done yet.</p>
+      <p class="sr-only" aria-live="polite" data-live=""></p>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0070">
+(function () {
+  "use strict";
+  var box = document.getElementById("n65"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function dur(n) { return (parseFloat(getComputedStyle(root).getPropertyValue("--sp-" + n + "-d")) || .4) * 1000; }
+  /* A button group with one highlight that glides between buttons and hides the dividers beside it. */
+  var g = $(".g"), hl = $(".hl"), S = $$(".s"), ch = $(".ch"), mn = $(".mn"), items = $$("[role=menuitem]", mn), msg = $(".msg"), live = $("[data-live]"), on = -1, open = false, wa = null, rt = 0;
+  function hlTo(i) {
+    var was = on; on = i;
+    S.forEach(function (b, j) { b.classList.toggle("near", i >= 0 && (j === i || j === i + 1)); });
+    if (i < 0) { hl.classList.remove("on", "down"); return; }
+    var r = hl.getBoundingClientRect(), q = S[i].getBoundingClientRect();
+    if (was < 0) hl.style.transition = "none";
+    hl.style.clipPath = "inset(" + (q.top - r.top).toFixed(1) + "px " + (r.right - q.right).toFixed(1) + "px " + (r.bottom - q.bottom).toFixed(1) + "px " + (q.left - r.left).toFixed(1) + "px round 7px)";
+    if (was < 0) { void hl.offsetWidth; hl.style.transition = ""; }
+    hl.classList.add("on");
+  }
+  function rest() { if (open) hlTo(S.indexOf(ch)); else if (!g.contains(document.activeElement) || !document.activeElement.matches(":focus-visible")) hlTo(-1); }
+  function swap(el, k) { $$(":scope > span", el).forEach(function (s) { var me = s.getAttribute("data-k") === k, was = s.classList.contains("on"); s.classList.toggle("on", me); s.classList.toggle("out", was && !me); if (me) s.removeAttribute("aria-hidden"); else s.setAttribute("aria-hidden", "true"); }); }
+  function setOpen(v, focus) {
+    if (v === open) return; open = v; ch.setAttribute("aria-expanded", String(v)); if (wa) wa.cancel();
+    if (v) {
+      mn.hidden = false; if (moving()) wa = mn.animate([{ opacity: 0, transform: "scale(.96) translateY(-4px)" }, { opacity: 1, transform: "none" }], { duration: dur("snappy"), easing: sp("snappy") });
+      if (focus) items[0].focus();
+    } else {
+      if (moving()) { wa = mn.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "scale(.97)" }], { duration: 120, easing: "ease-in" }); wa.onfinish = function () { if (!open) mn.hidden = true; }; } else mn.hidden = true;
+      if (focus) ch.focus();
+    }
+    rest();
+  }
+  S.forEach(function (b, i) {
+    b.addEventListener("pointerenter", function () { hlTo(i); });
+    b.addEventListener("pointerdown", function () { hl.classList.add("down"); });
+    b.addEventListener("focus", function () { if (b.matches(":focus-visible")) hlTo(i); });
+    b.addEventListener("keydown", function (e) { var j = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: S.length - 1 }[e.key]; if (j == null) return; e.preventDefault(); S[(j + S.length) % S.length].focus(); });
+  });
+  document.addEventListener("pointerup", function () { hl.classList.remove("down"); });
+  g.addEventListener("pointerleave", rest);
+  g.addEventListener("focusout", function () { setTimeout(rest, 0); });
+  $("[data-s=edit]").addEventListener("click", function () { msg.textContent = "Editing invoice #4821."; });
+  $("[data-s=dup]").addEventListener("click", function () { msg.textContent = "Invoice #4822 made from #4821."; });
+  $("[data-s=share]").addEventListener("click", function () {
+    var rs = $(".rs", this), url = "https://pay.example.com/i/4821";
+    function end(ok) { swap(rs, ok ? "d" : "f"); msg.textContent = ok ? "Link copied: " + url : "Could not copy. The link is " + url; live.textContent = ok ? "Link copied." : "Could not copy the link."; clearTimeout(rt); rt = setTimeout(function () { swap(rs, "a"); }, 1600); }
+    function old() { var t = document.createElement("textarea"), ok = false; t.value = url; t.setAttribute("readonly", ""); t.style.position = "fixed"; t.style.opacity = "0"; document.body.appendChild(t); t.select(); try { ok = document.execCommand("copy"); } catch (e) { ok = false; } t.remove(); end(ok); }
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(url).then(function () { end(true); }, old); else old();
+  });
+  ch.addEventListener("click", function (e) { setOpen(!open, e.detail === 0); });
+  ch.addEventListener("keydown", function (e) { if (e.key === "ArrowDown" && !open) { e.preventDefault(); setOpen(true, true); } });
+  items.forEach(function (it, i) {
+    it.addEventListener("click", function () { msg.textContent = it.getAttribute("data-say"); setOpen(false, true); });
+    it.addEventListener("keydown", function (e) {
+      var j = { ArrowDown: i + 1, ArrowUp: i - 1, Home: 0, End: items.length - 1 }[e.key];
+      if (j != null) { e.preventDefault(); items[(j + items.length) % items.length].focus(); }
+      else if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); setOpen(false, true); }
+      else if (e.key === "Tab") setOpen(false);
+    });
+  });
+  document.addEventListener("pointerdown", function (e) { if (open && !mn.contains(e.target) && !ch.contains(e.target)) setOpen(false); });
+})();
+</script>

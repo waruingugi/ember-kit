@@ -4,12 +4,14 @@
 
 **What it is.** A page that shows one common part (a button, a menu, a drawer) in four to six versions side by side. The owner tries each one and keeps the ones they like. The picks become rules in `patterns/taste.md`, and the winners become house parts in the showcase.
 
-This folder holds the source of both rounds run so far, so every version can be rebuilt, including the ones that are not house parts yet:
+This folder holds the source of every round run so far, so every version can be rebuilt, including the ones that are not house parts yet:
 
 | Round | Parts | Versions | Source |
 |---|---|---|---|
 | 1 | 16: buttons, form field, select, switch, tabs, dropdown, tooltip, popover, modal, drawer, toast, data table, accordion, command menu, date picker, empty and loading | 83 | `src/b1.mjs` to `src/b4.mjs` |
 | 2 | 9: main button contrast, popover, drawer, choice, slider, progress, alerts, pages, tags | 39 | `src/r2/a.mjs`, `src/r2/b.mjs` |
+| 3 | 10, after Arc (uiarc.dev, free parts): rolling number (ours against Arc's), usage meter, donut, sparkline, metric card, countdown, number and money field, fluid sliders, morph select, morphing buttons | 40 | `src/r3/a.mjs` (holds the shared `window.TLroll`), `src/r3/b.mjs` |
+| 4 | 36: more of r3's donut, sparkline, countdown and sliders, r3 fixes, then the Arc parts the owner named (buttons, theme switch, menus, inputs, pickers, upload, layout, status, lists, blocks) | 143 | `src/r4/a.mjs` to `f.mjs`; `ONLY=<batch> node build.mjs 4` builds one batch alone |
 
 ## Build it
 
@@ -17,11 +19,14 @@ This folder holds the source of both rounds run so far, so every version can be 
 cd ~/.claude/design/tools/taste-lab
 node build.mjs 1     # round 1 → taste-lab.html and preview.html
 node build.mjs 2     # round 2 → taste-lab-r2.html and preview-r2.html
+node build.mjs 3     # round 3 → taste-lab-r3.html and preview-r3.html
+node build.mjs 4     # round 4 → taste-lab-r4.html and preview-r4.html
 ```
 
 - `taste-lab*.html` is the page to publish as an artifact. It starts with its own `<title>` and `<style>`, with no `<html>` or `<head>`, because the Artifact tool adds those.
 - `preview*.html` is the same page wrapped in a full document, to open in a browser or test with Playwright.
 - Both are made by the build, so git ignores them.
+- The page background is the house squares grid (part `bg-grid`). Its script is pasted at the end of `src/page.html`, because the build cannot include files from `components/`. If the grid changes in the showcase, run `node scripts/split.mjs` and paste the script from `components/parts/bg-grid.html` there again. The canvas's `data-blocks` lists the lab's own boxes (`.opt`, `.ref`, `.decide`, the section heads) so the grid shows only in the gaps.
 
 **Saving picks.** Published as an artifact with `capabilities: {db: {rules: [{path: "rounds", read: "view", write: "owner"}]}, user: {}}`, each pick saves to `rounds/r<N>/picks/<part id>`. Opened anywhere else, the page says "Not saving here. Use Copy picks", and the owner pastes the copied list into chat.
 

@@ -1,0 +1,76 @@
+<!-- part n68 | part | group nav | A search icon that grows into the field. | A search icon that grows into the field. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A search icon that <em>grows into the field.</em></h3>
+          <p class="kit-p">Press the icon, type “ma”, then press Down and Enter. Escape folds it back onto the icon.</p>
+          <section class="cs kv4" id="n68">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="xa">
+      <div class="xbar"><span class="br"><i aria-hidden="true"></i>Duka Fresh</span><span class="nv" aria-hidden="true"><span>Orders</span><span>Stock</span></span>
+        <button class="ib xbtn" type="button" aria-label="Search the shop" aria-expanded="false" aria-controls="n68-in"><svg class="i" aria-hidden="true"><use href="#i-search"></use></svg></button>
+        <div class="xf"><svg class="i" aria-hidden="true"><use href="#i-search"></use></svg><input class="xin" id="n68-in" type="text" role="combobox" aria-expanded="false" aria-controls="n68-lb" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Search products, orders, people" aria-label="Search the shop"><kbd class="esc" aria-hidden="true">Esc</kbd></div>
+        <div class="xp"><div class="ph"><div class="lw"><span class="xhl" aria-hidden="true"></span><ul class="lb" role="listbox" id="n68-lb" aria-label="Results"></ul></div></div></div>
+      </div>
+      <p class="xn" aria-live="polite">Nothing opened yet.</p>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0073">
+(function () {
+  "use strict";
+  var box = document.getElementById("n68"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function dur(n) { return (parseFloat(getComputedStyle(root).getPropertyValue("--sp-" + n + "-d")) || .4) * 1000; }
+  /* A search icon that grows into a field across the bar; results unfold under it and the list glides to fit. */
+  var D = [["Products", "store", [["Mangoes", "KES 60 each"], ["Milk, 500 ml", "KES 65"], ["Bread, 400 g", "KES 70"], ["Maize flour, 2 kg", "KES 210"]]],
+    ["Orders", "receipt", [["Order #4821", "Amina Otieno, KES 4,200"], ["Order #4790", "Brian Kamau, KES 1,240"]]],
+    ["People", "user", [["Amina Otieno", "+254 712 345 678"], ["Brian Kamau", "+254 722 111 222"]]]];
+  var RECENT = [["Order #4821", "receipt", "Amina Otieno, KES 4,200"], ["Amina Otieno", "user", "+254 712 345 678"], ["Mangoes", "store", "KES 60 each"]];
+  var bar = $(".xbar"), btn = $(".xbtn"), inp = $(".xin"), ph = $(".ph"), lb = $(".lb"), xhl = $(".xhl"), note = $(".xn"), open = false, act = -1, opts = [], an = null;
+  function row(name, icon, sub, q, i) {
+    var li = document.createElement("li"), at = q ? name.toLowerCase().indexOf(q) : -1, ol = document.createElement("span"), os = document.createElement("span");
+    li.className = "o"; li.id = "n68-o" + i; li.setAttribute("role", "option"); li.setAttribute("aria-selected", "false");
+    li.innerHTML = '<svg class="i" aria-hidden="true"><use href="#i-' + icon + '"/></svg>';
+    ol.className = "ol"; if (at >= 0) { var m = document.createElement("mark"); m.textContent = name.slice(at, at + q.length); ol.append(name.slice(0, at), m, name.slice(at + q.length)); } else ol.textContent = name;
+    os.className = "os"; os.textContent = sub; li.append(ol, os); return li;
+  }
+  function head(t) { var li = document.createElement("li"); li.className = "gh"; li.setAttribute("role", "presentation"); li.textContent = t; return li; }
+  function render(q) {
+    var h0 = ph.offsetHeight, n = 0; q = q.trim().toLowerCase(); lb.textContent = ""; opts = [];
+    if (!q) { lb.appendChild(head("Recent")); RECENT.forEach(function (r) { var li = row(r[0], r[1], r[2], "", n++); opts.push(li); lb.appendChild(li); }); }
+    else D.forEach(function (g) { var hit = g[2].filter(function (it) { return it[0].toLowerCase().indexOf(q) >= 0 || it[1].toLowerCase().indexOf(q) >= 0; }); if (!hit.length) return; lb.appendChild(head(g[0])); hit.forEach(function (it) { var li = row(it[0], g[1], it[1], q, n++); opts.push(li); lb.appendChild(li); }); });
+    if (!opts.length) { var no = document.createElement("li"); no.className = "none"; no.setAttribute("role", "presentation"); no.textContent = "Nothing called “" + q + "”. Try a product, an order number or a name."; lb.appendChild(no); }
+    if (open && moving()) { var h1 = ph.offsetHeight; if (an) an.cancel(); if (h0 && h0 !== h1) an = ph.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: dur("soft"), easing: sp("soft") }); }
+    mark(0, true);
+  }
+  function mark(i, jump) {
+    opts.forEach(function (o) { o.setAttribute("aria-selected", "false"); });
+    if (!opts.length) { act = -1; xhl.style.opacity = 0; inp.removeAttribute("aria-activedescendant"); return; }
+    act = Math.max(0, Math.min(opts.length - 1, i)); var el = opts[act]; el.setAttribute("aria-selected", "true"); inp.setAttribute("aria-activedescendant", el.id);
+    if (jump) xhl.style.transition = "none"; xhl.style.opacity = 1; xhl.style.height = el.offsetHeight + "px"; xhl.style.transform = "translateY(" + el.offsetTop + "px)"; if (jump) { void xhl.offsetWidth; xhl.style.transition = ""; }
+  }
+  function setOpen(v, focusBtn) {
+    if (v === open) return; open = v; bar.classList.toggle("is-open", v); btn.setAttribute("aria-expanded", String(v)); inp.setAttribute("aria-expanded", String(v));
+    if (v) { inp.value = ""; render(""); inp.focus(); } else { if (focusBtn) btn.focus(); }
+  }
+  function pick(i) { var o = opts[i]; if (!o) return; note.textContent = "Opened " + $(".ol", o).textContent + "."; setOpen(false, true); }
+  btn.addEventListener("click", function () { setOpen(true); });
+  inp.addEventListener("input", function () { render(inp.value); });
+  inp.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); mark(act + (e.key === "ArrowDown" ? 1 : -1)); }
+    else if (e.key === "Enter" && act >= 0) { e.preventDefault(); pick(act); }
+    else if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); if (inp.value) { inp.value = ""; render(""); } else setOpen(false, true); }
+  });
+  lb.addEventListener("pointermove", function (e) { var t = e.target.closest && e.target.closest(".o"); if (t) { var j = opts.indexOf(t); if (j !== act) mark(j); } });
+  lb.addEventListener("pointerdown", function (e) { e.preventDefault(); });
+  lb.addEventListener("click", function (e) { var t = e.target.closest && e.target.closest(".o"); if (t) pick(opts.indexOf(t)); });
+  bar.addEventListener("focusout", function (e) { if (open && !bar.contains(e.relatedTarget)) setOpen(false); });
+  document.addEventListener("pointerdown", function (e) { if (open && !bar.contains(e.target)) setOpen(false); });
+})();
+</script>

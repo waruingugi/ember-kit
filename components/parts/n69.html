@@ -1,0 +1,115 @@
+<!-- part n69 | part | group forms | A phone field that finds the country as you type. | A phone field that finds the country as you type. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A phone field that <em>finds the country as you type.</em></h3>
+          <p class="kit-p">Type 0712345678 and the spaces come by themselves. Press the code and type "tan" or "255", or type + in the number box.</p>
+          <section class="cs kv4" id="n69">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="ph">
+      <span class="lb" id="n69-l">Phone number for PocketPay</span>
+      <div class="wr">
+        <div class="f">
+          <button class="cc" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="n69-pop" aria-label="Country: Kenya, +254"><span class="iso">KE</span><span class="code">+254</span><svg class="i cv" aria-hidden="true"><use href="#i-cd"></use></svg></button>
+          <input class="num" id="n69-in" type="tel" inputmode="tel" autocomplete="tel-national" aria-labelledby="n69-l" aria-describedby="n69-m" placeholder="0712 345 678">
+          <span class="ok" aria-hidden="true"></span>
+        </div>
+        <div class="pop" id="n69-pop" role="dialog" aria-label="Choose a country">
+          <div class="sf"><svg class="i" aria-hidden="true"><use href="#i-search"></use></svg><input class="q" type="text" role="combobox" aria-controls="n69-lb" aria-expanded="true" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Search country or code" aria-label="Search country or code"></div>
+          <div class="lw"><ul class="lbx" id="n69-lb" role="listbox" aria-label="Country" data-glide=".o" data-glide-active=".o.act"></ul><p class="none" hidden=""></p></div>
+        </div>
+      </div>
+      <p class="msg" id="n69-m" aria-live="polite"></p>
+      <p class="out">We text a code to this number.</p>
+    </div>
+  </div></div></div>
+</section>
+        </div>
+<script data-slot="0074">
+(function () {
+  "use strict";
+  var box = document.getElementById("n69"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  /* [name, short code, calling code, first digits allowed, example] */
+  var L = [["Kenya", "KE", "+254", "71", "0712 345 678"], ["Uganda", "UG", "+256", "7", "0772 123 456"], ["Tanzania", "TZ", "+255", "67", "0754 123 456"], ["Rwanda", "RW", "+250", "7", "0788 123 456"], ["South Sudan", "SS", "+211", "9", "0921 234 567"], ["Ethiopia", "ET", "+251", "97", "0911 234 567"], ["DR Congo", "CD", "+243", "89", "0812 345 678"]];
+  var TICK = '<svg class="tk" viewBox="0 0 22 22"><circle cx="11" cy="11" r="11"/><path d="M6.6 11.4 9.6 14.3l5.8-6.4"/></svg>';
+  var wr = $(".wr"), shell = $(".f"), cc = $(".cc"), inp = $(".num"), okS = $(".ok"), msg = $(".msg"), out = $(".out"), q = $(".q"), lw = $(".lw"), lb = $(".lbx"), none = $(".none"), pop = $(".pop");
+  var c = 0, open = false, act = 0, was = false, touched = false, back = cc, hint = out.innerHTML;
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (x) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[x]; }); }
+  lb.innerHTML = L.map(function (x, i) { return '<li class="o" role="option" id="n69-o' + i + '" aria-selected="' + (i === 0) + '"><span class="iso">' + x[1] + '</span><span class="nm">' + x[0] + '</span><span class="oc">' + x[2] + '</span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></li>'; }).join("");
+  var opts = $$(".o");
+
+  /* the number: formats as you type and keeps the caret after the same digit */
+  function dig(s) { return String(s).replace(/\D/g, ""); }
+  function nat(d) { return d.charAt(0) === "0" ? d.slice(1) : d; }
+  function fmt(d) { if (!d) return ""; var t = d.charAt(0) === "0", n = nat(d).slice(0, 9), s = (t ? "0" : "") + n.slice(0, 3); if (n.length > 3) s += " " + n.slice(3, 6); if (n.length > 6) s += " " + n.slice(6, 9); return s; }
+  function ok(d) { var n = nat(d); return n.length === 9 && L[c][3].indexOf(n.charAt(0)) >= 0; }
+  function problem(d) { var n = nat(d); if (!n) return ""; if (L[c][3].indexOf(n.charAt(0)) < 0) return L[c][0] + " mobile numbers start with " + (d.charAt(0) === "0" ? "0" : "") + L[c][3].split("").join(" or ") + ", like " + L[c][4] + "."; if (n.length < 9) return L[c][0] + " numbers have 9 digits after " + L[c][2] + ". You have " + n.length + "."; return ""; }
+  function setMsg(t) { if (msg._t === t) return; msg._t = t; var h0 = msg.offsetHeight; msg.innerHTML = t ? "<span>" + esc(t) + "</span>" : ""; glide(msg, h0, 370);
+    if (t && moving()) msg.firstChild.animate([{ opacity: 0, transform: "translateY(6px)", filter: "blur(3px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 320, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  function state(d, typing) {
+    var v = ok(d), n = nat(d);
+    if (v !== was) { was = v; okS.innerHTML = v ? TICK : ""; }
+    var p = v ? "" : (touched || !typing ? problem(d) : "");
+    setMsg(p); shell.classList.toggle("bad", !!p); inp.setAttribute("aria-invalid", String(!!p));
+    out.innerHTML = v ? "We will text <b>" + L[c][2] + " " + n.slice(0, 3) + " " + n.slice(3, 6) + " " + n.slice(6) + "</b>." : hint;
+  }
+  function apply(d, k) {
+    d = d.slice(0, d.charAt(0) === "0" ? 10 : 9); var s = fmt(d), p = 0, n = 0;
+    if (k > 0) for (p = 0; p < s.length; p++) if (/\d/.test(s.charAt(p)) && ++n >= k) { p++; break; }
+    inp.value = s; if (document.activeElement === inp) inp.setSelectionRange(p, p);
+    state(d, true);
+  }
+  inp.addEventListener("input", function () {
+    if (inp.value.indexOf("+") >= 0) { var d = dig(inp.value); inp.value = ""; state("", true); setOpen(true, inp, "+" + d); return; } /* + opens the search */
+    var k = inp.selectionStart == null ? inp.value.length : inp.selectionStart;
+    apply(dig(inp.value), dig(inp.value.slice(0, k)).length);
+  });
+  inp.addEventListener("keydown", function (e) { /* Backspace over a space takes the digit beside it */
+    var a = inp.selectionStart, s = inp.value, d, k; if (a !== inp.selectionEnd || a == null) return;
+    if (e.key === "Backspace" && a > 0 && /\D/.test(s.charAt(a - 1))) { e.preventDefault(); k = dig(s.slice(0, a)).length; if (!k) return; d = dig(s); apply(d.slice(0, k - 1) + d.slice(k), k - 1); }
+  });
+  inp.addEventListener("blur", function () { var d = dig(inp.value); touched = touched || !!d; state(d, false); });
+
+  /* the country box */
+  function setC(i) {
+    if (i === c) return; c = i; inp.placeholder = L[i][4];
+    opts.forEach(function (o, j) { o.setAttribute("aria-selected", String(j === i)); });
+    $(".iso", cc).textContent = L[i][1]; $(".code", cc).textContent = L[i][2];
+    cc.setAttribute("aria-label", "Country: " + L[i][0] + ", " + L[i][2]);
+    if (moving()) cc.animate([{ opacity: .3, transform: "translateY(4px)" }, { opacity: 1, transform: "none" }], { duration: 260, easing: "cubic-bezier(.22,1,.36,1)" });
+    state(dig(inp.value), !touched);
+  }
+  function vis() { return opts.filter(function (o) { return !o.hidden; }); }
+  function mark(i) { var v = vis(); opts.forEach(function (o) { o.classList.remove("act"); }); if (!v.length) { q.removeAttribute("aria-activedescendant"); return; } act = (i + v.length) % v.length; v[act].classList.add("act"); q.setAttribute("aria-activedescendant", v[act].id); }
+  function filter(s, still) {
+    var h0 = lw.offsetHeight, t = s.trim().toLowerCase().replace(/^\+/, ""), n = 0;
+    opts.forEach(function (o, i) { var name = L[i][0], k = name.toLowerCase().indexOf(t), hit = !t || k >= 0 || L[i][2].slice(1).indexOf(t) === 0 || L[i][1].toLowerCase() === t;
+      o.hidden = !hit; if (hit) n++;
+      $(".nm", o).innerHTML = t && k >= 0 && !/\d/.test(t) ? esc(name.slice(0, k)) + "<mark>" + esc(name.slice(k, k + t.length)) + "</mark>" + esc(name.slice(k + t.length)) : esc(name); });
+    none.hidden = n > 0; none.textContent = 'No country matches "' + s + '". We cover East and Central Africa.';
+    if (!still) glide(lw, h0, 670);
+    mark(Math.max(0, vis().indexOf(opts[c])));
+  }
+  function setOpen(v, from, pre) {
+    if (v === open) return; open = v; wr.classList.toggle("open", v); cc.setAttribute("aria-expanded", String(v));
+    if (v) { back = from || cc; q.value = pre || ""; filter(q.value, true); setTimeout(function () { q.focus({ preventScroll: true }); var n = q.value.length; q.setSelectionRange(n, n); }, 0); }
+    else if (from !== false) back.focus({ preventScroll: true });
+  }
+  function pick(o) { setC(opts.indexOf(o)); setOpen(false, false); inp.focus({ preventScroll: true }); }
+  cc.addEventListener("click", function () { setOpen(!open, cc); });
+  cc.addEventListener("keydown", function (e) { if (e.key === "ArrowDown") { e.preventDefault(); setOpen(true, cc); } });
+  q.addEventListener("input", function () { filter(q.value); var d = dig(q.value), hit = L.findIndex(function (x) { return x[2].slice(1) === d; }); if (q.value.charAt(0) === "+" && hit >= 0) pick(opts[hit]); });
+  q.addEventListener("keydown", function (e) { var k = e.key;
+    if (k === "ArrowDown" || k === "ArrowUp") { e.preventDefault(); mark(act + (k === "ArrowDown" ? 1 : -1)); }
+    else if (k === "Enter") { e.preventDefault(); var v = vis(); if (v[act]) pick(v[act]); }
+    else if (k === "Escape") { e.preventDefault(); e.stopPropagation(); setOpen(false); }
+    else if (k === "Tab") { e.preventDefault(); setOpen(false); } });
+  pop.addEventListener("pointerdown", function (e) { if (e.target !== q) e.preventDefault(); });
+  pop.addEventListener("click", function (e) { var t = e.target.closest && e.target.closest(".o"); if (t) pick(t); });
+  document.addEventListener("pointerdown", function (e) { if (open && !wr.contains(e.target)) setOpen(false, false); });
+})();
+</script>

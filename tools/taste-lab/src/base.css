@@ -12,7 +12,6 @@ html[data-theme="dark"] { --scrim: rgb(0 0 0 / .55); }
 html[data-motion="calm"] { --sp-snappy: var(--ease-out); --sp-bouncy: var(--ease-out); --sp-soft: var(--ease-out); }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 body { overflow-x: clip; }
-.bg-grid { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 32px 32px; -webkit-mask-image: linear-gradient(90deg, transparent 0, transparent var(--sb-cur, 0px), #000 calc(var(--sb-cur, 0px) + 1px), transparent calc(var(--sb-cur, 0px) + 120px), transparent calc(100% - 120px), #000 100%); mask-image: linear-gradient(90deg, transparent 0, transparent var(--sb-cur, 0px), #000 calc(var(--sb-cur, 0px) + 1px), transparent calc(var(--sb-cur, 0px) + 120px), transparent calc(100% - 120px), #000 100%); opacity: .6; }
 .scrim { position: fixed; inset: 0; z-index: 40; background: var(--scrim); opacity: 0; pointer-events: none; transition: opacity .45s var(--ease-out); }
 .sb-link .tick { width: 16px; height: 16px; margin-left: auto; flex: 0 0 16px; opacity: 0; transform: scale(.6); transition: opacity .25s, transform .4s var(--ease-out); }
 .sb-link .tick circle { fill: var(--accent); }
@@ -166,7 +165,6 @@ html[data-motion="off"] .opt::after, html[data-motion="off"] .pick, html[data-mo
   html[data-sb="collapsed"] .sb-link .tick { position: static; width: 16px; height: 16px; }
   html[data-sb="collapsed"] .sb-link .tick path { display: block; }
   .topbar .menu-btn { display: grid; margin-left: -6px; }
-  .bg-grid { -webkit-mask-image: linear-gradient(90deg, #000 0, transparent 16px, transparent calc(100% - 16px), #000 100%); mask-image: linear-gradient(90deg, #000 0, transparent 16px, transparent calc(100% - 16px), #000 100%); }
 }
 @media (max-width: 640px) {
   body { font-size: 16px; }

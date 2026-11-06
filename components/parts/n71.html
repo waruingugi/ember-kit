@@ -1,0 +1,169 @@
+<!-- part n71 | part | group nav | A switch whose marker stretches to your pick. | A switch whose marker stretches to your pick. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A switch whose marker <em>stretches to your pick.</em></h3>
+          <p class="kit-p">Click Month, then Today. The ink marker's front edge leads and the back catches up, the words turn paper where it passes, and the numbers under it follow.</p>
+          <section class="cs kv4" id="n71">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="sg">
+      <div class="tr" role="radiogroup" aria-label="Sales period">
+        <svg class="pill" aria-hidden="true"><rect rx="7"></rect></svg>
+        <button class="sb" type="button" role="radio" aria-checked="true" tabindex="0"><span>Today</span></button><button class="sb" type="button" role="radio" aria-checked="false" tabindex="-1"><span>Week</span></button><button class="sb" type="button" role="radio" aria-checked="false" tabindex="-1"><span>Month</span></button><button class="sb" type="button" role="radio" aria-checked="false" tabindex="-1"><span>All time</span></button>
+        <div class="ov" aria-hidden="true" inert=""><span class="sb"><span>Today</span></span><span class="sb"><span>Week</span></span><span class="sb"><span>Month</span></span><span class="sb"><span>All time</span></span></div>
+      </div>
+      <div class="vw"><div class="st"><p>Sales</p><b class="va">KES 18,450</b></div><div class="st"><p>Orders</p><b class="vo">42</b></div><div class="st"><p>Average</p><b class="vv">KES 439</b></div></div>
+      <p class="cap">Since 6 am, Thursday 5 November.</p>
+      <p class="sr-only" aria-live="polite"></p>
+    </div>
+  </div></div></div>
+</section>
+        </div>
+<script data-slot="0076">
+(function () {
+  "use strict";
+  var box = document.getElementById("n71"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function money(n) { return n.toLocaleString("en-KE"); }
+  /* The odometer, copied from house part n07: each digit is a drum that turns the way the number moved. */
+  function roll(el, o) {
+    var api = { value: o.value }, slots = {}, order = [], raf = 0, last = 0, built = false;
+    var vis = document.createElement("span"), sr = document.createElement("span");
+    vis.className = "rv"; vis.setAttribute("aria-hidden", "true"); sr.className = "sr-only";
+    el.textContent = ""; el.appendChild(vis); el.appendChild(sr);
+    function md(a) { return ((a % 10) + 10) % 10; }
+    /* keys: d<place> digit (d0 = ones), s<place> separator, p<i> before the digits, x<i> after; rank keeps the order */
+    function rank(k) { var c = k.charAt(0), i = parseInt(k.slice(1), 10); return c === "p" ? i : c === "d" ? 1000 - 2 * i : c === "s" ? 1001 - 2 * i : 3000 + i; }
+    function parse(s) {
+      var tot = (s.match(/[0-9]/g) || []).length, seen = 0, p = 0, x = 0, out = [];
+      for (var i = 0; i < s.length; i++) {
+        var ch = s.charAt(i);
+        if (ch >= "0" && ch <= "9") { seen++; out.push({ k: "d" + (tot - seen), d: +ch }); }
+        else out.push({ k: (seen === 0 ? "p" + p++ : seen === tot ? "x" + x++ : "s" + (tot - seen)) + ch, ch: ch });
+      }
+      return out;
+    }
+    function mk(t) {
+      var e = document.createElement("span"), s = { k: t.k, el: e, r: rank(t.k) };
+      if (t.d != null) {
+        var st = document.createElement("span"), i, h = "";
+        for (i = 0; i < 11; i++) h += "<span>" + (i % 10) + "</span>";
+        e.className = "dg"; st.className = "st7"; st.innerHTML = h; e.appendChild(st);
+        s.st = st; s.x = s.T = s.g = s.f = s.v = s.at = 0;
+      } else { e.className = "cm"; e.textContent = t.ch; }
+      return s;
+    }
+    /* the soft spring: as long as --sp-soft-d, a little overshoot; calm settles on a shorter spring with none */
+    function cfg() { var d = (parseFloat(getComputedStyle(box).getPropertyValue("--sp-soft-d")) || .67) * 1000, calm = lv() === "calm", z = calm ? 1 : .86, D = calm ? d * .6 : d; return { Z: z, W: 4.6 / (z * D / 1000) }; }
+    function draw(s) { s.st.style.transform = "translateY(" + (-md(s.x) * 100 / 11).toFixed(3) + "%)"; }
+    function tick(t) {
+      var c = cfg(), dt = Math.min(.032, Math.max(.001, (t - last) / 1000)), busy = false; last = t;
+      order.forEach(function (s) {
+        if (!s.st) return;
+        if (s.at && t >= s.at) { s.at = 0; s.T = s.g; }
+        if (s.at) busy = true;
+        else if (s.x !== s.T || s.v) {
+          s.v += (-c.W * c.W * (s.x - s.T) - 2 * c.Z * c.W * s.v) * dt; s.x += s.v * dt;
+          if (Math.abs(s.x - s.T) < .003 && Math.abs(s.v) < .05) { s.x = s.T; s.v = 0; } else busy = true;
+        }
+        if (s.x === s.T && !s.at) { var w = s.T - md(s.T); if (w) { s.x -= w; s.T -= w; s.g -= w; } } /* settled: wind back into 0–9 */
+        draw(s);
+      });
+      raf = busy ? requestAnimationFrame(tick) : 0;
+    }
+    function wid(e) { return e.getBoundingClientRect().width; }
+    function kill(s) { if (s.wa) s.wa.cancel(); s.el.remove(); var i = order.indexOf(s); if (i >= 0) order.splice(i, 1); if (slots[s.k] === s) delete slots[s.k]; }
+    function leave(s, mv) {
+      s.gone = true; if (!mv) { kill(s); return; }
+      var w = wid(s.el); if (s.wa) s.wa.cancel();
+      s.wa = s.el.animate([{ width: w + "px", opacity: 1 }, { opacity: 0, offset: .55 }, { width: "0px", opacity: 0 }], { duration: 420, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
+      s.wa.onfinish = function () { if (s.gone) kill(s); };
+    }
+    function grow(s, w0) { var w1 = wid(s.el); if (w1 - w0 > .5) s.wa = s.el.animate([{ width: w0 + "px", opacity: w0 / w1 }, { opacity: w0 / w1, offset: .3 }, { width: w1 + "px", opacity: 1 }], { duration: 460, easing: "cubic-bezier(.22,1,.36,1)" }); }
+    api.set = function (v, instant) {
+      var old = api.value, dir = v >= old ? 1 : -1, str = o.fmt(v), toks = parse(str), now = performance.now(), mv = built && moving() && !instant, keep = {}, rk = 0, j, s;
+      api.value = v; sr.textContent = o.say ? o.say(str) : str;
+      toks.forEach(function (t) {
+        var s = slots[t.k]; keep[t.k] = 1;
+        if (!s) {
+          s = slots[t.k] = mk(t);
+          var nx = null; for (var i = 0; i < order.length; i++) if (order[i].r > s.r) { nx = order[i]; break; }
+          vis.insertBefore(s.el, nx ? nx.el : null); order.splice(nx ? order.indexOf(nx) : order.length, 0, s);
+          if (mv) { s.el.style.width = "0px"; s.enter = true; }
+        } else if (s.gone) { s.gone = false; var w0 = wid(s.el); if (s.wa) s.wa.cancel(); s.wa = null; if (mv) grow(s, w0); }
+      });
+      order.slice().forEach(function (s) { /* a digit that leaves rolls on to 0 the way the number went, then folds away */
+        if (keep[s.k] || s.gone) return;
+        if (s.st) { var c0 = md(s.g); if (c0) { s.g += dir > 0 ? md(-c0) : -c0; if (mv) { s.at = 0; s.T = s.g; } } }
+        leave(s, mv);
+      });
+      order.forEach(function (s) { if (s.enter) { s.enter = false; s.el.style.width = ""; grow(s, 0); } });
+      for (j = toks.length - 1; j >= 0; j--) { /* right to left, so the ones turn first */
+        var t = toks[j]; if (t.d == null) continue; s = slots[t.k];
+        var cd = md(s.g); if (cd === t.d) continue;
+        var g = s.g + (dir > 0 ? md(t.d - cd) : -md(cd - t.d));
+        if (!mv) { s.x = s.T = s.g = g; s.v = s.at = 0; draw(s); continue; }
+        s.g = g; var dl = 30 * rk++;
+        if (dl > 0) s.at = now + dl; else { s.at = 0; s.T = g; }
+      }
+      if (!mv) {
+        order.forEach(function (s) { if (s.st) { s.x = s.T = s.g; s.v = s.at = 0; draw(s); } });
+        if (built && old !== v && !instant) vis.animate([{ opacity: .3 }, { opacity: 1 }], { duration: 180, easing: "ease-out" });
+      } else if (!raf) { last = now; raf = requestAnimationFrame(tick); }
+    };
+    api.set(api.value, true); built = true;
+    return api;
+  }
+
+  /* The marker: each of its four edges rides its own spring that keeps its speed when the goal changes.
+     The edge on the side it moves toward is quick (220 ms, a little overshoot); the back edge catches up (480 ms). */
+  function edges(paint) {
+    var c = [0, 0, 0, 0], v = [0, 0, 0, 0], T = [0, 0, 0, 0], D = [420, 420, 420, 420], Z = [1, 1, 1, 1], raf = 0, last = 0;
+    function step(t) {
+      var dt = Math.min(.032, Math.max(.001, (t - last) / 1000)), busy = false; last = t;
+      for (var i = 0; i < 4; i++) {
+        var w = 4.6 / (Z[i] * D[i] / 1000);
+        v[i] += (-w * w * (c[i] - T[i]) - 2 * Z[i] * w * v[i]) * dt; c[i] += v[i] * dt;
+        if (Math.abs(c[i] - T[i]) < .05 && Math.abs(v[i]) < 1) { c[i] = T[i]; v[i] = 0; } else busy = true;
+      }
+      paint(c); raf = busy ? requestAnimationFrame(step) : 0;
+    }
+    return function (g, jump) {
+      var calm = lv() === "calm", mx = (g[0] + g[2] - c[0] - c[2]) / 2, F = calm ? 260 : 220, B = calm ? 300 : 480, z = calm ? 1 : .78;
+      function set(i, front, back) { D[i] = front ? F : back ? B : (F + B) / 2; Z[i] = front ? z : 1; }
+      set(0, mx < -.5, mx > .5); set(2, mx > .5, mx < -.5); set(1, false, false); set(3, false, false);
+      T = g.slice();
+      if (jump || !moving()) { c = g.slice(); v = [0, 0, 0, 0]; cancelAnimationFrame(raf); raf = 0; paint(c); return; }
+      if (!raf) { last = performance.now(); raf = requestAnimationFrame(step); }
+    };
+  }
+
+  var S = [["Today", 18450, 42, "Since 6 am, Thursday 5 November."], ["Week", 126300, 288, "Monday 2 to Thursday 5 November."], ["Month", 498700, 1130, "From 1 November."], ["All time", 6204900, 14820, "Since the shop opened in March 2024."]];
+  var tr = $(".tr"), bs = $$(".tr > .sb"), ov = $(".ov"), rect = $(".pill rect"), vw = $(".vw"), cap = $(".cap"), sr = $(".sr-only"), cur = 0;
+  function kes(n) { return "KES " + money(n); }
+  var ra = roll($(".va"), { value: S[0][1], fmt: kes }), ro = roll($(".vo"), { value: S[0][2], fmt: money }), rv = roll($(".vv"), { value: Math.round(S[0][1] / S[0][2]), fmt: kes });
+  var to = edges(function (k) {
+    rect.setAttribute("x", k[0].toFixed(2)); rect.setAttribute("y", k[1].toFixed(2)); rect.setAttribute("width", Math.max(0, k[2] - k[0]).toFixed(2)); rect.setAttribute("height", Math.max(0, k[3] - k[1]).toFixed(2));
+    var W = tr.clientWidth, H = tr.clientHeight; /* the paper copy of the words shows only inside the marker */
+    ov.style.clipPath = "inset(" + k[1].toFixed(2) + "px " + (W - k[2]).toFixed(2) + "px " + (H - k[3]).toFixed(2) + "px " + k[0].toFixed(2) + "px round 7px)";
+  });
+  function place(jump) { var b = bs[cur]; to([b.offsetLeft, b.offsetTop, b.offsetLeft + b.offsetWidth, b.offsetTop + b.offsetHeight], jump); }
+  function go(i, focus) {
+    if (focus) bs[i].focus();
+    if (i === cur) return; var dir = i > cur ? 1 : -1; cur = i;
+    bs.forEach(function (b, j) { b.setAttribute("aria-checked", String(j === i)); b.tabIndex = j === i ? 0 : -1; });
+    place(false); ra.set(S[i][1]); ro.set(S[i][2]); rv.set(Math.round(S[i][1] / S[i][2])); cap.textContent = S[i][3];
+    if (moving()) { vw.animate([{ transform: "translateX(" + dir * 8 + "px)", opacity: .5 }, { transform: "none", opacity: 1 }], { duration: 320, easing: "cubic-bezier(.22,1,.36,1)" }); cap.animate([{ transform: "translateY(" + dir * 6 + "px)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 320, easing: "cubic-bezier(.22,1,.36,1)" }); }
+    sr.textContent = S[i][0] + ": " + kes(S[i][1]) + " from " + money(S[i][2]) + " orders.";
+  }
+  bs.forEach(function (b, i) {
+    b.addEventListener("click", function () { go(i); });
+    b.addEventListener("keydown", function (e) { var n = bs.length, j = { ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1, ArrowUp: i - 1, Home: 0, End: n - 1 }[e.key]; if (j == null) return; e.preventDefault(); go((j + n) % n, true); });
+  });
+  place(true);
+  if ("ResizeObserver" in window) new ResizeObserver(function () { place(true); }).observe(tr);
+  if (document.fonts) document.fonts.ready.then(function () { place(true); });
+})();
+</script>

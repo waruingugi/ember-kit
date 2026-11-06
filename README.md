@@ -13,7 +13,7 @@ ink, one burnt-orange accent, five fonts, slow motion and plain words.
 
 - **A look Claude follows on its own.** `DESIGN.md` sets the colours, type,
   motion and words. Claude reads it before any design work, in any project.
-- **88 working parts.** Charts, dates, tables, forms, steppers, toasts,
+- **125 working parts.** Charts, dates, tables, forms, steppers, toasts,
   cards, backgrounds and more, each in plain HTML, CSS and JavaScript, with
   no build step. All of them are on one page:
   `components/showcase/index.html`, also live at
@@ -109,7 +109,7 @@ one file a page needs, so Claude does not read the whole folder every time.
 | Folder | What is in it |
 |---|---|
 | `DESIGN.md` | The core: ask-first rules, the picker, colours, type, parts, motion, words and the checklist |
-| `components/` | `tokens.css` and `components.css`, the small parts, `showcase/` (all 88 parts on one page, the master copy) and `parts/` (each part as its own file, made from the showcase) |
+| `components/` | `tokens.css` and `components.css`, the small parts, `showcase/` (all 125 parts on one page, the master copy) and `parts/` (each part as its own file, made from the showcase) |
 | `patterns/` | One file per page pattern |
 | `tools/` | How to use each tool: diagrams, Hairline, Anatomy, GSAP, Motion, publishing, setup. `taste-lab/` holds every version the owner tried, side by side, and how to run a new round. Also two small builders: `diagram_svg.py` (hand-drawn diagrams) and `build_layers.py` (an exploded layer stack) |
 | `hairline/` | A small library of Hairline figures, with a log |

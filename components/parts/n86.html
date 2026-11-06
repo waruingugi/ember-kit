@@ -1,0 +1,66 @@
+<!-- part n86 | part | group status | The loading sweep, then a drawing that draws itself. | The loading sweep, then a drawing that draws itself. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">The loading sweep, then a drawing that <em>draws itself.</em></h3>
+          <p class="kit-p">Reload sweeps grey blocks, then the rows rise in. Press Show empty: the blocks fade where they stand while the box draws in line by line, and its orange dot pops in last.</p>
+          <section class="cs kv4" id="n86">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="es">
+      <div class="hd"><b>Recent orders</b><div><button class="b sm" type="button" data-re="">Reload</button><button class="b sm q" type="button" data-em="" aria-pressed="false">Show empty</button></div></div>
+      <div class="bd" aria-busy="false"></div>
+    </div>
+  </div></div></div>
+</section>
+        </div>
+<script data-slot="0091">
+(function () {
+  "use strict";
+  var box = document.getElementById("n86"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function money(n) { return n.toLocaleString("en-KE"); }
+  var O = [["WK", "Wanjiku Kamau", "Sukuma wiki, eggs, milk", 2450], ["BO", "Brian Ochieng", "Maize flour, sugar", 1180], ["AH", "Amina Hassan", "Tomatoes, onions", 640]];
+  var BOX = [[24, 38, 54, 14, 5, -9], [82, 38, 54, 14, 5, 9], [30, 50, 100, 46, 9, 0], [18, 101, 124, 3, 1.5, 0], [111, 14, 16, 16, 8, 0]];
+  var TICK = '<svg viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="9"/><path d="M5.2 9.3 7.8 11.8l5-5.4"/></svg>';
+  var bd = $(".bd"), re = $("[data-re]"), em = $("[data-em]"), isEmpty = false, tk = 0;
+  function rowsHtml() { return O.map(function (o) { return '<div class="row"><span class="av" aria-hidden="true">' + o[0] + "</span><span><b>" + o[1] + "</b><small>" + o[2] + '</small></span><span class="amt">KES ' + money(o[3]) + "</span></div>"; }).join(""); }
+  function skel() { return [0, 1, 2].map(function (i) { return '<div class="sk" aria-hidden="true"><i class="a"></i><span><i style="width:' + [52, 40, 46][i] + '%"></i><i style="width:' + [70, 58, 64][i] + '%;height:10px"></i></span><i style="width:54px"></i></div>'; }).join(""); }
+  function art() { return '<svg class="art" viewBox="0 0 160 112" aria-hidden="true">' + BOX.map(function (s, i) { return '<rect data-s="' + i + '" pathLength="1" x="' + s[0] + '" y="' + s[1] + '" width="' + s[2] + '" height="' + s[3] + '" rx="' + s[4] + '" transform="rotate(' + s[5] + " " + (s[0] + s[2] / 2) + " " + (s[1] + s[3] / 2) + ')"/>'; }).join("") + "</svg>"; }
+  function emptyHtml() { return '<div class="in">' + art() + '<p class="t">No orders yet</p><p class="p">When someone buys from your shop, the order shows up here.</p><button class="b pri" type="button" data-go>Share your shop link</button><p class="ok" aria-live="polite"></p></div>'; }
+  /* swap the pane: the old one fades where it stands, the new one rises in, and the card glides to its new height */
+  function swap(html) {
+    var h0 = bd.offsetHeight, mv = moving();
+    $$("[data-old]", bd).forEach(function (x) { x.remove(); });
+    var old = bd.firstElementChild, nw = document.createElement("div"); nw.className = "pn"; nw.innerHTML = html;
+    if (old && mv) {
+      old.setAttribute("data-old", ""); old.setAttribute("aria-hidden", "true"); old.inert = true; old.style.cssText = "position:absolute;left:0;right:0;top:0"; bd.appendChild(nw);
+      old.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: "ease-out", fill: "forwards" }).onfinish = function () { old.remove(); };
+    } else { if (old) old.remove(); bd.appendChild(nw); }
+    var h1 = bd.offsetHeight;
+    if (mv) {
+      if (bd._g) bd._g.cancel();
+      if (h0 && Math.abs(h0 - h1) > 1) bd._g = bd.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: 420, easing: "cubic-bezier(.22,1,.36,1)" });
+      nw.animate([{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "none" }], { duration: 340, delay: 90, easing: "cubic-bezier(.22,1,.36,1)", fill: "backwards" });
+    }
+    return nw;
+  }
+  function load() {
+    clearTimeout(tk); bd.setAttribute("aria-busy", "true"); swap(skel());
+    tk = setTimeout(function () {
+      bd.setAttribute("aria-busy", "false");
+      if (!isEmpty) { var p = swap(rowsHtml()); if (moving()) $$(".row", p).forEach(function (r, i) { r.animate([{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "none" }], { duration: 380, delay: 90 + i * 60, easing: "cubic-bezier(.22,1,.36,1)", fill: "backwards" }); }); return; }
+      var pane = swap(emptyHtml()), b = $("[data-go]", pane), ok = $(".ok", pane);
+      b.addEventListener("click", function () {
+        function fin(msg) { ok.innerHTML = TICK + "<span></span>"; ok.lastChild.textContent = msg; }
+        var p; try { p = navigator.clipboard.writeText("https://dukafresh.example.com"); } catch (x) { p = Promise.reject(x); }
+        p.then(function () { fin("Link copied: dukafresh.example.com"); }, function () { fin("Your link: dukafresh.example.com"); });
+      });
+    }, moving() ? 900 : 0);
+  }
+  re.addEventListener("click", load);
+  em.addEventListener("click", function () { isEmpty = !isEmpty; em.setAttribute("aria-pressed", String(isEmpty)); em.textContent = isEmpty ? "Show orders" : "Show empty"; load(); });
+  swap(rowsHtml());
+})();
+</script>
