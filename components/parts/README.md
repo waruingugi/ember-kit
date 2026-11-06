@@ -52,12 +52,15 @@ The faint squares grid that shows only in open gaps (`DESIGN.md`, *Recurring par
 | `n06` | Charts and numbers | Three numbers that count up and can be scrubbed. |  |
 | `n87` | Charts and numbers | Four numbers, nothing else. |  |
 | `n88` | Charts and numbers | One ruled band, a goal under each number. |  |
+| `n91` | Charts and numbers | When the period changes, the old line fades where it stood. |  |
+| `n92` | Charts and numbers | A stat card that says how this period did. |  |
 | `n53` | Charts and numbers | Three tiles that roll together. |  |
 | `n54` | Charts and numbers | Three numbers in one small card. |  |
 | `n55` | Charts and numbers | Sales that roll up, with a line that reshapes. |  |
 | `n07` | Charts and numbers | A live count where each digit rolls on its own. |  |
 | `n64` | Charts and numbers | When the deal ends, the next step is right there. |  |
 | `n03` | Charts and numbers | Where the month's money went, in one ring. |  |
+| `n90` | Charts and numbers | Point at one kind, and the rest steps back. |  |
 | `n82` | Charts and numbers | Twelve weeks of orders, recoloured in a sweep. |  |
 | `n01` | Dates | Pick your nights, see the price as you go. |  |
 | `n73` | Dates | The button grows into a calendar, and the dates fly home. |  |
@@ -76,6 +79,7 @@ The faint squares grid that shows only in open gaps (`DESIGN.md`, *Recurring par
 | `n79` | Forms and inputs | A form in steps, with a dot riding the line. |  |
 | `c11` | Forms and inputs | Sign in, and see what went wrong. |  |
 | `n30` | Forms and inputs | Wrong fields shake. Right ones get a tick. |  |
+| `n97` | Forms and inputs | Editing a name should happen right where it sits. |  |
 | `n56` | Forms and inputs | A number field that pushes back at its limit. |  |
 | `n57` | Forms and inputs | Top up with one tap per amount. |  |
 | `n11` | Forms and inputs | A sign-up form that grades your password. |  |
@@ -86,10 +90,15 @@ The faint squares grid that shows only in open gaps (`DESIGN.md`, *Recurring par
 | `n14` | Forms and inputs | Settings that respond to a touch. |  |
 | `n31` | Forms and inputs | Switches that spring when you flip them. |  |
 | `n43` | Forms and inputs | Pick one, and see what it means. |  |
+| `n99` | Forms and inputs | A choice with a price should show what each one gets you. |  |
 | `n44` | Forms and inputs | Slide, and the number counts to it. |  |
+| `n93` | Forms and inputs | A small orange ring that stretches past the ends. |  |
+| `n94` | Forms and inputs | A short orange bar, and the date rolls in. |  |
 | `n72` | Forms and inputs | Rate it, then see where you stand. |  |
 | `n45` | Forms and inputs | Tags that suggest as you type. |  |
+| `n98` | Forms and inputs | A mention should become one piece the moment you pick a name. |  |
 | `n46` | Forms and inputs | Filter chips that add up as you tap. |  |
+| `n96` | Forms and inputs | One tap can answer a note without a reply. |  |
 | `n70` | Forms and inputs | Type to pick several, and the chips make room. |  |
 | `n39` | Forms and inputs | A window that settles into place. |  |
 | `n41` | Forms and inputs | A side sheet that glides in from the edge. |  |
@@ -100,7 +109,8 @@ The faint squares grid that shows only in open gaps (`DESIGN.md`, *Recurring par
 | `n65` | Forms and inputs | A row of actions that reads as one shape. |  |
 | `n60` | Forms and inputs | A remove button that asks in place. |  |
 | `n61` | Forms and inputs | A copy button that stays the same size. |  |
-| `n62` | Forms and inputs | Round icons that open to show their name. |  |
+| `n95` | Forms and inputs | Copy the code and see what went. |  |
+| `n62` | Forms and inputs | Small icons can open to say their name. |  |
 | `c14` | Forms and inputs | One big button for the last step. |  |
 | `n29` | Forms and inputs | Pay, and see it go through. |  |
 | `n58` | Forms and inputs | A cart whose total rolls in the pay button. |  |

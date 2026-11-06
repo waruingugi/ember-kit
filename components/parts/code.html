@@ -15,7 +15,7 @@
               <button class="tab is-del" role="tab" aria-selected="false" aria-controls="p-del" id="t-del" tabindex="-1"><span class="st st-D">D</span><span class="nm">tracker_poll.php</span></button>
               <button class="tab" role="tab" aria-selected="false" aria-controls="p-ren" id="t-ren" tabindex="-1"><span class="st st-R">R</span><span class="nm">cells.ts</span></button>
               <span class="spacer"></span>
-              <button class="copy-btn" data-copy="" aria-label="Copy the new version of this file"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8.5" height="8.5" rx="2" stroke="currentColor" stroke-width="1.4"></rect><path d="M11 5V4a1.5 1.5 0 0 0-1.5-1.5h-5A1.5 1.5 0 0 0 3 4v5.5A1.5 1.5 0 0 0 4.5 11H5" stroke="currentColor" stroke-width="1.4"></path></svg><span>Copy</span></button>
+              <button class="copy-btn" data-copy="" aria-label="Copy the new version of this file"><i class="cb-i" aria-hidden="true"><svg class="cb-c" width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8.5" height="8.5" rx="2" stroke="currentColor" stroke-width="1.4"></rect><path d="M11 5V4a1.5 1.5 0 0 0-1.5-1.5h-5A1.5 1.5 0 0 0 3 4v5.5A1.5 1.5 0 0 0 4.5 11H5" stroke="currentColor" stroke-width="1.4"></path></svg><svg class="cb-t" viewBox="0 0 22 22"><circle cx="11" cy="11" r="11"></circle><path d="M6.6 11.4 9.6 14.3l5.8-6.4"></path></svg></i><span class="cb-w"><b>Copy</b><b>Copied</b></span></button>
             </div>
 
             <div class="code-panel is-active" role="tabpanel" id="p-mod" aria-labelledby="t-mod">
@@ -69,7 +69,7 @@
               <div class="row"><span class="st st-R">R</span><span><b>Moved.</b> The file has a new name or home.</span></div>
             </div>
             <div class="code-win term" data-reveal="" style="--i:2">
-              <div class="code-tabs"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="tab" aria-selected="true">terminal</span><span class="spacer"></span><button class="copy-btn" data-copy="" aria-label="Copy command"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8.5" height="8.5" rx="2" stroke="currentColor" stroke-width="1.4"></rect><path d="M11 5V4a1.5 1.5 0 0 0-1.5-1.5h-5A1.5 1.5 0 0 0 3 4v5.5A1.5 1.5 0 0 0 4.5 11H5" stroke="currentColor" stroke-width="1.4"></path></svg><span>Copy</span></button></div>
+              <div class="code-tabs"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="tab" aria-selected="true">terminal</span><span class="spacer"></span><button class="copy-btn" data-copy="" aria-label="Copy command"><i class="cb-i" aria-hidden="true"><svg class="cb-c" width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8.5" height="8.5" rx="2" stroke="currentColor" stroke-width="1.4"></rect><path d="M11 5V4a1.5 1.5 0 0 0-1.5-1.5h-5A1.5 1.5 0 0 0 3 4v5.5A1.5 1.5 0 0 0 4.5 11H5" stroke="currentColor" stroke-width="1.4"></path></svg><svg class="cb-t" viewBox="0 0 22 22"><circle cx="11" cy="11" r="11"></circle><path d="M6.6 11.4 9.6 14.3l5.8-6.4"></path></svg></i><span class="cb-w"><b>Copy</b><b>Copied</b></span></button></div>
               <div class="code-panel is-active"><pre><code data-plain=""><span class="c"># Make the shared log. Keep readings 48 hours.</span>
 <span class="prompt">$ </span><span class="f">nats</span> stream add WIND \
     --subjects <span class="s">"stations.*.wind"</span> \

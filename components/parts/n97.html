@@ -1,0 +1,90 @@
+<!-- part n97 | part | group forms | Editing a name should happen right where it sits. | Editing a name should happen right where it sits. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Editing a name should <em>happen right where it sits.</em></h3>
+          <p class="kit-p">Click the shop name, type a new one and press Enter: the new words roll into place and a tick draws in. Then clear it and press Enter. Escape puts the old words back.</p>
+          <section class="cs kv4" id="n97">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="iec">
+      <div class="ief iebig"><span class="iel" id="n97-l0">Shop name</span><span class="iew"><button class="iet" type="button"><span class="iev">Duka Fresh Westlands</span><span class="iep" aria-hidden="true"><svg class="i" viewBox="0 0 16 16"><path d="M10.4 3.1l2.5 2.5-7.4 7.4H3v-2.5z"></path></svg></span></button><input class="iei" type="text" aria-labelledby="n97-l0" autocomplete="off" spellcheck="false" hidden=""><span class="iem" aria-hidden="true"></span><span class="ies" aria-hidden="true"></span></span><p class="ieh" aria-live="polite"></p></div>
+      <div class="ief"><span class="iel" id="n97-l1">Till name</span><span class="iew"><button class="iet" type="button"><span class="iev">Front counter</span><span class="iep" aria-hidden="true"><svg class="i" viewBox="0 0 16 16"><path d="M10.4 3.1l2.5 2.5-7.4 7.4H3v-2.5z"></path></svg></span></button><input class="iei" type="text" aria-labelledby="n97-l1" autocomplete="off" spellcheck="false" hidden=""><span class="iem" aria-hidden="true"></span><span class="ies" aria-hidden="true"></span></span><p class="ieh" aria-live="polite"></p></div>
+      <div class="ief"><span class="iel" id="n97-l2">Opening hours</span><span class="iew"><button class="iet" type="button"><span class="iev">7 am to 9 pm, every day</span><span class="iep" aria-hidden="true"><svg class="i" viewBox="0 0 16 16"><path d="M10.4 3.1l2.5 2.5-7.4 7.4H3v-2.5z"></path></svg></span></button><input class="iei" type="text" aria-labelledby="n97-l2" autocomplete="off" spellcheck="false" hidden=""><span class="iem" aria-hidden="true"></span><span class="ies" aria-hidden="true"></span></span><p class="ieh" aria-live="polite"></p></div>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0097">
+(function () {
+  "use strict";
+  var box = document.getElementById("n97"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function dur(n) { return (parseFloat(getComputedStyle(root).getPropertyValue("--sp-" + n + "-d")) || .37) * 1000; }
+  var TK = '<svg class="tk" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"/><path d="M6.6 11.4 9.6 14.3l5.8-6.4"/></svg>';
+  /* Taste Lab round 4, part 17 B. Click the words and they become a box in the same place; the box glides wider as it
+     opens. Save, and it glides back to the words, the new words roll up into place, and the tick draws in once the save lands. */
+  function line(el) {   /* a line that rolls: the old words lift out, the new ones rise in */
+    var cur = document.createElement("span"); cur.textContent = el.textContent; el.textContent = ""; el.appendChild(cur);
+    return { set: function (txt, dir) {
+      if (cur.textContent === txt) return; var old = cur; cur = document.createElement("span"); cur.textContent = txt; el.appendChild(cur);
+      if (!moving()) { old.remove(); return; }
+      var y = dir < 0 ? -1 : 1, a = { duration: 440, easing: "cubic-bezier(.22,1,.36,1)" };
+      old.animate([{ transform: "none", opacity: 1 }, { transform: "translateY(" + (-y * 80) + "%)", opacity: 0 }], a).onfinish = function () { old.remove(); };
+      cur.animate([{ transform: "translateY(" + (y * 80) + "%)", opacity: 0 }, { transform: "none", opacity: 1 }], a);
+    } };
+  }
+  function shake(el) { if (moving()) el.animate([{ transform: "none" }, { transform: "translateX(-5px)" }, { transform: "translateX(4px)" }, { transform: "translateX(-2px)" }, { transform: "none" }], { duration: 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  function glideW(el, w0) {
+    if (el._gw) { el._gw.cancel(); el._gw = null; }
+    if (!moving()) return; var w1 = el.offsetWidth; if (Math.abs(w0 - w1) < 1) return;
+    el._gw = el.animate([{ width: w0 + "px" }, { width: w1 + "px" }], { duration: dur("snappy"), easing: sp("snappy") }); el._gw.onfinish = function () { el._gw = null; };
+  }
+  function edit(f, o) {
+    var t = $(".iet", f), v = $(".iev", f), inp = $(".iei", f), st = $(".ies", f), msg = $(".ieh", f), mir = $(".iem", f);
+    var val = v.textContent, editing = false, n = 0, ln = line(v);
+    function label() { t.setAttribute("aria-label", o.name + ": " + val + ". Press to edit."); }
+    function hint(s, bad) { msg.textContent = s || ""; msg.classList.toggle("bad", !!bad); }
+    function fit() { mir.textContent = inp.value || " "; inp.style.width = Math.min(f.clientWidth + 16, Math.max(o.minW || 120, mir.offsetWidth + 34)) + "px"; }
+    function start() {
+      if (editing) return; editing = true; var w0 = t.offsetWidth;
+      inp.value = val; t.hidden = true; inp.hidden = false; st.innerHTML = ""; hint("");
+      fit(); inp.focus({ preventScroll: true }); inp.select(); glideW(inp, w0);
+    }
+    function finish(nv, back) {
+      var w0 = inp.offsetWidth, old = val; editing = false; inp.hidden = true; t.hidden = false; inp.removeAttribute("aria-invalid");
+      if (nv != null && nv !== val) { val = nv; ln.set(nv, 1); }
+      glideW(t, w0); if (back !== false) t.focus({ preventScroll: true }); label();
+      if (nv != null && nv !== old) saving(++n);
+    }
+    function saving(my) {
+      st.classList.remove("fade"); st.innerHTML = '<span class="iesp"></span>'; hint("Saving…");
+      setTimeout(function () {
+        if (my !== n) return; st.innerHTML = TK; hint(o.saved ? o.saved(val) : "Saved.");
+        clearTimeout(f._tt); f._tt = setTimeout(function () { st.classList.add("fade"); setTimeout(function () { if (my === n) { st.innerHTML = ""; st.classList.remove("fade"); } }, 320); }, 1800);
+      }, 650);
+    }
+    function save(back) {
+      var nv = inp.value.trim(), err = o.check(nv);
+      if (err) { hint(err, true); inp.setAttribute("aria-invalid", "true"); shake(inp); return false; }
+      finish(nv, back); return true;
+    }
+    t.addEventListener("click", start);
+    inp.addEventListener("input", function () { fit(); if (inp.getAttribute("aria-invalid")) { inp.removeAttribute("aria-invalid"); hint(""); } });
+    inp.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); save(); }
+      else if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); finish(null); hint(""); }
+    });
+    /* Tab or a click away saves; if the words are not allowed, the old ones come back */
+    inp.addEventListener("blur", function () { if (!editing) return; setTimeout(function () { if (!editing || document.activeElement === inp) return; if (!save(false)) { finish(null, false); hint(""); } }, 0); });
+    label();
+  }
+  var F = $$(".ief");
+  edit(F[0], { name: "Shop name", check: function (s) { if (!s) return "A shop needs a name."; if (s.length > 32) return "Keep it under 32 letters. You have " + s.length + "."; return null; }, saved: function (s) { return "Saved. Customers now see " + s + "."; } });
+  edit(F[1], { name: "Till name", check: function (s) { return s ? null : "Give the till a name, like Front counter."; } });
+  edit(F[2], { name: "Opening hours", minW: 180, check: function (s) { return s ? null : "Tell customers when you open."; } });
+})();
+</script>

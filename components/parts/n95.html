@@ -1,0 +1,46 @@
+<!-- part n95 | part | group forms | Copy the code and see what went. | Copy the code and see what went. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Copy the code and <em>see what went.</em></h3>
+          <p class="kit-p">Press Copy. A soft orange light sweeps once along the lines it copied, then the button shows its tick. Paste it in a terminal or a note to check.</p>
+          <section class="cs kv4" id="n95">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="cc">
+      <div class="ch"><span>Take a payment</span><button class="cb" type="button" aria-label="Copy the code" data-s="a"><span class="ci"><svg class="i ic" aria-hidden="true"><use href="#i-copy"></use></svg><svg class="tk" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"></circle><path d="M6.6 11.4 9.6 14.3l5.8-6.4"></path></svg></span><span class="cw" aria-hidden="true"><span data-k="a">Copy</span><span data-k="d">Copied</span><span data-k="f">Select</span></span></button></div>
+<pre class="cp"><code><span class="cl">curl -X POST https://api.example.com/v1/pay \</span>
+<span class="cl">  -d phone=254712345678 \</span>
+<span class="cl">  -d amount=4200</span></code></pre>
+      <p class="sr-only" aria-live="polite" data-live=""></p>
+    </div>
+  </div></div></div>
+</section>
+        </div>
+<script data-slot="0095">
+(function () {
+  "use strict";
+  var box = document.getElementById("n95"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  /* Copy: a soft orange light sweeps once along the lines that went, then the button shows its tick.
+     The word box already fits the longest word, so nothing moves. If copying fails, the code is selected. */
+  var b = $(".cb"), code = $("code"), live = $("[data-live]"), W = $$(".cw > span"), t = 0, ft = 0;
+  $$(".cl").forEach(function (l, i) { l.style.setProperty("--i", i); });
+  function word(s) { var was = b.getAttribute("data-s"); if (was === s) return; W.forEach(function (w) { w.classList.toggle("out", w.getAttribute("data-k") === was); }); b.setAttribute("data-s", s); }
+  function done(ok) {
+    word(ok ? "d" : "f");
+    code.classList.remove("sweep", "flash"); void code.offsetWidth;
+    clearTimeout(ft);
+    if (ok) { code.classList.add(moving() ? "sweep" : "flash"); if (!moving()) ft = setTimeout(function () { code.classList.remove("flash"); }, 600); }
+    live.textContent = ok ? "Code copied, three lines." : "Could not copy. The code is selected. Press Ctrl+C or Cmd+C.";
+    clearTimeout(t); t = setTimeout(function () { word("a"); code.classList.remove("sweep"); }, 2000);
+  }
+  function select() { var s = getSelection(), rg = document.createRange(); rg.selectNodeContents(code); s.removeAllRanges(); s.addRange(rg); return s; }
+  function fallback() { var s = select(), ok = false; try { ok = document.execCommand("copy"); } catch (e) { ok = false; } if (ok) s.removeAllRanges(); done(ok); }
+  b.addEventListener("click", function () {
+    var txt = code.textContent;
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(txt).then(function () { done(true); }, fallback); else fallback();
+  });
+})();
+</script>

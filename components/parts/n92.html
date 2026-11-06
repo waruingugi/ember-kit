@@ -1,0 +1,264 @@
+<!-- part n92 | part | group charts | A stat card that says how this period did. | A stat card that says how this period did. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A stat card that says <em>how this period did.</em></h3>
+          <p class="kit-p">Switch the period and the chip rolls to the change on the period before. The shimmer waits while the line reshapes, then starts again. Slide back to a low day and the chip compares it with a usual day.</p>
+          <section class="cs kv4" id="n92">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="sk">
+      <div class="sw" role="radiogroup" aria-label="Period" style="--i:1"><i class="th" aria-hidden="true"></i><button type="button" role="radio" aria-checked="false" tabindex="-1">7 days</button><button type="button" role="radio" aria-checked="true" tabindex="0">30 days</button><button type="button" role="radio" aria-checked="false" tabindex="-1">90 days</button></div>
+      <div class="hd"><div class="hv"><p class="lb"><span>Sales, last 30 days</span></p><p class="big"><span class="cur">KES</span><span class="nv"></span></p></div>
+        <p class="cg"><span class="chip"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 9.6V2.6M2.9 5.5 6 2.4l3.1 3.1"></path></svg><span class="pc"></span></span><span class="cw"><span>on the 30 days before</span></span></p></div>
+      <div class="plot" tabindex="0" role="slider" aria-label="Daily sales. Arrow keys move through the days." aria-valuemin="0" aria-valuemax="29" aria-valuenow="29">
+        <svg aria-hidden="true"><defs><clipPath id="n92-cl"><rect class="clr" x="-10" y="-20" height="400" width="0"></rect></clipPath></defs><path class="fl"></path><path class="bs"></path><path class="dm"></path><path class="cv" clip-path="url(#n92-cl)"></path><path class="gl" pathLength="1"></path><line class="cu"></line><circle class="ed" r="3.5"></circle><circle class="pt" r="4.5"></circle></svg>
+      </div>
+      <p class="xs" aria-hidden="true"><span class="x0"></span><span>Today</span></p>
+      <p class="sr-only say" aria-live="polite"></p>
+    </div>
+  </div></div></div>
+</section>
+        </div>
+<script data-slot="0092">
+(function () {
+  "use strict";
+  var box = document.getElementById("n92"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function money(n) { return n.toLocaleString("en-KE"); }
+  /* The odometer, copied from house part n07: each digit is a drum that turns the way the number moved. */
+  function roll(el, o) {
+    var api = { value: o.value }, slots = {}, order = [], raf = 0, last = 0, built = false;
+    var vis = document.createElement("span"), sr = document.createElement("span");
+    vis.className = "rv"; vis.setAttribute("aria-hidden", "true"); sr.className = "sr-only";
+    el.textContent = ""; el.appendChild(vis); el.appendChild(sr);
+    function md(a) { return ((a % 10) + 10) % 10; }
+    /* keys: d<place> digit (d0 = ones), s<place> separator, p<i> before the digits, x<i> after; rank keeps the order */
+    function rank(k) { var c = k.charAt(0), i = parseInt(k.slice(1), 10); return c === "p" ? i : c === "d" ? 1000 - 2 * i : c === "s" ? 1001 - 2 * i : 3000 + i; }
+    function parse(s) {
+      var tot = (s.match(/[0-9]/g) || []).length, seen = 0, p = 0, x = 0, out = [];
+      for (var i = 0; i < s.length; i++) {
+        var ch = s.charAt(i);
+        if (ch >= "0" && ch <= "9") { seen++; out.push({ k: "d" + (tot - seen), d: +ch }); }
+        else out.push({ k: (seen === 0 ? "p" + p++ : seen === tot ? "x" + x++ : "s" + (tot - seen)) + ch, ch: ch });
+      }
+      return out;
+    }
+    function mk(t) {
+      var e = document.createElement("span"), s = { k: t.k, el: e, r: rank(t.k) };
+      if (t.d != null) {
+        var st = document.createElement("span"), i, h = "";
+        for (i = 0; i < 11; i++) h += "<span>" + (i % 10) + "</span>";
+        e.className = "dg"; st.className = "st7"; st.innerHTML = h; e.appendChild(st);
+        s.st = st; s.x = s.T = s.g = s.f = s.v = s.at = 0;
+      } else { e.className = "cm"; e.textContent = t.ch; }
+      return s;
+    }
+    /* the soft spring: as long as --sp-soft-d, a little overshoot; calm settles on a shorter spring with none */
+    function cfg() { var d = (parseFloat(getComputedStyle(box).getPropertyValue("--sp-soft-d")) || .67) * 1000, calm = lv() === "calm", z = calm ? 1 : .86, D = calm ? d * .6 : d; return { Z: z, W: 4.6 / (z * D / 1000) }; }
+    function draw(s) { s.st.style.transform = "translateY(" + (-md(s.x) * 100 / 11).toFixed(3) + "%)"; }
+    function tick(t) {
+      var c = cfg(), dt = Math.min(.032, Math.max(.001, (t - last) / 1000)), busy = false; last = t;
+      order.forEach(function (s) {
+        if (!s.st) return;
+        if (s.at && t >= s.at) { s.at = 0; s.T = s.g; }
+        if (s.at) busy = true;
+        else if (s.x !== s.T || s.v) {
+          s.v += (-c.W * c.W * (s.x - s.T) - 2 * c.Z * c.W * s.v) * dt; s.x += s.v * dt;
+          if (Math.abs(s.x - s.T) < .003 && Math.abs(s.v) < .05) { s.x = s.T; s.v = 0; } else busy = true;
+        }
+        if (s.x === s.T && !s.at) { var w = s.T - md(s.T); if (w) { s.x -= w; s.T -= w; s.g -= w; } } /* settled: wind back into 0–9 */
+        draw(s);
+      });
+      raf = busy ? requestAnimationFrame(tick) : 0;
+    }
+    function wid(e) { return e.getBoundingClientRect().width; }
+    function kill(s) { if (s.wa) s.wa.cancel(); s.el.remove(); var i = order.indexOf(s); if (i >= 0) order.splice(i, 1); if (slots[s.k] === s) delete slots[s.k]; }
+    function leave(s, mv) {
+      s.gone = true; if (!mv) { kill(s); return; }
+      var w = wid(s.el); if (s.wa) s.wa.cancel();
+      s.wa = s.el.animate([{ width: w + "px", opacity: 1 }, { opacity: 0, offset: .55 }, { width: "0px", opacity: 0 }], { duration: 420, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
+      s.wa.onfinish = function () { if (s.gone) kill(s); };
+    }
+    function grow(s, w0) { var w1 = wid(s.el); if (w1 - w0 > .5) s.wa = s.el.animate([{ width: w0 + "px", opacity: w0 / w1 }, { opacity: w0 / w1, offset: .3 }, { width: w1 + "px", opacity: 1 }], { duration: 460, easing: "cubic-bezier(.22,1,.36,1)" }); }
+    api.set = function (v, instant) {
+      var old = api.value, dir = v >= old ? 1 : -1, str = o.fmt(v), toks = parse(str), now = performance.now(), mv = built && moving() && !instant, keep = {}, rk = 0, j, s;
+      api.value = v; sr.textContent = o.say ? o.say(str) : str;
+      toks.forEach(function (t) {
+        var s = slots[t.k]; keep[t.k] = 1;
+        if (!s) {
+          s = slots[t.k] = mk(t);
+          var nx = null; for (var i = 0; i < order.length; i++) if (order[i].r > s.r) { nx = order[i]; break; }
+          vis.insertBefore(s.el, nx ? nx.el : null); order.splice(nx ? order.indexOf(nx) : order.length, 0, s);
+          if (mv) { s.el.style.width = "0px"; s.enter = true; }
+        } else if (s.gone) { s.gone = false; var w0 = wid(s.el); if (s.wa) s.wa.cancel(); s.wa = null; if (mv) grow(s, w0); }
+      });
+      order.slice().forEach(function (s) { /* a digit that leaves rolls on to 0 the way the number went, then folds away */
+        if (keep[s.k] || s.gone) return;
+        if (s.st) { var c0 = md(s.g); if (c0) { s.g += dir > 0 ? md(-c0) : -c0; if (mv) { s.at = 0; s.T = s.g; } } }
+        leave(s, mv);
+      });
+      order.forEach(function (s) { if (s.enter) { s.enter = false; s.el.style.width = ""; grow(s, 0); } });
+      for (j = toks.length - 1; j >= 0; j--) { /* right to left, so the ones turn first */
+        var t = toks[j]; if (t.d == null) continue; s = slots[t.k];
+        var cd = md(s.g); if (cd === t.d) continue;
+        var g = s.g + (dir > 0 ? md(t.d - cd) : -md(cd - t.d));
+        if (!mv) { s.x = s.T = s.g = g; s.v = s.at = 0; draw(s); continue; }
+        s.g = g; var dl = 30 * rk++;
+        if (dl > 0) s.at = now + dl; else { s.at = 0; s.T = g; }
+      }
+      if (!mv) {
+        order.forEach(function (s) { if (s.st) { s.x = s.T = s.g; s.v = s.at = 0; draw(s); } });
+        if (built && old !== v && !instant) vis.animate([{ opacity: .3 }, { opacity: 1 }], { duration: 180, easing: "ease-out" });
+      } else if (!raf) { last = now; raf = requestAnimationFrame(tick); }
+    };
+    api.set(api.value, true); built = true;
+    return api;
+  }
+  /* our one curve, cubic-bezier(.22,1,.36,1), as a function */
+  function ez(t) {
+    if (t <= 0) return 0; if (t >= 1) return 1;
+    function b(s, p, q) { return 3 * p * s * (1 - s) * (1 - s) + 3 * q * s * s * (1 - s) + s * s * s; }
+    var s = t; for (var i = 0; i < 8; i++) { var x = b(s, .22, .36) - t, d = 3 * .22 * (1 - s) * (1 - s) + 6 * (.36 - .22) * s * (1 - s) + 3 * (1 - .36) * s * s; if (Math.abs(x) < 1e-5 || !d) break; s = Math.max(0, Math.min(1, s - x / d)); }
+    return b(s, 1, 1);
+  }
+  /* springs for a list of numbers: each keeps its speed when the goal moves; calm motion eases on our curve instead */
+  function vec(x0, draw, o) {
+    var n = x0.length, x = x0.slice(), v = x0.map(function () { return 0; }), T = x0.slice(), g = x0.slice(), f = x0.slice(), t0 = v.slice(), at = v.slice(), raf = 0, last = 0, eps = o.eps || 1e-3;
+    function cfg() { var d = o.dur, calm = lv() === "calm", z = o.zeta || .82; return { tw: !!o.ease || calm, D: calm ? d * .6 : d, Z: z, W: 4.6 / (z * d / 1000) }; }
+    function tick(t) {
+      var c = cfg(), dt = Math.min(.032, Math.max(.001, (t - last) / 1000)), busy = false; last = t;
+      for (var i = 0; i < n; i++) {
+        if (at[i] && t >= at[i]) { at[i] = 0; T[i] = g[i]; f[i] = x[i]; t0[i] = t; }
+        if (at[i]) { busy = true; continue; }
+        if (c.tw) { var k = Math.min(1, (t - t0[i]) / c.D); x[i] = k >= 1 ? T[i] : f[i] + (T[i] - f[i]) * ez(k); v[i] = 0; if (k < 1) busy = true; }
+        else if (x[i] !== T[i] || v[i]) { v[i] += (-c.W * c.W * (x[i] - T[i]) - 2 * c.Z * c.W * v[i]) * dt; x[i] += v[i] * dt; if (Math.abs(x[i] - T[i]) < eps && Math.abs(v[i]) < eps * 20) { x[i] = T[i]; v[i] = 0; } else busy = true; }
+      }
+      draw(x); raf = busy ? requestAnimationFrame(tick) : 0;
+    }
+    draw(x);
+    return { goal: g, to: function (tg, so) {
+      so = so || {}; var now = performance.now(), i;
+      if (!moving()) { for (i = 0; i < n; i++) { x[i] = T[i] = g[i] = f[i] = tg[i]; v[i] = at[i] = 0; } draw(x); return; }
+      for (i = 0; i < n; i++) { if (tg[i] === g[i] && !at[i]) continue; g[i] = tg[i]; var dl = so.delay ? so.delay(i) : 0; if (dl > 0) at[i] = now + dl; else { at[i] = 0; T[i] = tg[i]; f[i] = x[i]; t0[i] = now; } }
+      if (!raf) { last = now; raf = requestAnimationFrame(tick); }
+    } };
+  }
+  /* a short line that rolls in from the side the number moved (dir 1: in from below) */
+  function line(e, txt, dir) {
+    var old = e.lastElementChild; if (old && old.textContent === txt) return;
+    var nw = document.createElement("span"); nw.textContent = txt; e.appendChild(nw);
+    if (!old) return; if (!moving() || !old.textContent) { old.remove(); return; }
+    var y = dir < 0 ? -1 : 1, a = { duration: 440, easing: "cubic-bezier(.22,1,.36,1)" };
+    old.animate([{ transform: "none", opacity: 1 }, { transform: "translateY(" + (-y * 80) + "%)", opacity: 0 }], a).onfinish = function () { old.remove(); };
+    nw.animate([{ transform: "translateY(" + (y * 80) + "%)", opacity: 0 }, { transform: "none", opacity: 1 }], a);
+  }
+
+  /* n91 is the soft-spring reshape with a faint old line; n92 eases in 0.55 s and adds the chip and the shimmer */
+  var c = { ease: true, chip: true };
+  /* 180 days of made-up Duka Fresh sales, ending today */
+  var T = 180, M = 121, ALL = [], DT = [], end = new Date(2026, 10, 5), i;
+  for (i = 0; i < T; i++) {
+    ALL.push(Math.round((11800 + i * 22 + 1700 * Math.sin(i * .85) + 800 * Math.sin(i * 2.1 + 1) + 1300 * Math.sin(i * .13)) / 10) * 10);
+    var dd = new Date(end); dd.setDate(end.getDate() - (T - 1 - i));
+    DT.push(i === T - 1 ? "Today" : dd.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }).replace(",", ""));
+  }
+  function sum(a) { return a.reduce(function (x, y) { return x + y; }, 0); }
+  var PER = [7, 30, 90].map(function (n) { var v = ALL.slice(T - n), s = sum(v); return { n: n, v: v, d: DT.slice(T - n), tot: s, ch: (s / sum(ALL.slice(T - 2 * n, T - n)) - 1) * 100, avg: s / n }; });
+  /* the house monotone curve through v (scaled 0 to 1), read at M even steps, so every period has the same points and a switch reshapes the line */
+  function samp(v) {
+    var mn = Math.min.apply(null, v), mx = Math.max.apply(null, v), y = v.map(function (x) { return (x - mn) / (mx - mn || 1); }), n = y.length, d = [], m = [], k, out = [];
+    for (k = 0; k < n - 1; k++) d.push(y[k + 1] - y[k]);
+    m[0] = d[0]; m[n - 1] = d[n - 2];
+    for (k = 1; k < n - 1; k++) m[k] = d[k - 1] * d[k] <= 0 ? 0 : (d[k - 1] + d[k]) / 2;
+    for (k = 0; k < n - 1; k++) { if (!d[k]) { m[k] = m[k + 1] = 0; continue; } var a = m[k] / d[k], b = m[k + 1] / d[k], h = a * a + b * b; if (h > 9) { var q = 3 / Math.sqrt(h); m[k] = q * a * d[k]; m[k + 1] = q * b * d[k]; } }
+    for (var j = 0; j < M; j++) { var x = j / (M - 1) * (n - 1), lo = Math.min(n - 2, Math.floor(x)), s = x - lo, s2 = s * s, s3 = s2 * s;
+      out.push((2 * s3 - 3 * s2 + 1) * y[lo] + (s3 - 2 * s2 + s) * m[lo] + (-2 * s3 + 3 * s2) * y[lo + 1] + (s3 - s2) * m[lo + 1]); }
+    return out;
+  }
+  function mono(p) {
+    var n = p.length, i, d = [], m = [], s = "M" + p[0][0].toFixed(1) + " " + p[0][1].toFixed(1);
+    for (i = 0; i < n - 1; i++) d.push((p[i + 1][1] - p[i][1]) / (p[i + 1][0] - p[i][0]));
+    m[0] = d[0]; m[n - 1] = d[n - 2];
+    for (i = 1; i < n - 1; i++) m[i] = d[i - 1] * d[i] <= 0 ? 0 : (d[i - 1] + d[i]) / 2;
+    for (i = 0; i < n - 1; i++) { if (!d[i]) { m[i] = m[i + 1] = 0; continue; } var a = m[i] / d[i], b = m[i + 1] / d[i], h = a * a + b * b; if (h > 9) { var t = 3 / Math.sqrt(h); m[i] = t * a * d[i]; m[i + 1] = t * b * d[i]; } }
+    for (i = 0; i < n - 1; i++) { var dx = (p[i + 1][0] - p[i][0]) / 3; s += "C" + (p[i][0] + dx).toFixed(1) + " " + (p[i][1] + m[i] * dx).toFixed(1) + " " + (p[i + 1][0] - dx).toFixed(1) + " " + (p[i + 1][1] - m[i + 1] * dx).toFixed(1) + " " + p[i + 1][0].toFixed(1) + " " + p[i + 1][1].toFixed(1); }
+    return s;
+  }
+  var pi = 1, P = PER[pi];
+  var plot = $(".plot"), svg = $("svg", plot), cv = $(".cv"), dm = $(".dm"), fl = $(".fl"), gh = $(".gh"), gl = $(".gl"), cu = $(".cu"), pt = $(".pt"), ed = $(".ed"), clr = $(".clr"), bs = $(".bs");
+  var lb = $(".lb"), x0 = $(".x0"), say = $(".say"), sw = $(".sw"), sbs = $$("button", sw), chip = c.chip ? $(".chip") : null, cw = $(".cw");
+  var val = roll($(".big .nv"), { value: P.tot, fmt: money });
+  var pct = chip ? roll($(".pc"), { value: 0, fmt: function (n) { return n.toFixed(1) + "%"; } }) : null;
+  var W = 300, H = 104, TOP = 10, ys = samp(P.v), u = 1, intro = moving() ? 0 : 1, scr = false, down = false, idx = P.n - 1, dirty = true, ready = false, lastD = "", pend = false, seen = false;
+  function X(f) { return 5 + f * (W - 10); }
+  function Y(y) { return TOP + (1 - y) * (H - TOP - 8); }
+  function yAt(f) { var t = Math.max(0, Math.min(1, f)) * (M - 1), lo = Math.min(M - 2, Math.floor(t)); return ys[lo] + (ys[lo + 1] - ys[lo]) * (t - lo); }
+  function render() {
+    if (!ready) return;
+    if (dirty) { dirty = false; var d = mono(ys.map(function (y, j) { return [X(j / (M - 1)), Y(y)]; })); lastD = d;
+      cv.setAttribute("d", d); dm.setAttribute("d", d); if (gl) gl.setAttribute("d", d); fl.setAttribute("d", d + "L" + X(1).toFixed(1) + " " + H + "L" + X(0).toFixed(1) + " " + H + "Z"); }
+    var cx = X(u), f = intro < 1 ? intro : 1;
+    cu.setAttribute("x1", cx); cu.setAttribute("x2", cx); pt.setAttribute("cx", cx); pt.setAttribute("cy", Y(yAt(u)));
+    clr.setAttribute("width", intro < 1 ? X(intro) + 10 : scr ? cx + 10 : W + 30);
+    ed.setAttribute("cx", X(f)); ed.setAttribute("cy", Y(yAt(f))); fl.style.opacity = intro < 1 ? intro : "";
+  }
+  function layout() { W = plot.clientWidth || 300; H = plot.clientHeight || 104; svg.setAttribute("viewBox", "0 0 " + W + " " + H); bs.setAttribute("d", "M0 " + (H - .5) + "H" + W); cu.setAttribute("y1", 0); cu.setAttribute("y2", H); dirty = true; render(); }
+  var shape = vec(ys.slice(), function (x) {
+    ys = x; dirty = true; render();
+    /* the shimmer waits while the line reshapes, then starts again */
+    if (pend && shape && x.every(function (v, j) { return v === shape.goal[j]; })) { pend = false; if (gl && moving() && intro >= 1) plot.classList.add("shim"); }
+  }, c.ease ? { dur: 550, ease: true, eps: 1e-4 } : { dur: 640, zeta: .8, eps: 1e-4 });
+  var cur = vec([1], function (x) { u = x[0]; render(); }, { dur: 380, zeta: .82, eps: 5e-4 });
+  ready = true; layout();
+  function chipTo(p, words) { if (!chip) return; chip.setAttribute("data-dir", p >= 0 ? "up" : "down"); pct.set(Math.round(Math.abs(p) * 10) / 10); line(cw, words, p >= 0 ? 1 : -1); }
+  function rest() { idx = P.n - 1; cur.to([1]); val.set(P.tot); line(lb, "Sales, last " + P.n + " days", -1); if (seen) chipTo(P.ch, "on the " + P.n + " days before"); plot.setAttribute("aria-valuenow", String(idx)); plot.setAttribute("aria-valuetext", "Last " + P.n + " days, KES " + money(P.tot) + " in all"); }
+  function at(i) {
+    i = Math.max(0, Math.min(P.n - 1, i)); var was = idx; idx = i;
+    cur.to([i / (P.n - 1)]); val.set(P.v[i]);
+    line(lb, i === P.n - 1 ? "Sales today" : "Sales on " + P.d[i], i >= was ? 1 : -1);
+    chipTo((P.v[i] / P.avg - 1) * 100, "on a usual day");
+    plot.setAttribute("aria-valuenow", String(i)); plot.setAttribute("aria-valuetext", P.d[i] + ", KES " + money(P.v[i]));
+  }
+  function setScr(on) { if (scr === on) return; scr = on; plot.classList.toggle("scr", on); render(); }
+  function near(e) { var r = plot.getBoundingClientRect(); return Math.round(((e.clientX - r.left) - 5) / ((W - 10) / (P.n - 1))); }
+  function release() { down = false; if (!scr) return; setScr(false); rest(); }
+  plot.addEventListener("pointerdown", function (e) { down = true; setScr(true); at(near(e)); });
+  plot.addEventListener("pointermove", function (e) { if (e.pointerType === "mouse" || down) { setScr(true); at(near(e)); } });
+  plot.addEventListener("pointerup", function (e) { if (e.pointerType !== "mouse") release(); else down = false; });
+  plot.addEventListener("pointercancel", release);
+  plot.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") release(); });
+  plot.addEventListener("keydown", function (e) {
+    var k = e.key, pg = Math.max(1, Math.round(P.n / 6)), j = { ArrowLeft: idx - 1, ArrowDown: idx - 1, ArrowRight: idx + 1, ArrowUp: idx + 1, PageDown: idx - pg, PageUp: idx + pg, Home: 0, End: P.n - 1 }[k];
+    if (k === "Escape") { release(); return; } if (j == null) return; e.preventDefault(); setScr(true); at(j);
+  });
+  plot.addEventListener("blur", release);
+  /* the period switch: the marker slides, the line reshapes from where it is, the total rolls */
+  function pick(k, focus) {
+    if (focus) sbs[k].focus(); if (k === pi) return; pi = k; P = PER[k];
+    sbs.forEach(function (b, j) { b.setAttribute("aria-checked", String(j === k)); b.tabIndex = j === k ? 0 : -1; }); sw.style.setProperty("--i", k);
+    if (gh && moving() && lastD) { gh.setAttribute("d", lastD); gh.animate([{ opacity: .38 }, { opacity: 0 }], { duration: 900, easing: "cubic-bezier(.22,1,.36,1)" }); }
+    if (gl) { plot.classList.remove("shim"); pend = true; }
+    shape.to(samp(P.v)); setScr(false); rest(); line(x0, P.d[0], k > 1 ? -1 : 1);
+    plot.setAttribute("aria-valuemax", String(P.n - 1));
+    say.textContent = "Last " + P.n + " days: KES " + money(P.tot) + " in sales.";
+  }
+  sbs.forEach(function (b, k) {
+    b.addEventListener("click", function () { pick(k); });
+    b.addEventListener("keydown", function (e) { var j = { ArrowRight: k + 1, ArrowDown: k + 1, ArrowLeft: k - 1, ArrowUp: k - 1, Home: 0, End: 2 }[e.key]; if (j == null) return; e.preventDefault(); pick((j + 3) % 3, true); });
+  });
+  line(x0, P.d[0], 1);
+  if ("ResizeObserver" in window) new ResizeObserver(function () { var w = plot.clientWidth; if (w && Math.abs(w - W) > 1) layout(); }).observe(plot);
+  /* on first view the line draws in left to right over 1.1 s, a dot riding its front */
+  function done() { intro = 1; render(); if (gl && moving()) plot.classList.add("shim"); }
+  function arrive() {
+    seen = true; chipTo(P.ch, "on the " + P.n + " days before");
+    if (!moving()) { done(); return; }
+    var t0 = performance.now();
+    (function f(t) { var k = Math.min(1, (t - t0) / 1100); intro = ez(k); render(); if (k < 1) requestAnimationFrame(f); else done(); })(t0);
+  }
+  if (moving() && "IntersectionObserver" in window) { var io = new IntersectionObserver(function (es) { if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); arrive(); } }, { threshold: .4 }); io.observe(plot); }
+  else arrive();
+})();
+</script>

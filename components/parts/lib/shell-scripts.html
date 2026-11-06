@@ -272,13 +272,27 @@ window.emberGrid = (function () {
     }).join('');
     code.setAttribute('data-raw', newText.join('\n'));
   });
-  document.querySelectorAll('pre code[data-plain]').forEach(function (code) { code.setAttribute('data-raw', code.textContent.replace(/^\$ /gm, '')); });
+  document.querySelectorAll('pre code[data-plain]').forEach(function (code) {
+    code.setAttribute('data-raw', code.textContent.replace(/^\$ /gm, ''));
+    /* one span per line, so the copy sweep can light each line (only when no tag runs across a line) */
+    var ls = code.innerHTML.split('\n');
+    if (ls.every(function (l) { return (l.match(/<span/g) || []).length === (l.match(/<\/span>/g) || []).length; })) code.innerHTML = ls.map(function (l) { return l ? '<span class="cp-l">' + l + '</span>' : l; }).join('\n');
+  });
+  /* Copy on a code block, the house way (part n95): the icon turns into an orange tick, the word rises to Copied,
+     and a soft orange light sweeps once along the lines that went. Motion off: the lines flash once. */
+  function sweep(code) {
+    var ls = [].filter.call(code.querySelectorAll('.ln, .cp-l'), function (l) { return !l.classList.contains('del') && !l.classList.contains('hunk'); }), on = motionOn();
+    ls.forEach(function (l, i) { l.classList.add('cp-l'); l.style.setProperty('--i', i); });
+    code.classList.remove('is-sweep', 'is-flash'); void code.offsetWidth; code.classList.add(on ? 'is-sweep' : 'is-flash');
+    clearTimeout(code._sw); code._sw = setTimeout(function () { code.classList.remove('is-sweep', 'is-flash'); }, on ? 700 + ls.length * 60 : 600);
+  }
   document.querySelectorAll('.code-win [data-copy]').forEach(function (btn) {
+    var t = 0;
     btn.addEventListener('click', function () {
       var code = btn.closest('.code-win').querySelector('.code-panel.is-active code'), txt = code.getAttribute('data-raw');
-      if (txt) copy(txt, 'Code copied'); else toast('Deleted file: nothing to copy');
-      btn.classList.add('is-done'); btn.querySelector('span').textContent = txt ? 'Copied' : 'Nothing';
-      setTimeout(function () { btn.classList.remove('is-done'); btn.querySelector('span').textContent = 'Copy'; }, 1600);
+      if (!txt) { toast('Deleted file: nothing to copy'); return; }
+      copy(txt, 'Code copied'); btn.classList.add('is-done'); sweep(code);
+      clearTimeout(t); t = setTimeout(function () { btn.classList.remove('is-done'); }, 1800);
     });
   });
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.code-win button[role="tab"]'));

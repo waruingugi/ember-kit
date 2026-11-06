@@ -38,6 +38,6 @@
   sh.addEventListener("keydown", function (e) { if (e.key === "Escape") { e.preventDefault(); set(false); return; }
     if (e.key !== "Tab") return; var f = $$("button", sh), a = f[0], z = f[f.length - 1];
     if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); } });
-  $("[data-done]", sh).addEventListener("click", function () { var w = $(".w", sh), nx = $(".n", sh); if (w) { w.className = "d"; w.removeAttribute("aria-current"); $("small", w).textContent = "Done"; } if (nx) { nx.className = "d"; nx.setAttribute("aria-current", "step"); $("small", nx).textContent = "Just now"; } note.textContent = "Order #4821 marked as delivered."; set(false); });
+  $("[data-done]", sh).addEventListener("click", function () { var w = $(".w", sh), nx = $(".n", sh); if (w) { w.className = "d"; w.removeAttribute("aria-current"); $("small", w).textContent = "2:58 pm"; } if (nx) { nx.className = "d"; nx.setAttribute("aria-current", "step"); $("small", nx).textContent = "Just now"; } note.textContent = "Order #4821 marked as delivered."; /* let the line fill and the tick draw before the sheet leaves */ setTimeout(function () { set(false); }, w && moving() ? 1100 : 0); });
 })();
 </script>
