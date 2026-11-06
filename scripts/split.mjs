@@ -59,6 +59,7 @@ function classify(attrs, code) {
   if (/\bsrc=/.test(attrs)) return { kind: 'shell' };
   if (code.includes('// src/core/styles.ts') || /custom Hairline figures/i.test(code)) return { kind: 'lib', lib: 'hairline' };
   if (code.includes('window.__draft') || code.includes('GSAP layer')) return { kind: 'shell' };
+  if (code.includes('window.emberGrid = ')) return { kind: 'shell', grid: true }; // the squares grid: every page gets it, and it is also written out alone as bg-grid.html
   if (code.includes('the still chart')) return { kind: 'frag', frag: 'c01', pair: ['c01', 'c02'] };
   const v4 = code.match(/var box = document\.getElementById\("(n\d\d)"\); if \(!box\) return;/);
   if (v4) return { kind: 'frag', frag: v4[1] };
@@ -189,6 +190,19 @@ skel = skel.replace('</body>', '<!--@@SCRIPTS@@-->\n</body>');
 writeFileSync(`${OUT}/skeleton.html`, skel);
 writeFileSync(`${OUT}/lib/shell-scripts.html`, shellScripts.join('\n'));
 
+// the squares grid on its own, for pages not built with assemble.mjs (assembled pages already have it: canvas in the skeleton, script in the shell)
+{
+  const g = scripts.find(m => classify(m[1], m[2]).grid), rule = cssItems.find(it => it.type === 'rule' && it.prelude === '#bg');
+  if (!g || !rule) throw new Error('bg-grid: the grid script or the #bg rule is missing from the showcase');
+  writeFileSync(`${OUT}/bg-grid.html`, `<!-- part bg-grid | page background | The faint squares grid that shows only in open gaps. Paste the canvas first in <body>, the style in the page's CSS, and the script at the end of <body>. Fit it to the page with data-blocks, data-live, data-bands and data-ghosts on the canvas (see the script's top comment). Page content must sit above it: .shell { position: relative; z-index: 1 }. -->
+<style>
+${rule.text.trim()}
+</style>
+<canvas id="bg" aria-hidden="true"></canvas>
+<script>${g[2]}</script>
+`);
+}
+
 const manifest = [];
 for (const f of frags) {
   f.html = f.html.replace(/ data-frag="[^"]*"/g, ''); // markers were only for finding owners
@@ -249,6 +263,10 @@ Each part looks exactly as it does in the showcase because:
 - \`base.css\` holds every style rule, in showcase order. Each rule starts with \`/*@NNNN*/\`, its place in the showcase.
 - Scripts keep their showcase order (\`data-slot\`). Older parts share one script; \`lib/closure-*.js\` holds its start and end.
 - \`skeleton.html\` is the page shell: the sidebar, top bar, Options sheet and fonts.
+
+## The background grid
+
+The faint squares grid that shows only in open gaps (\`DESIGN.md\`, *Recurring parts*) comes with every assembled page: its canvas is in \`skeleton.html\` and its script is in \`lib/shell-scripts.html\`. For any other page, paste \`bg-grid.html\`: the canvas first in \`<body>\`, the \`#bg\` rule in the CSS, the script at the end. Tell it which boxes to keep clear of with \`data-blocks\` on the canvas (and \`data-bands\`, \`data-ghosts\`, \`data-live\`), and keep the page above it (\`.shell { position: relative; z-index: 1 }\`). The Taste Lab page (\`tools/taste-lab/src/page.html\`) is a worked example.
 
 ## The parts
 

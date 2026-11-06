@@ -1,0 +1,113 @@
+<!-- part n85 | part | group status | One drawing that changes shape. | One drawing that changes shape. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">One drawing that <em>changes shape.</em></h3>
+          <p class="kit-p">The same five shapes make every empty state. Switch and they spring into the new drawing: the box turns into a magnifier, a tray, then a cloud. The heading rolls in, and the one button does its job.</p>
+          <section class="cs kv4" id="n85">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="es">
+      <div class="sw" role="radiogroup" aria-label="Pick an empty state"><i class="th" aria-hidden="true"></i><button type="button" role="radio" aria-checked="true" tabindex="0">Orders</button><button type="button" role="radio" aria-checked="false" tabindex="-1">Search</button><button type="button" role="radio" aria-checked="false" tabindex="-1">Inbox</button><button type="button" role="radio" aria-checked="false" tabindex="-1">Offline</button></div>
+      <div class="pic" role="img" aria-label="No orders yet"></div>
+      <p class="t"><span>No orders yet</span></p>
+      <p class="p">When someone buys from your shop, the order shows up here.</p>
+      <button class="b pri go" type="button">Share your shop link</button>
+      <p class="ok" aria-live="polite"></p>
+    </div>
+  </div></div></div>
+</section>
+        </div>
+<script data-slot="0090">
+(function () {
+  "use strict";
+  var box = document.getElementById("n85"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  var SC = [
+    { t: "No orders yet", p: "When someone buys from your shop, the order shows up here.", b: "Share your shop link", ok: "Link copied: dukafresh.example.com" },
+    { t: "Nothing matches “sukuma wiki”", p: "Check the spelling, or look in every shop, not only this one.", b: "Search every shop", busy: "Searching…", ok: "Found it in 3 shops near you." },
+    { t: "You are all caught up", p: "Every customer message has an answer. New ones will show up here.", b: "See answered messages", ok: "Showing 24 answered messages." },
+    { t: "You are offline", p: "Your orders are safe on this phone. They send when you are back online.", b: "Try again", busy: "Checking…", ok: "Back online. 3 orders sent." }
+  ];
+  /* five shapes per drawing: x, y, w, h, corner, turn, opacity. A box, a magnifier, a tray, a cloud */
+  var SH = [
+    [[24, 38, 54, 14, 5, -9, 1], [82, 38, 54, 14, 5, 9, 1], [30, 50, 100, 46, 9, 0, 1], [18, 101, 124, 3, 1.5, 0, 1], [111, 14, 16, 16, 8, 0, 1]],
+    [[20, 34, 86, 60, 9, 0, 1], [104, 74, 30, 10, 5, 42, 1], [72, 30, 46, 46, 23, 0, 1], [18, 101, 124, 3, 1.5, 0, 1], [90, 48, 10, 10, 5, 0, 1]],
+    [[54, 30, 52, 26, 5, -6, 0], [46, 50, 68, 12, 6, 0, 1], [28, 58, 104, 38, 10, 0, 1], [18, 101, 124, 3, 1.5, 0, 1], [100, 12, 32, 32, 16, 0, 1]],
+    [[44, 34, 40, 40, 20, 0, 1], [74, 42, 36, 36, 18, 0, 1], [30, 56, 104, 36, 18, 0, 1], [18, 101, 124, 3, 1.5, 0, 1], [36, 68, 92, 6, 3, -28, 1]]
+  ];
+  var TICK = '<svg viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="9"/><path d="M5.2 9.3 7.8 11.8l5-5.4"/></svg>';
+  var pic = $(".pic"), tEl = $(".t"), pEl = $(".p"), bEl = $(".go"), okEl = $(".ok"), sw = $(".sw"), sbs = $$("button", sw), k0 = 0;
+  pic.innerHTML = '<svg class="art" viewBox="0 0 160 112" aria-hidden="true"><rect/><rect/><rect/><rect/><rect/><path class="ck" d="M108.5 28.5l5 5 9.5-10.5"/></svg>';
+  var svg = $("svg", pic), rects = $$("rect", svg);
+  rects.forEach(function (r, i) { r.setAttribute("data-s", i); });
+  function flat(k) { var a = []; SH[k].forEach(function (s) { a.push.apply(a, s); }); return a; }
+  function draw(x) {
+    rects.forEach(function (r, i) {
+      var b = i * 7, w = Math.max(0, x[b + 2]), h = Math.max(0, x[b + 3]);
+      r.setAttribute("x", x[b].toFixed(2)); r.setAttribute("y", x[b + 1].toFixed(2)); r.setAttribute("width", w.toFixed(2)); r.setAttribute("height", h.toFixed(2));
+      r.setAttribute("rx", Math.max(0, Math.min(x[b + 4], w / 2, h / 2)).toFixed(2));
+      r.setAttribute("transform", "rotate(" + x[b + 5].toFixed(2) + " " + (x[b] + w / 2).toFixed(2) + " " + (x[b + 1] + h / 2).toFixed(2) + ")");
+      r.setAttribute("opacity", Math.max(0, Math.min(1, x[b + 6])).toFixed(3));
+    });
+  }
+  /* every number of the drawing rides its own spring (720 ms, damping .78); each shape starts 45 ms after the one before. Calm eases instead */
+  var x = flat(0), v = x.map(function () { return 0; }), T = x.slice(), f = x.slice(), t0 = v.slice(), at = v.slice(), goal = x.slice(), raf = 0, last = 0;
+  function tick(t) {
+    var calm = lv() === "calm", D = calm ? 430 : 720, W = 4.6 / (.78 * D / 1000), dt = Math.min(.032, Math.max(.001, (t - last) / 1000)), busy = false; last = t;
+    for (var i = 0; i < x.length; i++) {
+      if (at[i] && t >= at[i]) { at[i] = 0; T[i] = goal[i]; f[i] = x[i]; t0[i] = t; }
+      if (at[i]) { busy = true; continue; }
+      if (calm) { var k = Math.min(1, (t - t0[i]) / D); x[i] = f[i] + (T[i] - f[i]) * (1 - Math.pow(1 - k, 3)); v[i] = 0; if (k < 1) busy = true; }
+      else if (x[i] !== T[i] || v[i]) { v[i] += (-W * W * (x[i] - T[i]) - 2 * .78 * W * v[i]) * dt; x[i] += v[i] * dt; if (Math.abs(x[i] - T[i]) < .02 && Math.abs(v[i]) < .4) { x[i] = T[i]; v[i] = 0; } else busy = true; }
+    }
+    draw(x); raf = busy ? requestAnimationFrame(tick) : 0;
+  }
+  function to(g) {
+    var now = performance.now();
+    for (var i = 0; i < x.length; i++) {
+      goal[i] = g[i];
+      if (!moving()) { x[i] = T[i] = f[i] = g[i]; v[i] = 0; at[i] = 0; continue; }
+      at[i] = now + Math.floor(i / 7) * 45;
+    }
+    if (!moving()) { draw(x); return; }
+    if (!raf) { last = now; raf = requestAnimationFrame(tick); }
+  }
+  draw(x);
+  /* the heading rolls: the old line leaves up, the new one comes in from below (or the other way going back) */
+  function line(txt, dir) {
+    var old = tEl.lastElementChild; if (old.textContent === txt) return;
+    var nw = document.createElement("span"); nw.textContent = txt; tEl.appendChild(nw);
+    if (!moving()) { old.remove(); return; }
+    var y = dir < 0 ? -1 : 1, a = { duration: 440, easing: "cubic-bezier(.22,1,.36,1)" };
+    old.animate([{ transform: "none", opacity: 1 }, { transform: "translateY(" + (-y * 80) + "%)", opacity: 0 }], a).onfinish = function () { old.remove(); };
+    nw.animate([{ transform: "translateY(" + (y * 80) + "%)", opacity: 0 }, { transform: "none", opacity: 1 }], a);
+  }
+  function fade(e, fn) {
+    if (!moving()) { fn(); return; }
+    e.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 110, easing: "ease-in" }).onfinish = function () { fn(); e.animate([{ opacity: 0, transform: "translateY(4px)" }, { opacity: 1, transform: "none" }], { duration: 240, easing: "cubic-bezier(.22,1,.36,1)" }); };
+  }
+  function pick(k, focus) {
+    if (focus) sbs[k].focus(); if (k === k0) return;
+    var dir = k > k0 ? 1 : -1, s = SC[k]; k0 = k;
+    sbs.forEach(function (b, j) { b.setAttribute("aria-checked", String(j === k)); b.tabIndex = j === k ? 0 : -1; }); sw.style.setProperty("--i", k);
+    pic.setAttribute("aria-label", s.t); okEl.textContent = ""; bEl.removeAttribute("aria-busy"); clearTimeout(bEl._t);
+    line(s.t, dir); svg.classList.toggle("k", k === 2); to(flat(k));
+    fade(pEl, function () { pEl.textContent = s.p; }); fade(bEl, function () { bEl.textContent = s.b; });
+  }
+  sbs.forEach(function (b, k) {
+    b.addEventListener("click", function () { pick(k); });
+    b.addEventListener("keydown", function (e) { var j = { ArrowRight: k + 1, ArrowDown: k + 1, ArrowLeft: k - 1, ArrowUp: k - 1, Home: 0, End: 3 }[e.key]; if (j == null) return; e.preventDefault(); pick((j + 4) % 4, true); });
+  });
+  /* the button does its job, then says so with a tick */
+  bEl.addEventListener("click", function () {
+    var k = k0, s = SC[k]; if (bEl.getAttribute("aria-busy") === "true") return;
+    function fin(msg) { bEl.removeAttribute("aria-busy"); bEl.textContent = s.b; okEl.innerHTML = TICK + "<span></span>"; okEl.lastChild.textContent = msg || s.ok; }
+    if (k === 0) { var p; try { p = navigator.clipboard.writeText("https://dukafresh.example.com"); } catch (x) { p = Promise.reject(x); } p.then(function () { fin(); }, function () { fin("Your link: dukafresh.example.com"); }); return; }
+    if (!s.busy) { fin(); return; }
+    bEl.setAttribute("aria-busy", "true"); bEl.innerHTML = '<span class="spin" aria-hidden="true"></span>' + s.busy; okEl.textContent = "";
+    bEl._t = setTimeout(fin, moving() ? 1100 : 300);
+  });
+})();
+</script>

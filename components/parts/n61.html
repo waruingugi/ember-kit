@@ -1,0 +1,34 @@
+<!-- part n61 | part | group forms | A copy button that stays the same size. | A copy button that stays the same size. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A copy button that <em>stays the same size.</em></h3>
+          <p class="kit-p">Press Copy. The icon turns into a tick and the word says Copied, and nothing around it moves.</p>
+          <section class="cs kv4" id="n61">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="cp">
+      <label class="lb" for="n61-u">Your PocketPay link</label>
+      <div class="cpr"><input class="in" id="n61-u" readonly="" value="pay.example.com/duka-fresh"><button class="b cpb" type="button"><span class="cpi"><svg class="i ca" aria-hidden="true"><use href="#i-copy"></use></svg><span class="cd"></span></span><span class="cpw"><span class="ca">Copy</span><span class="cd" data-done="" aria-hidden="true">Copied</span><span class="cz" aria-hidden="true">Selected</span></span></button></div>
+      <p class="sr-only" aria-live="polite" data-live=""></p>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0067">
+(function () {
+  "use strict";
+  var box = document.getElementById("n61"); if (!box) return;
+  function $(s, el) { return (el || box).querySelector(s); }
+  var TK = '<svg class="tk" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"/><path d="M6.6 11.4 9.6 14.3l5.8-6.4"/></svg>';
+  /* Copy: the icon turns into a tick and the word swaps in place; the button keeps its width. */
+  var b = $(".cpb"), inp = $(".in"), live = $("[data-live]"), cd = $(".cpi .cd"), t = 0;
+  function done(ok) {
+    if (!ok) { inp.focus(); inp.select(); live.textContent = "The link is selected. Press Ctrl+C or Cmd+C to copy it."; return; }
+    cd.innerHTML = TK; b.classList.add("is-done"); live.textContent = "Link copied.";
+    clearTimeout(t); t = setTimeout(function () { b.classList.remove("is-done"); }, 1800);
+  }
+  function fallback() { inp.select(); var ok = false; try { ok = document.execCommand("copy"); } catch (e) { ok = false; } done(ok); }
+  b.addEventListener("click", function () {
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(inp.value).then(function () { done(true); }, fallback); else fallback();
+  });
+})();
+</script>

@@ -4,7 +4,7 @@
 export const LIVE = { c01: 95, n10: 99, hero: 99, top: 99, n26: 99, n27: 99, n28: 99, c31: 99 }; // top is the hero's section id
 // Parts that run a timer once seen (n42 counts down 8 s, then closes its banner): wait this long before a shot,
 // so the showcase and the part alone are caught in the same end state.
-export const WAIT = { n42: 14000 };
+export const WAIT = { n42: 14000, n64: 95000 }; // n64 counts down 90 s to its "Deal ended" state
 // Put a page in a state two runs agree on: sticky scenes sit still, and every lazy part has been seen.
 export async function settle(page) {
   await page.addStyleTag({ content: '.layers-sticky{position:static!important}' });

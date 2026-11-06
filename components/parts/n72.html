@@ -1,0 +1,191 @@
+<!-- part n72 | part | group forms | Rate it, then see where you stand. | Rate it, then see where you stand. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Rate it, then <em>see where you stand.</em></h3>
+          <p class="kit-p">Point at the stars for a pale preview, to the half star. Click, and the fill sweeps in and pops. Then the rating card opens under it with your bar in orange.</p>
+          <section class="cs kv4" id="n72">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="rt">
+      <p class="q" id="n72-q">How was your Duka Fresh delivery?</p>
+      <div class="row" role="slider" tabindex="0" aria-labelledby="n72-q" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0" aria-valuetext="No rating yet"></div>
+      <p class="w">No rating yet</p>
+      <div class="cw" hidden="">
+        <div class="card">
+          <div><p class="big">4.5</p><div class="mini" aria-hidden="true"></div><p class="cnt"><span class="nn">1,284</span> ratings</p></div>
+          <ul class="dist" aria-label="Ratings by stars"></ul>
+        </div>
+      </div>
+      <p class="sr-only" aria-live="polite"></p>
+    </div>
+  </div></div></div>
+</section>
+        </div>
+<script data-slot="0077">
+(function () {
+  "use strict";
+  var box = document.getElementById("n72"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function money(n) { return n.toLocaleString("en-KE"); }
+  function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  /* The odometer, copied from house part n07: each digit is a drum that turns the way the number moved. */
+  function roll(el, o) {
+    var api = { value: o.value }, slots = {}, order = [], raf = 0, last = 0, built = false;
+    var vis = document.createElement("span"), sr = document.createElement("span");
+    vis.className = "rv"; vis.setAttribute("aria-hidden", "true"); sr.className = "sr-only";
+    el.textContent = ""; el.appendChild(vis); el.appendChild(sr);
+    function md(a) { return ((a % 10) + 10) % 10; }
+    /* keys: d<place> digit (d0 = ones), s<place> separator, p<i> before the digits, x<i> after; rank keeps the order */
+    function rank(k) { var c = k.charAt(0), i = parseInt(k.slice(1), 10); return c === "p" ? i : c === "d" ? 1000 - 2 * i : c === "s" ? 1001 - 2 * i : 3000 + i; }
+    function parse(s) {
+      var tot = (s.match(/[0-9]/g) || []).length, seen = 0, p = 0, x = 0, out = [];
+      for (var i = 0; i < s.length; i++) {
+        var ch = s.charAt(i);
+        if (ch >= "0" && ch <= "9") { seen++; out.push({ k: "d" + (tot - seen), d: +ch }); }
+        else out.push({ k: (seen === 0 ? "p" + p++ : seen === tot ? "x" + x++ : "s" + (tot - seen)) + ch, ch: ch });
+      }
+      return out;
+    }
+    function mk(t) {
+      var e = document.createElement("span"), s = { k: t.k, el: e, r: rank(t.k) };
+      if (t.d != null) {
+        var st = document.createElement("span"), i, h = "";
+        for (i = 0; i < 11; i++) h += "<span>" + (i % 10) + "</span>";
+        e.className = "dg"; st.className = "st7"; st.innerHTML = h; e.appendChild(st);
+        s.st = st; s.x = s.T = s.g = s.f = s.v = s.at = 0;
+      } else { e.className = "cm"; e.textContent = t.ch; }
+      return s;
+    }
+    /* the soft spring: as long as --sp-soft-d, a little overshoot; calm settles on a shorter spring with none */
+    function cfg() { var d = (parseFloat(getComputedStyle(box).getPropertyValue("--sp-soft-d")) || .67) * 1000, calm = lv() === "calm", z = calm ? 1 : .86, D = calm ? d * .6 : d; return { Z: z, W: 4.6 / (z * D / 1000) }; }
+    function draw(s) { s.st.style.transform = "translateY(" + (-md(s.x) * 100 / 11).toFixed(3) + "%)"; }
+    function tick(t) {
+      var c = cfg(), dt = Math.min(.032, Math.max(.001, (t - last) / 1000)), busy = false; last = t;
+      order.forEach(function (s) {
+        if (!s.st) return;
+        if (s.at && t >= s.at) { s.at = 0; s.T = s.g; }
+        if (s.at) busy = true;
+        else if (s.x !== s.T || s.v) {
+          s.v += (-c.W * c.W * (s.x - s.T) - 2 * c.Z * c.W * s.v) * dt; s.x += s.v * dt;
+          if (Math.abs(s.x - s.T) < .003 && Math.abs(s.v) < .05) { s.x = s.T; s.v = 0; } else busy = true;
+        }
+        if (s.x === s.T && !s.at) { var w = s.T - md(s.T); if (w) { s.x -= w; s.T -= w; s.g -= w; } } /* settled: wind back into 0–9 */
+        draw(s);
+      });
+      raf = busy ? requestAnimationFrame(tick) : 0;
+    }
+    function wid(e) { return e.getBoundingClientRect().width; }
+    function kill(s) { if (s.wa) s.wa.cancel(); s.el.remove(); var i = order.indexOf(s); if (i >= 0) order.splice(i, 1); if (slots[s.k] === s) delete slots[s.k]; }
+    function leave(s, mv) {
+      s.gone = true; if (!mv) { kill(s); return; }
+      var w = wid(s.el); if (s.wa) s.wa.cancel();
+      s.wa = s.el.animate([{ width: w + "px", opacity: 1 }, { opacity: 0, offset: .55 }, { width: "0px", opacity: 0 }], { duration: 420, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
+      s.wa.onfinish = function () { if (s.gone) kill(s); };
+    }
+    function grow(s, w0) { var w1 = wid(s.el); if (w1 - w0 > .5) s.wa = s.el.animate([{ width: w0 + "px", opacity: w0 / w1 }, { opacity: w0 / w1, offset: .3 }, { width: w1 + "px", opacity: 1 }], { duration: 460, easing: "cubic-bezier(.22,1,.36,1)" }); }
+    api.set = function (v, instant) {
+      var old = api.value, dir = v >= old ? 1 : -1, str = o.fmt(v), toks = parse(str), now = performance.now(), mv = built && moving() && !instant, keep = {}, rk = 0, j, s;
+      api.value = v; sr.textContent = o.say ? o.say(str) : str;
+      toks.forEach(function (t) {
+        var s = slots[t.k]; keep[t.k] = 1;
+        if (!s) {
+          s = slots[t.k] = mk(t);
+          var nx = null; for (var i = 0; i < order.length; i++) if (order[i].r > s.r) { nx = order[i]; break; }
+          vis.insertBefore(s.el, nx ? nx.el : null); order.splice(nx ? order.indexOf(nx) : order.length, 0, s);
+          if (mv) { s.el.style.width = "0px"; s.enter = true; }
+        } else if (s.gone) { s.gone = false; var w0 = wid(s.el); if (s.wa) s.wa.cancel(); s.wa = null; if (mv) grow(s, w0); }
+      });
+      order.slice().forEach(function (s) { /* a digit that leaves rolls on to 0 the way the number went, then folds away */
+        if (keep[s.k] || s.gone) return;
+        if (s.st) { var c0 = md(s.g); if (c0) { s.g += dir > 0 ? md(-c0) : -c0; if (mv) { s.at = 0; s.T = s.g; } } }
+        leave(s, mv);
+      });
+      order.forEach(function (s) { if (s.enter) { s.enter = false; s.el.style.width = ""; grow(s, 0); } });
+      for (j = toks.length - 1; j >= 0; j--) { /* right to left, so the ones turn first */
+        var t = toks[j]; if (t.d == null) continue; s = slots[t.k];
+        var cd = md(s.g); if (cd === t.d) continue;
+        var g = s.g + (dir > 0 ? md(t.d - cd) : -md(cd - t.d));
+        if (!mv) { s.x = s.T = s.g = g; s.v = s.at = 0; draw(s); continue; }
+        s.g = g; var dl = 30 * rk++;
+        if (dl > 0) s.at = now + dl; else { s.at = 0; s.T = g; }
+      }
+      if (!mv) {
+        order.forEach(function (s) { if (s.st) { s.x = s.T = s.g; s.v = s.at = 0; draw(s); } });
+        if (built && old !== v && !instant) vis.animate([{ opacity: .3 }, { opacity: 1 }], { duration: 180, easing: "ease-out" });
+      } else if (!raf) { last = now; raf = requestAnimationFrame(tick); }
+    };
+    api.set(api.value, true); built = true;
+    return api;
+  }
+
+  var W = ["No rating yet", "Very bad", "Bad", "Poor", "Not good", "Fair", "Okay", "Fine", "Good", "Very good", "Great"];
+  var STAR = '<path d="M12 2.6l2.86 5.8 6.4.93-4.63 4.51 1.09 6.37L12 17.2l-5.72 3.01 1.09-6.37L2.74 9.33l6.4-.93z"/>';
+  function mk(i) { return '<span class="s" data-i="' + i + '"><svg class="so" viewBox="0 0 24 24" aria-hidden="true">' + STAR + '</svg><span class="sf"><svg viewBox="0 0 24 24" aria-hidden="true">' + STAR + "</svg></span></span>"; }
+  var D = { 5: 912, 4: 241, 3: 78, 2: 31, 1: 22 }, sum = 5842, n = 1284, val = 0, shown = 0;
+  var row = $(".row"), w = $(".w"), cw = $(".cw"), say = $(".sr-only"), dist = $(".dist");
+  row.innerHTML = [0, 1, 2, 3, 4].map(mk).join(""); $(".mini").innerHTML = [0, 1, 2, 3, 4].map(mk).join("");
+  dist.innerHTML = [5, 4, 3, 2, 1].map(function (k) { return '<li data-k="' + k + '"><span class="k">' + k + '</span><span class="bt"><i></i></span><span class="v">' + money(D[k]) + "</span></li>"; }).join("");
+  var S = $$(".s", row), F = S.map(function (s) { return $(".sf", s); }), MF = $$(".mini .sf");
+  var avg = roll($(".big"), { value: Math.round(sum / n * 10) / 10, fmt: function (x) { return x.toFixed(1); } });
+  var cnt = roll($(".nn"), { value: n, fmt: money });
+  var dv = $$("li", dist).map(function (li) { var k = +li.getAttribute("data-k"); return { li: li, k: k, i: $("i", li), r: roll($(".v", li), { value: D[k], fmt: money }) }; });
+  function clip(el, f) { el.style.clipPath = "inset(0 " + (100 - f * 100).toFixed(1) + "% 0 0)"; }
+  function bucket(v) { return Math.min(5, Math.max(1, Math.round(v))); }
+  /* the fill sweeps star by star the way you moved */
+  function fill(v, sweep) {
+    var up = v >= shown, from = shown; shown = v;
+    F.forEach(function (el, i) {
+      var f = Math.max(0, Math.min(1, v - i)), d = 0;
+      if (sweep && moving()) { var k = up ? i - Math.floor(Math.min(from, v)) : Math.ceil(Math.max(from, v)) - 1 - i; d = Math.max(0, k) * 42; }
+      el.style.transitionDelay = d ? d + "ms" : ""; clip(el, f);
+    });
+  }
+  /* the card: bars spring to size one after another, your bar is orange, every number rolls */
+  function stats(wave) {
+    var a = sum / n, mx = 0; avg.set(Math.round(a * 10) / 10); cnt.set(n);
+    dv.forEach(function (d) { mx = Math.max(mx, D[d.k]); });
+    dv.forEach(function (d, j) { d.i.style.transitionDelay = wave && moving() ? j * 70 + "ms" : ""; d.i.style.setProperty("--f", (D[d.k] / mx).toFixed(4)); d.r.set(D[d.k]); d.li.classList.toggle("you", !!val && bucket(val) === d.k); });
+    MF.forEach(function (el, i) { clip(el, Math.max(0, Math.min(1, a - i))); });
+  }
+  function card(on) {
+    if (on === !cw.hidden) return;
+    if (cw._gl) { cw._gl.cancel(); cw._gl = null; }
+    if (on) { cw.hidden = false; dv.forEach(function (d) { d.i.style.transition = "none"; d.i.style.setProperty("--f", 0); }); void cw.offsetWidth; dv.forEach(function (d) { d.i.style.transition = ""; });
+      glide(cw, 0, 490); if (moving()) $(".card").animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 420, easing: "cubic-bezier(.22,1,.36,1)" });
+      requestAnimationFrame(function () { stats(true); }); return; }
+    if (!moving()) { cw.hidden = true; return; }
+    var a = cw.animate([{ height: cw.offsetHeight + "px", opacity: 1 }, { height: "0px", opacity: 0 }], { duration: 300, easing: "cubic-bezier(.22,1,.36,1)" });
+    cw._gl = a; a.onfinish = function () { cw._gl = null; cw.hidden = true; };
+  }
+  function aria(v) { row.setAttribute("aria-valuenow", String(v)); row.setAttribute("aria-valuetext", v ? v + " of 5 stars, " + W[v * 2] : "No rating yet"); }
+  function word(t, dir) { w.textContent = t; if (moving()) w.animate([{ opacity: 0, transform: "translateY(" + dir * 8 + "px)" }, { opacity: 1, transform: "none" }], { duration: 300, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  function commit(v) {
+    v = Math.max(0, Math.min(5, v)); var old = val; if (v === old) { setPrev(null); return; }
+    val = v; row.classList.remove("prev"); fill(v, true);
+    if (old && !v) { n--; D[bucket(old)]--; } else if (!old && v) { n++; D[bucket(v)]++; } else { D[bucket(old)]--; D[bucket(v)]++; }
+    sum += v - old; aria(v); word(v ? v + " stars · " + W[v * 2] : "No rating yet", v > old ? 1 : -1);
+    if (!cw.hidden && v) stats(false); card(v > 0);
+    if (v && moving()) { var d = parseFloat(sp("bouncy-d")) * 1000 || 490; S.forEach(function (s, i) { if (i < Math.ceil(v)) s.animate([{ transform: "scale(1)" }, { transform: "scale(1.18)", offset: .35 }, { transform: "scale(1)" }], { duration: d * 1.1, easing: "cubic-bezier(.22,1,.36,1)", delay: 140 + i * 45 }); }); }
+    say.textContent = v ? "You rated " + v + " of 5, " + W[v * 2] + ". The average is now " + (sum / n).toFixed(1) + " from " + money(n) + " ratings." : "Your rating is cleared.";
+  }
+  function setPrev(v) { row.classList.toggle("prev", v != null && v !== val); fill(v == null ? val : v, true); }
+  function at(e) { var x = e.clientX, v = .5; S.forEach(function (s, i) { var r = s.getBoundingClientRect(); if (x >= r.left - 3) v = i + ((x - r.left) / r.width <= .5 ? .5 : 1); }); return v; }
+  var touch = null;
+  row.addEventListener("pointermove", function (e) { if (e.pointerType === "mouse" || touch) setPrev(at(e)); });
+  row.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") setPrev(null); });
+  row.addEventListener("pointerdown", function (e) { var s = e.target.closest && e.target.closest(".s"); if (s) { s.classList.add("down"); touch = e.pointerType !== "mouse" ? s : null; } if (touch) { row.setPointerCapture(e.pointerId); setPrev(at(e)); } });
+  function up() { S.forEach(function (s) { s.classList.remove("down"); }); }
+  row.addEventListener("pointerup", function (e) { up(); var v = at(e); if (touch) { touch = null; setPrev(null); } commit(v === val ? 0 : v); });
+  row.addEventListener("pointercancel", function () { up(); touch = null; setPrev(null); });
+  row.addEventListener("keydown", function (e) {
+    var k = e.key, v = null;
+    if (k === "ArrowRight" || k === "ArrowUp") v = Math.min(5, val + .5); else if (k === "ArrowLeft" || k === "ArrowDown") v = Math.max(.5, val - .5);
+    else if (k === "Home") v = .5; else if (k === "End") v = 5; else if (/^[1-5]$/.test(k)) v = +k; else if (k === "Backspace" || k === "Delete") v = 0;
+    if (v == null) return; e.preventDefault(); commit(v);
+  });
+  fill(0, false); MF.forEach(function (el, i) { clip(el, Math.max(0, Math.min(1, sum / n - i))); });
+})();
+</script>

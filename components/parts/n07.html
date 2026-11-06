@@ -5,36 +5,122 @@
           <section class="cs kv4" id="n07">
   <div class="frame"><div class="fbody"><div class="stage">
     <div class="hd"><span class="live" aria-hidden="true"></span><span class="label">Visitors on the site now</span></div>
-    <div class="num" id="n07-num" role="img" aria-label="1,284 visitors"></div>
+    <div class="num" id="n07-num"></div>
     <div class="chg" id="n07-chg"></div>
   </div></div></div>
 
 </section>
         </div>
-<script data-slot="0010">
+<script data-slot="0011">
 (function () {
   "use strict";
   var box = document.getElementById("n07"); if (!box) return;
-  var spd = function () { var m = document.documentElement.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m === "off" ? 0 : m === "calm" ? .5 : 1; };
-  var num = box.querySelector("#n07-num"), chg = box.querySelector("#n07-chg"), strips = [], value = 1284, vis = true, i, s = "";
-  for (i = 0; i < 10; i++) s += "<span>" + i + "</span>";
-  for (i = 0; i < 4; i++) {
-    var c = document.createElement("div"); c.className = "dg"; c.innerHTML = '<span class="st7" aria-hidden="true">' + s + "</span>"; strips.push(c.firstChild);
-    num.appendChild(c);
-    if (i === 0) { var cm = document.createElement("span"); cm.className = "cm"; cm.setAttribute("aria-hidden", "true"); cm.textContent = ","; num.appendChild(cm); }
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+
+  /* The odometer (Taste Lab round 3, part 01, version B). Each digit is a drum that turns the way the number
+     moved: up turns it up, down turns it down, 9 rolls on to 0. Only changed digits turn, the right one first.
+     Digits that come or go glide the width. Separators never roll. An interrupted roll carries on from where
+     each drum is. Motion off swaps the number with a short fade. */
+  function roll(el, o) {
+    var api = { value: o.value }, slots = {}, order = [], raf = 0, last = 0, built = false;
+    var vis = document.createElement("span"), sr = document.createElement("span");
+    vis.className = "rv"; vis.setAttribute("aria-hidden", "true"); sr.className = "sr-only";
+    el.textContent = ""; el.appendChild(vis); el.appendChild(sr);
+    function md(a) { return ((a % 10) + 10) % 10; }
+    /* keys: d<place> digit (d0 = ones), s<place> separator, p<i> before the digits, x<i> after; rank keeps the order */
+    function rank(k) { var c = k.charAt(0), i = parseInt(k.slice(1), 10); return c === "p" ? i : c === "d" ? 1000 - 2 * i : c === "s" ? 1001 - 2 * i : 3000 + i; }
+    function parse(s) {
+      var tot = (s.match(/[0-9]/g) || []).length, seen = 0, p = 0, x = 0, out = [];
+      for (var i = 0; i < s.length; i++) {
+        var ch = s.charAt(i);
+        if (ch >= "0" && ch <= "9") { seen++; out.push({ k: "d" + (tot - seen), d: +ch }); }
+        else out.push({ k: (seen === 0 ? "p" + p++ : seen === tot ? "x" + x++ : "s" + (tot - seen)) + ch, ch: ch });
+      }
+      return out;
+    }
+    function mk(t) {
+      var e = document.createElement("span"), s = { k: t.k, el: e, r: rank(t.k) };
+      if (t.d != null) {
+        var st = document.createElement("span"), i, h = "";
+        for (i = 0; i < 11; i++) h += "<span>" + (i % 10) + "</span>";
+        e.className = "dg"; st.className = "st7"; st.innerHTML = h; e.appendChild(st);
+        s.st = st; s.x = s.T = s.g = s.f = s.v = s.at = 0;
+      } else { e.className = "cm"; e.textContent = t.ch; }
+      return s;
+    }
+    /* the soft spring: as long as --sp-soft-d, a little overshoot; calm settles on a shorter spring with none */
+    function cfg() { var d = (parseFloat(getComputedStyle(box).getPropertyValue("--sp-soft-d")) || .67) * 1000, calm = lv() === "calm", z = calm ? 1 : .86, D = calm ? d * .6 : d; return { Z: z, W: 4.6 / (z * D / 1000) }; }
+    function draw(s) { s.st.style.transform = "translateY(" + (-md(s.x) * 100 / 11).toFixed(3) + "%)"; }
+    function tick(t) {
+      var c = cfg(), dt = Math.min(.032, Math.max(.001, (t - last) / 1000)), busy = false; last = t;
+      order.forEach(function (s) {
+        if (!s.st) return;
+        if (s.at && t >= s.at) { s.at = 0; s.T = s.g; }
+        if (s.at) busy = true;
+        else if (s.x !== s.T || s.v) {
+          s.v += (-c.W * c.W * (s.x - s.T) - 2 * c.Z * c.W * s.v) * dt; s.x += s.v * dt;
+          if (Math.abs(s.x - s.T) < .003 && Math.abs(s.v) < .05) { s.x = s.T; s.v = 0; } else busy = true;
+        }
+        if (s.x === s.T && !s.at) { var w = s.T - md(s.T); if (w) { s.x -= w; s.T -= w; s.g -= w; } } /* settled: wind back into 0–9 */
+        draw(s);
+      });
+      raf = busy ? requestAnimationFrame(tick) : 0;
+    }
+    function wid(e) { return e.getBoundingClientRect().width; }
+    function kill(s) { if (s.wa) s.wa.cancel(); s.el.remove(); var i = order.indexOf(s); if (i >= 0) order.splice(i, 1); if (slots[s.k] === s) delete slots[s.k]; }
+    function leave(s, mv) {
+      s.gone = true; if (!mv) { kill(s); return; }
+      var w = wid(s.el); if (s.wa) s.wa.cancel();
+      s.wa = s.el.animate([{ width: w + "px", opacity: 1 }, { opacity: 0, offset: .55 }, { width: "0px", opacity: 0 }], { duration: 420, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
+      s.wa.onfinish = function () { if (s.gone) kill(s); };
+    }
+    function grow(s, w0) { var w1 = wid(s.el); if (w1 - w0 > .5) s.wa = s.el.animate([{ width: w0 + "px", opacity: w0 / w1 }, { opacity: w0 / w1, offset: .3 }, { width: w1 + "px", opacity: 1 }], { duration: 460, easing: "cubic-bezier(.22,1,.36,1)" }); }
+    api.set = function (v, instant) {
+      var old = api.value, dir = v >= old ? 1 : -1, str = o.fmt(v), toks = parse(str), now = performance.now(), mv = built && moving() && !instant, keep = {}, rk = 0, j, s;
+      api.value = v; sr.textContent = o.say ? o.say(str) : str;
+      toks.forEach(function (t) {
+        var s = slots[t.k]; keep[t.k] = 1;
+        if (!s) {
+          s = slots[t.k] = mk(t);
+          var nx = null; for (var i = 0; i < order.length; i++) if (order[i].r > s.r) { nx = order[i]; break; }
+          vis.insertBefore(s.el, nx ? nx.el : null); order.splice(nx ? order.indexOf(nx) : order.length, 0, s);
+          if (mv) { s.el.style.width = "0px"; s.enter = true; }
+        } else if (s.gone) { s.gone = false; var w0 = wid(s.el); if (s.wa) s.wa.cancel(); s.wa = null; if (mv) grow(s, w0); }
+      });
+      order.slice().forEach(function (s) { /* a digit that leaves rolls on to 0 the way the number went, then folds away */
+        if (keep[s.k] || s.gone) return;
+        if (s.st) { var c0 = md(s.g); if (c0) { s.g += dir > 0 ? md(-c0) : -c0; if (mv) { s.at = 0; s.T = s.g; } } }
+        leave(s, mv);
+      });
+      order.forEach(function (s) { if (s.enter) { s.enter = false; s.el.style.width = ""; grow(s, 0); } });
+      for (j = toks.length - 1; j >= 0; j--) { /* right to left, so the ones turn first */
+        var t = toks[j]; if (t.d == null) continue; s = slots[t.k];
+        var cd = md(s.g); if (cd === t.d) continue;
+        var g = s.g + (dir > 0 ? md(t.d - cd) : -md(cd - t.d));
+        if (!mv) { s.x = s.T = s.g = g; s.v = s.at = 0; draw(s); continue; }
+        s.g = g; var dl = 30 * rk++;
+        if (dl > 0) s.at = now + dl; else { s.at = 0; s.T = g; }
+      }
+      if (!mv) {
+        order.forEach(function (s) { if (s.st) { s.x = s.T = s.g; s.v = s.at = 0; draw(s); } });
+        if (built && old !== v && !instant) vis.animate([{ opacity: .3 }, { opacity: 1 }], { duration: 180, easing: "ease-out" });
+      } else if (!raf) { last = now; raf = requestAnimationFrame(tick); }
+    };
+    api.set(api.value, true); built = true;
+    return api;
   }
-  function set(v, d) {
-    var t = String(v), sp = spd();
-    strips.forEach(function (el, k) { el.style.transitionDuration = sp === 0 ? "0s" : sp === .5 ? ".3s" : ""; el.style.transform = "translateY(" + (-t[k] * 10) + "%)"; });
-    num.setAttribute("aria-label", v.toLocaleString("en-US") + " visitors");
-    chg.textContent = d ? (d > 0 ? "+" : "−") + Math.abs(d) + " just now" : "";
-  }
-  set(value, 0);
+
+  var chg = $("#n07-chg"), value = 1284, vis = true;
+  var r = roll($("#n07-num"), { value: value, fmt: function (n) { return n.toLocaleString("en-US"); }, say: function (s) { return s + " visitors"; } });
   if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { vis = es[es.length - 1].isIntersecting; }).observe(box);
   setInterval(function () {
-    if (!vis || document.hidden || spd() === 0) return;   // paused: off-screen, hidden tab or motion off
+    if (!vis || document.hidden || !moving()) return;   // paused: off-screen, hidden tab or motion off
     var d = 1 + Math.floor(Math.random() * 12), up = Math.random() < (value < 1284 ? .62 : .38);
-    d = up ? d : -d; value = Math.max(1100, Math.min(1500, value + d)); set(value, d);
+    d = up ? d : -d; value = Math.max(1100, Math.min(1500, value + d)); r.set(value);
+    chg.textContent = (d > 0 ? "+" : "−") + Math.abs(d) + " just now";
   }, 2500);
 })();
 </script>

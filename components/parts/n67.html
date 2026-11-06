@@ -1,0 +1,51 @@
+<!-- part n67 | part | group forms | For what can’t be undone, hold, don’t tap. | For what can’t be undone, hold, don’t tap. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">For what can’t be undone, <em>hold, don’t tap.</em></h3>
+          <p class="kit-p">Hold the button. The words turn white right where the orange passes. Let go early and it drains back.</p>
+          <section class="cs kv4" id="n67">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="hd">
+      <p class="hk">This deletes <b>Duka Fresh</b>, its 248 products and all their sales.</p>
+      <button class="hb" type="button" aria-describedby="n67-h"><span class="hl1"><span class="hw"><svg class="i" aria-hidden="true"><use href="#i-trash"></use></svg><span>Hold to delete shop</span></span></span><span class="hl1 ho" aria-hidden="true"><span class="hw"><svg class="i" aria-hidden="true"><use href="#i-trash"></use></svg><span>Hold to delete shop</span></span></span><span class="hdn" aria-hidden="true"><span class="tkw"></span>Shop deleted</span></button>
+      <p class="hint" id="n67-h">Press and hold for 1.6 seconds. With a keyboard, hold Space or Enter.</p>
+      <button class="b sm" type="button" data-again="" hidden="">Start again</button>
+      <p class="sr-only" role="status" data-live=""></p>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0072">
+(function () {
+  "use strict";
+  var box = document.getElementById("n67"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  var TK = '<svg class="tk" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"/><path d="M6.6 11.4 9.6 14.3l5.8-6.4"/></svg>';
+  /* Hold to delete: orange fills at an even pace for 1.6 s; let go early and it drains back on a spring. */
+  var HOLD = 1600, hb = $(".hb"), ho = $(".ho"), again = $("[data-again]"), live = $("[data-live]"), p = 0, v = 0, holding = false, done = false, raf = 0, last = 0;
+  function draw() { ho.style.clipPath = "inset(0 " + ((1 - p) * 100).toFixed(2) + "% 0 0)"; }
+  function frame(t) {
+    var dt = Math.min(.05, Math.max(0, (t - last) / 1000)); last = t;
+    if (holding) { p = Math.min(1, p + dt * 1000 / HOLD); v = 0; if (p >= 1) { finish(); return; } }
+    else if (!moving()) { p = 0; v = 0; }
+    else { v += (-150 * p - 20 * v) * dt; p += v * dt; if (p <= .001 && Math.abs(v) < .02) { p = 0; v = 0; } }
+    if (p < 0) { p = 0; v = 0; }
+    draw(); raf = holding || p > 0 ? requestAnimationFrame(frame) : 0;
+  }
+  function kick() { if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); } }
+  function start() { if (done || holding) return; holding = true; hb.classList.add("held"); kick(); }
+  function stop() { if (!holding) return; holding = false; hb.classList.remove("held"); if (p > 0 && p < 1) live.textContent = "Keep holding until it fills."; kick(); }
+  function finish() { cancelAnimationFrame(raf); raf = 0; holding = false; done = true; p = 1; draw(); hb.classList.remove("held"); $(".tkw").innerHTML = TK; hb.classList.add("done"); hb.setAttribute("aria-disabled", "true"); again.hidden = false; live.textContent = "Shop deleted."; }
+  hb.addEventListener("pointerdown", function (e) { if (e.button) return; e.preventDefault(); try { hb.setPointerCapture(e.pointerId); } catch (x) { /* capture is optional */ } hb.focus(); start(); });
+  ["pointerup", "pointercancel", "lostpointercapture"].forEach(function (ev) { hb.addEventListener(ev, stop); });
+  hb.addEventListener("keydown", function (e) { if ((e.key === " " || e.key === "Enter") && !e.repeat) { e.preventDefault(); start(); } else if (e.key === " " || e.key === "Enter") e.preventDefault(); });
+  hb.addEventListener("keyup", function (e) { if (e.key === " " || e.key === "Enter") stop(); });
+  hb.addEventListener("blur", stop);
+  hb.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+  again.addEventListener("click", function () { done = false; p = 0; v = 0; draw(); hb.classList.remove("done"); hb.removeAttribute("aria-disabled"); again.hidden = true; hb.focus(); live.textContent = ""; });
+  draw();
+})();
+</script>

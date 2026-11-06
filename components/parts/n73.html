@@ -1,0 +1,167 @@
+<!-- part n73 | part | group time | The button grows into a calendar, and the dates fly home. | The button grows into a calendar, and the dates fly home. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">The button grows into a calendar, and <em>the dates fly home.</em></h3>
+          <p class="kit-p">PocketPay shows sales for the days you pick. Open it, click 26 Oct, move to 3 Nov, click, then Apply. Today is 5 November 2026, so later days are off.</p>
+          <section class="cs kv4" id="n73">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="dr">
+      <button class="t" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="n73-p"><svg class="i" aria-hidden="true"><use href="#i-cal"></use></svg><span class="tl"></span><span class="tn"></span></button>
+      <div class="p" id="n73-p" role="dialog" aria-label="Pick a date range">
+        <div class="sf"></div>
+        <div class="inn">
+          <div class="qk" role="group" aria-label="Quick ranges"></div>
+          <div class="cal"><div class="nav"><button class="pv" type="button" aria-label="Earlier month"><svg class="i" aria-hidden="true"><use href="#i-cl"></use></svg></button><button class="nx" type="button" aria-label="Later month"><svg class="i" aria-hidden="true"><use href="#i-cr"></use></svg></button></div><div class="ms"></div></div>
+          <div class="ft"><p class="dl" aria-live="polite"></p><div class="btns"><button class="b sm" type="button" data-cancel="">Cancel</button><button class="b sm pri" type="button" data-apply="">Apply</button></div></div>
+        </div>
+      </div>
+    </div>
+  </div></div></div>
+</section>
+        </div>
+<script data-slot="0078">
+(function () {
+  "use strict";
+  var box = document.getElementById("n73"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  var T = new Date(2026, 10, 5), MS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], WD = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  function D(y, m, d) { return new Date(y, m, d); }
+  function add(d, n) { return D(d.getFullYear(), d.getMonth(), d.getDate() + n); }
+  function same(a, b) { return !!a && !!b && a.getTime() === b.getTime(); }
+  function k(d) { return d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate(); }
+  function parse(s) { var p = s.split("-"); return D(+p[0], +p[1], +p[2]); }
+  function wd(d) { return (d.getDay() + 6) % 7; }
+  function span(a, b) { return Math.round((b - a) / 864e5) + 1; }
+  function short(d) { return d.getDate() + " " + MS[d.getMonth()].slice(0, 3); }
+  function lab(a, b) { return same(a, b) ? short(a) + " " + a.getFullYear() : short(a) + " – " + short(b) + " " + b.getFullYear(); }
+  function days(a, b) { var n = span(a, b); return n + (n === 1 ? " day" : " days"); }
+  var Q = [["Today", T, T], ["Yesterday", add(T, -1), add(T, -1)], ["Last 7 days", add(T, -6), T], ["Last 30 days", add(T, -29), T], ["This month", D(2026, 10, 1), T], ["Last month", D(2026, 9, 1), D(2026, 9, 31)]];
+  var ap = { a: Q[2][1], b: Q[2][2] }, dr = { a: ap.a, b: ap.b }, picking = false, hv = null, view = null, nm = 1, fd = ap.b, open = false, applied = false, anims = [];
+  var host = $(".dr"), t = $(".t"), P = $(".p"), sf = $(".sf"), inn = $(".inn"), ms = $(".ms"), qk = $(".qk"), dlEl = $(".dl"), apb = $("[data-apply]"), tl = $(".tl"), tn = $(".tn");
+  function swap(el, s, dir) { if (el.textContent === s) return; el.textContent = s; if (moving() && dir) el.animate([{ opacity: 0, transform: "translateY(" + dir * 6 + "px)" }, { opacity: 1, transform: "none" }], { duration: 260, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  tl.textContent = lab(ap.a, ap.b); tn.textContent = days(ap.a, ap.b);
+  qk.innerHTML = Q.map(function (q, i) { return '<button type="button" aria-pressed="false" data-q="' + i + '">' + q[0] + "</button>"; }).join("");
+
+  function vis(d) { var a = D(view.getFullYear(), view.getMonth(), 1), b = D(view.getFullYear(), view.getMonth() + nm, 0); return d >= a && d <= b; }
+  function month(m) {
+    var y = m.getFullYear(), mo = m.getMonth(), lead = wd(D(y, mo, 1)), n = D(y, mo + 1, 0).getDate();
+    var h = '<div class="m" role="group" aria-label="' + MS[mo] + " " + y + '"><p class="mn">' + MS[mo] + " " + y + '</p><div class="wd" aria-hidden="true"><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span></div>';
+    for (var w = 0; w < 6; w++) {
+      h += '<div class="wk" data-w0="' + k(D(y, mo, 1 - lead + w * 7)) + '"><i class="bar"></i>';
+      for (var j = 0; j < 7; j++) { var dn = 1 - lead + w * 7 + j, d = D(y, mo, dn); h += dn < 1 || dn > n ? "<span></span>" : '<button class="d" type="button" tabindex="-1" data-d="' + k(d) + '" aria-label="' + WD[j] + " " + dn + " " + MS[mo] + " " + y + '"' + (d > T ? " disabled" : "") + (same(d, T) ? ' aria-current="date"' : "") + ">" + dn + "</button>"; }
+      h += "</div>";
+    }
+    return h + '<i class="end" data-e="a"></i><i class="end" data-e="b"></i></div>';
+  }
+  function cur() { return ms.lastChild; }
+  function render(dir) {
+    var old = ms.firstChild, w = document.createElement("div"), h = "", i; w.className = "mw";
+    for (i = 0; i < nm; i++) h += month(D(view.getFullYear(), view.getMonth() + i, 1)); w.innerHTML = h;
+    if (old && dir && moving()) {
+      old.style.cssText = "position:absolute;left:0;top:0;width:" + old.offsetWidth + "px"; ms.appendChild(w);
+      old.animate([{ transform: "none", opacity: 1 }, { transform: "translateX(" + -dir * 28 + "px)", opacity: 0 }], { duration: 240, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" }).onfinish = function () { old.remove(); };
+      w.animate([{ transform: "translateX(" + dir * 28 + "px)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 360, easing: "cubic-bezier(.22,1,.36,1)" });
+    } else { ms.textContent = ""; ms.appendChild(w); }
+    $(".nx").disabled = vis(T);
+    paint(true);
+  }
+  function rng() { if (!dr.a) return null; var b = picking ? (hv || dr.a) : dr.b; return b < dr.a ? [b, dr.a] : [dr.a, b]; }
+  /* one band per week stretches to the range; the two ink ends glide to the first and last day */
+  function paint(jump) {
+    var r = rng(), w = cur(); P.classList.toggle("prev", picking);
+    $$(".wk", w).forEach(function (wk) {
+      var s0 = parse(wk.getAttribute("data-w0")), lo = -1, hi = -1;
+      $$(".d", wk).forEach(function (b) { var d = parse(b.getAttribute("data-d")), j = wd(d), on = r && d >= r[0] && d <= r[1], e = r && (same(d, r[0]) || same(d, r[1]));
+        b.classList.toggle("in", !!on && !e); b.classList.toggle("end", !!e); b.classList.toggle("endb", !!e && picking && !same(d, dr.a));
+        if (on) { if (lo < 0) lo = j; hi = j; } });
+      var bar = $(".bar", wk), L, R;
+      if (lo >= 0) { L = lo / 7 * 100; R = (6 - hi) / 7 * 100; } else { var after = r && r[0] > add(s0, 6); L = after ? 100 : 0; R = 100 - L; }
+      if (jump) bar.style.transition = "none";
+      bar.style.clipPath = "inset(3px " + R.toFixed(3) + "% 3px " + L.toFixed(3) + "% round 9px)";
+      if (jump) { void bar.offsetWidth; bar.style.transition = ""; }
+    });
+    $$(".m", w).forEach(function (m) {
+      var en = !r ? [] : picking ? [dr.a, hv || dr.a] : [dr.a, dr.b];
+      [["a", en[0]], ["b", en[1]]].forEach(function (p) {
+        var e = $('.end[data-e="' + p[0] + '"]', m), b = p[1] && $('[data-d="' + k(p[1]) + '"]', m);
+        if (!b) { e.classList.remove("on"); return; }
+        var tf = "translate(" + b.offsetLeft + "px," + b.parentNode.offsetTop + "px)";
+        if (jump || !e.classList.contains("on")) { e.style.transition = "none"; e.style.transform = tf; void e.offsetWidth; e.style.transition = ""; }
+        e.style.transform = tf; e.classList.add("on");
+      });
+    });
+    $$("[data-q]").forEach(function (b) { var q = Q[+b.getAttribute("data-q")]; b.setAttribute("aria-pressed", String(!picking && same(dr.a, q[1]) && same(dr.b, q[2]))); });
+    var bs = $$(".d", w), tb = $('[data-d="' + k(fd) + '"]', w) || bs.filter(function (b) { return !b.disabled; })[0]; bs.forEach(function (b) { b.tabIndex = b === tb ? 0 : -1; });
+  }
+  var lastEnd = ap.b;
+  function words() {
+    if (picking) { swap(dlEl, "Pick the last day", 1); apb.disabled = true; return; }
+    var dir = dr.b >= lastEnd ? 1 : -1; lastEnd = dr.b; swap(dlEl, lab(dr.a, dr.b) + " · " + days(dr.a, dr.b), dir); apb.disabled = false;
+  }
+  function showView(d, dir) { if (vis(d)) return false; view = D(d.getFullYear(), d.getMonth() - nm + 1, 1); render(dir); return true; }
+  function pick(d) {
+    if (!picking) { dr = { a: d, b: null }; picking = true; hv = d; }
+    else { var a = dr.a; dr = d < a ? { a: d, b: a } : { a: a, b: d }; picking = false; hv = null; }
+    fd = d; paint(); words();
+  }
+  ms.addEventListener("click", function (e) { var b = e.target.closest && e.target.closest(".d"); if (b && !b.disabled) pick(parse(b.getAttribute("data-d"))); });
+  ms.addEventListener("pointerover", function (e) { var b = e.target.closest && e.target.closest(".d"); if (!b || b.disabled || !picking) return; hv = parse(b.getAttribute("data-d")); paint(); });
+  ms.addEventListener("keydown", function (e) {
+    var b = e.target.closest && e.target.closest(".d"); if (!b) return; var d = parse(b.getAttribute("data-d")), n = null, key = e.key;
+    if (key === "ArrowLeft") n = add(d, -1); else if (key === "ArrowRight") n = add(d, 1); else if (key === "ArrowUp") n = add(d, -7); else if (key === "ArrowDown") n = add(d, 7);
+    else if (key === "Home") n = add(d, -wd(d)); else if (key === "End") n = add(d, 6 - wd(d));
+    else if (key === "PageUp" || key === "PageDown") { var s = key === "PageUp" ? -1 : 1; n = D(d.getFullYear(), d.getMonth() + s, Math.min(d.getDate(), D(d.getFullYear(), d.getMonth() + s + 1, 0).getDate())); }
+    if (!n) return; e.preventDefault(); if (n > T) n = T;
+    fd = n; if (picking) hv = n; showView(n, n > d ? 1 : -1); paint(); var nb = $('[data-d="' + k(n) + '"]', cur()); if (nb) nb.focus({ preventScroll: true });
+  });
+  function step(s) { view = D(view.getFullYear(), view.getMonth() + s, 1); if (!vis(fd)) fd = D(view.getFullYear(), view.getMonth(), 1); render(s); }
+  $(".pv").addEventListener("click", function () { step(-1); });
+  $(".nx").addEventListener("click", function () { step(1); });
+  qk.addEventListener("click", function (e) { var b = e.target.closest("[data-q]"); if (!b) return; var q = Q[+b.getAttribute("data-q")]; dr = { a: q[1], b: q[2] }; picking = false; hv = null; fd = q[2]; if (!showView(q[2], q[2] > view ? 1 : -1)) paint(); words(); });
+  apb.addEventListener("click", function () { var dir = dr.b >= ap.b ? 1 : -1; ap = { a: dr.a, b: dr.b }; applied = true; swap(tn, days(ap.a, ap.b), dir); setOpen(false); });
+  $("[data-cancel]").addEventListener("click", function () { setOpen(false); });
+
+  /* open: the button grows into the panel. Close: the panel shrinks back under the real button, then the dates fly in. */
+  function stop() { anims.forEach(function (a) { a.cancel(); }); anims = []; host.classList.remove("closing"); }
+  function clipFor(w, h, r) { return "inset(0px " + Math.max(0, P.offsetWidth - w) + "px " + Math.max(0, P.offsetHeight - h) + "px 0px round " + r + "px)"; }
+  function setOpen(v) {
+    if (v === open) return; open = v; P.classList.toggle("open", v); t.setAttribute("aria-expanded", String(v));
+    var dS = (parseFloat(sp("soft-d")) || .67) * 1000;
+    if (v) {
+      applied = false; dr = { a: ap.a, b: ap.b }; picking = false; hv = null; fd = ap.b; lastEnd = ap.b;
+      var W = host.clientWidth; nm = W >= 640 ? 2 : 1; host.classList.toggle("narrow", W < 520);
+      view = D(ap.b.getFullYear(), ap.b.getMonth() - nm + 1, 1); ms.textContent = ""; render(0); dlEl.textContent = ""; words();
+      setTimeout(function () { var f = $('.d[tabindex="0"]', cur()); if (f) f.focus({ preventScroll: true }); }, 0);
+      stop(); if (!moving()) return;
+      anims.push(sf.animate([{ clipPath: clipFor(t.offsetWidth, t.offsetHeight, 10) }, { clipPath: "inset(0px 0px 0px 0px round 14px)" }], { duration: dS * 1.15, easing: sp("soft") }));
+      anims.push(inn.animate([{ opacity: 0, transform: "translateY(-4px)" }, { opacity: 1, transform: "none" }], { duration: 260, delay: 90, easing: "cubic-bezier(.22,1,.36,1)", fill: "backwards" }));
+      return;
+    }
+    var did = applied; applied = false;
+    if (P.contains(document.activeElement)) t.focus({ preventScroll: true });
+    if (!moving()) { if (did) tl.textContent = lab(ap.a, ap.b); return; }
+    stop(); var from = dlEl.getBoundingClientRect();
+    host.classList.add("closing");
+    anims.push(inn.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 120, easing: "ease-out", fill: "forwards" }));
+    anims.push(sf.animate([{ clipPath: "inset(0px 0px 0px 0px round 14px)", opacity: 1 }, { opacity: 1, offset: .6 }, { clipPath: clipFor(t.offsetWidth, t.offsetHeight, 10), opacity: 0 }], { duration: 300, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" }));
+    setTimeout(stop, 380);
+    if (did) {
+      tl.textContent = lab(ap.a, ap.b);
+      var to = tl.getBoundingClientRect(); host.classList.add("fly");
+      tl.animate([{ transform: "translate(" + (from.left - to.left) + "px," + (from.top - to.top) + "px)" }, { transform: "none" }], { duration: dS * 1.2, easing: sp("soft") }).onfinish = function () { host.classList.remove("fly"); };
+    }
+  }
+  t.addEventListener("click", function () { setOpen(!open); });
+  P.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); setOpen(false); return; }
+    if (e.key !== "Tab") return; /* keep Tab inside the open panel */
+    var f = $$("button:not(:disabled)", P).filter(function (b) { return b.tabIndex >= 0 && b.offsetParent; }); if (!f.length) return;
+    if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); } else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+  });
+  document.addEventListener("pointerdown", function (e) { if (open && !P.contains(e.target) && !t.contains(e.target)) setOpen(false); });
+})();
+</script>

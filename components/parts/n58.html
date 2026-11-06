@@ -1,0 +1,126 @@
+<!-- part n58 | part | group forms | A cart whose total rolls in the pay button. | A cart whose total rolls in the pay button. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A cart whose total <em>rolls in the pay button.</em></h3>
+          <p class="kit-p">Change a count. Each row shows its sum with the price, the total rolls inside the button, and then you pay.</p>
+          <section class="cs kv4" id="n58">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="cr">
+      <ul class="crl">
+        <li class="crr" data-p="60" data-q="3"><span class="crn">Mangoes<small aria-hidden="true">KES 60 × <span class="qn"></span> = KES <span class="trk"></span></small></span><div class="nfr"><button class="nst" type="button" data-dn="" tabindex="-1" aria-label="One fewer"><svg class="i" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"></path></svg></button><span class="cell"><input class="nin" id="n58-0" type="text" inputmode="numeric" autocomplete="off" role="spinbutton" aria-label="Mangoes" aria-valuemin="0" aria-valuemax="9" aria-valuenow="3" value="3"><span class="disp" aria-hidden="true"></span></span><button class="nst" type="button" data-up="" tabindex="-1" aria-label="One more"><svg class="i" aria-hidden="true"><use href="#i-plus"></use></svg></button></div></li>
+        <li class="crr" data-p="65" data-q="1"><span class="crn">Milk, 500 ml<small aria-hidden="true">KES 65 × <span class="qn"></span> = KES <span class="trk"></span></small></span><div class="nfr"><button class="nst" type="button" data-dn="" tabindex="-1" aria-label="One fewer"><svg class="i" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"></path></svg></button><span class="cell"><input class="nin" id="n58-1" type="text" inputmode="numeric" autocomplete="off" role="spinbutton" aria-label="Milk, 500 ml" aria-valuemin="0" aria-valuemax="9" aria-valuenow="1" value="1"><span class="disp" aria-hidden="true"></span></span><button class="nst" type="button" data-up="" tabindex="-1" aria-label="One more"><svg class="i" aria-hidden="true"><use href="#i-plus"></use></svg></button></div></li>
+        <li class="crr" data-p="70" data-q="1"><span class="crn">Bread, 400 g<small aria-hidden="true">KES 70 × <span class="qn"></span> = KES <span class="trk"></span></small></span><div class="nfr"><button class="nst" type="button" data-dn="" tabindex="-1" aria-label="One fewer"><svg class="i" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"></path></svg></button><span class="cell"><input class="nin" id="n58-2" type="text" inputmode="numeric" autocomplete="off" role="spinbutton" aria-label="Bread, 400 g" aria-valuemin="0" aria-valuemax="9" aria-valuenow="1" value="1"><span class="disp" aria-hidden="true"></span></span><button class="nst" type="button" data-up="" tabindex="-1" aria-label="One more"><svg class="i" aria-hidden="true"><use href="#i-plus"></use></svg></button></div></li>
+      </ul>
+      <button class="b pri pay" type="button"><span class="ps on" data-s="0">Pay KES <span class="amt"></span></span><span class="ps" data-s="1" aria-hidden="true"><i></i><i></i><i></i></span><span class="ps" data-s="2" aria-hidden="true"><svg class="i" aria-hidden="true"><use href="#i-check"></use></svg>Paid</span></button>
+      <p class="msg" aria-live="polite">Nothing paid yet.</p>
+      <p class="nnote" aria-live="polite"></p>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0063">
+(function () {
+  "use strict";
+  var box = document.getElementById("n58"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function money(n) { return n.toLocaleString("en-KE"); }
+  function dur(n) { return (parseFloat(getComputedStyle(root).getPropertyValue("--sp-" + n + "-d")) || .4) * 1000; }
+  /* The house odometer, the same as n07. */
+  function roll(el, o) {
+    var api = { value: o.value }, slots = {}, order = [], raf = 0, last = 0, built = false;
+    var vis = document.createElement("span"), sr = document.createElement("span");
+    vis.className = "rv"; vis.setAttribute("aria-hidden", "true"); sr.className = "sr-only";
+    el.textContent = ""; el.appendChild(vis); el.appendChild(sr);
+    function md(a) { return ((a % 10) + 10) % 10; }
+    function rank(k) { var c = k.charAt(0), i = parseInt(k.slice(1), 10); return c === "p" ? i : c === "d" ? 1000 - 2 * i : c === "s" ? 1001 - 2 * i : 3000 + i; }
+    function parse(s) { var tot = (s.match(/[0-9]/g) || []).length, seen = 0, p = 0, x = 0, out = []; for (var i = 0; i < s.length; i++) { var ch = s.charAt(i); if (ch >= "0" && ch <= "9") { seen++; out.push({ k: "d" + (tot - seen), d: +ch }); } else out.push({ k: (seen === 0 ? "p" + p++ : seen === tot ? "x" + x++ : "s" + (tot - seen)) + ch, ch: ch }); } return out; }
+    function mk(t) { var e = document.createElement("span"), s = { k: t.k, el: e, r: rank(t.k) }; if (t.d != null) { var st = document.createElement("span"), i, h = ""; for (i = 0; i < 11; i++) h += "<span>" + (i % 10) + "</span>"; e.className = "dg"; st.className = "st7"; st.innerHTML = h; e.appendChild(st); s.st = st; s.x = s.T = s.g = s.f = s.v = s.at = 0; } else { e.className = "cm"; e.textContent = t.ch; } return s; }
+    function cfg() { var d = (parseFloat(getComputedStyle(box).getPropertyValue("--sp-soft-d")) || .67) * 1000, calm = lv() === "calm", z = calm ? 1 : .86, D = calm ? d * .6 : d; return { Z: z, W: 4.6 / (z * D / 1000) }; }
+    function draw(s) { s.st.style.transform = "translateY(" + (-md(s.x) * 100 / 11).toFixed(3) + "%)"; }
+    function tick(t) { var c = cfg(), dt = Math.min(.032, Math.max(.001, (t - last) / 1000)), busy = false; last = t; order.forEach(function (s) { if (!s.st) return; if (s.at && t >= s.at) { s.at = 0; s.T = s.g; } if (s.at) busy = true; else if (s.x !== s.T || s.v) { s.v += (-c.W * c.W * (s.x - s.T) - 2 * c.Z * c.W * s.v) * dt; s.x += s.v * dt; if (Math.abs(s.x - s.T) < .003 && Math.abs(s.v) < .05) { s.x = s.T; s.v = 0; } else busy = true; } if (s.x === s.T && !s.at) { var w = s.T - md(s.T); if (w) { s.x -= w; s.T -= w; s.g -= w; } } draw(s); }); raf = busy ? requestAnimationFrame(tick) : 0; }
+    function wid(e) { return e.getBoundingClientRect().width; }
+    function kill(s) { if (s.wa) s.wa.cancel(); s.el.remove(); var i = order.indexOf(s); if (i >= 0) order.splice(i, 1); if (slots[s.k] === s) delete slots[s.k]; }
+    function leave(s, mv) { s.gone = true; if (!mv) { kill(s); return; } var w = wid(s.el); if (s.wa) s.wa.cancel(); s.wa = s.el.animate([{ width: w + "px", opacity: 1 }, { opacity: 0, offset: .55 }, { width: "0px", opacity: 0 }], { duration: 420, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" }); s.wa.onfinish = function () { if (s.gone) kill(s); }; }
+    function grow(s, w0) { var w1 = wid(s.el); if (w1 - w0 > .5) s.wa = s.el.animate([{ width: w0 + "px", opacity: w0 / w1 }, { opacity: w0 / w1, offset: .3 }, { width: w1 + "px", opacity: 1 }], { duration: 460, easing: "cubic-bezier(.22,1,.36,1)" }); }
+    api.set = function (v, instant) { var old = api.value, dir = v >= old ? 1 : -1, str = o.fmt(v), toks = parse(str), now = performance.now(), mv = built && moving() && !instant, keep = {}, rk = 0, j, s; api.value = v; sr.textContent = o.say ? o.say(str) : str;
+      toks.forEach(function (t) { var s = slots[t.k]; keep[t.k] = 1; if (!s) { s = slots[t.k] = mk(t); var nx = null; for (var i = 0; i < order.length; i++) if (order[i].r > s.r) { nx = order[i]; break; } vis.insertBefore(s.el, nx ? nx.el : null); order.splice(nx ? order.indexOf(nx) : order.length, 0, s); if (mv) { s.el.style.width = "0px"; s.enter = true; } } else if (s.gone) { s.gone = false; var w0 = wid(s.el); if (s.wa) s.wa.cancel(); s.wa = null; if (mv) grow(s, w0); } });
+      order.slice().forEach(function (s) { if (keep[s.k] || s.gone) return; if (s.st) { var c0 = md(s.g); if (c0) { s.g += dir > 0 ? md(-c0) : -c0; if (mv) { s.at = 0; s.T = s.g; } } } leave(s, mv); });
+      order.forEach(function (s) { if (s.enter) { s.enter = false; s.el.style.width = ""; grow(s, 0); } });
+      for (j = toks.length - 1; j >= 0; j--) { var t = toks[j]; if (t.d == null) continue; s = slots[t.k]; var cd = md(s.g); if (cd === t.d) continue; var g = s.g + (dir > 0 ? md(t.d - cd) : -md(cd - t.d)); if (!mv) { s.x = s.T = s.g = g; s.v = s.at = 0; draw(s); continue; } s.g = g; var dl = 30 * rk++; if (dl > 0) s.at = now + dl; else { s.at = 0; s.T = g; } }
+      if (!mv) { order.forEach(function (s) { if (s.st) { s.x = s.T = s.g; s.v = s.at = 0; draw(s); } }); if (built && old !== v && !instant) vis.animate([{ opacity: .3 }, { opacity: 1 }], { duration: 180, easing: "ease-out" }); } else if (!raf) { last = now; raf = requestAnimationFrame(tick); } };
+    api.set(api.value, true); built = true;
+    return api;
+  }
+  /* A spinbutton: steppers that speed up when held, a lean and a shake at the limits, typing that cuts straight in. */
+  function nf(wrap, o) {
+    var inp = $(".nin", wrap), disp = $(".disp", wrap), shell = $(".nfr", wrap), note = o.note, dn = $("[data-dn]", wrap), up = $("[data-up]", wrap);
+    var v = o.value, editing = false, strain = 0, sT = 0, fmt = o.fmt || String, r = roll(disp, { value: v, fmt: fmt });
+    function num(s) { var t = String(s).replace(/[^0-9]/g, ""); return t ? parseInt(t, 10) : null; }
+    function sync() { inp.setAttribute("aria-valuenow", v); inp.setAttribute("aria-valuetext", o.text ? o.text(v) : fmt(v)); if (!editing) inp.value = String(v); if (dn) dn.setAttribute("aria-disabled", String(v <= o.min)); if (up) up.setAttribute("aria-disabled", String(v >= o.max)); }
+    function tell(t) { note.textContent = t; note.classList.remove("on"); void note.offsetWidth; note.classList.add("on"); clearTimeout(note._t); note._t = setTimeout(function () { note.classList.remove("on"); }, 2400); }
+    function refuse(dir, btn) {
+      strain = Math.min(strain + 1, 4); clearTimeout(sT); sT = setTimeout(function () { strain = 0; }, 900);
+      if (moving()) {
+        disp.animate([{ transform: "none", easing: "cubic-bezier(.22,1,.36,1)" }, { transform: "translateX(" + dir * (3 + 1.5 * strain) + "px)", offset: .2, easing: sp("bouncy") }, { transform: "none" }], { duration: 120 + dur("bouncy") });
+        if (btn) btn.animate([{ transform: "none" }, { transform: "translateX(-3px)", offset: .2 }, { transform: "translateX(3px)", offset: .45 }, { transform: "translateX(-2px)", offset: .7 }, { transform: "none" }], { duration: 320, easing: "ease-out" });
+      }
+      tell(dir > 0 ? o.maxMsg : o.minMsg);
+    }
+    function set(n, btn) {
+      var c = Math.max(o.min, Math.min(o.max, n));
+      if (c === v) { if (c !== n) refuse(n > v ? 1 : -1, btn); return c === n; }
+      var was = v; v = c; sync(); r.set(v); if (o.on) o.on(v, was);
+      if (c !== n) refuse(n > c ? 1 : -1, btn);
+      return c === n;
+    }
+    function commit() {
+      if (!editing) return; editing = false; shell.classList.remove("typing", "over");
+      var n = num(inp.value); if (n == null) { r.set(v, true); sync(); return; }
+      var c = Math.max(o.min, Math.min(o.max, n)), was = v; v = c; sync();
+      if (c !== n) { if (moving()) setTimeout(function () { r.set(c); }, 140); else r.set(c); refuse(n > c ? 1 : -1); }
+      if (o.on && c !== was) o.on(v, was);
+    }
+    function hold(btn, d) {
+      if (!btn) return; var t = 0, n = 0;
+      function stop() { clearTimeout(t); t = 0; }
+      function step() { n++; if (!set(v + d * o.step, btn)) return stop(); t = setTimeout(step, Math.max(40, 150 - n * 14)); }
+      btn.addEventListener("pointerdown", function (e) { if (e.button) return; e.preventDefault(); commit(); n = 0; if (set(v + d * o.step, btn)) t = setTimeout(step, 400); });
+      ["pointerup", "pointerleave", "pointercancel"].forEach(function (ev) { btn.addEventListener(ev, stop); });
+      btn.addEventListener("click", function (e) { if (e.detail === 0) set(v + d * o.step, btn); });
+      btn.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+    }
+    hold(dn, -1); hold(up, 1);
+    inp.addEventListener("keydown", function (e) {
+      var k = e.key, s = o.step, m = { ArrowUp: s, ArrowDown: -s, PageUp: s * 10, PageDown: -s * 10 };
+      if (k in m) { e.preventDefault(); commit(); set(v + m[k] * (e.shiftKey && k.indexOf("Arrow") === 0 ? 10 : 1), m[k] > 0 ? up : dn); }
+      else if ((k === "Home" || k === "End") && !editing) { e.preventDefault(); set(k === "Home" ? o.min : o.max); }
+      else if (k === "Enter") commit();
+      else if (k === "Escape" && editing) { e.preventDefault(); e.stopPropagation(); editing = false; shell.classList.remove("typing", "over"); r.set(v, true); sync(); }
+    });
+    inp.addEventListener("input", function () { editing = true; shell.classList.add("typing"); var n = num(inp.value); shell.classList.toggle("over", n != null && (n > o.max || n < o.min)); if (n != null) r.set(n, true); });
+    inp.addEventListener("blur", commit);
+    sync(); if (o.on) o.on(v, v, true);
+    return { get: function () { return v; }, set: set };
+  }
+  /* A Duka Fresh cart. Each row says "KES 60 × 3 = KES 180"; the total rolls inside the pay button. */
+  var rows = $$(".crr"), pay = $(".pay"), S = $$(".ps", pay), msg = $(".msg"), note = $(".nnote"), busy = false, fs = [];
+  var amt = roll($(".amt", pay), { value: 0, fmt: money });
+  function total() { return fs.reduce(function (a, f, i) { return a + f.get() * +rows[i].getAttribute("data-p"); }, 0); }
+  function show(k) { S.forEach(function (s, i) { var was = s.classList.contains("on"); s.classList.toggle("on", i === k); s.classList.toggle("was", was && i !== k); if (i === k) s.removeAttribute("aria-hidden"); else s.setAttribute("aria-hidden", "true"); }); }
+  rows.forEach(function (row) {
+    var p = +row.getAttribute("data-p"), q = +row.getAttribute("data-q"), t = roll($(".trk", row), { value: p * q, fmt: money }), qn = roll($(".qn", row), { value: q, fmt: String });
+    fs.push(nf(row, { value: q, min: 0, max: 9, step: 1, note: note, maxMsg: "Nine is the most per item.", minMsg: "That item is not in the cart.", text: function (n) { return n + " at KES " + p + " each, KES " + money(n * p); },
+      on: function (n, was, first) { t.set(n * p); qn.set(n); if (!first) { var tt = total(); amt.set(tt); pay.setAttribute("aria-disabled", String(tt === 0)); msg.textContent = tt ? "Nothing paid yet." : "Your cart is empty."; } } }));
+  });
+  amt.set(total(), true);
+  pay.addEventListener("click", function () {
+    if (busy || !total()) return; busy = true; var tt = total(); pay.setAttribute("aria-busy", "true"); show(1); msg.textContent = "Paying…";
+    setTimeout(function () { show(2); pay.removeAttribute("aria-busy"); msg.textContent = "KES " + money(tt) + " paid to Duka Fresh."; setTimeout(function () { show(0); busy = false; }, 2200); }, 1400);
+  });
+})();
+</script>

@@ -21,7 +21,7 @@
 /*CSS*/
 </style>
 <a class="skip" href="#content">Skip to content</a>
-<div class="bg-grid" aria-hidden="true"></div>
+<canvas id="bg" aria-hidden="true" data-blocks=".opt, .ref, .decide, .card, .rl-bar, .sec-head .eyebrow, .sec-head h2, .sec-head .lead, .hero .eyebrow, .hero h1, .hero .lead, .how, .legend, .hero-note, .foot" data-bands=".sec" data-ghosts=".sec-ghost"></canvas>
 <div class="scrim" id="scrim"></div>
 
 <div class="shell">
@@ -118,4 +118,136 @@
 /*META*/
 /*LIB*/
 /*PARTS*/
+</script>
+<script>
+/* bg-grid: copied from components/parts/bg-grid.html (the showcase's window.emberGrid). shortcut: build.mjs cannot include it, so after the showcase grid changes, paste it here again. */
+/* ============================================================
+   BACKGROUND: squares grid that only shows in open space.
+   The house part "bg-grid" (components/parts/bg-grid.html). Needs a canvas, id "bg" with aria-hidden, first in the
+   page body, the #bg rule, and page content above it (.shell { position: relative; z-index: 1 }).
+   strength(x, y) = max(section-gap band, page-edge glow, hero pool)
+                    x (1 - clear zone around each ghost number and block)
+   Fit it to another page with data- attributes on the canvas (each a CSS selector list):
+     data-blocks  boxes the grid keeps clear of (cards, headings, notes)
+     data-live    boxes that move on their own, measured every frame
+     data-bands   sections whose top padding is a gap where the grid shows
+     data-ghosts  big ghost numbers (they drift, so measured every frame)
+   It reads html[data-theme] and html[data-motion] and follows prefers-reduced-motion.
+   window.emberGrid: measure(), readColors(), kick(), onScroll(), scrollY.
+   ============================================================ */
+window.emberGrid = (function () {
+  "use strict";
+  var cv = document.getElementById('bg'); if (!cv || !cv.getContext) return null;
+  var root = document.documentElement, ctx = cv.getContext('2d'), reduceMQ = matchMedia('(prefers-reduced-motion: reduce)'), ghosts = [];
+  function clamp01(v) { return Math.max(0, Math.min(1, v)); }
+  function motionOn() { return root.getAttribute('data-motion') !== 'off' && !reduceMQ.matches; }
+  function opt(k, d) { return cv.getAttribute('data-' + k) || d; }
+  var W = 0, H = 0, dpr = 1, raf = 0, ink = '21,24,27', acc = '225,74,14', dark = false;
+  var S = 56, sideR = 0, cells = [], bands = [], blocks = [], colL = 0, colR = 0, heroBottom = 600, BUCKETS = 10;
+  var BLOCKS = opt('blocks', '.card, .callout, .goal, .frame, .code-win, .flow-step .fcard, .sec-head .eyebrow, .sec-head h2, .sec-head .lead, .notes li, .hero h1, .hero .lead, .hero .eyebrow, .meta-row, .scroll-cue, .tool-note, .diagram-foot > div, .step, .part-divider > *, .endcard, footer');
+  var LIVE = opt('live', '.layers-fig, .layer-list, .layers-progress, .layers-sticky .tool-note'), BANDS = opt('bands', '.sec, .part-divider'), GHOSTS = opt('ghosts', '.ghost');
+  var api = { scrollY: scrollY };
+  function smooth(e0, e1, x) { var t = clamp01((x - e0) / (e1 - e0)); return t * t * (3 - 2 * t); }
+  api.measure = function () {
+    var sy = scrollY;
+    bands = Array.prototype.map.call(document.querySelectorAll(BANDS), function (s) {
+      var r = s.getBoundingClientRect(), pt = parseFloat(getComputedStyle(s).paddingTop) || 0;
+      return [r.top + sy - 20, r.top + sy + pt * 0.92];
+    });
+    var wrap = document.querySelector('.wrap') || document.body, w = wrap.getBoundingClientRect(), pad = parseFloat(getComputedStyle(wrap).paddingLeft) || 0;
+    colL = w.left + pad; colR = w.right - pad;
+    var sb = document.querySelector('.sidebar'); sideR = innerWidth > 960 && sb ? sb.getBoundingClientRect().right : 0;
+    ghosts = Array.prototype.slice.call(document.querySelectorAll(GHOSTS));
+    var heroEl = document.querySelector('.hero'); heroBottom = heroEl ? heroEl.getBoundingClientRect().bottom + sy : 0;
+    blocks = [];
+    document.querySelectorAll(BLOCKS).forEach(function (el) {
+      if (el.closest('.layers-pin')) return;
+      var r = el.getBoundingClientRect(); if (!r.width || !r.height) return;
+      blocks.push([r.left, r.top + sy, r.right, r.bottom + sy]);
+    });
+  };
+  function ghostZones() {
+    /* clear zones in viewport coords: ghost numbers (they move with parallax) and the sticky layers block, measured live */
+    var out = [];
+    ghosts.forEach(function (g) { var r = g.getBoundingClientRect(); if (r.bottom > -150 && r.top < H + 150) out.push([r.left, r.top, r.right, r.bottom, 120]); });
+    document.querySelectorAll(LIVE).forEach(function (el) { var r = el.getBoundingClientRect(); if (r.bottom > -100 && r.top < H + 100) out.push([r.left, r.top, r.right, r.bottom, 110]); });
+    var sy = api.scrollY;
+    for (var i = 0; i < blocks.length; i++) { var b = blocks[i]; if (b[3] - sy > -100 && b[1] - sy < H + 100) out.push([b[0], b[1] - sy, b[2], b[3] - sy, 110]); }
+    return out;
+  }
+  function mask(x, vy, zones) {
+    if (x < sideR + 8) return 0;
+    var docY = vy + api.scrollY, band = 0;
+    for (var i = 0; i < bands.length; i++) {
+      var a = bands[i][0], b = bands[i][1];
+      if (docY > a - 160 && docY < b + 160) band = Math.max(band, Math.min(smooth(a - 160, a + 20, docY), 1 - smooth(b - 40, b + 160, docY)));
+    }
+    var edge = Math.max(1 - smooth(colL - 150, colL - 12, x), smooth(colR + 12, colR + 150, x)) * 0.75;
+    var hero = docY < heroBottom ? (1 - smooth(heroBottom * 0.5, heroBottom, docY)) * smooth(colL + (colR - colL) * 0.3, colR - 40, x) * 0.85 : 0;
+    var m = Math.max(band, edge, hero);
+    for (var g = 0; g < zones.length; g++) {
+      var R = zones[g], dx = Math.max(R[0] - x, 0, x - R[2]), dy = Math.max(R[1] - vy, 0, vy - R[3]);
+      var dist = Math.sqrt(dx * dx + dy * dy), f = R[4]; if (dist < f) { m *= smooth(f === 120 ? 0 : 8, f, dist); if (m < 0.01) return 0; }
+    }
+    return m;
+  }
+  api.readColors = function () {
+    var cs = getComputedStyle(root);
+    ink = cs.getPropertyValue('--ink-rgb').trim().split(/\s+/).join(',');
+    acc = cs.getPropertyValue('--accent-rgb').trim().split(/\s+/).join(',');
+    var t = root.getAttribute('data-theme'); dark = t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; draw(performance.now());
+  };
+  function resize() { dpr = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); api.measure(); }
+  function draw(now) {
+    ctx.clearRect(0, 0, W, H);
+    var sy = api.scrollY, oy = -(sy % S), base = dark ? 0.09 : 0.08, zones = ghostZones(), paths = [], b, i;
+    for (b = 0; b < BUCKETS; b++) paths.push([]);
+    for (var y = oy; y < H + S; y += S) {
+      for (var x = 0; x < W + S; x += S) {
+        var mH = mask(x + S / 2, y, zones), mV = mask(x, y + S / 2, zones);
+        if (mH > 0.03) paths[Math.min(BUCKETS - 1, Math.floor(mH * BUCKETS))].push(0, x, y);
+        if (mV > 0.03) paths[Math.min(BUCKETS - 1, Math.floor(mV * BUCKETS))].push(1, x, y);
+      }
+    }
+    ctx.lineWidth = 1;
+    for (b = 0; b < BUCKETS; b++) {
+      var P = paths[b]; if (!P.length) continue;
+      ctx.strokeStyle = 'rgba(' + ink + ',' + (base * (b + 0.5) / BUCKETS).toFixed(4) + ')';
+      ctx.beginPath();
+      for (i = 0; i < P.length; i += 3) {
+        var px = Math.round(P[i + 1]) + 0.5, py = Math.round(P[i + 2]) + 0.5;
+        ctx.moveTo(px, py); if (P[i] === 0) ctx.lineTo(px + S, py); else ctx.lineTo(px, py + S);
+      }
+      ctx.stroke();
+    }
+    if (!motionOn()) return;
+    /* a few squares glow softly, only where the grid is strong */
+    var want = Math.max(2, Math.round(W * H / 260000)), tries = 0;
+    while (cells.length < want && tries++ < 30) {
+      var cx = Math.floor(Math.random() * (W / S + 1)), row = Math.floor((sy + Math.random() * H) / S);
+      if (mask(cx * S + S / 2, row * S - sy + S / 2, zones) > 0.6) cells.push({ cx: cx, row: row, born: now, life: 5000 + Math.random() * 4000, acc: Math.random() < .75 });
+    }
+    cells = cells.filter(function (c) { return now - c.born < c.life && Math.abs(c.row * S - sy - H / 2) < H; });
+    cells.forEach(function (c) {
+      var vy = c.row * S - sy, a = Math.sin(Math.PI * (now - c.born) / c.life) * mask(c.cx * S + S / 2, vy + S / 2, zones);
+      ctx.fillStyle = c.acc ? 'rgba(' + acc + ',' + (0.065 * a) + ')' : 'rgba(' + ink + ',' + (0.035 * a) + ')';
+      ctx.fillRect(c.cx * S + 1, vy + 1, S - 1, S - 1);
+    });
+  }
+  function loop(now) { draw(now); raf = requestAnimationFrame(loop); }
+  api.kick = function () { cancelAnimationFrame(raf); raf = 0; if (motionOn() && !document.hidden) raf = requestAnimationFrame(loop); else draw(performance.now()); };
+  api.onScroll = function () { api.scrollY = scrollY; if (!raf) draw(performance.now()); };
+  addEventListener('resize', function () { resize(); api.kick(); });
+  document.addEventListener('visibilitychange', api.kick);
+  /* on its own: scroll, theme, motion and layout changes keep it right (a page may also call these) */
+  addEventListener('scroll', api.onScroll, { passive: true });
+  reduceMQ.addEventListener && reduceMQ.addEventListener('change', api.kick);
+  new MutationObserver(function (m) { if (m.some(function (r) { return r.attributeName === 'data-theme'; })) api.readColors(); else api.kick(); }).observe(root, { attributes: true, attributeFilter: ['data-theme', 'data-motion'] });
+  var rq = 0; function later() { if (!rq) rq = requestAnimationFrame(function () { rq = 0; api.measure(); api.onScroll(); }); }
+  if (window.ResizeObserver) new ResizeObserver(later).observe(document.body);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(later);
+  addEventListener('load', later);
+  resize(); api.readColors(); api.kick();
+  return api;
+})();
 </script>

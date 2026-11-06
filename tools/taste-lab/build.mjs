@@ -10,9 +10,12 @@ const src = (f) => readFileSync(join(here, 'src', f), 'utf8');
 const R = Number(process.argv[2] || 1);
 const r1 = (await Promise.all(['b1.mjs', 'b2.mjs', 'b3.mjs', 'b4.mjs'].map((f) => import(join(here, 'src', f))))).flatMap((b) => b.default);
 const rN = R === 1 ? null : await import(join(here, 'src', `r${R}`, 'index.mjs'));
-const comps = R === 1 ? r1 : rN.default;
+// ONLY=<batch> builds one batch alone (rN.batches[ONLY]) to preview-rN-<batch>.html, so builders don't block each other
+const ONLY = process.env.ONLY;
+const comps = R === 1 ? r1 : ONLY ? rN.batches[ONLY] : rN.default;
+if (!comps) throw new Error(`no batch ${ONLY}`);
 // later rounds reuse round 1's shared helpers (window.TL*), not its sections
-const helpers = R === 1 ? [] : r1;
+const helpers = R === 1 ? [] : [...r1, ...(rN.helpers || [])]; // rN.helpers: earlier rounds' parts whose shared js/css load without their sections
 // the lively option comes first from round 2 on (notes/owner-likes.md)
 const ORDER = R === 1 ? 'ABCDEF' : 'BACDFE';
 for (const c of comps) c.opts.sort((a, b) => ORDER.indexOf(a.k) - ORDER.indexOf(b.k));
@@ -79,7 +82,8 @@ ${c.opts.map((o) => optCard(c, o)).join('\n')}
 </section>`;
 
 const css = src('frame.css') + src('base.css') + helpers.map((c) => c.css || '').join('\n') + comps.map((c) => (c.css || '') + c.opts.map((o) => o.css || '').join('\n')).join('\n');
-const js = helpers.map((c) => c.js || '').join('\n') + '\n' + comps.map((c) => [c.js ? `run(${JSON.stringify(c.id)}, function (sec) {\n${c.js}\n});` : '', ...c.opts.map((o) => (o.js ? `run(${JSON.stringify(`t${c.n}${o.k}`)}, function (box) {\n${o.js}\n});` : ''))].join('\n')).join('\n');
+const wrapHelper = (c) => (r1.includes(c) ? c.js || '' : c.js ? `(function (sec) { try {\n${c.js}\n} catch (e) { /* the part's own wiring has no section on this page; its window.TL* helpers are already set */ } })(document.createElement('section'));` : '');
+const js = helpers.map(wrapHelper).join('\n') + '\n' + comps.map((c) => [c.js ? `run(${JSON.stringify(c.id)}, function (sec) {\n${c.js}\n});` : '', ...c.opts.map((o) => (o.js ? `run(${JSON.stringify(`t${c.n}${o.k}`)}, function (box) {\n${o.js}\n});` : ''))].join('\n')).join('\n');
 const meta = comps.map((c) => ({ id: c.id, n: c.n, name: c.name, opts: c.opts.map((o) => ({ k: o.k, name: o.name, tags: o.tags })) }));
 
 let page = src('page.html')
@@ -92,12 +96,12 @@ let page = src('page.html')
   .replaceAll('{{COUNT}}', String(comps.length))
   .replaceAll('{{OPTS}}', String(comps.reduce((n, c) => n + c.opts.length, 0)));
 if (R > 1) {
-  page = page.replaceAll('Round 1', `Round ${R}`).replaceAll('round 1', `round ${R}`).replace("ROUND = 'r1'", `ROUND = 'r${R}'`)
+  page = page.replace(/\b([Rr])ound 1(?![\w.%])/g, (m, r) => `${r}ound ${R}`) // only the words, never CSS like `inset(… round 12px)`.replace("ROUND = 'r1'", `ROUND = 'r${R}'`)
     .replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${esc(rN.description)}">`)
     .replace(/<p class="lead" data-reveal style="--i:2">[\s\S]*?<\/p>/, () => `<p class="lead" data-reveal style="--i:2">${rN.lead}</p>`)
     .replace(/\s*<div class="lg is-off">[\s\S]*?<\/div>/, '');
 }
-const OUT = R === 1 ? '' : `-r${R}`;
+const OUT = (R === 1 ? '' : `-r${R}`) + (ONLY ? `-${ONLY}` : '');
 
 writeFileSync(join(here, `taste-lab${OUT}.html`), page);
 // local preview: the same page in the skeleton the Artifact tool adds

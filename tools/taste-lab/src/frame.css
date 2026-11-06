@@ -86,7 +86,6 @@ body {
   margin: 0; background: var(--paper); color: var(--ink);
   font-family: var(--font-body); font-size: 17px; line-height: 1.65;
   -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
-  transition: background-color .4s var(--ease-out), color .4s var(--ease-out);
 }
 ::selection { background: rgb(var(--accent-rgb) / .2); }
 a { color: var(--accent-text); text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .35s var(--ease-out); }
@@ -111,6 +110,8 @@ h3 { font-family: var(--font-body); font-size: 19px; font-weight: 600; letter-sp
 .mono-label { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .num:not(.kit *) { font-family: var(--font-num); font-weight: 500; letter-spacing: -0.005em; font-variant-numeric: lining-nums proportional-nums; }
 .tnum { font-variant-numeric: lining-nums tabular-nums; }
+/* the squares grid (part bg-grid): only in open gaps, drawn by the script at the end of page.html */
+#bg { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 .shell { --sb-cur: var(--sb-w); position: relative; z-index: 1; display: grid; grid-template-columns: var(--sb-cur) minmax(0, 1fr); min-height: 100vh; transition: grid-template-columns .45s var(--ease-out); }
 html[data-sb="collapsed"] .shell { --sb-cur: var(--sb-rail); }
 html.is-resizing .shell { transition: none; }
@@ -133,7 +134,14 @@ html[data-sb="collapsed"] .sb-collapse svg { transform: rotate(180deg); }
 .sb-group { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); padding: 16px 10px 8px; white-space: nowrap; overflow: hidden; }
 .sb-list { list-style: none; margin: 0; padding: 0; }
 .sb-link { position: relative; display: flex; align-items: center; gap: 12px; padding: 7px 10px; border-radius: 8px; color: var(--ink-soft); background: none; font-size: 14.5px; line-height: 1.3; white-space: nowrap; transition: background-color .2s, color .2s; }
-.sb-link:hover { background: rgb(var(--ink-rgb) / .05); color: var(--ink); }
+.sb-link:hover { color: var(--ink); }
+/* one highlight glides between the links of a list on hover (Arc's floating group); links sit above it */
+.glide-hl { position: absolute; left: 0; top: 0; z-index: -1; pointer-events: none; border-radius: 8px; background: rgb(var(--ink-rgb) / .06); opacity: 0; transform-origin: center; transition: transform .34s cubic-bezier(.22,1,.36,1), width .34s cubic-bezier(.22,1,.36,1), height .34s cubic-bezier(.22,1,.36,1), opacity .16s var(--ease-out), scale .2s var(--ease-out); scale: .94; }
+.glide-hl.on { opacity: 1; scale: 1; }
+.sb-link { position: relative; z-index: 1; }
+html[data-motion="off"] .glide-hl { transition: opacity .12s; }
+@media (prefers-reduced-motion: reduce) { .glide-hl { transition: opacity .12s; } }
+
 .sb-link .k { flex: 0 0 26px; font-family: var(--font-mono); font-size: 11.5px; color: var(--dim); text-align: center; transition: color .2s; }
 .sb-link .t { overflow: hidden; text-overflow: ellipsis; transition: opacity .2s var(--ease-out); }
 .sb-link.is-active { color: var(--ink); background: rgb(var(--accent-rgb) / .08); }
@@ -175,10 +183,16 @@ html[data-sb="collapsed"] .sb-link[data-tip]:hover::after { content: attr(data-t
 .btn-accent { background: var(--accent); color: var(--on-accent); border-color: transparent; }
 .btn-accent:hover { border-color: transparent; filter: brightness(1.06); }
 .theme-toggle { position: relative; overflow: hidden; border: 1px solid var(--line-hi); background: var(--paper-raised); box-shadow: var(--shadow-sm); }
-.theme-toggle svg { position: absolute; transition: transform .6s var(--ease-out), opacity .3s; }
-.theme-toggle .moon { transform: translateY(26px) rotate(-60deg); opacity: 0; }
-html[data-theme="dark"] .theme-toggle .sun { transform: translateY(-26px) rotate(60deg); opacity: 0; }
-html[data-theme="dark"] .theme-toggle .moon { transform: none; opacity: 1; }
+/* Arc's icon swap: sun and moon share one spot and turn the same way; the old one shrinks, turns and blurs out fast, the new one springs in */
+.theme-toggle svg { position: absolute; transition: transform var(--sp-snappy-d, .32s) var(--sp-snappy, cubic-bezier(.22,1,.36,1)), opacity .14s var(--ease-out), filter .14s var(--ease-out); }
+.theme-toggle .moon { transform: scale(.7) rotate(-30deg); opacity: 0; filter: blur(2px); }
+html[data-theme="dark"] .theme-toggle .sun { transform: scale(.7) rotate(30deg); opacity: 0; filter: blur(2px); }
+html[data-theme="dark"] .theme-toggle .moon { transform: none; opacity: 1; filter: none; }
+/* during a theme change nothing fades on its own: the wipe is the only motion (the icon keeps its swap) */
+html.theme-swap *:not(.theme-toggle svg), html.theme-swap *::before, html.theme-swap *::after { transition: none !important; }
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+html[data-motion="off"] .theme-toggle svg { transition: none; }
+@media (prefers-reduced-motion: reduce) { .theme-toggle svg { transition: opacity .12s; } }
 main { min-width: 0; }
 .wrap:not(.kit *) { max-width: 1160px; margin: 0 auto; padding: 0 clamp(20px, 4.5vw, 64px); }
 .sec { position: relative; padding: clamp(88px, 11vw, 150px) 0 0; }

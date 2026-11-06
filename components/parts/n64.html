@@ -1,0 +1,94 @@
+<!-- part n64 | part | group charts | When the deal ends, the next step is right there. | When the deal ends, the next step is right there. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">When the deal ends, <em>the next step is right there.</em></h3>
+          <p class="kit-p">Press Skip: the minutes fold away and the pill shrinks to fit. At zero, a button grows in where the line was.</p>
+          <section class="cs kv4" id="n64">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="c4">
+      <p class="ck">Mawimbi Mobile: 10 GB for KES 499</p>
+      <div class="pill" role="timer" aria-label="Time left on the deal"><span class="bgw"><span class="bg"></span></span>
+        <span class="row" aria-hidden="true"><span class="dot"></span><span class="ct">Ends in</span><span class="u mu"><b class="mm"></b><small>m</small></span><span class="u"><b class="ss"></b><small>s</small></span></span>
+        <span class="end" aria-hidden="true">Deal ended</span><span class="sr-only" data-st=""></span>
+      </div>
+      <div class="slot"><div class="ln" aria-hidden="true"><i></i></div><button class="b sm rm" type="button"><span class="bl"><span data-s="a" class="on">Remind me next time</span><span data-s="b" aria-hidden="true"><span class="tkw"></span>We will text you</span></span></button></div>
+      <div class="act"><button class="b sm" type="button" data-skip="">Skip to the last 10 s</button><button class="b sm" type="button" data-again="">Start again</button></div>
+      <p class="sr-only" aria-live="polite" data-live=""></p>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0066">
+(function () {
+  "use strict";
+  var box = document.getElementById("n64"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function dur(n) { return (parseFloat(getComputedStyle(root).getPropertyValue("--sp-" + n + "-d")) || .4) * 1000; }
+  var TK = '<svg class="tk" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"/><path d="M6.6 11.4 9.6 14.3l5.8-6.4"/></svg>';
+  /* The house odometer, the same as n07. */
+  function roll(el, o) {
+    var api = { value: o.value }, slots = {}, order = [], raf = 0, last = 0, built = false;
+    var vis = document.createElement("span"), sr = document.createElement("span");
+    vis.className = "rv"; vis.setAttribute("aria-hidden", "true"); sr.className = "sr-only";
+    el.textContent = ""; el.appendChild(vis); el.appendChild(sr);
+    function md(a) { return ((a % 10) + 10) % 10; }
+    function rank(k) { var c = k.charAt(0), i = parseInt(k.slice(1), 10); return c === "p" ? i : c === "d" ? 1000 - 2 * i : c === "s" ? 1001 - 2 * i : 3000 + i; }
+    function parse(s) { var tot = (s.match(/[0-9]/g) || []).length, seen = 0, p = 0, x = 0, out = []; for (var i = 0; i < s.length; i++) { var ch = s.charAt(i); if (ch >= "0" && ch <= "9") { seen++; out.push({ k: "d" + (tot - seen), d: +ch }); } else out.push({ k: (seen === 0 ? "p" + p++ : seen === tot ? "x" + x++ : "s" + (tot - seen)) + ch, ch: ch }); } return out; }
+    function mk(t) { var e = document.createElement("span"), s = { k: t.k, el: e, r: rank(t.k) }; if (t.d != null) { var st = document.createElement("span"), i, h = ""; for (i = 0; i < 11; i++) h += "<span>" + (i % 10) + "</span>"; e.className = "dg"; st.className = "st7"; st.innerHTML = h; e.appendChild(st); s.st = st; s.x = s.T = s.g = s.f = s.v = s.at = 0; } else { e.className = "cm"; e.textContent = t.ch; } return s; }
+    function cfg() { var d = (parseFloat(getComputedStyle(box).getPropertyValue("--sp-soft-d")) || .67) * 1000, calm = lv() === "calm", z = calm ? 1 : .86, D = calm ? d * .6 : d; return { Z: z, W: 4.6 / (z * D / 1000) }; }
+    function draw(s) { s.st.style.transform = "translateY(" + (-md(s.x) * 100 / 11).toFixed(3) + "%)"; }
+    function tick(t) { var c = cfg(), dt = Math.min(.032, Math.max(.001, (t - last) / 1000)), busy = false; last = t; order.forEach(function (s) { if (!s.st) return; if (s.at && t >= s.at) { s.at = 0; s.T = s.g; } if (s.at) busy = true; else if (s.x !== s.T || s.v) { s.v += (-c.W * c.W * (s.x - s.T) - 2 * c.Z * c.W * s.v) * dt; s.x += s.v * dt; if (Math.abs(s.x - s.T) < .003 && Math.abs(s.v) < .05) { s.x = s.T; s.v = 0; } else busy = true; } if (s.x === s.T && !s.at) { var w = s.T - md(s.T); if (w) { s.x -= w; s.T -= w; s.g -= w; } } draw(s); }); raf = busy ? requestAnimationFrame(tick) : 0; }
+    function wid(e) { return e.getBoundingClientRect().width; }
+    function kill(s) { if (s.wa) s.wa.cancel(); s.el.remove(); var i = order.indexOf(s); if (i >= 0) order.splice(i, 1); if (slots[s.k] === s) delete slots[s.k]; }
+    function leave(s, mv) { s.gone = true; if (!mv) { kill(s); return; } var w = wid(s.el); if (s.wa) s.wa.cancel(); s.wa = s.el.animate([{ width: w + "px", opacity: 1 }, { opacity: 0, offset: .55 }, { width: "0px", opacity: 0 }], { duration: 420, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" }); s.wa.onfinish = function () { if (s.gone) kill(s); }; }
+    function grow(s, w0) { var w1 = wid(s.el); if (w1 - w0 > .5) s.wa = s.el.animate([{ width: w0 + "px", opacity: w0 / w1 }, { opacity: w0 / w1, offset: .3 }, { width: w1 + "px", opacity: 1 }], { duration: 460, easing: "cubic-bezier(.22,1,.36,1)" }); }
+    api.set = function (v, instant) { var old = api.value, dir = v >= old ? 1 : -1, str = o.fmt(v), toks = parse(str), now = performance.now(), mv = built && moving() && !instant, keep = {}, rk = 0, j, s; api.value = v; sr.textContent = o.say ? o.say(str) : str;
+      toks.forEach(function (t) { var s = slots[t.k]; keep[t.k] = 1; if (!s) { s = slots[t.k] = mk(t); var nx = null; for (var i = 0; i < order.length; i++) if (order[i].r > s.r) { nx = order[i]; break; } vis.insertBefore(s.el, nx ? nx.el : null); order.splice(nx ? order.indexOf(nx) : order.length, 0, s); if (mv) { s.el.style.width = "0px"; s.enter = true; } } else if (s.gone) { s.gone = false; var w0 = wid(s.el); if (s.wa) s.wa.cancel(); s.wa = null; if (mv) grow(s, w0); } });
+      order.slice().forEach(function (s) { if (keep[s.k] || s.gone) return; if (s.st) { var c0 = md(s.g); if (c0) { s.g += dir > 0 ? md(-c0) : -c0; if (mv) { s.at = 0; s.T = s.g; } } } leave(s, mv); });
+      order.forEach(function (s) { if (s.enter) { s.enter = false; s.el.style.width = ""; grow(s, 0); } });
+      for (j = toks.length - 1; j >= 0; j--) { var t = toks[j]; if (t.d == null) continue; s = slots[t.k]; var cd = md(s.g); if (cd === t.d) continue; var g = s.g + (dir > 0 ? md(t.d - cd) : -md(cd - t.d)); if (!mv) { s.x = s.T = s.g = g; s.v = s.at = 0; draw(s); continue; } s.g = g; var dl = 30 * rk++; if (dl > 0) s.at = now + dl; else { s.at = 0; s.T = g; } }
+      if (!mv) { order.forEach(function (s) { if (s.st) { s.x = s.T = s.g; s.v = s.at = 0; draw(s); } }); if (built && old !== v && !instant) vis.animate([{ opacity: .3 }, { opacity: 1 }], { duration: 180, easing: "ease-out" }); } else if (!raf) { last = now; raf = requestAnimationFrame(tick); } };
+    api.set(api.value, true); built = true;
+    return api;
+  }
+  /* A Mawimbi Mobile deal that ends. The minutes fold away at 0, the pill springs to fit, and at zero a button grows in where the line was. */
+  var SECS = 90, PAD = 14, c4 = $(".c4"), row = $(".row"), end = $(".end"), bgw = $(".bgw"), bg = $(".bg"), mu = $(".mu"), st = $("[data-st]"), live = $("[data-live]"), line = $(".ln i"), rm = $(".rm"), S = $$(".bl > span");
+  var left = SECS, ended = false, seen = false, timer = 0, maxW = 0, muOn = true, mwa = null;
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  var mR = roll($(".mm"), { value: Math.floor(left / 60), fmt: String }), sR = roll($(".ss"), { value: left % 60, fmt: pad });
+  function words(t) { var m = Math.floor(t / 60), s = t % 60; return (m ? m + (m === 1 ? " minute " : " minutes ") : "") + s + (s === 1 ? " second" : " seconds") + " left"; }
+  function rowW() { return row.offsetWidth - (muOn ? 0 : mu.offsetWidth + 6) * (mu.hidden ? 0 : 1); }
+  function size(w, jump) { if (jump) bg.style.transition = "none"; bg.style.clipPath = "inset(0 " + ((maxW - w) / 2).toFixed(1) + "px round 20px)"; if (jump) { void bg.offsetWidth; bg.style.transition = ""; } }
+  function measure() { mu.hidden = false; maxW = Math.max(row.offsetWidth, end.offsetWidth) + PAD * 2 + 4; if (!muOn) mu.hidden = true; bg.style.width = maxW + "px"; bgw.style.marginLeft = (-maxW / 2) + "px"; size((ended ? end.offsetWidth : rowW()) + PAD * 2, true); }
+  function minutes(on) {
+    if (on === muOn) return; muOn = on; if (mwa) mwa.cancel();
+    if (!on) {
+      var w = mu.offsetWidth; size(rowW() + PAD * 2);
+      if (moving()) { mwa = mu.animate([{ width: w + "px", marginRight: "0px", opacity: 1 }, { width: "0px", marginRight: "-6px", opacity: 0 }], { duration: dur("snappy"), easing: sp("snappy") }); mwa.onfinish = function () { if (!muOn) mu.hidden = true; }; }
+      else mu.hidden = true;
+    } else {
+      mu.hidden = false; var w1 = mu.offsetWidth; size(row.offsetWidth + PAD * 2);
+      if (moving()) mwa = mu.animate([{ width: "0px", marginRight: "-6px", opacity: 0 }, { width: w1 + "px", marginRight: "0px", opacity: 1 }], { duration: dur("bouncy"), easing: sp("bouncy") });
+    }
+  }
+  function paint(first) {
+    var m = Math.floor(left / 60), s = left % 60;
+    mR.set(m, first); sR.set(s, first); minutes(m > 0);
+    st.textContent = words(left); line.style.transform = "scaleX(" + (left / SECS) + ")";
+  }
+  function loop() { clearTimeout(timer); if (!seen || document.hidden || ended) return; timer = setTimeout(function () { left = Math.max(0, left - 1); paint(); if (left === 0) finish(); else loop(); }, 1000); }
+  function finish() { ended = true; c4.classList.add("is-over"); size(end.offsetWidth + PAD * 2); st.textContent = "The deal has ended"; live.textContent = "The deal has ended. You can ask us to remind you next time."; }
+  function swap(k) { S.forEach(function (s, i) { var was = s.classList.contains("on"); s.classList.toggle("on", i === k); s.classList.toggle("was", was && i !== k); if (i === k) s.removeAttribute("aria-hidden"); else s.setAttribute("aria-hidden", "true"); }); }
+  rm.addEventListener("click", function () { if (!ended || S[1].classList.contains("on")) return; $(".tkw", rm).innerHTML = TK; swap(1); live.textContent = "Done. We will text you when the next deal starts."; });
+  $("[data-skip]").addEventListener("click", function () { if (ended) return; left = Math.min(left, 10); paint(); loop(); });
+  $("[data-again]").addEventListener("click", function () { clearTimeout(timer); ended = false; c4.classList.remove("is-over"); left = SECS; swap(0); paint(); live.textContent = "The timer started again."; loop(); });
+  paint(true); measure(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { seen = es[0].isIntersecting; loop(); }).observe(c4); else { seen = true; loop(); }
+  document.addEventListener("visibilitychange", loop);
+})();
+</script>

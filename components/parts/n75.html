@@ -1,0 +1,118 @@
+<!-- part n75 | part | group nav | A path that moves with you. | A path that moves with you. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A path that <em>moves with you.</em></h3>
+          <p class="kit-p">A shop's folders, seven deep. Open two folders, then click Branches in the path. The middle folds into "…", which opens a small menu.</p>
+          <section class="cs kv4" id="n75">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="bc">
+      <div class="bar"><nav class="nv" aria-label="Folder path" data-glide=".lk"><ol></ol></nav><div class="menu" id="n75-menu" role="menu" aria-label="Hidden folders" data-glide=".mi"></div></div>
+      <div class="bd"><p class="here" tabindex="-1"></p><ul class="kids" data-glide=".kid"></ul></div>
+      <p class="say" aria-live="polite"></p>
+    </div>
+  </div></div></div>
+</section>
+        </div>
+<script data-slot="0080">
+(function () {
+  "use strict";
+  var box = document.getElementById("n75"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  var c = { inline: false };
+  var TREE = { Home: ["Duka Fresh", "Mawimbi Mobile"], "Duka Fresh": ["Branches", "Staff", "Payouts"], "Mawimbi Mobile": ["Branches", "Payouts"], Branches: ["Westlands", "Karen", "Thika Road"], Westlands: ["Orders", "Stock"], Karen: ["Orders", "Stock"], "Thika Road": ["Orders", "Stock"], Orders: ["2026", "2025"], "2026": ["November", "October", "September"], "2025": ["December", "November"] };
+  var LEAF = { November: 48, October: 112, September: 96, December: 131, Stock: 37, Staff: 6, Payouts: 14 };
+  var path = ["Home", "Duka Fresh", "Branches", "Westlands", "Orders", "2026", "November"];
+  var bar = $(".bar"), navEl = $(".nv"), ol = $("ol"), here = $(".here"), kidsEl = $(".kids"), say = $(".say"), menu = $(".menu");
+  var FOLDER = '<svg class="i" aria-hidden="true"><use href="#i-folder"/></svg>', CH = '<span class="sp" aria-hidden="true"><svg class="i"><use href="#i-cr"/></svg></span>';
+  var els = {}, expanded = false, built = false, hid = [], menuOpen = false, foldT = 0, lastW = 0;
+  function mkLink(k, n, i) { var li = document.createElement("li"); li.className = "cr"; li.setAttribute("data-k", k); li.innerHTML = CH + '<a class="lk" href="#" data-i="' + i + '"></a>'; $("a", li).textContent = n; return li; }
+  var curLi = document.createElement("li"); curLi.className = "cr"; curLi.setAttribute("data-k", "cur"); curLi.innerHTML = CH + '<span class="cur" aria-current="page"><span></span></span>';
+  var cl = $(".cur span", curLi);
+  var moreLi = document.createElement("li"); moreLi.className = "cr"; moreLi.setAttribute("data-k", "more");
+  moreLi.innerHTML = CH + '<button class="lk more" type="button" ' + (c.inline ? 'aria-expanded="false"' : 'aria-haspopup="menu" aria-expanded="false" aria-controls="n75-menu"') + '><span aria-hidden="true">…</span></button>';
+  var moreBtn = $("button", moreLi);
+  function vis() { return $$(".cr", ol).filter(function (li) { return !li.hidden; }); }
+  function rel(r, nr) { return { x: r.left - nr.left, y: r.top - nr.top, w: r.width }; }
+  /* a name that leaves fades where it stood */
+  function ghost(li, r) { var g = li.cloneNode(true); g.classList.add("gh"); g.removeAttribute("data-k"); g.hidden = false; g.setAttribute("aria-hidden", "true"); g.style.left = r.x + "px"; g.style.top = r.y + "px"; g.style.width = r.w + "px"; navEl.appendChild(g);
+    g.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "translateX(6px) scale(.96)" }], { duration: 200, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" }).onfinish = function () { g.remove(); }; }
+  function render(dir) {
+    var nr = navEl.getBoundingClientRect(), before = {}, mv = built && moving(), h0 = bar.offsetHeight, keep = {}, list = [], wasHidden = {};
+    vis().forEach(function (li) { li.getAnimations().forEach(function (a) { a.finish(); }); before[li.getAttribute("data-k")] = rel(li.getBoundingClientRect(), nr); });
+    path.forEach(function (n, i) { var last = i === path.length - 1, k = last ? "cur" : i + ":" + n; if (!last && !els[k]) els[k] = mkLink(k, n, i); keep[k] = 1; list.push(last ? curLi : els[k]); });
+    Object.keys(els).forEach(function (k) { if (keep[k]) return; var li = els[k]; if (mv && !li.hidden && before[k]) ghost(li, before[k]); li.remove(); delete els[k]; });
+    list.forEach(function (li, j) { ol.appendChild(li); if (j === 0) ol.appendChild(moreLi); });
+    list.forEach(function (li) { wasHidden[li.getAttribute("data-k")] = !before[li.getAttribute("data-k")]; li.hidden = false; });
+    moreLi.hidden = true; hid = [];
+    ol.classList.toggle("wrap", expanded); ol.classList.add("measure");
+    if (!expanded && list.length > 3 && ol.scrollWidth > navEl.clientWidth + .5) {
+      moreLi.hidden = false;
+      for (var i = 1; i < list.length - 1 && ol.scrollWidth > navEl.clientWidth + .5; i++) { list[i].hidden = true; hid.push(i); }
+    }
+    ol.classList.remove("measure");
+    if (mv) list.forEach(function (li) { var k = li.getAttribute("data-k"); if (li.hidden && before[k]) ghost(li, before[k]); });
+    var name = path[path.length - 1];
+    if (cl.textContent !== name) { cl.textContent = name; if (mv) cl.animate([{ opacity: 0, transform: "translateY(" + (dir < 0 ? -8 : 8) + "px)" }, { opacity: 1, transform: "none" }], { duration: 300, easing: "cubic-bezier(.22,1,.36,1)" }); }
+    moreBtn.setAttribute("aria-label", "Show " + hid.length + " hidden folder" + (hid.length === 1 ? "" : "s"));
+    if (c.inline) moreBtn.setAttribute("aria-expanded", String(expanded));
+    else menu.innerHTML = hid.map(function (i, j) { return '<button class="mi" type="button" role="menuitem" data-i="' + i + '" style="padding-left:' + (10 + j * 12) + 'px">' + FOLDER + "<span>" + path[i] + "</span></button>"; }).join("");
+    if (mv) {
+      var nr2 = navEl.getBoundingClientRect(), d = (parseFloat(sp("snappy-d")) || .37) * 1000;
+      vis().forEach(function (li) {
+        var k = li.getAttribute("data-k"), b = before[k], r = rel(li.getBoundingClientRect(), nr2);
+        if (b && !wasHidden[k]) { var dx = b.x - r.x, dy = b.y - r.y; if (Math.abs(dx) + Math.abs(dy) > .5) li.animate([{ transform: "translate(" + dx + "px," + dy + "px)" }, { transform: "none" }], { duration: d, easing: sp("snappy") }); }
+        else li.animate([{ opacity: 0, transform: "translateX(-8px)", filter: "blur(3px)" }, { opacity: 1, transform: "none", filter: "none" }], { duration: 300, delay: 40, easing: "cubic-bezier(.22,1,.36,1)", fill: "backwards" });
+      });
+      if (c.inline) glide(bar, h0, 380);
+    }
+    built = true;
+  }
+  function kids(dir) {
+    var cur = path[path.length - 1], ks = TREE[cur] || [];
+    here.textContent = "Inside " + cur;
+    kidsEl.innerHTML = ks.length ? ks.map(function (n) { var cnt = TREE[n] ? TREE[n].length + " folders" : (LEAF[n] || 0) + " files"; return '<li><button class="kid" type="button" data-n="' + n + '">' + FOLDER + "<span>" + n + "</span><small>" + cnt + "</small></button></li>"; }).join("")
+      : '<li class="leaf">' + (LEAF[cur] || 0) + " receipts are kept here. Use the path above to go back.</li>";
+    if (moving() && built && dir) kidsEl.animate([{ opacity: 0, transform: "translateX(" + dir * 14 + "px)" }, { opacity: 1, transform: "none" }], { duration: 300, easing: "cubic-bezier(.22,1,.36,1)" });
+  }
+  function setMenu(v, back) { if (c.inline || v === menuOpen) return; menuOpen = v; menu.classList.toggle("on", v); moreBtn.setAttribute("aria-expanded", String(v));
+    if (v) { var br = bar.getBoundingClientRect(), mr = moreBtn.getBoundingClientRect(); menu.style.left = Math.max(0, Math.min(mr.left - br.left - 4, br.width - Math.min(menu.offsetWidth || 196, br.width) - 2)) + "px"; var f = $(".mi", menu); if (f) setTimeout(function () { f.focus({ preventScroll: true }); }, 0); }
+    else if (back) moreBtn.focus({ preventScroll: true }); }
+  function go(np, dir, msg) {
+    var hadFocus = box.contains(document.activeElement);
+    setMenu(false); path = np; expanded = false; render(dir); kids(dir); say.textContent = msg;
+    if (hadFocus) here.focus({ preventScroll: true });
+  }
+  function up(i) { if (i >= path.length - 1) return; go(path.slice(0, i + 1), -1, "Back in " + path[i] + "."); }
+  ol.addEventListener("click", function (e) { var a = e.target.closest && e.target.closest("a.lk"); if (!a) return; e.preventDefault(); up(+a.getAttribute("data-i")); });
+  kidsEl.addEventListener("click", function (e) { var b = e.target.closest && e.target.closest(".kid"); if (!b) return; var n = b.getAttribute("data-n"); go(path.concat([n]), 1, "Opened " + n + "."); });
+  if (c.inline) {
+    /* "…" opens the hidden folders in place; move away and the path folds back up */
+    var shut = function () { if (!expanded) return; expanded = false; render(0); };
+    moreBtn.addEventListener("click", function () { expanded = true; render(0); var f = vis()[1]; if (f) $(".lk", f).focus({ preventScroll: true }); });
+    bar.addEventListener("pointerleave", function () { clearTimeout(foldT); foldT = setTimeout(function () { if (!bar.contains(document.activeElement)) shut(); }, 900); });
+    bar.addEventListener("pointerenter", function () { clearTimeout(foldT); });
+    bar.addEventListener("focusout", function (e) { if (!bar.contains(e.relatedTarget)) { clearTimeout(foldT); foldT = setTimeout(function () { if (!bar.contains(document.activeElement) && !bar.matches(":hover")) shut(); }, 300); } });
+    bar.addEventListener("keydown", function (e) { if (e.key === "Escape" && expanded) { e.stopPropagation(); shut(); moreBtn.focus({ preventScroll: true }); } });
+  } else {
+    moreBtn.addEventListener("click", function () { setMenu(!menuOpen, true); });
+    menu.addEventListener("click", function (e) { var b = e.target.closest && e.target.closest(".mi"); if (b) up(+b.getAttribute("data-i")); });
+    menu.addEventListener("keydown", function (e) { var its = $$(".mi", menu), i = its.indexOf(document.activeElement);
+      if (e.key === "Escape") { e.stopPropagation(); setMenu(false, true); }
+      else if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); its[(i + (e.key === "ArrowDown" ? 1 : -1) + its.length) % its.length].focus(); }
+      else if (e.key === "Tab") setMenu(false); });
+    document.addEventListener("pointerdown", function (e) { if (menuOpen && !menu.contains(e.target) && !moreBtn.contains(e.target)) setMenu(false); });
+  }
+  navEl.addEventListener("keydown", function (e) {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight" && e.key !== "Home" && e.key !== "End") return;
+    var ls = vis().map(function (li) { return $(".lk", li); }).filter(Boolean), i = ls.indexOf(document.activeElement); if (i < 0) return;
+    e.preventDefault(); i = e.key === "Home" ? 0 : e.key === "End" ? ls.length - 1 : Math.max(0, Math.min(ls.length - 1, i + (e.key === "ArrowRight" ? 1 : -1))); ls[i].focus();
+  });
+  render(0); kids(0); say.textContent = "Click a name in the path to go back up.";
+  if (window.ResizeObserver) new ResizeObserver(function () { var w = box.clientWidth; if (built && Math.abs(w - lastW) > 1) { lastW = w; render(0); } }).observe(box);
+})();
+</script>

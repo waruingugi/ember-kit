@@ -1,0 +1,119 @@
+<!-- part n74 | part | group forms | Once files are in, the box folds into a slim bar. | Once files are in, the box folds into a slim bar. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">Once files are in, the box <em>folds into a slim bar.</em></h3>
+          <p class="kit-p">Send papers to PocketPay. Press Try sample files, then remove them with ×: each row shrinks at once to an Undo line, and when the last file goes, the bar opens back into the full box.</p>
+          <section class="cs kv4" id="n74">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="dz">
+      <div class="drop" role="button" tabindex="0" aria-describedby="n74-h">
+        <svg class="edge" aria-hidden="true"><rect></rect></svg>
+        <span class="ic" aria-hidden="true"><svg class="i"><use href="#i-up"></use></svg></span>
+        <p class="tt">Drop files here, or <u>choose them</u></p>
+        <p class="hh" id="n74-h">PDF, PNG or JPG, up to 10 MB each. Up to 5 files.</p>
+        <input type="file" multiple="" accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg" hidden="">
+      </div>
+      <div class="tools"><button class="b sm" type="button" data-try="">Try sample files</button><p class="nt" aria-live="polite"></p></div>
+      <ul class="ls" aria-label="Files"></ul>
+      <div class="ov" aria-hidden="true">Drop to add them</div>
+      <p class="sr-only" aria-live="polite"></p>
+    </div>
+  </div></div></div>
+</section>
+        </div>
+<script data-slot="0079">
+(function () {
+  "use strict";
+  var box = document.getElementById("n74"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function sp(n) { return getComputedStyle(root).getPropertyValue("--sp-" + n).trim() || "cubic-bezier(.22,1,.36,1)"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  var LIM = 10 * 1048576, MAX = 5, OK = /\.(pdf|png|jpe?g)$/i, files = [], uid = 0;
+  var TICK = '<svg class="tk" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"/><path d="M6.6 11.4 9.6 14.3l5.8-6.4"/></svg>';
+  var XX = '<svg class="xx" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"/><path d="M7.5 7.5l7 7M14.5 7.5l-7 7"/></svg>';
+  function ic(n) { return '<svg class="i" aria-hidden="true"><use href="#i-' + n + '"/></svg>'; }
+  var dz = $(".dz"), drop = $(".drop"), inp = $("input", drop), ls = $(".ls"), nt = $(".nt"), tt = $(".tt"), say = $(".sr-only"), T0 = tt.innerHTML;
+  function size(b) { return b >= 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.max(1, Math.round(b / 1024)) + " KB"; }
+  function live() { return files.filter(function (f) { return !f.gone; }); }
+  /* the big box folds into a slim bar while files are in, and opens back when the last one goes */
+  function slim() {
+    var on = live().length > 0; if (dz.classList.contains("slim") === on) return;
+    var h0 = drop.offsetHeight, p0 = getComputedStyle(drop).paddingTop;
+    dz.classList.toggle("slim", on); tt.innerHTML = on ? "Add more files" : T0;
+    if (!moving()) return;
+    var p1 = getComputedStyle(drop).paddingTop, h1 = drop.offsetHeight, d = (parseFloat(sp("soft-d")) || .67) * 1000;
+    if (drop._gl) drop._gl.cancel();
+    drop._gl = drop.animate([{ height: h0 + "px", paddingTop: p0, paddingBottom: p0 }, { height: h1 + "px", paddingTop: p1, paddingBottom: p1 }], { duration: d * .8, easing: sp("soft") });
+    [].forEach.call(drop.children, function (c) { if (c.tagName !== "INPUT" && !c.classList.contains("edge")) c.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260, delay: 80, easing: "ease-out", fill: "backwards" }); });
+  }
+  function paint(f) {
+    var st = $(".st", f.li), ac = $(".ac", f.li), nm = f.name.replace(/[&<>"]/g, ""); f.li.setAttribute("data-s", f.s);
+    if (f.s === "up") { if (!f.pc) { st.innerHTML = '<span>Uploading</span><span class="pc"></span>'; f.pc = $(".pc", st); } f.pc.textContent = Math.round(f.p * 100) + "%"; }
+    else { f.pc = null; st.innerHTML = f.s === "done" ? TICK + "<span>Uploaded</span>" : XX + "<span>" + f.why + "</span>"; }
+    var want = f.s === "err" ? "rx" : "x";
+    if (ac.getAttribute("data-w") !== want) { ac.setAttribute("data-w", want); ac.innerHTML = (f.s === "err" ? '<button type="button" data-act="retry" aria-label="Try ' + nm + ' again">' + ic("refresh") + "</button>" : "") + '<button type="button" data-act="rm" aria-label="Remove ' + nm + '">' + ic("x") + "</button>"; }
+    $(".pb i", f.li).style.setProperty("--p", f.s === "bad" ? 0 : f.p.toFixed(3));
+  }
+  function tickUp(f) {
+    clearInterval(f.t); if (f.s !== "up") return;
+    f.t = setInterval(function () {
+      f.p = Math.min(1, f.p + (.04 + Math.random() * .09) * Math.min(1, 4e6 / Math.max(f.size, 1e6)));
+      if (f.failAt && f.p >= f.failAt) { f.p = f.failAt; f.failAt = 0; f.s = "err"; f.why = "Stopped at " + Math.round(f.p * 100) + "%. Check your connection."; clearInterval(f.t); say.textContent = f.name + " stopped. You can try again."; }
+      else if (f.p >= 1) { f.s = "done"; clearInterval(f.t); say.textContent = f.name + " uploaded."; }
+      paint(f);
+    }, 140);
+  }
+  function grow(li, dl) { if (!moving()) return; var h = li.offsetHeight, d = (parseFloat(sp("soft-d")) || .67) * 1000;
+    li.animate([{ height: "0px", opacity: 0 }, { height: h + "px", opacity: 1 }], { duration: d, easing: sp("soft"), delay: dl || 0, fill: "backwards" });
+    li.firstChild.animate([{ transform: "translateY(8px)" }, { transform: "none" }], { duration: d, easing: sp("soft"), delay: dl || 0, fill: "backwards" }); }
+  function shrink(li, done) { if (!moving()) { done(); return; } var h = li.offsetHeight;
+    li.animate([{ height: h + "px", opacity: 1 }, { opacity: 0, offset: .5 }, { height: "0px", opacity: 0 }], { duration: 320, easing: "cubic-bezier(.22,1,.36,1)" }).onfinish = done; }
+  function add(arr) {
+    var room = MAX - live().length, left = Math.max(0, arr.length - room), k = 0;
+    nt.textContent = left ? "Only 5 files at a time. " + left + (left === 1 ? " was" : " were") + " left out." : "";
+    arr.slice(0, Math.max(0, room)).forEach(function (x) {
+      var f = { id: ++uid, name: x.name, size: x.size, failAt: x.failAt || 0, p: 0, s: "up" };
+      if (!OK.test(f.name)) { f.s = "bad"; f.why = "Only PDF, PNG or JPG files."; }
+      else if (f.size > LIM) { f.s = "bad"; f.why = "Too big. The limit is 10 MB."; }
+      var li = document.createElement("li"); li.className = "r"; li._f = f; f.li = li;
+      li.innerHTML = '<div class="ri"><span class="fi" aria-hidden="true"></span><div class="mt"><p class="nm"><span></span><small>' + size(f.size) + '</small></p><p class="st"></p></div><span class="ac"></span><span class="pb" aria-hidden="true"><i></i></span></div>';
+      $(".fi", li).textContent = (f.name.split(".").pop() || "").slice(0, 4).toUpperCase(); $(".nm span", li).textContent = f.name;
+      ls.appendChild(li); files.push(f); paint(f); grow(li, k++ * 70); tickUp(f);
+    });
+    slim();
+    if (arr.length) say.textContent = Math.min(arr.length, Math.max(0, room)) + " files added." + (left ? " " + nt.textContent : "");
+  }
+  /* ×: the row shrinks at once to an Undo line with an orange countdown; after 5 s it closes all the way */
+  function remove(f) {
+    clearInterval(f.t); f.gone = true; var li = f.li, ri = li.firstChild, h0 = li.offsetHeight;
+    var u = document.createElement("div"); u.className = "ru"; u.innerHTML = '<p></p><button class="b sm" type="button">Undo</button><span class="cd"></span>';
+    $("p", u).textContent = f.name + " removed."; ri.hidden = true; li.appendChild(u); glide(li, h0, 340);
+    slim();
+    var a = $(".cd", u).animate([{ transform: "scaleX(1)" }, { transform: "scaleX(0)" }], { duration: 5000, easing: "linear", fill: "forwards" });
+    a.onfinish = function () { shrink(li, function () { li.remove(); files.splice(files.indexOf(f), 1); }); };
+    ["pointerenter", "focusin"].forEach(function (t) { u.addEventListener(t, function () { a.pause(); }); });
+    ["pointerleave", "focusout"].forEach(function (t) { u.addEventListener(t, function () { if (!u.matches(":hover") && !u.contains(document.activeElement)) a.play(); }); });
+    $("button", u).addEventListener("click", function () { a.onfinish = null; a.cancel(); var h1 = li.offsetHeight; u.remove(); ri.hidden = false; f.gone = false; glide(li, h1, 340); slim(); tickUp(f); var b = $("[data-act]", li); if (b) b.focus(); say.textContent = f.name + " is back."; });
+    $("button", u).focus({ preventScroll: true }); say.textContent = f.name + " removed. Undo is there for 5 seconds.";
+  }
+  ls.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-act]"); if (!b) return; var f = b.closest(".r")._f;
+    if (b.getAttribute("data-act") === "rm") remove(f); else { f.s = "up"; f.p = 0; f.pc = null; paint(f); tickUp(f); }
+  });
+  ls.addEventListener("keydown", function (e) { var b = e.target.closest && e.target.closest("[data-act]"); if (b && (e.key === "Delete" || e.key === "Backspace")) { e.preventDefault(); remove(b.closest(".r")._f); } });
+  function wrapF(fl) { return [].slice.call(fl || []).map(function (x) { return { name: x.name, size: x.size }; }); }
+  drop.addEventListener("click", function () { inp.click(); });
+  drop.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); inp.click(); } });
+  inp.addEventListener("click", function (e) { e.stopPropagation(); });
+  inp.addEventListener("change", function () { add(wrapF(inp.files)); inp.value = ""; });
+  ["dragenter", "dragover"].forEach(function (t) { dz.addEventListener(t, function (e) { e.preventDefault(); dz.classList.add("over"); }); });
+  dz.addEventListener("dragleave", function (e) { if (!dz.contains(e.relatedTarget)) dz.classList.remove("over"); });
+  dz.addEventListener("drop", function (e) { e.preventDefault(); dz.classList.remove("over"); add(wrapF(e.dataTransfer.files)); });
+  $("[data-try]").addEventListener("click", function () {
+    add([{ name: "pocketpay-statement-oct.pdf", size: 1.8 * 1048576 }, { name: "shop-front.jpg", size: 3.4 * 1048576 }, { name: "price-list.xlsx", size: .22 * 1048576 }, { name: "delivery-day.png", size: 14.6 * 1048576 }, { name: "tax-pin-certificate.pdf", size: .6 * 1048576, failAt: .62 }]);
+  });
+})();
+</script>

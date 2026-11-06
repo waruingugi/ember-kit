@@ -10,6 +10,38 @@ Taste Lab r1 winners are house parts `n29`–`n39` (`CHANGELOG.md`, 2026-11-01).
 
 | Date | Part | Options shown | Picked | Why (the owner's words) | Sources |
 |---|---|---|---|---|---|
+| 2026-11-05 | Taste Lab r4: 36 Stats band | see the lab | A and D kept | "Keep A and D" | Arc stats-band |
+| 2026-11-05 | Taste Lab r4: 35 Empty states | see the lab | B and D kept | "Keep B and D" | Arc empty-states |
+| 2026-11-05 | Taste Lab r4: 34 Timeline | see the lab | B, steps arrive in turn and the line follows | Picked B | Arc timeline, house c24 |
+| 2026-11-05 | Taste Lab r4: 33 Reorderable list | see the lab | D | "Keep D" (the second name was not given) | Arc reorderable-list |
+| 2026-11-05 | Taste Lab r4: 32 Activity heatmap | see the lab | D, Orders or Sales recoloured in a sweep | Picked D | Arc activity-heatmap |
+| 2026-11-05 | Taste Lab r4: 31 Onboarding checklist | see the lab | C and A kept | "Keep C and A" | Arc onboarding-checklist |
+| 2026-11-05 | Taste Lab r4: 30 Stepper | see the lab | D, the house c10 look with a riding dot and rolling count (filled current step, no ring) | "Go with D" | Arc stepper, house c10 |
+| 2026-11-05 | Taste Lab r4: 29 Toast stack | see the lab | A, a plain column | Picked A | Arc toast-stack |
+| 2026-11-05 | Taste Lab r4: 28 Expandable card | see the lab | B, the card grows to fill the box | Picked B | Arc expandable-card |
+| 2026-11-05 | Taste Lab r4: 27 Breadcrumb | see the lab | B and C kept | "Go with B and C" | Arc breadcrumb |
+| 2026-11-05 | Taste Lab r4: 26 File dropzone | see the lab | C, the box folds into a slim bar; removing a file with × should start shrinking the bar | "Use C and on x the bar should start to reduce" | Arc file-dropzone, house c12 |
+| 2026-11-05 | Taste Lab r4: 25 Date range picker | see the lab | B, the button grows into two months and the dates fly home | Picked B | Arc date-range-picker |
+| 2026-11-05 | Taste Lab r4: 24 Rating | see the lab | B, then D's rating card shows after the person picks (a mix) | "Use B and reveal the rating card of D after a user has picked" | Arc rating |
+| 2026-11-05 | Taste Lab r4: 23 Segmented control | see the lab | D, our ink marker with the stretch and a view that follows | Picked D | Arc segmented-control, house n17 |
+| 2026-11-05 | Taste Lab r4: 21 Multi-select | see the lab | C, type in the field, chips wrap | Picked C | Arc multi-select |
+| 2026-11-05 | Taste Lab r4: 18 Phone input | see the lab | C, search the country list, messages rise | Picked C | Arc phone-input |
+| 2026-11-05 | Taste Lab r4: 16 Expanding search | see the lab | B, the icon grows into the field | Picked B | Arc expanding-search |
+| 2026-11-05 | Taste Lab r4: 12 Hold to confirm | see the lab | B, the words change colour at the fill's edge | Picked B | Arc hold-to-confirm |
+| 2026-11-05 | Taste Lab r4: 07 Floating button group | see the lab | B, one highlight that changes size as it moves | Picked B | Arc floating-button-group |
+| 2026-11-05 | Taste Lab r4: 06 Button group | see the lab | B, one highlight glides along the bar | Picked B | Arc button-group |
+| 2026-11-05 | Taste Lab r4: 03 Countdown, more | see the lab | B, a pill whose next step grows under it | Picked B | Arc countdown, r3 06C |
+| 2026-11-05 | Taste Lab r4: 01, 02, 04, 05, 08–11, 13–15, 17, 19, 20, 22 | see the lab | none | Not picked | — |
+| 2026-11-05 | Taste Lab r3: 10 Morphing buttons | B confirm morph, A copy, C icon row that opens, D pay button folds to a circle | All kept; corners less round | "All are good, though our buttons should not be as rounded … For C the circle buttons are good. For D just use well curved edges" | Arc confirm-morph, expanding-button-group, copy-button |
+| 2026-11-05 | Taste Lab r3: 09 Morph select | B grows into the list, A plain, C springy list, D combobox that resizes (n09 pushed) | D | "I like D, but the curve edges is a bit too much. It is also a bit too large" | Arc morph-select |
+| 2026-11-05 | Taste Lab r3: 08 Fluid sliders | B elastic, A scrub label, C ruler, D n44 pushed | Not yet: more of B and D | "The dials for moving are a bit off: have you tried orange smaller ones?" | Arc elastic-slider, ruler-slider, scrub-input |
+| 2026-11-05 | Taste Lab r3: 07 Number and money field | B strain stepper, A plain, C money chips, D cart total in the pay button | B, C and D kept | "Keep B, C and D but D … you missed adding currency i.e KES 60 x 3 = KES 180" | Arc number-field, money-input |
+| 2026-11-05 | Taste Lab r3: 06 Countdown | B wheels, A sentence, C pill with draining line, D code timer | Not yet: more of C and D | "Show me more of C and D" | Arc countdown |
+| 2026-11-05 | Taste Lab r3: 05 Metric card | B tiles, A count(), C one card three rows, D KES stat card pushed | B, C and D kept | "Keep all designs except A" | Arc metric-card |
+| 2026-11-05 | Taste Lab r3: 04 Sparkline | B rolling headline, A tooltip, C riding pill, D shimmer + change chip | Not yet: more of B and D | "Show me more of B and D" | Arc sparkline |
+| 2026-11-05 | Taste Lab r3: 03 Donut | B slice lifts, A others dim, C pin, D half ring | Not yet: more of A and D | "Show me more of A and D" | Arc donut-chart |
+| 2026-11-05 | Taste Lab r3: 02 Usage meter | B hover rolls the number, A thin bar, C pin, D 60 small bars | B | Picked B | Arc usage-meter |
+| 2026-11-05 | Taste Lab r3: 01 Rolling number | B Arc-style odometer, A n07 as is, C n07 timing + direction, D odometer with blur | B; replaces n07's roll in the showcase | Picked B; "replace n07 now" | Arc animated-counter, house n07 |
 | 2026-11-01 | Taste Lab r2: 09 Tags | A plain tags, B springy tags, C suggestions as you type, D filter chips with counts | C and D; Claude picks per case (C when people type their own, D when the list is fixed) | "Use C and D" | easyui tag-input, Radix combobox, beUI chips |
 | 2026-11-01 | Taste Lab r2: 08 Pages of a list | A plain numbers, B sliding pill, C Show more, D page box to jump | B | Picked B | beUI pagination, easyui animated-pagination |
 | 2026-11-01 | Taste Lab r2: 07 Alerts and banners | A plain alert, B drops in on a spring and the page closes the gap, C checks again by itself, D shrinks to a dot | C when the problem can be checked again; B when it cannot | "I pick C but if it can not retry use B" | easyui alert-banner, beUI banner |

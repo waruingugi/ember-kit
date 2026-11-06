@@ -86,11 +86,56 @@ function nav(panel, sel, o) {
   function savePrefs() { try { localStorage.setItem(KEY, JSON.stringify({ theme: root.getAttribute('data-theme'), motion: root.getAttribute('data-motion') })); } catch (e) {} }
   var themeBtn = $('#themeBtn');
   function syncTheme() { var d = root.getAttribute('data-theme') === 'dark'; themeBtn.setAttribute('aria-label', d ? 'Switch to day theme' : 'Switch to night theme'); }
-  themeBtn.addEventListener('click', function () { root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); syncTheme(); savePrefs(); });
+  /* Arc's way: freeze the old page, stop every colour fade, and wipe the new theme across once (0.38 s).
+     Without View Transitions, or with motion off, it swaps at once, still with no uneven fades. */
+  var themeVT = null;
+  themeBtn.addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    function apply() { root.setAttribute('data-theme', next); syncTheme(); savePrefs(); }
+    if (themeVT) { try { themeVT.skipTransition(); } catch (e) {} }
+    root.classList.add('theme-swap');
+    var done = function () { requestAnimationFrame(function () { root.classList.remove('theme-swap'); themeVT = null; }); };
+    if (!moving() || !document.startViewTransition) { apply(); done(); return; }
+    var vt = themeVT = document.startViewTransition(apply);
+    vt.ready.then(function () {
+      root.animate({ clipPath: ['inset(0 100% 0 0)', 'inset(0 0 0 0)'] }, { duration: 380, easing: 'cubic-bezier(.22,1,.36,1)', pseudoElement: '::view-transition-new(root)', fill: 'both' });
+    }, function () {});
+    vt.finished.then(done, done);
+  });
   syncTheme();
   function syncMotion() { $$('[data-motion-set]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-motion-set') === root.getAttribute('data-motion'))); }); }
   $$('[data-motion-set]').forEach(function (b) { b.addEventListener('click', function () { root.setAttribute('data-motion', b.getAttribute('data-motion-set')); syncMotion(); savePrefs(); }); });
   syncMotion();
+
+  /* glideHover: one highlight that glides between the rows of a list, like the springy command box (n36).
+     It follows the pointer, keyboard focus, and the list's own current row (`active`, e.g. aria-selected from arrow keys),
+     survives the list being redrawn, jumps into place when it first shows, and leaves touch alone. */
+  window.glideHover = function (box, sel, active) {
+    if (!box || box._glide) return; box._glide = 1;
+    var hl = document.createElement('i'); hl.className = 'glide-hl'; hl.setAttribute('aria-hidden', 'true');
+    if (getComputedStyle(box).position === 'static') box.style.position = 'relative';
+    box.style.isolation = 'isolate'; // the highlight sits under the rows, above the list's own background
+    var on = null, hover = null;
+    function cur() { return active ? box.querySelector(active) : null; }
+    function to(el) {
+      if (!el || !el.isConnected) { hl.classList.remove('on'); on = null; return; }
+      if (hl.parentNode !== box) box.insertBefore(hl, box.firstChild);
+      var b = box.getBoundingClientRect(), r = el.getBoundingClientRect(), first = !on || !hl.classList.contains('on'); on = el;
+      if (first) hl.style.transition = 'none';
+      hl.style.transform = 'translate(' + (r.left - b.left + box.scrollLeft - box.clientLeft) + 'px,' + (r.top - b.top + box.scrollTop - box.clientTop) + 'px)';
+      hl.style.width = r.width + 'px'; hl.style.height = r.height + 'px';
+      if (first) { void hl.offsetWidth; hl.style.transition = ''; }
+      hl.classList.add('on');
+    }
+    box.addEventListener('pointerover', function (e) { if (e.pointerType === 'touch') return; var el = e.target.closest(sel); if (el && box.contains(el)) { hover = el; to(el); } });
+    box.addEventListener('pointerleave', function () { hover = null; to(cur()); });
+    box.addEventListener('focusin', function (e) { var el = e.target.closest(sel); if (el && el.matches(':focus-visible')) to(el); });
+    box.addEventListener('focusout', function (e) { if (!box.contains(e.relatedTarget)) to(hover || cur()); });
+    new MutationObserver(function (ms) { if (ms.every(function (m) { return m.target === hl || m.target === box && [].every.call(m.addedNodes, function (n) { return n === hl; }) && !m.removedNodes.length; })) return; /* ignore its own moves */ var a = cur(); if (hover && hover.isConnected) to(hover); else if (a) to(a); else if (on && !on.isConnected) to(null); })
+      .observe(box, { childList: true, subtree: true, attributes: !!active, attributeFilter: active ? ['class', 'aria-selected', 'aria-current'] : undefined });
+  };
+  [].forEach.call(document.querySelectorAll('.sb-nav'), function (n) { glideHover(n, '.sb-link'); });
+  [].forEach.call(document.querySelectorAll('[data-glide]'), function (n) { glideHover(n, n.getAttribute('data-glide') || 'a, button', n.getAttribute('data-glide-active')); });
 
   /* sidebar: collapse, resize, phone drawer */
   var SB_MIN = 216, SB_MAX = 420, SB_DEF = 272, sb = { w: SB_DEF, collapsed: false };

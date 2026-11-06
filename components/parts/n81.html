@@ -1,0 +1,114 @@
+<!-- part n81 | part | group status | A plain list that ticks as you go. | A plain list that ticks as you go. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A plain list that <em>ticks as you go.</em></h3>
+          <p class="kit-p">Five tasks with a thin orange bar on top. A done task keeps its place, greys out and says what you did. The next one opens.</p>
+          <section class="cs kv4" id="n81">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="ob"></div>
+  </div></div></div>
+</section>
+        </div>
+<script data-slot="0086">
+(function () {
+  "use strict";
+  var box = document.getElementById("n81"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
+  function count(el, from, to, fmt, ms) { if (!moving()) { el.textContent = fmt(to); return; } cancelAnimationFrame(el._an); var t0 = performance.now(); (function f(t) { var k = Math.min(1, (t - t0) / (ms || 320)); el.textContent = fmt(Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)))); if (k < 1) el._an = requestAnimationFrame(f); })(t0); }
+  function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  /* close or open a box all the way: height, padding and margin together */
+  function fold(el, done, d) { if (!moving()) { done(); return; } var cs = getComputedStyle(el), h = el.offsetHeight;
+    var a = el.animate([{ height: h + "px", paddingTop: cs.paddingTop, paddingBottom: cs.paddingBottom, marginTop: cs.marginTop, marginBottom: cs.marginBottom, opacity: 1, overflow: "clip" }, { height: "0px", paddingTop: "0px", paddingBottom: "0px", marginTop: "0px", marginBottom: "0px", opacity: 0, overflow: "clip" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
+    a.onfinish = function () { done(); a.cancel(); }; }
+  function unfold(el, d) { if (!moving()) return; var cs = getComputedStyle(el), h = el.offsetHeight;
+    el.animate([{ height: "0px", paddingTop: "0px", paddingBottom: "0px", marginTop: "0px", marginBottom: "0px", opacity: 0, overflow: "clip" }, { height: h + "px", paddingTop: cs.paddingTop, paddingBottom: cs.paddingBottom, marginTop: cs.marginTop, marginBottom: cs.marginBottom, opacity: 1, overflow: "clip" }], { duration: d || 380, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  var FOCUS = false;
+  var T = [
+    { t: "Name your shop", d: "Buyers see this name on every receipt.", act: "Save name", f: ["Shop name", "Duka Fresh Westlands"], done: "Saved as {v}" },
+    { t: "Add your first product", d: "Start with one thing you sell every day.", act: "Add Sukuma wiki · KES 60", done: "Sukuma wiki added at KES 60" },
+    { t: "Link PocketPay for payouts", d: "Money from sales lands on this number.", act: "Link number", f: ["PocketPay number", "+254 712 345 678"], wait: 1, done: "Payouts go to {v}" },
+    { t: "Take a test payment", d: "Pay yourself KES 10 to see it work.", act: "Send KES 10 test", wait: 1, done: "KES 10 came in just now" },
+    { t: "Share your shop link", d: "Send duka.example.com/westlands to your first buyers.", act: "Copy link", done: "Link copied" }
+  ];
+  var N = T.length, ob = $(".ob"), CK = '<svg class="ck" viewBox="0 0 22 22" aria-hidden="true"><circle class="r" cx="11" cy="11" r="10.2"/><circle class="f" cx="11" cy="11" r="11"/><path d="M6.6 11.4 9.6 14.3l5.8-6.4"/></svg>';
+  var DOWN = '<svg class="i" aria-hidden="true"><use href="#i-cd"/></svg>';
+  var done, vals, cur, shownN;
+  function esc(t) { return String(t).replace(/[&<>"]/g, function (ch) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]; }); }
+  function body(i, head) { var t = T[i], id = box.id + "-in" + i;
+    return '<div class="ri">' + (head ? "<h4>" + t.t + "</h4>" : "") + "<p>" + t.d + "</p>" + (t.f ? '<div class="fl"><label for="' + id + '">' + t.f[0] + '</label><input class="in" id="' + id + '" value="' + esc(vals[i]) + '" autocomplete="off" aria-describedby="' + id + '-e"></div>' : "") + '<div class="ac"><button class="b sm pri" type="button" data-do="' + i + '">' + t.act + '</button></div><p class="er" id="' + id + '-e" hidden></p></div>'; }
+  function init() {
+    done = T.map(function () { return false; }); vals = T.map(function (t) { return t.f ? t.f[1] : ""; }); cur = 0; shownN = 0;
+    var h = '<div class="hd"><p class="tt">Set up your shop</p><p class="cn"><span class="k">0</span> of ' + N + " done</p></div>";
+    if (FOCUS) h += '<ol class="dots">' + T.map(function (t, i) { return '<li><button class="dot" type="button" data-dot="' + i + '" aria-label="' + t.t + '">' + CK + "</button></li>"; }).join("") + '</ol><div class="card"></div>';
+    else h += '<div class="bar" aria-hidden="true"><i></i></div><ol class="ls">' + T.map(function (t, i) { return '<li class="it" data-i="' + i + '"><button class="rh" type="button" aria-expanded="false">' + CK + '<span class="rt"><b>' + t.t + '</b><small class="sm"></small></span><span class="ch" aria-hidden="true">' + DOWN + '</span></button><div class="rb" hidden>' + body(i) + "</div></li>"; }).join("") + "</ol>";
+    h += '<div class="fin" hidden><p>Buyers can now pay <b class="fn"></b> with PocketPay.</p><div class="ac"><button class="b sm pri" type="button" data-open>Open your shop</button><button class="b sm q" type="button" data-reset>Start over</button></div></div><p class="say" aria-live="polite"></p>';
+    ob.innerHTML = h;
+    $("[data-open]").addEventListener("click", function () { say("Opening duka.example.com/westlands."); });
+    $("[data-reset]").addEventListener("click", function () { init(); var f = $("[data-do]"); if (f) f.focus({ preventScroll: true }); });
+    if (FOCUS) showCard(0, 0); else openRow(0, true);
+    progress();
+  }
+  function say(t) { $(".say").textContent = t; }
+  function k() { return done.filter(Boolean).length; }
+  function progress() { var n = k(); ob.style.setProperty("--p", n / N); count($(".k"), shownN, n, String, 520); shownN = n; }
+  function li(i) { return $('.it[data-i="' + i + '"]'); }
+  function openRow(i, instant) {
+    $$(".it.open").forEach(function (r) { var j = +r.getAttribute("data-i"); if (j !== i) closeRow(j); });
+    var r = li(i), rb = $(".rb", r); cur = i; r.classList.add("open"); $(".rh", r).setAttribute("aria-expanded", "true");
+    if (rb.hidden) { rb.hidden = false; if (!instant) unfold(rb, 400); }
+  }
+  function closeRow(i, cb) { var r = li(i); if (!r) return; var rb = $(".rb", r); r.classList.remove("open"); $(".rh", r).setAttribute("aria-expanded", "false"); if (rb.hidden) { if (cb) cb(); return; } fold(rb, function () { rb.hidden = true; if (cb) cb(); }, 320); }
+  function nextTodo(i) { for (var j = 1; j <= N; j++) { var x = (i + j) % N; if (!done[x]) return x; } return -1; }
+  ob.addEventListener("click", function (e) {
+    var d = e.target.closest && e.target.closest("[data-do]"); if (d) { act(+d.getAttribute("data-do"), d); return; }
+    var rh = e.target.closest && e.target.closest(".rh"); if (rh) { var i = +rh.parentNode.getAttribute("data-i"); if (done[i]) return; if (rh.getAttribute("aria-expanded") === "true") closeRow(i); else openRow(i); return; }
+    var dt = e.target.closest && e.target.closest("[data-dot]"); if (dt) { var j = +dt.getAttribute("data-dot"); if (!done[j] && j !== cur) showCard(j, j > cur ? 1 : -1); }
+  });
+  ob.addEventListener("keydown", function (e) { if (e.key === "Enter" && e.target.matches && e.target.matches("input")) { e.preventDefault(); var b = $("[data-do]", e.target.closest(".ri")); if (b) b.click(); } });
+  function act(i, btn) {
+    if (btn.disabled) return; var t = T[i], scope = btn.closest(".ri"), inp = $("input", scope), er = $(".er", scope);
+    if (inp) { var v = inp.value.trim(), d = v.replace(/\D/g, ""), bad = i === 2 ? !/^(254|0)7\d{8}$/.test(d) : v.length < 2;
+      if (bad) { er.textContent = i === 2 ? "Use a number like +254 712 345 678." : "Write at least two letters."; er.hidden = false; inp.setAttribute("aria-invalid", "true"); inp.focus(); return; }
+      vals[i] = v; inp.removeAttribute("aria-invalid"); }
+    er.hidden = true;
+    if (!t.wait) { finish(i); return; }
+    var lab = btn.textContent; btn.disabled = true; btn.textContent = i === 2 ? "Linking…" : "Sending…";
+    setTimeout(function () { btn.disabled = false; btn.textContent = lab; finish(i); }, moving() ? 1000 : 250);
+  }
+  function finish(i) {
+    var hadF = box.contains(document.activeElement); done[i] = true; progress(); say(T[i].t + ": done. " + k() + " of " + N + ".");
+    var nx = nextTodo(i);
+    if (FOCUS) { fly(i, nx); if (nx < 0) end(); return; }
+    var r = li(i); r.classList.add("done"); $(".sm", r).textContent = T[i].done.replace("{v}", vals[i]); $(".rh", r).setAttribute("aria-disabled", "true");
+    setTimeout(function () {
+      closeRow(i);
+      if (nx >= 0) { openRow(nx); if (hadF) setTimeout(function () { var b = $('[data-do="' + nx + '"]'); if (b) b.focus({ preventScroll: true }); }, moving() ? 60 : 0); }
+      else end();
+    }, moving() ? 720 : 0);
+  }
+  function end() {
+    $(".tt").textContent = "Your shop is ready";
+    var fin = $(".fin"); $(".fn", fin).textContent = vals[0]; fin.hidden = false; unfold(fin, 420);
+    say("All " + N + " done. Your shop is ready.");
+    setTimeout(function () { if (box.contains(document.activeElement) || document.activeElement === document.body) $("[data-open]", fin).focus({ preventScroll: true }); }, 50);
+  }
+  /* one task card at a time; a finished card shrinks into its dot, and the next one slides in */
+  function showCard(i, dir) {
+    var card = $(".card"), h0 = card.offsetHeight; cur = i;
+    $$("[data-dot]").forEach(function (b, j) { if (j === i) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current"); b.parentNode.classList.toggle("done", done[j]); b.disabled = done[j]; });
+    card.innerHTML = i < 0 ? "" : body(i, true); card.hidden = i < 0;
+    if (i >= 0 && moving() && dir) { card.firstChild.animate([{ opacity: 0, transform: "translateX(" + dir * 18 + "px)" }, { opacity: 1, transform: "none" }], { duration: 340, easing: "cubic-bezier(.22,1,.36,1)" }); glide(card, h0, 380); }
+  }
+  function fly(i, nx) {
+    var card = $(".card"), dot = $('[data-dot="' + i + '"]'), rr = ob.getBoundingClientRect(), cr = card.getBoundingClientRect(), dr = dot.getBoundingClientRect(), hadF = box.contains(document.activeElement);
+    if (moving()) { var g = card.cloneNode(true); g.className = "card gh"; g.setAttribute("aria-hidden", "true"); g.style.left = cr.left - rr.left + "px"; g.style.top = cr.top - rr.top + "px"; g.style.width = cr.width + "px"; ob.appendChild(g);
+      g.animate([{ transform: "none", opacity: 1, borderRadius: "12px" }, { transform: "translate(" + (dr.left - cr.left) + "px," + (dr.top - cr.top) + "px) scale(" + dr.width / cr.width + "," + dr.height / cr.height + ")", opacity: 0, borderRadius: "50%" }], { duration: 460, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" }).onfinish = function () { g.remove(); }; }
+    showCard(nx, 1); if (nx >= 0 && hadF) { var b = $("[data-do]", card); if (b) b.focus({ preventScroll: true }); }
+    $(".dots").style.setProperty("--p", Math.min(1, k() / (N - 1)));
+  }
+  init();
+})();
+</script>

@@ -1,0 +1,51 @@
+<!-- part n63 | part | group forms | A pay button that folds while it works. | A pay button that folds while it works. -->
+<div class="kit kit-part">
+          <h3 class="kit-h">A pay button that <em>folds while it works.</em></h3>
+          <p class="kit-p">Press Pay. It folds into a small orange square, opens with a tick, then grows back with only the changed letters rising in.</p>
+          <section class="cs kv4" id="n63">
+  <div class="frame"><div class="fbody"><div class="stage">
+    <div class="pb">
+      <button class="pbb" type="button" data-at="idle"><span class="bgw"><span class="bg"></span></span><span class="pc"><span class="ptk"></span><span class="pl">Pay KES 4,200</span></span><span class="psp" aria-hidden="true"><span class="spin"></span></span></button>
+      <p class="msg" aria-live="polite">Nothing paid yet.</p>
+    </div>
+  </div></div></div>
+
+</section>
+        </div>
+<script data-slot="0069">
+(function () {
+  "use strict";
+  var box = document.getElementById("n63"); if (!box) return;
+  var root = document.documentElement;
+  function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
+  function moving() { return lv() !== "off"; }
+  function $(s, el) { return (el || box).querySelector(s); }
+  var TK = '<svg class="tk" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"/><path d="M6.6 11.4 9.6 14.3l5.8-6.4"/></svg>';
+  /* The pay button folds to a 46 px square (10 px corners) while it works, then opens to "Paid" with the letters rising. */
+  var b = $(".pbb"), bgw = $(".bgw"), bg = $(".bg"), pc = $(".pc"), pl = $(".pl"), tk = $(".ptk"), msg = $(".msg"), at = "idle", wI = 0, wD = 0, maxW = 0, t = 0;
+  var TXT = { idle: "Pay KES 4,200", done: "Paid KES 4,200" };
+  function chars(s, anim) { pl.textContent = ""; s.split("").forEach(function (c, i) { var e = document.createElement("span"); e.className = "ch" + (anim ? " rise" : ""); e.style.setProperty("--i", i); e.textContent = c; pl.appendChild(e); }); b.setAttribute("aria-label", s); }
+  function size(w, jump) {
+    b.classList.toggle("shrink", w < b.offsetWidth);
+    if (jump) bg.style.transition = "none";
+    bg.style.clipPath = "inset(0 " + ((maxW - w) / 2).toFixed(1) + "px round 10px)"; b.style.width = w + "px";
+    if (jump) { void bg.offsetWidth; bg.style.transition = ""; }
+  }
+  function measure() {
+    b.style.width = "";
+    tk.innerHTML = TK; tk.style.display = "grid"; chars(TXT.done); wD = pc.offsetWidth; tk.style.display = "";
+    chars(TXT[at === "done" ? "done" : "idle"]); wI = at === "done" ? wI : pc.offsetWidth; if (!wI) wI = wD;
+    maxW = Math.max(wI, wD) + 2; bg.style.width = maxW + "px"; bgw.style.marginLeft = (-maxW / 2) + "px";
+    size(at === "busy" ? 46 : at === "done" ? wD : wI, true);
+  }
+  function go(k) { at = k; b.setAttribute("data-at", k); }
+  function reset() { clearTimeout(t); go("idle"); chars(TXT.idle, moving()); size(wI); msg.textContent = "Ready for the next payment."; }
+  b.addEventListener("click", function () {
+    if (at === "busy") return;
+    if (at === "done") { reset(); return; }
+    go("busy"); size(46); b.setAttribute("aria-busy", "true"); msg.textContent = "Paying…";
+    setTimeout(function () { b.removeAttribute("aria-busy"); tk.innerHTML = TK; go("done"); chars(TXT.done, moving()); size(wD); msg.textContent = "KES 4,200 paid to Duka Fresh."; t = setTimeout(reset, 3200); }, 1400);
+  });
+  measure(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+})();
+</script>
