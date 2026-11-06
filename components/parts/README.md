@@ -69,6 +69,7 @@ The faint squares grid that shows only in open gaps (`DESIGN.md`, *Recurring par
 | `c18` | Tables and lists | Pick files, act on all at once. |  |
 | `c19` | Tables and lists | Clear a busy inbox in one go. |  |
 | `n83` | Tables and lists | Sort the stops, and every time after rolls. |  |
+| `n89` | Tables and lists | A dashed gap shows where it lands. |  |
 | `c20` | Tables and lists | Delete a notice, and it turns to dust. |  |
 | `c17` | Tables and lists | Three plans, side by side. |  |
 | `c10` | Forms and inputs | Three steps, one line that fills. |  |

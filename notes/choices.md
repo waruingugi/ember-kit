@@ -13,7 +13,7 @@ Taste Lab r1 winners are house parts `n29`–`n39` (`CHANGELOG.md`, 2026-11-01).
 | 2026-11-05 | Taste Lab r4: 36 Stats band | see the lab | A and D kept | "Keep A and D" | Arc stats-band |
 | 2026-11-05 | Taste Lab r4: 35 Empty states | see the lab | B and D kept | "Keep B and D" | Arc empty-states |
 | 2026-11-05 | Taste Lab r4: 34 Timeline | see the lab | B, steps arrive in turn and the line follows | Picked B | Arc timeline, house c24 |
-| 2026-11-05 | Taste Lab r4: 33 Reorderable list | see the lab | D | "Keep D" (the second name was not given) | Arc reorderable-list |
+| 2026-11-05 | Taste Lab r4: 33 Reorderable list | see the lab | D and A kept; A's dashed landing gap added to D (2026-11-06) | "Keep D and …" (cut off); on 2026-11-06 the owner said several were kept and "the background on drag should have the dashed lines" | Arc reorderable-list |
 | 2026-11-05 | Taste Lab r4: 32 Activity heatmap | see the lab | D, Orders or Sales recoloured in a sweep | Picked D | Arc activity-heatmap |
 | 2026-11-05 | Taste Lab r4: 31 Onboarding checklist | see the lab | C and A kept | "Keep C and A" | Arc onboarding-checklist |
 | 2026-11-05 | Taste Lab r4: 30 Stepper | see the lab | D, the house c10 look with a riding dot and rolling count (filled current step, no ring) | "Go with D" | Arc stepper, house c10 |

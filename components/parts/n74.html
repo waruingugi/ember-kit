@@ -54,7 +54,7 @@
     if (f.s === "up") { if (!f.pc) { st.innerHTML = '<span>Uploading</span><span class="pc"></span>'; f.pc = $(".pc", st); } f.pc.textContent = Math.round(f.p * 100) + "%"; }
     else { f.pc = null; st.innerHTML = f.s === "done" ? TICK + "<span>Uploaded</span>" : XX + "<span>" + f.why + "</span>"; }
     var want = f.s === "err" ? "rx" : "x";
-    if (ac.getAttribute("data-w") !== want) { ac.setAttribute("data-w", want); ac.innerHTML = (f.s === "err" ? '<button type="button" data-act="retry" aria-label="Try ' + nm + ' again">' + ic("refresh") + "</button>" : "") + '<button type="button" data-act="rm" aria-label="Remove ' + nm + '">' + ic("x") + "</button>"; }
+    if (ac.getAttribute("data-w") !== want) { ac.setAttribute("data-w", want); ac.innerHTML = (f.s === "err" ? '<button class="rt" type="button" data-act="retry" aria-label="Try ' + nm + ' again">' + ic("refresh") + "Retry</button>" : "") + '<button type="button" data-act="rm" aria-label="Remove ' + nm + '">' + ic("x") + "</button>"; }
     $(".pb i", f.li).style.setProperty("--p", f.s === "bad" ? 0 : f.p.toFixed(3));
   }
   function tickUp(f) {
@@ -94,8 +94,6 @@
     slim();
     var a = $(".cd", u).animate([{ transform: "scaleX(1)" }, { transform: "scaleX(0)" }], { duration: 5000, easing: "linear", fill: "forwards" });
     a.onfinish = function () { shrink(li, function () { li.remove(); files.splice(files.indexOf(f), 1); }); };
-    ["pointerenter", "focusin"].forEach(function (t) { u.addEventListener(t, function () { a.pause(); }); });
-    ["pointerleave", "focusout"].forEach(function (t) { u.addEventListener(t, function () { if (!u.matches(":hover") && !u.contains(document.activeElement)) a.play(); }); });
     $("button", u).addEventListener("click", function () { a.onfinish = null; a.cancel(); var h1 = li.offsetHeight; u.remove(); ri.hidden = false; f.gone = false; glide(li, h1, 340); slim(); tickUp(f); var b = $("[data-act]", li); if (b) b.focus(); say.textContent = f.name + " is back."; });
     $("button", u).focus({ preventScroll: true }); say.textContent = f.name + " removed. Undo is there for 5 seconds.";
   }

@@ -10,7 +10,7 @@
     <div class="sh" id="n41-dlg" role="dialog" aria-modal="true" aria-labelledby="n41-h" inert="">
       <div class="hd"><h4 id="n41-h">Order #4821</h4><button class="b q x" type="button" aria-label="Close" data-close=""><svg class="i" aria-hidden="true"><use href="#i-x"></use></svg></button></div>
       <div class="it"><span>Sukuma wiki, 2 bunches</span><span class="n">120</span><span>Unga, 2 kg</span><span class="n">230</span><span>Cooking oil, 1 L</span><span class="n">410</span><b>Total</b><b class="n">KES 760</b></div>
-      <ol class="sp"><li class="d">Paid by PocketPay · 2:14 pm</li><li class="d">Packed · 2:31 pm</li><li class="w">Out for delivery</li></ol>
+      <ol class="sp" aria-label="Order progress"><li class="d"><i class="dt" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.6 8.4 7 10.7l4.5-5"></path></svg></i><span>Paid by PocketPay<small>2:14 pm</small></span></li><li class="d"><i class="dt" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.6 8.4 7 10.7l4.5-5"></path></svg></i><span>Packed<small>2:31 pm</small></span></li><li class="w" aria-current="step"><i class="dt" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.6 8.4 7 10.7l4.5-5"></path></svg></i><span>Out for delivery<small>Now</small></span></li><li class="n"><i class="dt" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.6 8.4 7 10.7l4.5-5"></path></svg></i><span>Delivered<small>About 3:05 pm</small></span></li></ol>
       <button class="b pri go" type="button" data-done="">Mark as delivered</button>
     </div>
   </div></div></div>
@@ -38,6 +38,6 @@
   sh.addEventListener("keydown", function (e) { if (e.key === "Escape") { e.preventDefault(); set(false); return; }
     if (e.key !== "Tab") return; var f = $$("button", sh), a = f[0], z = f[f.length - 1];
     if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); } });
-  $("[data-done]", sh).addEventListener("click", function () { var w = $(".w", sh); if (w) { w.className = "d"; w.textContent = "Delivered · just now"; } note.textContent = "Order #4821 marked as delivered."; set(false); });
+  $("[data-done]", sh).addEventListener("click", function () { var w = $(".w", sh), nx = $(".n", sh); if (w) { w.className = "d"; w.removeAttribute("aria-current"); $("small", w).textContent = "Done"; } if (nx) { nx.className = "d"; nx.setAttribute("aria-current", "step"); $("small", nx).textContent = "Just now"; } note.textContent = "Order #4821 marked as delivered."; set(false); });
 })();
 </script>

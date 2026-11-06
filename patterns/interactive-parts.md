@@ -120,7 +120,8 @@ The owner's picks from Taste Lab rounds 1 and 2. They are the **default** for th
 | n80 | Tasks that become dots | First-run setup, one task at a time | A card per task; done, it shrinks into its dot on top, which ticks; the next card slides in. Default over `n47` for setup |
 | n81 | Task list that ticks | The same, when people want to see all tasks | Five rows and a thin orange bar. A done row greys and says what you did |
 | n82 | Heatmap that recolours in a sweep | Twelve weeks of daily numbers | Orders/Sales switch; the colours sweep week by week and the total rolls. A small card glides to the day you point at or reach with the arrows |
-| n83 | List you sort, times that roll | Put stops or steps in order | Drag a grip or use Space and the arrows. The row lifts and leans; others glide aside; every time after it rolls. Best order sorts it all. Default over `c19` |
+| n83 | List you sort, times that roll | Put stops or steps in order | Drag a grip or use Space and the arrows. The row lifts and leans; others glide aside; a dashed outline shows where it lands; every time after it rolls. Best order sorts it all. Default over `c19` |
+| n89 | Plain list you sort, dashed gap | Put a short list in order, with no times | Drag a grip or use Space and the arrows. A dashed outline shows where the row lands; rows move on the smooth curve (0.22 s), no spring, no grow; "New order saved." with an orange tick. Kept with `n83` |
 | n84 | Timeline where steps arrive | Track one order | Steps rise in one by one on first view. Next update: the tick pops, the orange line runs down, then the next step pulses. Default over `c24` |
 | n85 | Empty state whose drawing changes | Several empty screens on one page | Five shapes spring into each drawing; the heading rolls; one button that does the job |
 | n86 | Empty state that draws itself | An empty list after loading | `n38`'s sweep, then the box draws line by line and its orange dot pops last |
@@ -219,6 +220,8 @@ Enough to rebuild each Taste Lab part (`n29`–`n51`, and `n07`, rebuilt from ro
 **n82 Heatmap** (`f.mjs`, heatmap D). 84 days in a 12-week grid, 5 levels of orange mixed into paper. Orders/Sales switch (ink thumb); the colours sweep 32 ms a week; the total rolls (counts up once at 40% on screen). A tip card glides to the day (jumps the first time); arrows move by day and week.
 
 **n83 Sortable stops** (`f.mjs`, reorder D). Five stops: number (first one orange), name, area and bags, "About" time, a grip. Times come from a made-up map (leave 10:05, 6 min a stop). Drag: the row lifts, leans with speed, rubber-bands at the ends, drops on the bouncy spring; others glide (FLIP). Keys: Space, arrows, Home, End, Escape. Best order tries all 120 orders and says "N min saved" for 2.2 s. Every number rolls.
+
+**n89 Plain sortable list** (`f.mjs`, reorder A). The same five stops as `n83` with no times and no Best order: rolling stop number (first one orange), name, area and bags, a grip. Drag the grip: the row gets a shadow but does not grow or lean; the others move on `cubic-bezier(.22,1,.36,1)` in 0.22 s; a 1.5 px dashed outline (12 px corners) slides to the slot where it will land. Drop eases home in 0.22 s. Keys as `n83` (Space picks up, arrows and Home/End move, Space drops, Escape puts it back), told to screen readers. After a change the line under the title reads "New order saved." with a small orange tick. Motion off: rows jump, the outline still shows.
 
 **n84 Order timeline** (`f.mjs`, timeline B). Five steps on a line. Steps rise in one by one (170 ms apart) on first view, ticks popping and the line filling. Next update ticks the step and fills its line, and 430 ms later rings the next (a pulse). Steps open with a height glide. "N of 5 steps done" rolls.
 

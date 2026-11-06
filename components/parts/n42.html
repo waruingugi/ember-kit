@@ -6,8 +6,8 @@
   <div class="frame"><div class="fbody">
     <div class="top"><span class="label">Today's sales</span><button type="button" class="b sm" data-back="" hidden=""><svg class="i s" aria-hidden="true"><use href="#i-rot"></use></svg>Show the notices again</button></div>
     <div class="slot" data-slot="a"><div class="bn" role="status" data-b=""><svg class="i" aria-hidden="true"><use href="#i-alert"></use></svg><div class="tx"><b>PocketPay is slow right now.</b><span>Payments may take up to 5 minutes to show.</span><span class="ac"><button class="b sm" type="button" data-chk="">Check now</button><span class="cd" aria-live="off"></span></span></div><button class="b q x" type="button" aria-label="Dismiss" data-x=""><svg class="i" aria-hidden="true"><use href="#i-x"></use></svg></button></div></div>
-    <div class="slot" data-slot="b"><div class="bn" role="status" data-b=""><svg class="i" aria-hidden="true"><use href="#i-cal"></use></svg><div class="tx"><b>We close at 2 pm on 24 December.</b><span>Orders after 2 pm go out on 27 December.</span></div><button class="b q x" type="button" aria-label="Dismiss" data-x=""><svg class="i" aria-hidden="true"><use href="#i-x"></use></svg></button></div></div>
-    <div class="ln"></div><div class="ln s"></div><div class="ln"></div>
+    <div class="slot" data-slot="b"><div class="bn info" role="status" data-b=""><svg class="i" aria-hidden="true"><use href="#i-cal"></use></svg><div class="tx"><b>We close at 2 pm on 24 December.</b><span>Orders after 2 pm go out on 27 December.</span></div><button class="b q x" type="button" aria-label="Dismiss" data-x=""><svg class="i" aria-hidden="true"><use href="#i-x"></use></svg></button></div></div>
+    <div class="sl"><div class="sm"><div><small>Sales so far</small><b>KES <span class="tot">16,390</span></b></div><div><small>Waiting to show</small><b class="wt">2</b></div></div><ul class="pl" aria-label="Latest payments"><li class="w"><span class="nm">Amina Otieno<small>11:42 · PocketPay</small></span><span class="st w">Waiting</span><span class="am">KES 1,200</span></li><li class="w"><span class="nm">Brian Kiprop<small>11:40 · PocketPay</small></span><span class="st w">Waiting</span><span class="am">KES 860</span></li><li><span class="nm">Wanjiru Mwangi<small>11:31 · PocketPay</small></span><span class="st p">Paid</span><span class="am">KES 2,350</span></li><li><span class="nm">Otieno Ouma<small>11:18 · PocketPay</small></span><span class="st p">Paid</span><span class="am">KES 640</span></li></ul></div>
   </div></div>
 
 </section>
@@ -32,13 +32,21 @@
     if (!moving()) return fin();
     b.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "translateY(-8px)" }], { duration: 180, fill: "forwards" }).onfinish = function () { slot.animate([{ height: h0 + "px" }, { height: "0px" }], { duration: 320, easing: "cubic-bezier(.22,1,.36,1)" }).onfinish = fin; }; }
   function tick() { var cd = $(".cd", A); if (!cd) return; cd.textContent = "Checking again in " + n + " s"; if (n-- <= 0) ok(); else t = setTimeout(tick, 1000); }
-  function ok() { clearTimeout(t); var b = $("[data-b]", A), tx = $(".tx", b); b.classList.add("ok"); tx.innerHTML = "<b>Payments are back.</b><span>Everything paid in the last 5 minutes now shows.</span>"; if (moving()) tx.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260 }); setTimeout(function () { if (!A.hidden) leave(A); }, 2600); }
+  function ok() { clearTimeout(t); var b = $("[data-b]", A), tx = $(".tx", b); b.classList.add("ok"); tx.innerHTML = "<b>Payments are back.</b><span>Everything paid in the last 5 minutes now shows.</span>"; sales(true); if (moving()) tx.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260 }); setTimeout(function () { if (!A.hidden) leave(A); }, 2600); }
+  /* the two waiting payments land when the check passes; the total and the count roll */
+  var tot = $(".tot"), wt = $(".wt"), BASE = 16390, LATE = 2060;
+  function sales(on) {
+    $$(".pl li.w, .pl li.d").forEach(function (li) { var s = $(".st", li); li.className = on ? "d" : "w"; s.className = "st " + (on ? "p" : "w"); s.textContent = on ? "Paid" : "Waiting"; });
+    var from = on ? BASE : BASE + LATE, to = on ? BASE + LATE : BASE;
+    if (on) count(tot, from, to, money, 600); else tot.textContent = money(to);
+    if (on) count(wt, 2, 0, String, 400); else wt.textContent = "2";
+  }
   function wire() { var c = $("[data-chk]", A); if (c) c.addEventListener("click", ok); }
   function start() { n = 8; clearTimeout(t); if (seen) tick(); }
   new IntersectionObserver(function (es) { if (es[0].isIntersecting && !seen) { seen = true; tick(); } }, { threshold: .6 }).observe(A);
   $("[data-x]", A).addEventListener("click", function () { clearTimeout(t); leave(A); });
   $("[data-x]", B).addEventListener("click", function () { leave(B); });
-  back.addEventListener("click", function () { back.hidden = true; var b = $("[data-b]", A); b.classList.remove("ok"); $(".tx", b).innerHTML = MSG; wire(); [A, B].forEach(function (s) { s.style.height = ""; enter(s); }); start(); $("[data-x]", A).focus(); });
+  back.addEventListener("click", function () { back.hidden = true; sales(false); var b = $("[data-b]", A); b.classList.remove("ok"); $(".tx", b).innerHTML = MSG; wire(); [A, B].forEach(function (s) { s.style.height = ""; enter(s); }); start(); $("[data-x]", A).focus(); });
   wire();
 })();
 </script>
