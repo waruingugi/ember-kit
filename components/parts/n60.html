@@ -28,15 +28,31 @@
   var TK = '<svg class="tk" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"/><path d="M6.6 11.4 9.6 14.3l5.8-6.4"/></svg>';
   /* One surface, four faces. The surface springs to each face's width; a fast second click can't confirm (280 ms guard). */
   var mm = $(".mm"), bg = $(".bg"), cc = $(".cc"), back = $("[data-back]"), live = $("[data-live]"), F = {}, cur = "a", maxW = 0, opened = 0;
-  $$(".f").forEach(function (f) { F[f.getAttribute("data-f")] = f; });
+  $$(".f").forEach(function (f) {
+    F[f.getAttribute("data-f")] = f;
+    /* Each piece starts 3 letters (42 ms) after the one before it; its letters follow 14 ms apart. */
+    $$("[data-p]", f).forEach(function (p) { var i = 3 * (parseFloat(p.style.getPropertyValue("--i")) || 0); [].slice.call(p.childNodes).forEach(function (t) {
+      if (t.nodeType !== 3 || !t.textContent.trim()) return;
+      var w = document.createElement("span"); w.setAttribute("aria-label", t.textContent.trim()); w.setAttribute("role", "text");
+      t.textContent.split("").forEach(function (c) { var e = document.createElement("span"); e.className = "ch"; e.setAttribute("aria-hidden", "true"); e.style.setProperty("--i", i++); e.textContent = c; w.appendChild(e); });
+      p.replaceChild(w, t);
+    }); });
+  });
   function measure() { maxW = Math.max.apply(null, Object.keys(F).map(function (k) { return F[k].offsetWidth; })) + 2; bg.style.width = maxW + "px"; paint(true); }
   function paint(jump) {
-    var w = F[cur].offsetWidth; mm.classList.toggle("shrink", w < mm.offsetWidth);
+    var w = F[cur].offsetWidth;
     if (jump) bg.style.transition = "none";
     bg.style.clipPath = "inset(0 " + (maxW - w) + "px 0 0 round 10px)"; mm.style.width = w + "px";
     if (jump) { void bg.offsetWidth; bg.style.transition = ""; }
   }
-  function to(k) { F[cur].classList.remove("on"); cur = k; mm.setAttribute("data-at", k); F[k].classList.add("on"); paint(); }
+  /* Like n62: the words sit under the same edge as the surface, so they are revealed (or covered) as it moves. */
+  function cut(f, px, jump) { if (jump) f.style.transition = "none"; f.style.clipPath = "inset(0 " + px + "px 0 -8px)"; if (jump) { void f.offsetWidth; f.style.transition = ""; } }
+  function to(k) {
+    var o = F[cur], n = F[k], ow = o.offsetWidth, nw = n.offsetWidth;
+    /* As in n63: the old words fade where they are; the new ones rise in letter by letter. */
+    o.classList.remove("on", "go"); cut(o, Math.max(0, ow - nw));
+    cut(n, Math.max(0, nw - ow), true); void n.offsetWidth; n.classList.add("go"); cur = k; mm.setAttribute("data-at", k); n.classList.add("on"); cut(n, 0); paint();
+  }
   mm.tabIndex = -1;
   $("[data-ask]").addEventListener("click", function () { to("q"); opened = performance.now(); $("[data-no]").focus(); });
   $("[data-no]").addEventListener("click", function () { to("a"); $("[data-ask]").focus(); });

@@ -67,3 +67,4 @@ Newest first. One line per change, with the date.
   and `tools/build_layers.py`.
 - 2026-11-10: Closing motion: never a spring; `--ease-in-out` about 0.3 s, text fades out first (owner feedback on c15 rows). Rows in c15 and the pick in n43 now open on `--sp-bouncy`.
 - 2026-11-10: Opening rows (c15) use `--sp-soft`, no bounce. n43 Pick one now moves like n99: a stretching frame and rolling lines.
+- 2026-11-10: Words that change in place fade, then rise in letter by letter (n60, like n63). n80 drops the flying card and slides the next task in like n79. n41's live step pulses like n84. Fixed n41 Mark delivered crash (wrong `.n` match).

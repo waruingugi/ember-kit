@@ -1,7 +1,7 @@
 <!-- part n80 | part | group status | One task at a time, and done ones become dots. | One task at a time, and done ones become dots. -->
 <div class="kit kit-part">
           <h3 class="kit-h">One task at a time, and <em>done ones become dots.</em></h3>
-          <p class="kit-p">Set up a shop. Finish a task and its card shrinks into its dot on top, the dot fills with a tick, and the next card slides in.</p>
+          <p class="kit-p">Set up a shop. Finish a task and its dot on top fills with a tick, the line grows, and the next card slides in.</p>
           <section class="cs kv4" id="n80">
   <div class="frame"><div class="fbody"><div class="stage">
     <div class="ob"></div>
@@ -100,12 +100,11 @@
     var card = $(".card"), h0 = card.offsetHeight; cur = i;
     $$("[data-dot]").forEach(function (b, j) { if (j === i) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current"); b.parentNode.classList.toggle("done", done[j]); b.disabled = done[j]; });
     card.innerHTML = i < 0 ? "" : body(i, true); card.hidden = i < 0;
-    if (i >= 0 && moving() && dir) { card.firstChild.animate([{ opacity: 0, transform: "translateX(" + dir * 18 + "px)" }, { opacity: 1, transform: "none" }], { duration: 340, easing: "cubic-bezier(.22,1,.36,1)" }); glide(card, h0, 380); }
+    /* The same step change as n79: the next task slides in from the side you are heading, and the card glides to its height. */
+    if (i >= 0 && moving() && dir) { card.firstChild.animate([{ opacity: 0, transform: "translateX(" + dir * 24 + "px)" }, { opacity: 1, transform: "none" }], { duration: 340, easing: "cubic-bezier(.22,1,.36,1)" }); glide(card, h0, 380); }
   }
   function fly(i, nx) {
-    var card = $(".card"), dot = $('[data-dot="' + i + '"]'), rr = ob.getBoundingClientRect(), cr = card.getBoundingClientRect(), dr = dot.getBoundingClientRect(), hadF = box.contains(document.activeElement);
-    if (moving()) { var g = card.cloneNode(true); g.className = "card gh"; g.setAttribute("aria-hidden", "true"); g.style.left = cr.left - rr.left + "px"; g.style.top = cr.top - rr.top + "px"; g.style.width = cr.width + "px"; ob.appendChild(g);
-      g.animate([{ transform: "none", opacity: 1, borderRadius: "12px" }, { transform: "translate(" + (dr.left - cr.left) + "px," + (dr.top - cr.top) + "px) scale(" + dr.width / cr.width + "," + dr.height / cr.height + ")", opacity: 0, borderRadius: "50%" }], { duration: 460, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" }).onfinish = function () { g.remove(); }; }
+    var card = $(".card"), hadF = box.contains(document.activeElement);
     showCard(nx, 1); if (nx >= 0 && hadF) { var b = $("[data-do]", card); if (b) b.focus({ preventScroll: true }); }
     $(".dots").style.setProperty("--p", Math.min(1, k() / (N - 1)));
   }
