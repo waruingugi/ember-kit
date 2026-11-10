@@ -125,6 +125,33 @@
       viewBtn.innerHTML = ic(st.cards ? "list" : "grid");
       if (keep) { var f = dt.querySelector('[data-f="' + keep + '"]'); if (f && !f.disabled) f.focus(); }
     }
+    /* Open or close one row in place. Opening uses the soft spring, which settles with no bounce. */
+    function toggle(id, b) {
+      var o = !st.open.has(id), host = b.closest("tr, .dt-card"), tr = host.tagName === "TR";
+      if (o) st.open.add(id); else st.open.delete(id);
+      b.setAttribute("aria-expanded", String(o));
+      var nx = host.nextElementSibling, wrap = tr ? (nx && nx.classList.contains("dt-detail") ? nx : null) : host.querySelector(".dt-det"), fresh = !wrap;
+      if (o && fresh) {
+        var r = rows.filter(function (x) { return x.id === id; })[0], tmp = document.createElement(tr ? "tbody" : "div");
+        tmp.innerHTML = tr ? '<tr class="dt-detail"><td colspan="' + host.children.length + '">' + details(r) + "</td></tr>" : details(r);
+        wrap = tmp.firstElementChild; if (tr) host.after(wrap); else host.appendChild(wrap);
+      }
+      if (!wrap) return;
+      var det = tr ? wrap.firstElementChild.firstElementChild : wrap, h0 = fresh ? 0 : det.getBoundingClientRect().height;
+      det.classList.remove("fade-in");
+      if (det._a) det._a.cancel();
+      if (!spd() || !det.animate) { if (!o) wrap.remove(); return; }
+      var cs = getComputedStyle(document.documentElement), e = cs.getPropertyValue("--sp-soft").trim() || "cubic-bezier(.22,1,.36,1)", d = (parseFloat(cs.getPropertyValue("--sp-soft-d")) || .67) * 1000;
+      if (o) {
+        /* Padding grows with the height, or the first frame jumps to the padding's size. */
+        det._a = det.animate([fresh ? { height: "0px", paddingTop: "0px", paddingBottom: "0px" } : { height: h0 + "px" }, { height: det.offsetHeight + "px" }], { duration: d, easing: e });
+        if (fresh) [].forEach.call(det.children, function (c, i) { c.animate([{ opacity: 0, transform: "translateY(-6px)" }, { opacity: 1, transform: "none" }], { duration: d * .8, delay: i * 30, easing: "cubic-bezier(.22,1,.36,1)", fill: "backwards" }); });
+      } else {
+        /* Closing eases in and out: a slow start the eye can catch, a soft landing. Text fades first so it never gets clipped. */
+        det._a = det.animate([{ height: h0 + "px", opacity: 1 }, { opacity: 0, offset: .45 }, { height: "0px", paddingTop: "0px", paddingBottom: "0px", opacity: 0 }], { duration: 320, easing: cs.getPropertyValue("--ease-in-out").trim() || "cubic-bezier(.65,0,.35,1)" });
+        det._a.onfinish = function () { if (!st.open.has(id)) wrap.remove(); };
+      }
+    }
     function say(html) { note.innerHTML = html; }
     cols.innerHTML = '<span class="label">Columns</span>' + COLS.map(function (c) { return '<label><input class="chk" type="checkbox" data-col="' + c.k + '" checked>' + c.l + "</label>"; }).join("");
     function menu(open) { cols.hidden = !open; colsBtn.setAttribute("aria-expanded", String(open)); if (open) { cols.classList.remove("pkx"); fadeIn(cols); } }
@@ -143,7 +170,7 @@
       else if (d.fp) { st.fp = d.fp; st.page = 0; }
       else if (d.reset != null) { st.fs = st.fp = "all"; st.q = ""; q.value = ""; qx.hidden = true; st.page = 0; }
       else if (d.sort) { if (st.sk === d.sort) st.sd = -st.sd; else { st.sk = d.sort; st.sd = 1; } }
-      else if (d.xp) { var id = +d.xp; if (st.open.has(id)) st.open.delete(id); else st.open.add(id); }
+      else if (d.xp) { toggle(+d.xp, b); return; }
       else if (d.pg) st.page += +d.pg;
       else if (d.selclear != null) st.sel.clear();
       else if (d.undo != null) { rows = rows.concat(lastDel).sort(function (a, b) { return a.id - b.id; }); say("Restored " + lastDel.length + "."); lastDel = []; }

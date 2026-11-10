@@ -65,3 +65,5 @@ Newest first. One line per change, with the date.
   and the rule that loads it all. Two small builders were added so the
   patterns can be rebuilt without private files: `tools/diagram_svg.py`
   and `tools/build_layers.py`.
+- 2026-11-10: Closing motion: never a spring; `--ease-in-out` about 0.3 s, text fades out first (owner feedback on c15 rows). Rows in c15 and the pick in n43 now open on `--sp-bouncy`.
+- 2026-11-10: Opening rows (c15) use `--sp-soft`, no bounce. n43 Pick one now moves like n99: a stretching frame and rolling lines.
