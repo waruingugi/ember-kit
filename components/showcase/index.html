@@ -1281,12 +1281,12 @@ html[data-motion="calm"] .kit .eb:hover .eb-beam:where(:not(.kv4 *)), html[data-
 .kit .dt .sortb .i:where(:not(.kv4 *)) { width: 12px; height: 12px; opacity: .45; }
 .kit .dt th[aria-sort] .sortb .i:where(:not(.kv4 *)) { opacity: 1; }
 .kit .dt .xp:where(:not(.kv4 *)) { width: 28px; height: 28px; }
-.kit .dt .xp .i:where(:not(.kv4 *)) { transition: transform .2s var(--ease-out); }
+.kit .dt .xp .i:where(:not(.kv4 *)) { transition: transform var(--sp-soft-d) var(--sp-soft); }
 .kit .dt .xp[aria-expanded="true"] .i:where(:not(.kv4 *)) { transform: rotate(90deg); }
 .kit .cust b:where(:not(.kv4 *)) { display: block; font-weight: 500; color: var(--ink); }
 .kit .cust small:where(:not(.kv4 *)) { font: 400 11.5px/1.3 var(--font-mono); color: var(--muted); }
 .kit .dt-detail td:where(:not(.kv4 *)) { padding: 0; background: var(--paper); white-space: normal; }
-.kit .dt-det:where(:not(.kv4 *)) { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px 24px; padding: 14px 16px 16px 102px; font-size: 13.5px; }
+.kit .dt-det:where(:not(.kv4 *)) { overflow: hidden; box-sizing: border-box; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px 24px; padding: 14px 16px 16px 102px; font-size: 13.5px; }
 .kit .dt-det > div:where(:not(.kv4 *)) { display: grid; gap: 3px; min-width: 0; }
 .kit .dt-det span:where(:not(.kv4 *)) { font: 500 10.5px/1.3 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .kit .dt-det b:where(:not(.kv4 *)) { font-weight: 500; color: var(--ink); overflow-wrap: anywhere; }
@@ -2675,23 +2675,25 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
 
 .kit #n43 .ch { width: min(100%, 380px); display: grid; gap: 10px; text-align: left; }
 .kit #n43 .cards { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.kit #n43 .cd { position: relative; z-index: 1; display: grid; gap: 2px; padding: 12px 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--paper-raised); cursor: pointer; transition: transform var(--sp-bouncy-d) var(--sp-bouncy); }
+.kit #n43 .cd { position: relative; z-index: 1; display: grid; gap: 2px; padding: 12px 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--paper-raised); cursor: pointer; transition: transform var(--sp-soft-d) var(--sp-soft); }
 .kit #n43 .cd input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
 .kit #n43 .cd:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 3px; }
 .kit #n43 .cd:has(input:checked) { transform: translateY(-3px); border-color: transparent; }
 .kit #n43 .nm { font-size: 14px; font-weight: 600; color: var(--ink); }
 .kit #n43 .pr { font-size: 12.5px; color: var(--muted); }
-.kit #n43 .fr { position: absolute; z-index: 2; left: 0; top: 0; border-radius: 12px; border: 1.5px solid var(--accent); box-shadow: var(--shadow-lg); pointer-events: none; transition: transform var(--sp-bouncy-d) var(--sp-bouncy), width .2s, height .2s; }
-.kit #n43 .tk { position: absolute; right: 8px; top: 8px; width: 18px; height: 18px; opacity: 0; }
+.kit #n43 .fr { position: absolute; z-index: 2; left: 0; top: 0; border-radius: 12px; border: 1.5px solid var(--accent); box-shadow: var(--shadow-lg); pointer-events: none; }
+.kit #n43 .tk { position: absolute; right: 8px; top: 8px; width: 18px; height: 18px; opacity: 0; transform: scale(.4); transition: opacity .2s var(--ease-in-out), transform .24s var(--ease-in-out); }
 .kit #n43 .tk circle { fill: var(--accent); }
 .kit #n43 .tk path { fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 16; stroke-dashoffset: 16; }
-.kit #n43 .cd:has(input:checked) .tk { opacity: 1; }
+.kit #n43 .cd:has(input:checked) .tk { opacity: 1; transform: none; transition: opacity .15s var(--ease-out), transform var(--sp-bouncy-d) var(--sp-bouncy); }
 .kit #n43 .cd:has(input:checked) .tk path { stroke-dashoffset: 0; transition: stroke-dashoffset .34s var(--ease-out) .12s; }
 .kit #n43 .ex { overflow: hidden; border-radius: 12px; border: 1px solid var(--line); background: var(--paper-raised); }
 .kit #n43 .in { display: grid; gap: 4px; padding: 12px 14px; }
 .kit #n43 .in b { font: 400 22px/1.1 var(--font-num); color: var(--ink); }
 .kit #n43 .in p { margin: 0; font-size: 13.5px; color: var(--ink-soft); }
 .kit #n43 .in .m { font-size: 12.5px; color: var(--muted); }
+.kit #n43 .in > * { display: grid; overflow: clip; }
+.kit #n43 .in > * > span { grid-area: 1 / 1; }
 .kit #n43 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); margin: 0; }
 @media (max-width: 400px) { .kit #n43 .cd { padding: 10px 8px; } .kit #n43 .tk { width: 14px; height: 14px; right: 6px; top: 6px; } }
 
@@ -5714,7 +5716,7 @@ html[data-motion="off"] .kit #n92 .gl { display: none; }
         </div>
         <div class="kit kit-part">
           <h3 class="kit-h">Pick one, and <em>see what it means.</em></h3>
-          <p class="kit-p">Three cards, one answer. An orange frame springs to the card you pick, the card lifts and a tick draws in. The box below says what your pick means. Arrow keys work too.</p>
+          <p class="kit-p">Three cards, one answer. An orange frame stretches to the card you pick, the card lifts and a tick draws in. The box below rolls to say what your pick means. Arrow keys work too.</p>
           <section class="cs kv4" id="n43">
   <div class="frame"><div class="fbody"><div class="stage">
     <div class="ch" role="radiogroup" aria-label="Delivery">
@@ -16431,6 +16433,33 @@ window.emberGrid = (function () {
       viewBtn.innerHTML = ic(st.cards ? "list" : "grid");
       if (keep) { var f = dt.querySelector('[data-f="' + keep + '"]'); if (f && !f.disabled) f.focus(); }
     }
+    /* Open or close one row in place. Opening uses the soft spring, which settles with no bounce. */
+    function toggle(id, b) {
+      var o = !st.open.has(id), host = b.closest("tr, .dt-card"), tr = host.tagName === "TR";
+      if (o) st.open.add(id); else st.open.delete(id);
+      b.setAttribute("aria-expanded", String(o));
+      var nx = host.nextElementSibling, wrap = tr ? (nx && nx.classList.contains("dt-detail") ? nx : null) : host.querySelector(".dt-det"), fresh = !wrap;
+      if (o && fresh) {
+        var r = rows.filter(function (x) { return x.id === id; })[0], tmp = document.createElement(tr ? "tbody" : "div");
+        tmp.innerHTML = tr ? '<tr class="dt-detail"><td colspan="' + host.children.length + '">' + details(r) + "</td></tr>" : details(r);
+        wrap = tmp.firstElementChild; if (tr) host.after(wrap); else host.appendChild(wrap);
+      }
+      if (!wrap) return;
+      var det = tr ? wrap.firstElementChild.firstElementChild : wrap, h0 = fresh ? 0 : det.getBoundingClientRect().height;
+      det.classList.remove("fade-in");
+      if (det._a) det._a.cancel();
+      if (!spd() || !det.animate) { if (!o) wrap.remove(); return; }
+      var cs = getComputedStyle(document.documentElement), e = cs.getPropertyValue("--sp-soft").trim() || "cubic-bezier(.22,1,.36,1)", d = (parseFloat(cs.getPropertyValue("--sp-soft-d")) || .67) * 1000;
+      if (o) {
+        /* Padding grows with the height, or the first frame jumps to the padding's size. */
+        det._a = det.animate([fresh ? { height: "0px", paddingTop: "0px", paddingBottom: "0px" } : { height: h0 + "px" }, { height: det.offsetHeight + "px" }], { duration: d, easing: e });
+        if (fresh) [].forEach.call(det.children, function (c, i) { c.animate([{ opacity: 0, transform: "translateY(-6px)" }, { opacity: 1, transform: "none" }], { duration: d * .8, delay: i * 30, easing: "cubic-bezier(.22,1,.36,1)", fill: "backwards" }); });
+      } else {
+        /* Closing eases in and out: a slow start the eye can catch, a soft landing. Text fades first so it never gets clipped. */
+        det._a = det.animate([{ height: h0 + "px", opacity: 1 }, { opacity: 0, offset: .45 }, { height: "0px", paddingTop: "0px", paddingBottom: "0px", opacity: 0 }], { duration: 320, easing: cs.getPropertyValue("--ease-in-out").trim() || "cubic-bezier(.65,0,.35,1)" });
+        det._a.onfinish = function () { if (!st.open.has(id)) wrap.remove(); };
+      }
+    }
     function say(html) { note.innerHTML = html; }
     cols.innerHTML = '<span class="label">Columns</span>' + COLS.map(function (c) { return '<label><input class="chk" type="checkbox" data-col="' + c.k + '" checked>' + c.l + "</label>"; }).join("");
     function menu(open) { cols.hidden = !open; colsBtn.setAttribute("aria-expanded", String(open)); if (open) { cols.classList.remove("pkx"); fadeIn(cols); } }
@@ -16449,7 +16478,7 @@ window.emberGrid = (function () {
       else if (d.fp) { st.fp = d.fp; st.page = 0; }
       else if (d.reset != null) { st.fs = st.fp = "all"; st.q = ""; q.value = ""; qx.hidden = true; st.page = 0; }
       else if (d.sort) { if (st.sk === d.sort) st.sd = -st.sd; else { st.sk = d.sort; st.sd = 1; } }
-      else if (d.xp) { var id = +d.xp; if (st.open.has(id)) st.open.delete(id); else st.open.add(id); }
+      else if (d.xp) { toggle(+d.xp, b); return; }
       else if (d.pg) st.page += +d.pg;
       else if (d.selclear != null) st.sel.clear();
       else if (d.undo != null) { rows = rows.concat(lastDel).sort(function (a, b) { return a.id - b.id; }); say("Restored " + lastDel.length + "."); lastDel = []; }
@@ -19317,15 +19346,48 @@ window.emberGrid = (function () {
   function $(s, el) { return (el || box).querySelector(s); }
   function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
   function money(n) { return n.toLocaleString("en-KE"); }
-  function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
   function count(el, from, to, fmt, ms) { if (!moving()) { el.textContent = fmt(to); return; } cancelAnimationFrame(el._an); var t0 = performance.now(); (function f(t) { var k = Math.min(1, (t - t0) / (ms || 320)); el.textContent = fmt(Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)))); if (k < 1) el._an = requestAnimationFrame(f); })(t0); }
   var D = [["Standard","Free","Arrives Thursday 5 November.","Our rider brings it with other orders on the way."],["Express","KES 250","Arrives today by 6 pm.","A rider leaves within the hour, just for you."],["Pickup","Free","Ready from 4 pm at our Westlands shop.","Show your order number at the counter."]], fr = $(".fr"), ex = $(".ex"), inn = $(".in"), sr = $(".sr"), cds = $$(".cd"), ins = $$("input"), cur = 0;
-  function place(still) { var c = cds[cur]; if (still) fr.style.transition = "none"; fr.style.width = c.offsetWidth + "px"; fr.style.height = c.offsetHeight + "px"; fr.style.transform = "translate(" + c.offsetLeft + "px," + (c.offsetTop - 3) + "px)"; if (still) { fr.offsetWidth; fr.style.transition = ""; } }
-  function show(first) { cur = ins.findIndex(function (x) { return x.checked; }); var d = D[cur], h0 = ex.offsetHeight; place(first);
-    inn.innerHTML = "<b>" + d[1] + "</b><p>" + d[2] + "</p><p class=\"m\">" + d[3] + "</p>"; sr.textContent = d[0] + ", " + d[1] + ". " + d[2];
-    if (first || !moving()) return; inn.animate([{ opacity: 0, transform: "translateY(4px)" }, { opacity: 1, transform: "none" }], { duration: 260, easing: "cubic-bezier(.22,1,.36,1)" }); glide(ex, h0, 320); }
+  function dur(n) { return (parseFloat(getComputedStyle(root).getPropertyValue("--sp-" + n + "-d")) || .37) * 1000; }
+  /* Same motion as n99. Each edge of the frame rides its own spring: the edge on the side it moves toward leads (snappy),
+     the back edge catches up (soft), so the frame stretches as it goes. Motion off: it jumps. */
+  var E = [0, 1, 2, 3].map(function () { return { x: 0, v: 0, T: 0, d: 420, z: 1 }; }), raf = 0, lt = 0;
+  function paint() { fr.style.transform = "translate(" + E[0].x.toFixed(2) + "px," + E[1].x.toFixed(2) + "px)"; fr.style.width = Math.max(0, E[2].x - E[0].x).toFixed(2) + "px"; fr.style.height = Math.max(0, E[3].x - E[1].x).toFixed(2) + "px"; }
+  function tick(t) {
+    var dt = Math.min(.032, Math.max(.001, (t - lt) / 1000)), busy = false, calm = lv() === "calm"; lt = t;
+    E.forEach(function (e) {
+      if (e.x === e.T && !e.v) return; var z = calm ? 1 : e.z, W = 4.6 / (z * e.d * (calm ? .6 : 1) / 1000);
+      e.v += (-W * W * (e.x - e.T) - 2 * z * W * e.v) * dt; e.x += e.v * dt;
+      if (Math.abs(e.x - e.T) < .05 && Math.abs(e.v) < 1) { e.x = e.T; e.v = 0; } else busy = true;
+    });
+    paint(); raf = busy ? requestAnimationFrame(tick) : 0;
+  }
+  function place(jump) {
+    var c = cds[cur], y = c.offsetTop - 3, to = [c.offsetLeft, y, c.offsetLeft + c.offsetWidth, y + c.offsetHeight];
+    if (jump || !moving()) { cancelAnimationFrame(raf); raf = 0; E.forEach(function (e, i) { e.x = e.T = to[i]; e.v = 0; }); paint(); return; }
+    var mx = (to[0] + to[2] - E[0].x - E[2].x) / 2, my = (to[1] + to[3] - E[1].x - E[3].x) / 2, F = dur("snappy") * .62, S = dur("soft") * .78, M = (F + S) / 2;
+    function set(i, front, back) { E[i].d = front ? F : back ? S : M; E[i].z = front ? .78 : 1; }
+    set(0, mx < -.5, mx > .5); set(2, mx > .5, mx < -.5); set(1, my < -.5, my > .5); set(3, my > .5, my < -.5);
+    E.forEach(function (e, i) { e.T = to[i]; }); if (!raf) { lt = performance.now(); raf = requestAnimationFrame(tick); }
+  }
+  function line(el) {   /* a line that rolls, as in n99: the old words lift out, the new ones rise in from the side the pick moved */
+    var cur = document.createElement("span"); el.appendChild(cur);
+    return { set: function (txt, dir) {
+      if (cur.textContent === txt) return; var old = cur; cur = document.createElement("span"); cur.textContent = txt; el.appendChild(cur);
+      if (!dir || !moving()) { old.remove(); return; }
+      var y = dir < 0 ? -1 : 1, a = { duration: 440, easing: "cubic-bezier(.22,1,.36,1)" };
+      old.animate([{ transform: "none", opacity: 1 }, { transform: "translateY(" + (-y * 80) + "%)", opacity: 0 }], a).onfinish = function () { old.remove(); };
+      cur.animate([{ transform: "translateY(" + (y * 80) + "%)", opacity: 0 }, { transform: "none", opacity: 1 }], a);
+    } };
+  }
+  inn.innerHTML = "<b></b><p></p><p class=\"m\"></p>";
+  var L = [].map.call(inn.children, line);
+  function show(first) { var was = cur; cur = ins.findIndex(function (x) { return x.checked; }); var d = D[cur], h0 = ex.offsetHeight, dir = first ? 0 : cur > was ? 1 : -1; place(first);
+    L.forEach(function (l, i) { l.set(d[i + 1], dir); }); sr.textContent = d[0] + ", " + d[1] + ". " + d[2];
+    if (first || !moving()) return;
+    if (ex._gl) ex._gl.cancel(); var h1 = ex.offsetHeight; if (h0 !== h1) ex._gl = ex.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
   ins.forEach(function (x) { x.addEventListener("change", function () { show(false); }); });
-  new ResizeObserver(function () { place(true); }).observe($(".cards"));
+  new ResizeObserver(function () { if (!raf) place(true); }).observe($(".cards"));
   show(true);
 })();
 </script>

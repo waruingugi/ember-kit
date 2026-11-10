@@ -1,7 +1,7 @@
 <!-- part n43 | part | group forms | Pick one, and see what it means. | Pick one, and see what it means. -->
 <div class="kit kit-part">
           <h3 class="kit-h">Pick one, and <em>see what it means.</em></h3>
-          <p class="kit-p">Three cards, one answer. An orange frame springs to the card you pick, the card lifts and a tick draws in. The box below says what your pick means. Arrow keys work too.</p>
+          <p class="kit-p">Three cards, one answer. An orange frame stretches to the card you pick, the card lifts and a tick draws in. The box below rolls to say what your pick means. Arrow keys work too.</p>
           <section class="cs kv4" id="n43">
   <div class="frame"><div class="fbody"><div class="stage">
     <div class="ch" role="radiogroup" aria-label="Delivery">
@@ -24,15 +24,48 @@
   function $(s, el) { return (el || box).querySelector(s); }
   function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
   function money(n) { return n.toLocaleString("en-KE"); }
-  function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
   function count(el, from, to, fmt, ms) { if (!moving()) { el.textContent = fmt(to); return; } cancelAnimationFrame(el._an); var t0 = performance.now(); (function f(t) { var k = Math.min(1, (t - t0) / (ms || 320)); el.textContent = fmt(Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)))); if (k < 1) el._an = requestAnimationFrame(f); })(t0); }
   var D = [["Standard","Free","Arrives Thursday 5 November.","Our rider brings it with other orders on the way."],["Express","KES 250","Arrives today by 6 pm.","A rider leaves within the hour, just for you."],["Pickup","Free","Ready from 4 pm at our Westlands shop.","Show your order number at the counter."]], fr = $(".fr"), ex = $(".ex"), inn = $(".in"), sr = $(".sr"), cds = $$(".cd"), ins = $$("input"), cur = 0;
-  function place(still) { var c = cds[cur]; if (still) fr.style.transition = "none"; fr.style.width = c.offsetWidth + "px"; fr.style.height = c.offsetHeight + "px"; fr.style.transform = "translate(" + c.offsetLeft + "px," + (c.offsetTop - 3) + "px)"; if (still) { fr.offsetWidth; fr.style.transition = ""; } }
-  function show(first) { cur = ins.findIndex(function (x) { return x.checked; }); var d = D[cur], h0 = ex.offsetHeight; place(first);
-    inn.innerHTML = "<b>" + d[1] + "</b><p>" + d[2] + "</p><p class=\"m\">" + d[3] + "</p>"; sr.textContent = d[0] + ", " + d[1] + ". " + d[2];
-    if (first || !moving()) return; inn.animate([{ opacity: 0, transform: "translateY(4px)" }, { opacity: 1, transform: "none" }], { duration: 260, easing: "cubic-bezier(.22,1,.36,1)" }); glide(ex, h0, 320); }
+  function dur(n) { return (parseFloat(getComputedStyle(root).getPropertyValue("--sp-" + n + "-d")) || .37) * 1000; }
+  /* Same motion as n99. Each edge of the frame rides its own spring: the edge on the side it moves toward leads (snappy),
+     the back edge catches up (soft), so the frame stretches as it goes. Motion off: it jumps. */
+  var E = [0, 1, 2, 3].map(function () { return { x: 0, v: 0, T: 0, d: 420, z: 1 }; }), raf = 0, lt = 0;
+  function paint() { fr.style.transform = "translate(" + E[0].x.toFixed(2) + "px," + E[1].x.toFixed(2) + "px)"; fr.style.width = Math.max(0, E[2].x - E[0].x).toFixed(2) + "px"; fr.style.height = Math.max(0, E[3].x - E[1].x).toFixed(2) + "px"; }
+  function tick(t) {
+    var dt = Math.min(.032, Math.max(.001, (t - lt) / 1000)), busy = false, calm = lv() === "calm"; lt = t;
+    E.forEach(function (e) {
+      if (e.x === e.T && !e.v) return; var z = calm ? 1 : e.z, W = 4.6 / (z * e.d * (calm ? .6 : 1) / 1000);
+      e.v += (-W * W * (e.x - e.T) - 2 * z * W * e.v) * dt; e.x += e.v * dt;
+      if (Math.abs(e.x - e.T) < .05 && Math.abs(e.v) < 1) { e.x = e.T; e.v = 0; } else busy = true;
+    });
+    paint(); raf = busy ? requestAnimationFrame(tick) : 0;
+  }
+  function place(jump) {
+    var c = cds[cur], y = c.offsetTop - 3, to = [c.offsetLeft, y, c.offsetLeft + c.offsetWidth, y + c.offsetHeight];
+    if (jump || !moving()) { cancelAnimationFrame(raf); raf = 0; E.forEach(function (e, i) { e.x = e.T = to[i]; e.v = 0; }); paint(); return; }
+    var mx = (to[0] + to[2] - E[0].x - E[2].x) / 2, my = (to[1] + to[3] - E[1].x - E[3].x) / 2, F = dur("snappy") * .62, S = dur("soft") * .78, M = (F + S) / 2;
+    function set(i, front, back) { E[i].d = front ? F : back ? S : M; E[i].z = front ? .78 : 1; }
+    set(0, mx < -.5, mx > .5); set(2, mx > .5, mx < -.5); set(1, my < -.5, my > .5); set(3, my > .5, my < -.5);
+    E.forEach(function (e, i) { e.T = to[i]; }); if (!raf) { lt = performance.now(); raf = requestAnimationFrame(tick); }
+  }
+  function line(el) {   /* a line that rolls, as in n99: the old words lift out, the new ones rise in from the side the pick moved */
+    var cur = document.createElement("span"); el.appendChild(cur);
+    return { set: function (txt, dir) {
+      if (cur.textContent === txt) return; var old = cur; cur = document.createElement("span"); cur.textContent = txt; el.appendChild(cur);
+      if (!dir || !moving()) { old.remove(); return; }
+      var y = dir < 0 ? -1 : 1, a = { duration: 440, easing: "cubic-bezier(.22,1,.36,1)" };
+      old.animate([{ transform: "none", opacity: 1 }, { transform: "translateY(" + (-y * 80) + "%)", opacity: 0 }], a).onfinish = function () { old.remove(); };
+      cur.animate([{ transform: "translateY(" + (y * 80) + "%)", opacity: 0 }, { transform: "none", opacity: 1 }], a);
+    } };
+  }
+  inn.innerHTML = "<b></b><p></p><p class=\"m\"></p>";
+  var L = [].map.call(inn.children, line);
+  function show(first) { var was = cur; cur = ins.findIndex(function (x) { return x.checked; }); var d = D[cur], h0 = ex.offsetHeight, dir = first ? 0 : cur > was ? 1 : -1; place(first);
+    L.forEach(function (l, i) { l.set(d[i + 1], dir); }); sr.textContent = d[0] + ", " + d[1] + ". " + d[2];
+    if (first || !moving()) return;
+    if (ex._gl) ex._gl.cancel(); var h1 = ex.offsetHeight; if (h0 !== h1) ex._gl = ex.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
   ins.forEach(function (x) { x.addEventListener("change", function () { show(false); }); });
-  new ResizeObserver(function () { place(true); }).observe($(".cards"));
+  new ResizeObserver(function () { if (!raf) place(true); }).observe($(".cards"));
   show(true);
 })();
 </script>
