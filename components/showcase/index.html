@@ -2625,8 +2625,13 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
 .kit #n41 .sp li:last-child { padding-bottom: 0; }
 .kit #n41 .sp li::before { content: ""; position: absolute; left: 8px; top: 9px; bottom: -9px; width: 2px; background: var(--line-hi); }
 .kit #n41 .sp li::after { content: ""; position: absolute; left: 8px; top: 9px; bottom: -9px; width: 2px; background: var(--accent); transform: scaleY(0); transform-origin: top; transition: transform .45s var(--ease-out); }
-.kit #n41 .sp li.w .dt { animation: n41-live 1.8s var(--ease-out) infinite; }
-@keyframes n41-live { 0% { box-shadow: 0 0 0 0 rgb(var(--accent-rgb) / .35); } 70%, 100% { box-shadow: 0 0 0 7px rgb(var(--accent-rgb) / 0); } }
+/* The step in progress, as in n84: an orange ring with a dot inside, and a thin ring that drifts out and fades. */
+.kit #n41 .sp .dt::before { content: ""; width: 7px; height: 7px; grid-area: 1 / 1; border-radius: 50%; background: var(--accent); opacity: 0; transform: scale(.4); transition: transform var(--sp-bouncy-d) var(--sp-bouncy), opacity .2s; }
+.kit #n41 .sp .dt::after { content: ""; position: absolute; inset: -2px; border: 2px solid var(--accent); border-radius: 50%; opacity: 0; pointer-events: none; }
+.kit #n41 .sp .dt svg { grid-area: 1 / 1; }
+.kit #n41 .sp li.w .dt::before { opacity: 1; transform: none; }
+.kit #n41 .sp li.w .dt::after { animation: n41-pulse 1.8s var(--ease-out) infinite; }
+@keyframes n41-pulse { from { opacity: .55; transform: scale(1); } to { opacity: 0; transform: scale(1.9); } }
 .kit #n41 .sp li.d:last-child .dt { transition-delay: .4s; }
 .kit #n41 .sp li.d:last-child .dt svg { transition-delay: .6s; }
 .kit #n41 .sp li.d::after { transform: none; }
@@ -2635,7 +2640,7 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
 .kit #n41 .sp .dt svg { width: 12px; height: 12px; fill: none; stroke: var(--on-accent); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 12; stroke-dashoffset: 12; transition: stroke-dashoffset .3s var(--ease-out) .12s; }
 .kit #n41 .sp li.d .dt { border-color: var(--accent); background: var(--accent); }
 .kit #n41 .sp li.d .dt svg { stroke-dashoffset: 0; }
-.kit #n41 .sp li.w .dt { border-color: var(--accent); background: var(--accent); }
+.kit #n41 .sp li.w .dt { border-color: var(--accent); }
 .kit #n41 .sp span { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 10px; min-height: 18px; line-height: 18px; }
 .kit #n41 .sp small { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .kit #n41 .sp li.w span { color: var(--ink); font-weight: 600; }
@@ -3075,12 +3080,14 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
 .kit #n60 .cc small { font-size: 12.5px; color: var(--muted); }
 .kit #n60 .mm { position: relative; height: 40px; max-width: 100%; }
 .kit #n60 .bgw { position: absolute; left: 0; top: 0; bottom: 0; pointer-events: none; filter: drop-shadow(0 0 .6px var(--line-hi)) drop-shadow(0 1px 2px rgb(var(--ink-rgb) / .08)); }
-.kit #n60 .bg { display: block; height: 100%; border-radius: 10px; background: var(--paper-raised); transition: clip-path var(--sp-bouncy-d) var(--sp-bouncy), background-color .25s var(--ease-out); }
-.kit #n60 .mm.shrink .bg { transition: clip-path var(--sp-snappy-d) var(--sp-snappy), background-color .25s var(--ease-out); }
-.kit #n60 .f { position: absolute; left: 0; top: 0; height: 100%; display: inline-flex; align-items: center; gap: 8px; padding: 0 4px; white-space: nowrap; visibility: hidden; pointer-events: none; transition: visibility 0s linear .16s; }
-.kit #n60 .f.on { visibility: visible; pointer-events: auto; transition: none; }
-.kit #n60 .f > [data-p] { opacity: 0; transform: translateX(-5px); filter: blur(3px); transition: opacity .14s var(--ease-out), transform .2s var(--ease-out), filter .14s var(--ease-out); }
-.kit #n60 .f.on > [data-p] { opacity: 1; transform: none; filter: none; transition: opacity .2s var(--ease-out), transform .3s var(--ease-out), filter .2s var(--ease-out); transition-delay: calc(var(--i, 0) * 55ms + 60ms); }
+.kit #n60 .bg { display: block; height: 100%; border-radius: 10px; background: var(--paper-raised); transition: clip-path var(--sp-snappy-d) var(--sp-snappy), background-color .25s var(--ease-out); }
+.kit #n60 .f { position: absolute; left: 0; top: 0; height: 100%; display: inline-flex; align-items: center; gap: 8px; padding: 0 4px; white-space: nowrap; visibility: hidden; pointer-events: none; transition: clip-path var(--sp-snappy-d) var(--sp-snappy), visibility 0s linear .22s; }
+.kit #n60 .f.on { visibility: visible; pointer-events: auto; transition: clip-path var(--sp-snappy-d) var(--sp-snappy); }
+.kit #n60 .f > [data-p] { opacity: 0; filter: blur(3px); transition: opacity .16s var(--ease-out), filter .16s; }
+.kit #n60 .ch { display: inline-block; white-space: pre; }
+.kit #n60 .f.go .ch { animation: n60-in .34s var(--ease-out) both; animation-delay: calc(var(--i) * 14ms); }
+@keyframes n60-in { from { opacity: 0; transform: translateY(7px); filter: blur(3px); } }
+.kit #n60 .f.on > [data-p] { opacity: 1; filter: none; transition: opacity .2s var(--ease-out), filter .2s; transition-delay: calc(var(--i, 0) * 42ms); }
 .kit #n60 .ask { display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 12px 0 10px; border: 0; border-radius: 7px; background: none; font: 600 14px var(--font-body); color: var(--accent-text); cursor: pointer; transition: background-color .15s; }
 .kit #n60 .ask:hover { background: rgb(var(--accent-rgb) / .1); }
 .kit #n60 .no:hover { background: rgb(var(--ink-rgb) / .07); }
@@ -3854,7 +3861,6 @@ html[data-motion="off"] .kit #n79 .fin .big path { stroke-dashoffset: 0; }
 .kit #n80 .dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .kit #n80 .card { position: relative; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper-raised); box-shadow: var(--shadow-sm); }
 .kit #n80 .card .ri { padding: 0; }
-.kit #n80 .card.gh { position: absolute; z-index: 5; margin: 0; pointer-events: none; transform-origin: 0 0; }
 .kit #n80 .fin { display: grid; gap: 10px; padding: 14px; border-radius: 12px; background: rgb(var(--accent-rgb) / .07); }
 .kit #n80 .fin p { margin: 0; font-size: 13.5px; color: var(--ink-soft); }
 .kit #n80 .fin .b.q { color: var(--accent-text); }
@@ -6814,7 +6820,7 @@ html[data-motion="off"] .kit #n92 .gl { display: none; }
         </div>
         <div class="kit kit-part">
           <h3 class="kit-h">One task at a time, and <em>done ones become dots.</em></h3>
-          <p class="kit-p">Set up a shop. Finish a task and its card shrinks into its dot on top, the dot fills with a tick, and the next card slides in.</p>
+          <p class="kit-p">Set up a shop. Finish a task and its dot on top fills with a tick, the line grows, and the next card slides in.</p>
           <section class="cs kv4" id="n80">
   <div class="frame"><div class="fbody"><div class="stage">
     <div class="ob"></div>
@@ -19294,7 +19300,7 @@ window.emberGrid = (function () {
   sh.addEventListener("keydown", function (e) { if (e.key === "Escape") { e.preventDefault(); set(false); return; }
     if (e.key !== "Tab") return; var f = $$("button", sh), a = f[0], z = f[f.length - 1];
     if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); } });
-  $("[data-done]", sh).addEventListener("click", function () { var w = $(".w", sh), nx = $(".n", sh); if (w) { w.className = "d"; w.removeAttribute("aria-current"); $("small", w).textContent = "2:58 pm"; } if (nx) { nx.className = "d"; nx.setAttribute("aria-current", "step"); $("small", nx).textContent = "Just now"; } note.textContent = "Order #4821 marked as delivered."; /* let the line fill and the tick draw before the sheet leaves */ setTimeout(function () { set(false); }, w && moving() ? 1100 : 0); });
+  $("[data-done]", sh).addEventListener("click", function () { var w = $(".sp .w", sh), nx = $(".sp .n", sh); if (w) { w.className = "d"; w.removeAttribute("aria-current"); $("small", w).textContent = "2:58 pm"; } if (nx) { nx.className = "d"; nx.setAttribute("aria-current", "step"); $("small", nx).textContent = "Just now"; } note.textContent = "Order #4821 marked as delivered."; /* let the line fill and the tick draw before the sheet leaves */ setTimeout(function () { set(false); }, w && moving() ? 1100 : 0); });
 })();
 </script>
 <script>
@@ -20330,15 +20336,31 @@ window.emberGrid = (function () {
   var TK = '<svg class="tk" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="11"/><path d="M6.6 11.4 9.6 14.3l5.8-6.4"/></svg>';
   /* One surface, four faces. The surface springs to each face's width; a fast second click can't confirm (280 ms guard). */
   var mm = $(".mm"), bg = $(".bg"), cc = $(".cc"), back = $("[data-back]"), live = $("[data-live]"), F = {}, cur = "a", maxW = 0, opened = 0;
-  $$(".f").forEach(function (f) { F[f.getAttribute("data-f")] = f; });
+  $$(".f").forEach(function (f) {
+    F[f.getAttribute("data-f")] = f;
+    /* Each piece starts 3 letters (42 ms) after the one before it; its letters follow 14 ms apart. */
+    $$("[data-p]", f).forEach(function (p) { var i = 3 * (parseFloat(p.style.getPropertyValue("--i")) || 0); [].slice.call(p.childNodes).forEach(function (t) {
+      if (t.nodeType !== 3 || !t.textContent.trim()) return;
+      var w = document.createElement("span"); w.setAttribute("aria-label", t.textContent.trim()); w.setAttribute("role", "text");
+      t.textContent.split("").forEach(function (c) { var e = document.createElement("span"); e.className = "ch"; e.setAttribute("aria-hidden", "true"); e.style.setProperty("--i", i++); e.textContent = c; w.appendChild(e); });
+      p.replaceChild(w, t);
+    }); });
+  });
   function measure() { maxW = Math.max.apply(null, Object.keys(F).map(function (k) { return F[k].offsetWidth; })) + 2; bg.style.width = maxW + "px"; paint(true); }
   function paint(jump) {
-    var w = F[cur].offsetWidth; mm.classList.toggle("shrink", w < mm.offsetWidth);
+    var w = F[cur].offsetWidth;
     if (jump) bg.style.transition = "none";
     bg.style.clipPath = "inset(0 " + (maxW - w) + "px 0 0 round 10px)"; mm.style.width = w + "px";
     if (jump) { void bg.offsetWidth; bg.style.transition = ""; }
   }
-  function to(k) { F[cur].classList.remove("on"); cur = k; mm.setAttribute("data-at", k); F[k].classList.add("on"); paint(); }
+  /* Like n62: the words sit under the same edge as the surface, so they are revealed (or covered) as it moves. */
+  function cut(f, px, jump) { if (jump) f.style.transition = "none"; f.style.clipPath = "inset(0 " + px + "px 0 -8px)"; if (jump) { void f.offsetWidth; f.style.transition = ""; } }
+  function to(k) {
+    var o = F[cur], n = F[k], ow = o.offsetWidth, nw = n.offsetWidth;
+    /* As in n63: the old words fade where they are; the new ones rise in letter by letter. */
+    o.classList.remove("on", "go"); cut(o, Math.max(0, ow - nw));
+    cut(n, Math.max(0, nw - ow), true); void n.offsetWidth; n.classList.add("go"); cur = k; mm.setAttribute("data-at", k); n.classList.add("on"); cut(n, 0); paint();
+  }
   mm.tabIndex = -1;
   $("[data-ask]").addEventListener("click", function () { to("q"); opened = performance.now(); $("[data-no]").focus(); });
   $("[data-no]").addEventListener("click", function () { to("a"); $("[data-ask]").focus(); });
@@ -22157,12 +22179,11 @@ window.emberGrid = (function () {
     var card = $(".card"), h0 = card.offsetHeight; cur = i;
     $$("[data-dot]").forEach(function (b, j) { if (j === i) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current"); b.parentNode.classList.toggle("done", done[j]); b.disabled = done[j]; });
     card.innerHTML = i < 0 ? "" : body(i, true); card.hidden = i < 0;
-    if (i >= 0 && moving() && dir) { card.firstChild.animate([{ opacity: 0, transform: "translateX(" + dir * 18 + "px)" }, { opacity: 1, transform: "none" }], { duration: 340, easing: "cubic-bezier(.22,1,.36,1)" }); glide(card, h0, 380); }
+    /* The same step change as n79: the next task slides in from the side you are heading, and the card glides to its height. */
+    if (i >= 0 && moving() && dir) { card.firstChild.animate([{ opacity: 0, transform: "translateX(" + dir * 24 + "px)" }, { opacity: 1, transform: "none" }], { duration: 340, easing: "cubic-bezier(.22,1,.36,1)" }); glide(card, h0, 380); }
   }
   function fly(i, nx) {
-    var card = $(".card"), dot = $('[data-dot="' + i + '"]'), rr = ob.getBoundingClientRect(), cr = card.getBoundingClientRect(), dr = dot.getBoundingClientRect(), hadF = box.contains(document.activeElement);
-    if (moving()) { var g = card.cloneNode(true); g.className = "card gh"; g.setAttribute("aria-hidden", "true"); g.style.left = cr.left - rr.left + "px"; g.style.top = cr.top - rr.top + "px"; g.style.width = cr.width + "px"; ob.appendChild(g);
-      g.animate([{ transform: "none", opacity: 1, borderRadius: "12px" }, { transform: "translate(" + (dr.left - cr.left) + "px," + (dr.top - cr.top) + "px) scale(" + dr.width / cr.width + "," + dr.height / cr.height + ")", opacity: 0, borderRadius: "50%" }], { duration: 460, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" }).onfinish = function () { g.remove(); }; }
+    var card = $(".card"), hadF = box.contains(document.activeElement);
     showCard(nx, 1); if (nx >= 0 && hadF) { var b = $("[data-do]", card); if (b) b.focus({ preventScroll: true }); }
     $(".dots").style.setProperty("--p", Math.min(1, k() / (N - 1)));
   }
