@@ -3491,7 +3491,6 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
 .kit #n73 .tn { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
 /* while the panel shrinks back, the real button sits on top of it, so it shows the whole time */
 .kit #n73 .dr.closing .t { z-index: 7; }
-.kit #n73 .dr.fly .tl { z-index: 8; }
 .kit #n73 .p { position: absolute; z-index: 6; left: 0; top: 0; width: max-content; max-width: 100%; visibility: hidden; pointer-events: none; filter: drop-shadow(0 12px 28px rgb(0 0 0 / .14)) drop-shadow(0 1px 2px rgb(0 0 0 / .08)); transition: visibility 0s linear .36s; }
 .kit #n73 .p.open { visibility: visible; pointer-events: auto; transition: visibility 0s; }
 .kit #n73 .sf { position: absolute; inset: 0; border-radius: 14px; background: var(--paper-raised); box-shadow: inset 0 0 0 1px var(--line); }
@@ -5221,7 +5220,7 @@ html[data-motion="off"] .kit #n92 .gl { display: none; }
 </section>
         </div>
         <div class="kit kit-part">
-          <h3 class="kit-h">The button grows into a calendar, and <em>the dates fly home.</em></h3>
+          <h3 class="kit-h">The button grows into a calendar, and <em>the dates settle in.</em></h3>
           <p class="kit-p">PocketPay shows sales for the days you pick. Open it, click 26 Oct, move to 3 Nov, click, then Apply. Today is 5 November 2026, so later days are off.</p>
           <section class="cs kv4" id="n73">
   <div class="frame"><div class="fbody"><div class="stage">
@@ -21337,7 +21336,13 @@ window.emberGrid = (function () {
   var Q = [["Today", T, T], ["Yesterday", add(T, -1), add(T, -1)], ["Last 7 days", add(T, -6), T], ["Last 30 days", add(T, -29), T], ["This month", D(2026, 10, 1), T], ["Last month", D(2026, 9, 1), D(2026, 9, 31)]];
   var ap = { a: Q[2][1], b: Q[2][2] }, dr = { a: ap.a, b: ap.b }, picking = false, hv = null, view = null, nm = 1, fd = ap.b, open = false, applied = false, anims = [];
   var host = $(".dr"), t = $(".t"), P = $(".p"), sf = $(".sf"), inn = $(".inn"), ms = $(".ms"), qk = $(".qk"), dlEl = $(".dl"), apb = $("[data-apply]"), tl = $(".tl"), tn = $(".tn");
-  function swap(el, s, dir) { if (el.textContent === s) return; el.textContent = s; if (moving() && dir) el.animate([{ opacity: 0, transform: "translateY(" + dir * 6 + "px)" }, { opacity: 1, transform: "none" }], { duration: 260, easing: "cubic-bezier(.22,1,.36,1)" }); }
+  /* New words come in the way n71's caption does: they slide 6 px from the side the range moved and fade in, 0.32 s, ease-out. */
+  function arrive(el, dir, delay) { if (!moving()) return; el.animate([{ transform: "translateY(" + (dir || 1) * 6 + "px)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 320, delay: delay || 0, easing: "cubic-bezier(.22,1,.36,1)", fill: "backwards" }); }
+  function swap(el, s, dir) { if (el.textContent === s) return; el.textContent = s; if (dir) arrive(el, dir); }
+  /* While the panel is open the button's old dates are hidden, so the dates you end up with arrive fresh when it closes. */
+  var hid = [], was = ap;
+  function hideWords() { hid.forEach(function (a) { a.cancel(); }); hid = []; [tl, tn].forEach(function (el) { if (moving()) hid.push(el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 150, easing: "ease-out", fill: "forwards" })); else el.style.opacity = "0"; }); }
+  function showWords(dir) { hid.forEach(function (a) { a.cancel(); }); hid = []; tl.style.opacity = tn.style.opacity = ""; arrive(tl, dir, 180); arrive(tn, dir, 240); }
   tl.textContent = lab(ap.a, ap.b); tn.textContent = days(ap.a, ap.b);
   qk.innerHTML = Q.map(function (q, i) { return '<button type="button" aria-pressed="false" data-q="' + i + '">' + q[0] + "</button>"; }).join("");
 
@@ -21417,17 +21422,17 @@ window.emberGrid = (function () {
   $(".pv").addEventListener("click", function () { step(-1); });
   $(".nx").addEventListener("click", function () { step(1); });
   qk.addEventListener("click", function (e) { var b = e.target.closest("[data-q]"); if (!b) return; var q = Q[+b.getAttribute("data-q")]; dr = { a: q[1], b: q[2] }; picking = false; hv = null; fd = q[2]; if (!showView(q[2], q[2] > view ? 1 : -1)) paint(); words(); });
-  apb.addEventListener("click", function () { var dir = dr.b >= ap.b ? 1 : -1; ap = { a: dr.a, b: dr.b }; applied = true; swap(tn, days(ap.a, ap.b), dir); setOpen(false); });
+  apb.addEventListener("click", function () { was = ap; ap = { a: dr.a, b: dr.b }; applied = true; setOpen(false); });
   $("[data-cancel]").addEventListener("click", function () { setOpen(false); });
 
-  /* open: the button grows into the panel. Close: the panel shrinks back under the real button, then the dates fly in. */
+  /* open: the button grows into the panel. Close: the panel shrinks back under the real button, then the dates arrive in it. */
   function stop() { anims.forEach(function (a) { a.cancel(); }); anims = []; host.classList.remove("closing"); }
   function clipFor(w, h, r) { return "inset(0px " + Math.max(0, P.offsetWidth - w) + "px " + Math.max(0, P.offsetHeight - h) + "px 0px round " + r + "px)"; }
   function setOpen(v) {
     if (v === open) return; open = v; P.classList.toggle("open", v); t.setAttribute("aria-expanded", String(v));
     var dS = (parseFloat(sp("soft-d")) || .67) * 1000;
     if (v) {
-      applied = false; dr = { a: ap.a, b: ap.b }; picking = false; hv = null; fd = ap.b; lastEnd = ap.b;
+      hideWords(); applied = false; dr = { a: ap.a, b: ap.b }; picking = false; hv = null; fd = ap.b; lastEnd = ap.b;
       var W = host.clientWidth; nm = W >= 640 ? 2 : 1; host.classList.toggle("narrow", W < 520);
       view = D(ap.b.getFullYear(), ap.b.getMonth() - nm + 1, 1); ms.textContent = ""; render(0); dlEl.textContent = ""; words();
       setTimeout(function () { var f = $('.d[tabindex="0"]', cur()); if (f) f.focus({ preventScroll: true }); }, 0);
@@ -21438,17 +21443,16 @@ window.emberGrid = (function () {
     }
     var did = applied; applied = false;
     if (P.contains(document.activeElement)) t.focus({ preventScroll: true });
-    if (!moving()) { if (did) tl.textContent = lab(ap.a, ap.b); return; }
-    stop(); var from = dlEl.getBoundingClientRect();
+    var dir = did && ap.b < was.b ? -1 : 1;
+    tl.textContent = lab(ap.a, ap.b); tn.textContent = days(ap.a, ap.b);
+    if (!moving()) { showWords(dir); return; }
+    stop();
     host.classList.add("closing");
     anims.push(inn.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 120, easing: "ease-out", fill: "forwards" }));
     anims.push(sf.animate([{ clipPath: "inset(0px 0px 0px 0px round 14px)", opacity: 1 }, { opacity: 1, offset: .6 }, { clipPath: clipFor(t.offsetWidth, t.offsetHeight, 10), opacity: 0 }], { duration: 300, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" }));
     setTimeout(stop, 380);
-    if (did) {
-      tl.textContent = lab(ap.a, ap.b);
-      var to = tl.getBoundingClientRect(); host.classList.add("fly");
-      tl.animate([{ transform: "translate(" + (from.left - to.left) + "px," + (from.top - to.top) + "px)" }, { transform: "none" }], { duration: dS * 1.2, easing: sp("soft") }).onfinish = function () { host.classList.remove("fly"); };
-    }
+    /* the dates arrive as the panel folds back into the button: the new ones after Apply, the same ones after Cancel */
+    showWords(dir);
   }
   t.addEventListener("click", function () { setOpen(!open); });
   P.addEventListener("keydown", function (e) {

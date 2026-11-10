@@ -62,22 +62,41 @@ between. Most of the bugs below were one bad frame.
     with the same edge, using `clip-path` on the same curve. They are then revealed as the
     surface grows, and never show outside it.
 
+11. **Words never fly across another surface.** `n73` used to fly its new dates from the panel's
+    footer into the button. On the way they floated over the calendar, outside both, then shot into
+    the button. The owner said they "zap in". A value that ends up in a control arrives *in the
+    control*:
+    - While the panel is open, hide the control's old words (fade 0.15 s), so nothing stale
+      shows behind the panel.
+    - When the panel closes, the final words arrive in place, as the panel folds back (about 180 ms
+      in). That's the new value after Apply, and the old one after Cancel, Escape or a click
+      outside. The control is never left blank.
+    - Use n71's caption motion: slide 6 px from the side the value moved (later = from below,
+      earlier = from above) and fade in, 0.32 s, `--ease-out`, no blur. A second piece (the
+      day count) comes 60 ms later.
+12. **Pick the reference by what the text is.** A single picked word in a field (an area name)
+    rises like `n59`. A line that describes a range or a period ("Monday 2 to Thursday 5
+    November") slides in like `n71`'s caption. A word swap inside a button (Pay → Paid, Remove
+    → Remove it for good?) writes in letter by letter like `n63`. On `n73` the owner tried
+    `n59`'s rise first: it was "too fast", and slowing it down still wasn't right. The `n71`
+    caption was. When the owner names a reference, copy its exact timing. Never invent new numbers.
+
 ## Moving between steps and choices
 
-11. **Never fly a squashed copy of a card.** `n80` used to shrink a copy of the finished card into
+13. **Never fly a squashed copy of a card.** `n80` used to shrink a copy of the finished card into
     its dot, squeezing its text. The new card arrived under it at the same time. Slide the new
     content 24 px in from the side the reader is heading, and glide the box to its new height.
     Copy the steps form (`n79`).
-12. **A frame that moves between choices stretches.** Each edge rides its own spring. The edge
+14. **A frame that moves between choices stretches.** Each edge rides its own spring. The edge
     on the side it moves toward leads (snappy), and the back edge catches up (soft). The words
     in the box below roll toward the side you moved. Copy `n99` (also in `n43`).
-13. **A live dot drifts, it does not blink.** For the step in progress, use an orange ring with a dot inside, and
+15. **A live dot drifts, it does not blink.** For the step in progress, use an orange ring with a dot inside, and
     a thin ring that grows out and fades to nothing (`n84`, also `n41`). A glow that swells and
     then snaps back to start again reads as a blink.
 
 ## Loading the page
 
-14. **GSAP can arrive late.** On a first visit GSAP still has to download. By then the page's own
+16. **GSAP can arrive late.** On a first visit GSAP still has to download. By then the page's own
     reveal may be fading blocks in. GSAP then hid them and played their entrance again, so every
     block appeared twice. Before adding `gsap-on`, list every `[data-reveal]` whose opacity is
     already above 0, mark it `gs-done`, and leave it to finish. The test is "can you see it",
@@ -87,11 +106,11 @@ between. Most of the bugs below were one bad frame.
 
 ## Code traps we hit
 
-15. **Two parts can share code.** `n80` and `n81` hold the same functions. A find-and-replace on
+17. **Two parts can share code.** `n80` and `n81` hold the same functions. A find-and-replace on
     the showcase matched both, and the edit stopped. Make each replace match exactly once, and
     only inside the part's own script: cut the text from its `getElementById("nXX")` to the next
     part's.
-16. **Look inside the right list.** In `n41`, `$(".n", sheet)` found another element named `.n`
+18. **Look inside the right list.** In `n41`, `$(".n", sheet)` found another element named `.n`
     before the step list, so "Mark delivered" crashed and the sheet never closed. Look inside the
     list itself: `$(".sp .n", sheet)`.
 
@@ -108,7 +127,10 @@ Never trust your eyes on one fast run. Measure, then look. Work on a copy of the
   200 198 198`. A snap looks like `208 208 198`, and a hold looks like `280 280 280 280 264`.
 - **Slow it down and look.** Use Playwright and the DevTools protocol:
   `cdp.send("Animation.setPlaybackRate", { playbackRate: 0.1 })`, then take screenshots every
-  400 ms. One empty or muddled frame is the flash the owner sees.
+  400 ms. One empty or muddled frame is the flash the owner sees. The slow-down only affects
+  animations: a `setTimeout` in the part still runs at full speed. So if the part uses timers
+  (`n73` closes with one), record at real speed instead with `Page.startScreencast` and look at
+  the frames one by one.
 - **Load it the first-visit way.** Hold GSAP back with
   `page.route(/jsdelivr/, r => setTimeout(() => r.continue(), 1500))` and log each block's opacity
   on every frame. A block may only go up, never back to 0. Try 0, 600, 1500 and 3000 ms.

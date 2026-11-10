@@ -63,7 +63,7 @@ The faint squares grid that shows only in open gaps (`DESIGN.md`, *Recurring par
 | `n90` | Charts and numbers | Point at one kind, and the rest steps back. |  |
 | `n82` | Charts and numbers | Twelve weeks of orders, recoloured in a sweep. |  |
 | `n01` | Dates | Pick your nights, see the price as you go. |  |
-| `n73` | Dates | The button grows into a calendar, and the dates fly home. |  |
+| `n73` | Dates | The button grows into a calendar, and the dates settle in. |  |
 | `c15` | Tables and lists | Customers, in one table. |  |
 | `n37` | Tables and lists | Sort, and rows glide to their place. |  |
 | `n48` | Tables and lists | Pages with a pill that slides to your page. |  |
