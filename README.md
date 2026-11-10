@@ -25,6 +25,10 @@ ink, one burnt-orange accent, five fonts, slow motion and plain words.
   each part to build, and why. It comes from 25 parts tried side by side
   in 122 versions, so Claude builds the lively version you would pick
   without asking.
+- **Smooth-motion notes for Claude.** `patterns/smooth-motion.md` lists
+  every motion bug we fixed (jumps, snaps, blinks, entrances that played
+  twice), why each one happened, and how to test a part frame by frame so
+  the next one is smooth the first time.
 - **Diagram rules.** Which tool draws what (Archify, Diagram Design or
   Hairline), the dot-grid canvas, and the checks to run.
 - **A checklist** Claude runs before it calls a page done: contrast, motion,

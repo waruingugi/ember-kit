@@ -39,6 +39,10 @@ so what arrives together enters together.
   Add `html.gsap-on [data-reveal] { transition: none !important; }`, then
   `clearProps` once GSAP is done.
 - Never hand GSAP an empty list. It prints a console warning.
+- GSAP can arrive late, on a first visit when it still has to download. By then the
+  page's own reveal may already be fading blocks in. Before adding `gsap-on`, note every
+  `[data-reveal]` you can already see (opacity above 0) and leave it to finish. Otherwise it
+  vanishes and enters a second time. The showcase does this (`seen` in its GSAP layer).
 - Never use Lenis or any other library that takes over scrolling. It fights
   the iframes and the page jumps.
 - Never animate inside an Archify diagram. Animate its frame instead.

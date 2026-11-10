@@ -723,13 +723,20 @@ window.emberGrid = (function () {
   var L = window.__ember, root = document.documentElement;
   if (!window.gsap || !window.ScrollTrigger || !L || !L.motionOn()) return;
   gsap.registerPlugin(ScrollTrigger);
+  /* GSAP can arrive late (a first visit downloads it). By then the page's own reveal may already be fading some
+     blocks in. Leave every block you can already see to finish on its own, or it would vanish and enter twice.
+     Measured before gsap-on, which would cut those fades short. */
+  var seen = gsap.utils.toArray('[data-reveal]').filter(function (el) { return +getComputedStyle(el).opacity > .02; });
+  seen.forEach(function (el) { el.classList.add('gs-done'); });
+  function shown(el) { return seen.indexOf(el) >= 0; }
   root.classList.add('gsap-on');
   var EASE = 'expo.out';
   function done(els) { gsap.utils.toArray(els).forEach(function (el) { el.classList.add('gs-done'); gsap.set(el, { clearProps: 'transform,opacity,visibility' }); }); }
 
   /* 1. Hero: one short entrance, line by line */
   var heroEls = '.hero .eyebrow, .hero h1 .line, .hero .lead, .hero .meta-row, .route-card, .scroll-cue';
-  gsap.timeline({ defaults: { ease: EASE, duration: 1.1 }, onComplete: function () { done(heroEls); } })
+  if (gsap.utils.toArray(heroEls).some(shown)) gsap.utils.toArray(heroEls).forEach(function (el) { el.classList.add('gs-done'); });
+  else gsap.timeline({ defaults: { ease: EASE, duration: 1.1 }, onComplete: function () { done(heroEls); } })
     .from('.hero .eyebrow', { y: 16, autoAlpha: 0 })
     .from('.hero h1 .line', { yPercent: 40, autoAlpha: 0, stagger: 0.12, duration: 1.3 }, '-=0.85')
     .from('.hero .lead', { y: 20, autoAlpha: 0 }, '-=0.9')
@@ -739,13 +746,14 @@ window.emberGrid = (function () {
 
   /* 2. Reveals: things that enter together come in as one staggered group */
   var items = gsap.utils.toArray('[data-reveal]').filter(function (el) { return !el.closest('.hero') && !el.classList.contains('goal'); });
+  items = items.filter(function (el) { return !shown(el); });
   gsap.set(items, { autoAlpha: 0, y: 26 });
 
   /* 2b. Goal rows follow the scroll both ways: in as they arrive, and a quiet fade out as they
      leave the screen, up or down, so going back feels as alive as going forward. */
   var gy = L.lively() ? 18 : 8;
   gsap.utils.toArray('.goal[data-reveal]').forEach(function (goal) {
-    gsap.set(goal, { autoAlpha: 0, y: gy });
+    if (!shown(goal)) gsap.set(goal, { autoAlpha: 0, y: gy });
     /* Ease in and out, slower than other reveals, so each row settles in calmly instead of snapping. */
     function show() { gsap.to(goal, { autoAlpha: 1, y: 0, duration: 1.4, ease: 'power2.inOut', overwrite: true }); }
     function hide(y) { gsap.to(goal, { autoAlpha: 0, y: y, duration: 1, ease: 'power2.inOut', overwrite: true }); }
