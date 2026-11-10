@@ -1,6 +1,7 @@
 # Interactive parts
 
 > Part of the design system. Read `~/.claude/design/DESIGN.md` first; it says when to read this file.
+> Building or changing how a part opens, closes, swaps its words or moves? Read `patterns/smooth-motion.md` too.
 
 **What it is.** 29 parts a reader works with: navigation, forms, tables, status,
 cards and moving surfaces. Each one started as a React component the owner shared, and
@@ -105,7 +106,7 @@ The owner's picks from Taste Lab rounds 1 and 2. They are the **default** for th
 | n40 | Peek card with a trend | More about a name, without leaving | The card lifts out of the name; a small line of orders draws in, then an orange dot pops. It shows in full inside its box |
 | n38 | Skeleton sweep | Content that takes time | Grey blocks sweep while loading, then real content rises in |
 | n47 | Progress bar that springs | A job with steps | The bar fills on a spring, the percent counts up, the step name changes, and a tick draws in at the end |
-| n42 | Banner that checks again | A system warning | If it can be checked again ("PocketPay is slow"): a countdown, Check now, then "back" and it leaves. If not: it drops in on a spring and the page glides up when closed. Default over `n21` |
+| n42 | Banner that checks again | A system warning | If it can be checked again ("PocketPay is slow"): a countdown, Check now, then "back" and it leaves. If not: it closes in one motion on `--ease-in-out` (words fade first, then its height and the 10 px space above it shrink together), and opens again on `--sp-soft` with no bounce. The space is each notice's own top margin, never a grid `gap`, so nothing snaps (`patterns/smooth-motion.md`). Default over `n21` |
 | n69 | Phone field that finds the country | A phone number, any country | The number spaces itself as you type. The code button opens a list you search by name or code; typing + opens it too. The message rises in under the field; a tick shows when the number is whole. Default over `n11` |
 | n70 | Type to pick several | Pick many from a long list | Type in the field, Enter adds a chip, Backspace removes the last. Chips wrap and glide to make room. Select all, and a count under it. Default over `n46` when the list is long |
 | n71 | Switch with a stretching marker | Two to four views of the same numbers | The ink marker's front edge leads and its back catches up. The words turn paper under it. The numbers below roll |

@@ -2647,8 +2647,9 @@ html[data-motion="off"] #tapeReaders .rd .rd-n::after { animation: none; }
 .kit #n41 .sp li.n span { color: var(--muted); }
 .kit #n41 .go { margin-top: auto; }
 
-.kit #n42 .fbody { display: grid; gap: 10px; }
-.kit #n42 .top { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 32px; }
+.kit #n42 .fbody { display: grid; }
+.kit #n42 .fbody > * + * { margin-top: 10px; }
+.kit #n42 .top { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 41px; }
 .kit #n42 .slot { overflow: hidden; }
 .kit #n42 .bn { display: flex; align-items: flex-start; gap: 10px; padding: 12px; border-radius: 12px; border: 1px solid rgb(var(--accent-rgb) / .35); background: color-mix(in srgb, var(--accent) 7%, var(--paper-raised)); text-align: left; }
 .kit #n42 .bn > .i { width: 18px; height: 18px; flex: none; margin-top: 1px; color: var(--accent-text); }
@@ -18747,13 +18748,20 @@ window.emberGrid = (function () {
   var L = window.__ember, root = document.documentElement;
   if (!window.gsap || !window.ScrollTrigger || !L || !L.motionOn()) return;
   gsap.registerPlugin(ScrollTrigger);
+  /* GSAP can arrive late (a first visit downloads it). By then the page's own reveal may already be fading some
+     blocks in. Leave every block you can already see to finish on its own, or it would vanish and enter twice.
+     Measured before gsap-on, which would cut those fades short. */
+  var seen = gsap.utils.toArray('[data-reveal]').filter(function (el) { return +getComputedStyle(el).opacity > .02; });
+  seen.forEach(function (el) { el.classList.add('gs-done'); });
+  function shown(el) { return seen.indexOf(el) >= 0; }
   root.classList.add('gsap-on');
   var EASE = 'expo.out';
   function done(els) { gsap.utils.toArray(els).forEach(function (el) { el.classList.add('gs-done'); gsap.set(el, { clearProps: 'transform,opacity,visibility' }); }); }
 
   /* 1. Hero: one short entrance, line by line */
   var heroEls = '.hero .eyebrow, .hero h1 .line, .hero .lead, .hero .meta-row, .route-card, .scroll-cue';
-  gsap.timeline({ defaults: { ease: EASE, duration: 1.1 }, onComplete: function () { done(heroEls); } })
+  if (gsap.utils.toArray(heroEls).some(shown)) gsap.utils.toArray(heroEls).forEach(function (el) { el.classList.add('gs-done'); });
+  else gsap.timeline({ defaults: { ease: EASE, duration: 1.1 }, onComplete: function () { done(heroEls); } })
     .from('.hero .eyebrow', { y: 16, autoAlpha: 0 })
     .from('.hero h1 .line', { yPercent: 40, autoAlpha: 0, stagger: 0.12, duration: 1.3 }, '-=0.85')
     .from('.hero .lead', { y: 20, autoAlpha: 0 }, '-=0.9')
@@ -18763,13 +18771,14 @@ window.emberGrid = (function () {
 
   /* 2. Reveals: things that enter together come in as one staggered group */
   var items = gsap.utils.toArray('[data-reveal]').filter(function (el) { return !el.closest('.hero') && !el.classList.contains('goal'); });
+  items = items.filter(function (el) { return !shown(el); });
   gsap.set(items, { autoAlpha: 0, y: 26 });
 
   /* 2b. Goal rows follow the scroll both ways: in as they arrive, and a quiet fade out as they
      leave the screen, up or down, so going back feels as alive as going forward. */
   var gy = L.lively() ? 18 : 8;
   gsap.utils.toArray('.goal[data-reveal]').forEach(function (goal) {
-    gsap.set(goal, { autoAlpha: 0, y: gy });
+    if (!shown(goal)) gsap.set(goal, { autoAlpha: 0, y: gy });
     /* Ease in and out, slower than other reveals, so each row settles in calmly instead of snapping. */
     function show() { gsap.to(goal, { autoAlpha: 1, y: 0, duration: 1.4, ease: 'power2.inOut', overwrite: true }); }
     function hide(y) { gsap.to(goal, { autoAlpha: 0, y: y, duration: 1, ease: 'power2.inOut', overwrite: true }); }
@@ -19317,11 +19326,20 @@ window.emberGrid = (function () {
   function glide(el, h0, d) { if (el._gl) el._gl.cancel(); var h1 = el.offsetHeight; if (h0 !== h1 && moving()) el._gl = el.animate([{ height: h0 + "px" }, { height: h1 + "px" }], { duration: d || 340, easing: "cubic-bezier(.22,1,.36,1)" }); }
   function count(el, from, to, fmt, ms) { if (!moving()) { el.textContent = fmt(to); return; } cancelAnimationFrame(el._an); var t0 = performance.now(); (function f(t) { var k = Math.min(1, (t - t0) / (ms || 320)); el.textContent = fmt(Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)))); if (k < 1) el._an = requestAnimationFrame(f); })(t0); }
   var back = $("[data-back]"), A = $("[data-slot=a]"), B = $("[data-slot=b]"), t = null, n = 8, seen = false, MSG = A.querySelector(".tx").innerHTML;
-  function enter(slot) { var b = $("[data-b]", slot); slot.hidden = false; if (moving()) b.animate([{ transform: "translateY(-14px) scale(.97)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 490, easing: sp("bouncy") }); }
+  /* The 10 px space above each notice is its own top margin, so it opens and closes with the notice and nothing snaps at the end. */
+  function cs(n) { return getComputedStyle(root).getPropertyValue(n).trim(); }
+  function enter(slot) { var b = $("[data-b]", slot); slot.hidden = false; if (!moving()) return;
+    var h = slot.offsetHeight, d = (parseFloat(cs("--sp-soft-d")) || .67) * 1000;
+    /* Opening pushes the box below, so it settles on the soft spring with no bounce. */
+    slot.animate([{ height: "0px", marginTop: "0px" }, { height: h + "px", marginTop: getComputedStyle(slot).marginTop }], { duration: d, easing: sp("soft") });
+    b.animate([{ transform: "translateY(-6px)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: d * .8, easing: "cubic-bezier(.22,1,.36,1)" }); }
   function leave(slot) { var b = $("[data-b]", slot), h0 = slot.offsetHeight;
-    function fin() { b.getAnimations().forEach(function (x) { x.cancel(); }); slot.hidden = true; if (A.hidden && B.hidden) { back.hidden = false; back.focus(); } else { var o = A.hidden ? B : A; $("[data-x]", o).focus(); } }
+    function fin() { slot.hidden = true; b.getAnimations().concat(slot.getAnimations()).forEach(function (x) { x.cancel(); }); if (A.hidden && B.hidden) { back.hidden = false; back.focus(); } else { var o = A.hidden ? B : A; $("[data-x]", o).focus(); } }
     if (!moving()) return fin();
-    b.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "translateY(-8px)" }], { duration: 180, fill: "forwards" }).onfinish = function () { slot.animate([{ height: h0 + "px" }, { height: "0px" }], { duration: 320, easing: "cubic-bezier(.22,1,.36,1)" }).onfinish = fin; }; }
+    /* One motion, not two: the space and the gap close together on ease-in-out, and the words fade in the first half. */
+    var e = cs("--ease-in-out") || "cubic-bezier(.65,0,.35,1)";
+    b.animate([{ opacity: 1 }, { opacity: 0, offset: .45 }, { opacity: 0 }], { duration: 360, fill: "forwards" });
+    slot.animate([{ height: h0 + "px", marginTop: getComputedStyle(slot).marginTop }, { height: "0px", marginTop: "0px" }], { duration: 360, easing: e, fill: "forwards" }).onfinish = fin; }
   function tick() { var cd = $(".cd", A); if (!cd) return; cd.textContent = "Checking again in " + n + " s"; if (n-- <= 0) ok(); else t = setTimeout(tick, 1000); }
   function ok() { clearTimeout(t); var b = $("[data-b]", A), tx = $(".tx", b); b.classList.add("ok"); tx.innerHTML = "<b>Payments are back.</b><span>Everything paid in the last 5 minutes now shows.</span>"; sales(true); if (moving()) tx.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260 }); setTimeout(function () { if (!A.hidden) leave(A); }, 2600); }
   /* the two waiting payments land when the check passes; the total and the count roll */
@@ -19337,7 +19355,7 @@ window.emberGrid = (function () {
   new IntersectionObserver(function (es) { if (es[0].isIntersecting && !seen) { seen = true; tick(); } }, { threshold: .6 }).observe(A);
   $("[data-x]", A).addEventListener("click", function () { clearTimeout(t); leave(A); });
   $("[data-x]", B).addEventListener("click", function () { leave(B); });
-  back.addEventListener("click", function () { back.hidden = true; sales(false); var b = $("[data-b]", A); b.classList.remove("ok"); $(".tx", b).innerHTML = MSG; wire(); [A, B].forEach(function (s) { s.style.height = ""; enter(s); }); start(); $("[data-x]", A).focus(); });
+  back.addEventListener("click", function () { back.hidden = true; sales(false); var b = $("[data-b]", A); b.classList.remove("ok"); $(".tx", b).innerHTML = MSG; wire(); start(); /* write the countdown before measuring, or it wraps late on a phone and the notice jumps */ [A, B].forEach(function (s) { s.style.height = ""; enter(s); }); $("[data-x]", A).focus(); });
   wire();
 })();
 </script>
