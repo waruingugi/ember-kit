@@ -27,7 +27,7 @@ window.emberGrid = (function () {
   function opt(k, d) { return cv.getAttribute('data-' + k) || d; }
   var W = 0, H = 0, dpr = 1, raf = 0, ink = '21,24,27', acc = '225,74,14', dark = false;
   var S = 56, sideR = 0, cells = [], bands = [], blocks = [], colL = 0, colR = 0, heroBottom = 600, BUCKETS = 10;
-  var BLOCKS = opt('blocks', '.card, .callout, .goal, .frame, .code-win, .flow-step .fcard, .sec-head .eyebrow, .sec-head h2, .sec-head .lead, .notes li, .hero h1, .hero .lead, .hero .eyebrow, .meta-row, .scroll-cue, .tool-note, .diagram-foot > div, .step, .part-divider > *, .endcard, footer');
+  var BLOCKS = opt('blocks', '.card, .callout, .goal, .frame, .code-win, .flow-step .fcard, .sec-head .eyebrow, .sec-head h2, .sec-head h1, .sec-head .lead, .notes li, .hero h1, .hero .lead, .hero .eyebrow, .meta-row, .scroll-cue, .tool-note, .diagram-foot > div, .step, .part-divider > *, .endcard, footer');
   var LIVE = opt('live', '.layers-fig, .layer-list, .layers-progress, .layers-sticky .tool-note'), BANDS = opt('bands', '.sec, .part-divider'), GHOSTS = opt('ghosts', '.ghost');
   var api = { scrollY: scrollY };
   function smooth(e0, e1, x) { var t = clamp01((x - e0) / (e1 - e0)); return t * t * (3 - 2 * t); }

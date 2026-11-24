@@ -65,7 +65,7 @@ Each one has a matching time, `--sp-*-d`. Use it like this:
 ```html
 <style>
 :root { /* fallbacks for old browsers */
-  --sp-snappy: cubic-bezier(.34, 1.3, .64, 1); --sp-snappy-d: .32s;
+  --sp-snappy: cubic-bezier(.34, 1.3, .64, 1); --sp-snappy-d: .37s;
   --sp-bouncy: cubic-bezier(.34, 1.56, .64, 1); --sp-bouncy-d: .5s;
   --sp-soft: cubic-bezier(.22, 1, .36, 1); --sp-soft-d: .45s;
 }

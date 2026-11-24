@@ -4,50 +4,77 @@
           <p class="kit-p">Search, sort by a header, then tick a few rows. Rows glide to where they belong, and a bar rises with actions for the ones you ticked.</p>
           <section class="cs kv4" id="n37">
   <div class="frame"><div class="fbody">
-    <div class="tb">
-      <div class="top"><div class="srch"><svg class="i" aria-hidden="true"><use href="#i-search"></use></svg><input class="in" id="n37-q" type="search" placeholder="Search name, number or status" aria-label="Search invoices"></div></div>
-      <div class="scw"><table><thead><tr><th class="ckc"><button class="cb" type="button" role="checkbox" aria-checked="false" aria-label="Pick all invoices" id="n37-all"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.8 8.3 6.7 11 12.2 5"></path></svg></button></th><th data-k="0" aria-sort="none"><button class="sb" type="button">Invoice<svg class="i s" aria-hidden="true"><use href="#i-cd"></use></svg></button></th><th data-k="1" aria-sort="none"><button class="sb" type="button">Customer<svg class="i s" aria-hidden="true"><use href="#i-cd"></use></svg></button></th><th data-k="2" aria-sort="none" class="r"><button class="sb" type="button">Amount (KSh)<svg class="i s" aria-hidden="true"><use href="#i-cd"></use></svg></button></th><th data-k="3" aria-sort="none"><button class="sb" type="button">Status<svg class="i s" aria-hidden="true"><use href="#i-cd"></use></svg></button></th><th data-k="4" aria-sort="descending"><button class="sb" type="button">Date<svg class="i s" aria-hidden="true"><use href="#i-cd"></use></svg></button></th></tr></thead><tbody id="n37-body"></tbody></table></div>
-      <p class="ft" id="n37-foot" aria-live="polite"></p>
-      <div class="tray" id="n37-bar" aria-hidden="true"><span id="n37-bn"></span><button class="b sm pri" type="button" tabindex="-1" data-bx="Reminders sent by SMS.">Send reminders</button><button class="b sm" type="button" tabindex="-1" data-bx="Marked as paid.">Mark paid</button><button class="b sm q cx" type="button" tabindex="-1" aria-label="Clear picks" data-bc=""><svg class="i" aria-hidden="true"><use href="#i-x"></use></svg></button></div>
+    <div class="tbl">
+      <div class="tbl-top"><div class="tbl-search"><svg class="i" aria-hidden="true"><use href="#i-search"></use></svg><input class="in" id="n37-q" type="search" placeholder="Search name, number or status" aria-label="Search invoices"></div></div>
+      <div class="tbl-scroll"><table><thead><tr><th class="tbl-ckc"><button class="tbl-cb" type="button" role="checkbox" aria-checked="false" aria-label="Pick all invoices" id="n37-all"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.8 8.3 6.7 11 12.2 5"></path></svg></button></th><th data-k="0" aria-sort="none"><button class="tbl-sort" type="button">Invoice<svg class="i s" aria-hidden="true"><use href="#i-cd"></use></svg></button></th><th data-k="1" aria-sort="none"><button class="tbl-sort" type="button">Customer<svg class="i s" aria-hidden="true"><use href="#i-cd"></use></svg></button></th><th data-k="2" aria-sort="none" class="tbl-end"><button class="tbl-sort" type="button">Amount (KSh)<svg class="i s" aria-hidden="true"><use href="#i-cd"></use></svg></button></th><th data-k="3" aria-sort="none"><button class="tbl-sort" type="button">Status<svg class="i s" aria-hidden="true"><use href="#i-cd"></use></svg></button></th><th data-k="4" aria-sort="descending"><button class="tbl-sort" type="button">Date<svg class="i s" aria-hidden="true"><use href="#i-cd"></use></svg></button></th></tr></thead><tbody id="n37-body"></tbody></table></div>
+      <p class="tbl-foot" id="n37-foot" aria-live="polite"></p>
+      <div class="tbl-bar" id="n37-bar" aria-hidden="true"><span class="tbl-count" id="n37-bn"></span><button class="b sm pri" type="button" tabindex="-1" data-bx="Reminders sent by SMS.">Send reminders</button><button class="b sm" type="button" tabindex="-1" data-bx="Marked as paid.">Mark paid</button><button class="b sm q tbl-x" type="button" tabindex="-1" aria-label="Clear picks" data-bc=""><svg class="i" aria-hidden="true"><use href="#i-x"></use></svg></button></div>
     </div>
   </div></div>
 
 </section>
         </div>
 <script data-slot="0043">
-(function () {
+/* tbl:begin. The table piece's behaviour (kit/cards/table.md). One copy, shared by every table. */
+function emberTable(box, cfg) {
   "use strict";
-  var box = document.getElementById("n37"); if (!box) return;
   var root = document.documentElement;
   function lv() { var m = root.dataset.motion || "lively"; if (matchMedia("(prefers-reduced-motion: reduce)").matches) m = "off"; return m; }
   function $(s, el) { return (el || box).querySelector(s); }
   function $$(s, el) { return [].slice.call((el || box).querySelectorAll(s)); }
-  var ROWS = [["4821","Amina Otieno",4200,"Paid","2026-10-31"],["4820","Brian Kiprop",12750,"Due","2026-10-30"],["4819","Wanjiru Mwangi",860,"Paid","2026-10-30"],["4818","Otieno Ouma",3400,"Overdue","2026-10-24"],["4817","Fatuma Hassan",7900,"Paid","2026-10-23"],["4816","Kevin Mutua",2150,"Due","2026-10-22"],["4815","Grace Akinyi",15300,"Paid","2026-10-20"],["4814","Daniel Njoroge",5600,"Overdue","2026-10-15"]];
-  var tb = $("#n37-body"), foot = $("#n37-foot"), all = $("#n37-all"), bar = $("#n37-bar"), bn = $("#n37-bn"), sort = { k: 4, dir: -1 }, sel = {}, q = "";
-  var CB = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.8 8.3 6.7 11 12.2 5"/></svg>', M = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  function money(n) { return n.toLocaleString("en-KE"); }
-  function day(d) { return +d.slice(8) + " " + M[+d.slice(5, 7) - 1]; }
-  function rows() { return ROWS.filter(function (x) { return !q || (x[0] + " " + x[1] + " " + x[3]).toLowerCase().indexOf(q) >= 0; }).sort(function (a, b) { var A = a[sort.k], B = b[sort.k]; return (A > B ? 1 : A < B ? -1 : 0) * sort.dir; }); }
+  var ROWS = cfg.rows, cols = cfg.columns, idOf = cfg.id;
+  var tb = $("tbody"), foot = $(".tbl-foot"), all = $("thead .tbl-cb"), bar = $(".tbl-bar"), bn = $(".tbl-count"), search = $(".tbl-search input");
+  var sort = { k: cfg.sort.k, dir: cfg.sort.dir }, sel = {}, q = "";
+  var CB = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.8 8.3 6.7 11 12.2 5"/></svg>';
+  function rows() { return ROWS.filter(function (x) { return !q || cfg.text(x).toLowerCase().indexOf(q) >= 0; }).sort(function (a, b) { var A = cols[sort.k].get(a), B = cols[sort.k].get(b); return (A > B ? 1 : A < B ? -1 : 0) * sort.dir; }); }
+  function cell(c, r) { return "<td" + (c.cls ? ' class="' + c.cls + '"' : "") + ">" + c.html(r) + "</td>"; }
   function render() {
     var flip = lv() !== "off", before = {};
     if (flip) $$("tr[data-id]", tb).forEach(function (tr) { before[tr.dataset.id] = tr.getBoundingClientRect().top; });
     var rs = rows();
-    tb.innerHTML = rs.map(function (r) { var s = !!sel[r[0]]; return '<tr data-id="' + r[0] + '" aria-selected="' + s + '"><td class="ckc"><button class="cb" type="button" role="checkbox" aria-checked="' + s + '" aria-label="Pick invoice ' + r[0] + '">' + CB + '</button></td><td>#' + r[0] + '</td><td>' + r[1] + '</td><td class="r num">' + money(r[2]) + '</td><td><span class="st s-' + r[3] + '">' + r[3] + '</span></td><td class="num">' + day(r[4]) + "</td></tr>"; }).join("") || '<tr class="empty"><td colspan="6">No invoice matches. Clear the search.</td></tr>';
+    tb.innerHTML = rs.map(function (r) { var id = idOf(r), s = !!sel[id]; return '<tr data-id="' + emberTable.esc(id) + '" aria-selected="' + s + '"><td class="tbl-ckc"><button class="tbl-cb" type="button" role="checkbox" aria-checked="' + s + '" aria-label="' + emberTable.esc(cfg.pickLabel(r)) + '">' + CB + "</button></td>" + cols.map(function (c) { return cell(c, r); }).join("") + "</tr>"; }).join("") || '<tr class="tbl-empty"><td colspan="' + (cols.length + 1) + '">' + cfg.empty + "</td></tr>";
     $$("tr[data-id]", tb).forEach(function (tr) {
-      $(".cb", tr).addEventListener("click", function () { sel[tr.dataset.id] = !sel[tr.dataset.id]; render(); var b = $('tr[data-id="' + tr.dataset.id + '"] .cb', tb); if (b) b.focus(); });
+      $(".tbl-cb", tr).addEventListener("click", function () { sel[tr.dataset.id] = !sel[tr.dataset.id]; render(); var b = $('tr[data-id="' + CSS.escape(tr.dataset.id) + '"] .tbl-cb', tb); if (b) b.focus(); });
       var b0 = before[tr.dataset.id]; if (flip && b0 !== undefined) { var d = b0 - tr.getBoundingClientRect().top; if (d) tr.animate([{ transform: "translateY(" + d + "px)" }, { transform: "none" }], { duration: 420, easing: "cubic-bezier(.22,1,.36,1)" }); }
     });
-    var ids = Object.keys(sel).filter(function (k) { return sel[k]; }), tot = ROWS.filter(function (r) { return sel[r[0]]; }).reduce(function (a, r) { return a + r[2]; }, 0), on = ids.length > 0;
+    var ids = Object.keys(sel).filter(function (k) { return sel[k]; }), picked = ROWS.filter(function (r) { return sel[idOf(r)]; }), on = ids.length > 0;
     all.setAttribute("aria-checked", ids.length === ROWS.length ? "true" : on ? "mixed" : "false");
-    foot.textContent = on ? ids.length + " of " + ROWS.length + " picked · KSh " + money(tot) : rs.length + " of " + ROWS.length + " invoices · sorted by " + ["number", "customer", "amount", "status", "date"][sort.k] + (sort.dir > 0 ? ", low to high" : ", high to low");
-    bar.classList.toggle("on", on); bar.setAttribute("aria-hidden", String(!on)); $$("button", bar).forEach(function (b) { b.tabIndex = on ? 0 : -1; }); bn.textContent = ids.length + " picked";
+    foot.textContent = on ? ids.length + " of " + ROWS.length + " picked" + (cfg.pickedNote ? cfg.pickedNote(picked) : "") : rs.length + " of " + ROWS.length + " " + cfg.noun + " · sorted by " + cols[sort.k].name + (sort.dir > 0 ? ", low to high" : ", high to low");
+    bar.classList.toggle("is-on", on); bar.setAttribute("aria-hidden", String(!on)); $$("button", bar).forEach(function (b) { b.tabIndex = on ? 0 : -1; }); bn.textContent = ids.length + " picked";
   }
   function clear() { for (var k in sel) sel[k] = false; render(); }
-  $$("th[data-k]").forEach(function (h) { $(".sb", h).addEventListener("click", function () { var k = +h.dataset.k; sort = { k: k, dir: sort.k === k ? -sort.dir : 1 }; $$("th[data-k]").forEach(function (x) { x.setAttribute("aria-sort", +x.dataset.k === k ? (sort.dir > 0 ? "ascending" : "descending") : "none"); }); render(); }); });
-  all.addEventListener("click", function () { var on = all.getAttribute("aria-checked") !== "true"; ROWS.forEach(function (r) { sel[r[0]] = on; }); render(); });
-  $("#n37-q").addEventListener("input", function (e) { q = e.target.value.trim().toLowerCase(); render(); });
-  $$("[data-bx]", bar).forEach(function (b) { b.addEventListener("click", function () { var m = b.getAttribute("data-bx"); clear(); foot.textContent = m; all.focus(); }); });
+  $$("th[data-k]").forEach(function (h) { $(".tbl-sort", h).addEventListener("click", function () { var k = +h.dataset.k; sort = { k: k, dir: sort.k === k ? -sort.dir : 1 }; $$("th[data-k]").forEach(function (x) { x.setAttribute("aria-sort", +x.dataset.k === k ? (sort.dir > 0 ? "ascending" : "descending") : "none"); }); render(); }); });
+  all.addEventListener("click", function () { var on = all.getAttribute("aria-checked") !== "true"; ROWS.forEach(function (r) { sel[idOf(r)] = on; }); render(); });
+  if (search) search.addEventListener("input", function (e) { q = e.target.value.trim().toLowerCase(); render(); });
+  $$("[data-bx]", bar).forEach(function (b) { b.addEventListener("click", function () { var m = b.getAttribute("data-bx"), ids = Object.keys(sel).filter(function (k) { return sel[k]; }); clear(); foot.textContent = m; all.focus(); if (cfg.onAction) cfg.onAction(b, ids); }); });
   $("[data-bc]", bar).addEventListener("click", function () { clear(); all.focus(); });
   render();
+  /* a handle for pages that change the data (tabs, React state): rows glide to their new places; ticks on rows that left are dropped */
+  return { setRows: function (next) { ROWS = next; var keep = {}; ROWS.forEach(function (r) { var id = idOf(r); if (sel[id]) keep[id] = true; }); sel = keep; render(); }, rows: function () { return ROWS.slice(); } };
+}
+/* Cell html is written into the page as is: pass any text that came from people through emberTable.esc. */
+emberTable.esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+/* tbl:end */
+(function () {
+  "use strict";
+  var box = document.getElementById("n37"); if (!box) return;
+  var ROWS = [["4821","Amina Otieno",4200,"Paid","2026-10-31"],["4820","Brian Kiprop",12750,"Due","2026-10-30"],["4819","Wanjiru Mwangi",860,"Paid","2026-10-30"],["4818","Otieno Ouma",3400,"Overdue","2026-10-24"],["4817","Fatuma Hassan",7900,"Paid","2026-10-23"],["4816","Kevin Mutua",2150,"Draft","2026-10-22"],["4815","Grace Akinyi",15300,"Paid","2026-10-20"],["4814","Daniel Njoroge",5600,"Overdue","2026-10-15"]];
+  var STATE = { Paid: "done", Due: "due", Overdue: "late", Draft: "idle" }, M = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  function money(n) { return n.toLocaleString("en-KE"); }
+  function day(d) { return +d.slice(8) + " " + M[+d.slice(5, 7) - 1]; }
+  emberTable(box.querySelector(".tbl"), {
+    rows: ROWS, id: function (r) { return r[0]; }, noun: "invoices", empty: "No invoice matches. Clear the search.",
+    pickLabel: function (r) { return "Pick invoice " + r[0]; },
+    text: function (r) { return r[0] + " " + r[1] + " " + r[3]; },
+    sort: { k: 4, dir: -1 },
+    columns: [
+      { name: "number", get: function (r) { return r[0]; }, html: function (r) { return "#" + emberTable.esc(r[0]); } },
+      { name: "customer", get: function (r) { return r[1]; }, html: function (r) { return emberTable.esc(r[1]); } },
+      { name: "amount", get: function (r) { return r[2]; }, html: function (r) { return money(r[2]); }, cls: "tbl-end tbl-num" },
+      { name: "status", get: function (r) { return r[3]; }, html: function (r) { return '<span class="tbl-st" data-s="' + STATE[r[3]] + '">' + emberTable.esc(r[3]) + "</span>"; } },
+      { name: "date", get: function (r) { return r[4]; }, html: function (r) { return day(r[4]); }, cls: "tbl-num" }
+    ],
+    pickedNote: function (picked) { return " · KSh " + money(picked.reduce(function (a, r) { return a + r[2]; }, 0)); }
+  });
 })();
 </script>
