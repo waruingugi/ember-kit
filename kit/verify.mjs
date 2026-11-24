@@ -19,11 +19,11 @@ if (!file || (!cardName && !house)) { console.error('usage: node kit/verify.mjs 
 // serve the page's folder over http: a built app (Vite, Next export) links its CSS and loads module scripts, which file:// blocks
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { extname, dirname as dn, basename, join, normalize } from 'node:path';
+import { extname, dirname as dn, basename, join, normalize, relative, isAbsolute } from 'node:path';
 const ROOT = dn(resolve(file)), TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2', '.ico': 'image/x-icon' };
 const server = createServer(async (req, res) => {
-  const p = normalize(join(ROOT, decodeURIComponent(new URL(req.url, 'http://x').pathname)));
-  if (!p.startsWith(ROOT)) { res.writeHead(403); return res.end(); } // stay inside the page's folder
+  let p; try { p = normalize(join(ROOT, decodeURIComponent(new URL(req.url, 'http://x').pathname))); } catch { res.writeHead(400); return res.end(); }
+  const rel = relative(ROOT, p); if (rel.startsWith('..') || isAbsolute(rel)) { res.writeHead(403); return res.end(); } // stay inside the page's folder
   try { const body = await readFile(p); res.writeHead(200, { 'content-type': TYPES[extname(p)] || 'application/octet-stream' }); res.end(body); }
   catch { res.writeHead(404); res.end(); }
 });

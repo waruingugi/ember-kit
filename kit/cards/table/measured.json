@@ -1151,16 +1151,6 @@
     {
      "kind": "transition",
      "what": "div.tbl-bar",
-     "prop": "transform",
-     "from": "",
-     "ms": 370,
-     "delay": 0,
-     "easing": "var(--sp-snappy)",
-     "n": 1
-    },
-    {
-     "kind": "transition",
-     "what": "div.tbl-bar",
      "prop": "opacity",
      "from": "",
      "ms": 200,
@@ -1237,7 +1227,7 @@
      "kind": "script",
      "what": "tr",
      "prop": "transform",
-     "from": "\"translateY(-120px)\"",
+     "from": "\"translateY(-131px)\"",
      "ms": 420,
      "delay": 0,
      "easing": "var(--ease-out)",

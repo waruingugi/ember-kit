@@ -69,7 +69,6 @@ Recorded while the part was used, with motion on. Copy the code below and you ge
 | Sort a column | tr (×8) | transform from "translateY(92px)" | 420 ms | `var(--ease-out)` | script |
 | Tick a row | div.tbl-bar | opacity | 200 ms | `var(--ease-out)` | transition |
 | Tick a row | div.tbl-bar | transform | 370 ms | `var(--sp-snappy)` | transition |
-| Clear the ticks | div.tbl-bar | transform | 370 ms | `var(--sp-snappy)` | transition |
 | Clear the ticks | div.tbl-bar | opacity | 200 ms | `var(--ease-out)` | transition |
 | Clear the ticks | div.tbl-bar | transform | 250 ms | `var(--ease-out)` | transition |
 | Clear the ticks | div.tbl-bar | visibility | 0 ms after 250 ms | `linear` | transition |
@@ -77,7 +76,7 @@ Recorded while the part was used, with motion on. Copy the code below and you ge
 | Type in search | input.in | border-left-color | 150 ms | `var(--ease-out)` | transition |
 | Type in search | input.in | border-right-color | 150 ms | `var(--ease-out)` | transition |
 | Type in search | input.in | border-top-color | 150 ms | `var(--ease-out)` | transition |
-| Type in search | tr | transform from "translateY(-120px)" | 420 ms | `var(--ease-out)` | script |
+| Type in search | tr | transform from "translateY(-131px)" | 420 ms | `var(--ease-out)` | script |
 
 - With reduced motion (the motion level `off`), rows jump to their place and nothing glides. The script checks this itself (`lv()`).
 - The bar rises on the house snappy spring (`--sp-snappy`, `--sp-snappy-d`). Both come from `table/table.css`. Motion is always lively; it is off only when the reader's system asks for less motion.
@@ -177,9 +176,9 @@ function emberTable(box, cfg) {
     var flip = lv() !== "off", before = {};
     if (flip) $$("tr[data-id]", tb).forEach(function (tr) { before[tr.dataset.id] = tr.getBoundingClientRect().top; });
     var rs = rows();
-    tb.innerHTML = rs.map(function (r) { var id = idOf(r), s = !!sel[id]; return '<tr data-id="' + id + '" aria-selected="' + s + '"><td class="tbl-ckc"><button class="tbl-cb" type="button" role="checkbox" aria-checked="' + s + '" aria-label="' + cfg.pickLabel(r) + '">' + CB + "</button></td>" + cols.map(function (c) { return cell(c, r); }).join("") + "</tr>"; }).join("") || '<tr class="tbl-empty"><td colspan="' + (cols.length + 1) + '">' + cfg.empty + "</td></tr>";
+    tb.innerHTML = rs.map(function (r) { var id = idOf(r), s = !!sel[id]; return '<tr data-id="' + emberTable.esc(id) + '" aria-selected="' + s + '"><td class="tbl-ckc"><button class="tbl-cb" type="button" role="checkbox" aria-checked="' + s + '" aria-label="' + emberTable.esc(cfg.pickLabel(r)) + '">' + CB + "</button></td>" + cols.map(function (c) { return cell(c, r); }).join("") + "</tr>"; }).join("") || '<tr class="tbl-empty"><td colspan="' + (cols.length + 1) + '">' + cfg.empty + "</td></tr>";
     $$("tr[data-id]", tb).forEach(function (tr) {
-      $(".tbl-cb", tr).addEventListener("click", function () { sel[tr.dataset.id] = !sel[tr.dataset.id]; render(); var b = $('tr[data-id="' + tr.dataset.id + '"] .tbl-cb', tb); if (b) b.focus(); });
+      $(".tbl-cb", tr).addEventListener("click", function () { sel[tr.dataset.id] = !sel[tr.dataset.id]; render(); var b = $('tr[data-id="' + CSS.escape(tr.dataset.id) + '"] .tbl-cb', tb); if (b) b.focus(); });
       var b0 = before[tr.dataset.id]; if (flip && b0 !== undefined) { var d = b0 - tr.getBoundingClientRect().top; if (d) tr.animate([{ transform: "translateY(" + d + "px)" }, { transform: "none" }], { duration: 420, easing: "cubic-bezier(.22,1,.36,1)" }); }
     });
     var ids = Object.keys(sel).filter(function (k) { return sel[k]; }), picked = ROWS.filter(function (r) { return sel[idOf(r)]; }), on = ids.length > 0;
