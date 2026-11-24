@@ -6,7 +6,7 @@
   try { saved = JSON.parse(localStorage.getItem('ds-showcase-v4') || '{}') || {}; } catch (e) {}
   for (var k in saved) if (k in d) d[k] = saved[k];
   if (!saved.theme && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) d.theme = 'dark';
-  if (!saved.motion && window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) d.motion = 'off';
+  d.motion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches ? 'off' : 'lively'; /* always lively unless the system asks for less */
   var r = document.documentElement;
   r.classList.add('js');
   for (k in d) r.setAttribute('data-' + k, d[k]);
@@ -42,7 +42,7 @@ window.emberGrid = (function () {
   function opt(k, d) { return cv.getAttribute('data-' + k) || d; }
   var W = 0, H = 0, dpr = 1, raf = 0, ink = '21,24,27', acc = '225,74,14', dark = false;
   var S = 56, sideR = 0, cells = [], bands = [], blocks = [], colL = 0, colR = 0, heroBottom = 600, BUCKETS = 10;
-  var BLOCKS = opt('blocks', '.card, .callout, .goal, .frame, .code-win, .flow-step .fcard, .sec-head .eyebrow, .sec-head h2, .sec-head .lead, .notes li, .hero h1, .hero .lead, .hero .eyebrow, .meta-row, .scroll-cue, .tool-note, .diagram-foot > div, .step, .part-divider > *, .endcard, footer');
+  var BLOCKS = opt('blocks', '.card, .callout, .goal, .frame, .code-win, .flow-step .fcard, .sec-head .eyebrow, .sec-head h2, .sec-head h1, .sec-head .lead, .notes li, .hero h1, .hero .lead, .hero .eyebrow, .meta-row, .scroll-cue, .tool-note, .diagram-foot > div, .step, .part-divider > *, .endcard, footer');
   var LIVE = opt('live', '.layers-fig, .layer-list, .layers-progress, .layers-sticky .tool-note'), BANDS = opt('bands', '.sec, .part-divider'), GHOSTS = opt('ghosts', '.ghost');
   var api = { scrollY: scrollY };
   function smooth(e0, e1, x) { var t = clamp01((x - e0) / (e1 - e0)); return t * t * (3 - 2 * t); }
@@ -156,8 +156,8 @@ window.emberGrid = (function () {
   var state = window.__draft;
   var reduceMQ = matchMedia('(prefers-reduced-motion: reduce)');
   var OPTIONS = {
-    theme:  { label: 'Theme', choices: [['light', 'Light'], ['dark', 'Dark']] },
-    motion: { label: 'Motion', choices: [['lively', 'Lively'], ['calm', 'Calm'], ['off', 'Off']] }
+    theme:  { label: 'Theme', choices: [['light', 'Light'], ['dark', 'Dark']] }
+    /* no motion choice: motion is always lively; only the system's reduce-motion setting turns it off (owner, 2026-11-23) */
   };
   function motionOn() { return state.motion !== 'off' && !reduceMQ.matches; }
   function lively() { return state.motion === 'lively' && !reduceMQ.matches; }
@@ -736,7 +736,7 @@ window.emberGrid = (function () {
   /* 1. Hero: one short entrance, line by line */
   var heroEls = '.hero .eyebrow, .hero h1 .line, .hero .lead, .hero .meta-row, .route-card, .scroll-cue';
   if (gsap.utils.toArray(heroEls).some(shown)) gsap.utils.toArray(heroEls).forEach(function (el) { el.classList.add('gs-done'); });
-  else gsap.timeline({ defaults: { ease: EASE, duration: 1.1 }, onComplete: function () { done(heroEls); } })
+  else if (document.querySelector('.hero')) gsap.timeline({ defaults: { ease: EASE, duration: 1.1 }, onComplete: function () { done(heroEls); } }) /* app pages have no hero */
     .from('.hero .eyebrow', { y: 16, autoAlpha: 0 })
     .from('.hero h1 .line', { yPercent: 40, autoAlpha: 0, stagger: 0.12, duration: 1.3 }, '-=0.85')
     .from('.hero .lead', { y: 20, autoAlpha: 0 }, '-=0.9')
@@ -747,7 +747,7 @@ window.emberGrid = (function () {
   /* 2. Reveals: things that enter together come in as one staggered group */
   var items = gsap.utils.toArray('[data-reveal]').filter(function (el) { return !el.closest('.hero') && !el.classList.contains('goal'); });
   items = items.filter(function (el) { return !shown(el); });
-  gsap.set(items, { autoAlpha: 0, y: 26 });
+  if (items.length) gsap.set(items, { autoAlpha: 0, y: 26 });
 
   /* 2b. Goal rows follow the scroll both ways: in as they arrive, and a quiet fade out as they
      leave the screen, up or down, so going back feels as alive as going forward. */

@@ -1,0 +1,194 @@
+{
+  "part": "n37",
+  "root": "#n37 .tbl",
+  "title": "Table",
+  "markupStart": "<div class=\"tbl\">",
+  "js": "tbl",
+  "measure": {
+    "search field": ".tbl-search .in",
+    "table card": ".tbl-scroll",
+    "header cell": "thead th:nth-child(3)",
+    "sort button": "thead th:nth-child(3) .tbl-sort",
+    "checkbox": "tbody tr:nth-child(1) .tbl-cb",
+    "row": "tbody tr:nth-child(1)",
+    "cell": "tbody tr:nth-child(1) td:nth-child(3)",
+    "number cell": "tbody tr:nth-child(1) td.tbl-end",
+    "status": "tbody .tbl-st[data-s=\"done\"]",
+    "foot line": ".tbl-foot",
+    "selection bar": ".tbl-bar",
+    "bar count": ".tbl-count",
+    "bar main button": ".tbl-bar .b.pri",
+    "bar button": ".tbl-bar .b:not(.pri):not(.tbl-x)",
+    "bar clear": ".tbl-bar .tbl-x",
+    "problem status": "tbody .tbl-st[data-s=\"late\"]",
+    "neutral status": "tbody .tbl-st[data-s=\"idle\"]"
+  },
+  "states": [
+    {
+      "name": "rest",
+      "how": "as it loads",
+      "do": [],
+      "picture": true
+    },
+    {
+      "name": "hover",
+      "how": "point at a row",
+      "do": [
+        {
+          "hover": "tbody tr:nth-child(1) td:nth-child(3)"
+        }
+      ],
+      "picture": true
+    },
+    {
+      "name": "sort-hover",
+      "how": "point at a header",
+      "do": [
+        {
+          "hover": "thead th:nth-child(3) .tbl-sort"
+        }
+      ]
+    },
+    {
+      "name": "sorted",
+      "how": "press a header once: low to high, arrow turns orange and flips",
+      "do": [
+        {
+          "click": "thead th:nth-child(3) .tbl-sort"
+        },
+        {
+          "mouseAway": 1
+        }
+      ],
+      "picture": true,
+      "ignoreSize": true
+    },
+    {
+      "name": "picked",
+      "how": "tick two rows: rows tint, the bar rises",
+      "do": [
+        {
+          "click": "tbody tr:nth-child(1) .tbl-cb"
+        },
+        {
+          "click": "tbody tr:nth-child(2) .tbl-cb"
+        },
+        {
+          "mouseAway": 1
+        }
+      ],
+      "picture": true
+    },
+    {
+      "name": "empty",
+      "how": "search for something that isn't there",
+      "do": [
+        {
+          "fill": [
+            ".tbl-search input",
+            "zzz"
+          ]
+        }
+      ],
+      "picture": true,
+      "ignoreSize": true
+    }
+  ],
+  "motion": [
+    {
+      "name": "Point at a row",
+      "do": [
+        {
+          "hover": "tbody tr:nth-child(3) td:nth-child(3)"
+        }
+      ],
+      "after": [
+        {
+          "mouseAway": 1
+        }
+      ]
+    },
+    {
+      "name": "Point at a header",
+      "do": [
+        {
+          "hover": "thead th:nth-child(4) .tbl-sort"
+        }
+      ],
+      "after": [
+        {
+          "mouseAway": 1
+        }
+      ]
+    },
+    {
+      "name": "Sort a column",
+      "do": [
+        {
+          "click": "thead th:nth-child(4) .tbl-sort"
+        }
+      ],
+      "after": [
+        {
+          "mouseAway": 1
+        }
+      ]
+    },
+    {
+      "name": "Tick a row",
+      "do": [
+        {
+          "click": "tbody tr:nth-child(1) .tbl-cb"
+        }
+      ],
+      "after": [
+        {
+          "click": ".tbl-bar .tbl-x"
+        }
+      ]
+    },
+    {
+      "name": "Clear the ticks",
+      "before": [
+        {
+          "click": "tbody tr:nth-child(1) .tbl-cb"
+        }
+      ],
+      "do": [
+        {
+          "click": ".tbl-bar .tbl-x"
+        }
+      ],
+      "ignore": [
+        "button.b"
+      ]
+    },
+    {
+      "name": "Type in search",
+      "do": [
+        {
+          "fill": [
+            ".tbl-search input",
+            "am"
+          ]
+        }
+      ],
+      "after": [
+        {
+          "fill": [
+            ".tbl-search input",
+            ""
+          ]
+        }
+      ],
+      "ignore": [
+        "button.b"
+      ]
+    }
+  ],
+  "optional": [
+    "problem status",
+    "neutral status",
+    "status"
+  ]
+}
